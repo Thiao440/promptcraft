@@ -2,12 +2,15 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="index, follow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="The Prompt Studio Commerce — 60 AI prompts for marketers & e-commerce professionals. Write ads, emails, product pages and campaigns 5× faster.">
+<meta name="description" content="60 prompts IA premium + formation + workflows pour marketeurs et e-commerçants. Publicités, emails, fiches produits 5× plus vite.">
 <meta name="keywords" content="AI prompts marketing, ChatGPT e-commerce, prompts publicité Facebook, copywriting IA, prompts Shopify">
 <meta property="og:title" content="The Prompt Studio Commerce — AI Prompts for Marketers & E-commerce">
 <meta property="og:description" content="60 battle-tested prompts to write ads, emails, product pages and campaigns 5× faster.">
-<title>The Prompt Studio Commerce — AI Prompts for Marketers & E-commerce</title>
+<title>The Prompt Studio · Commerce Pro — Toolkit IA Marketing & E-commerce</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -407,7 +410,38 @@ body.en .en-content { display: block; }
   .ps-nav-center{display:none;}
   .ps-nav{padding:0 20px;}
 }
+
+/* ===== COOKIE BANNER RGPD ===== */
+#ps-cookie{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1814;border-top:1px solid #2e2a24;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 -8px 32px rgba(0,0,0,0.4);transform:translateY(100%);transition:transform 0.4s ease;flex-wrap:wrap;}
+#ps-cookie.show{transform:translateY(0);}
+#ps-cookie p{font-size:12px;color:#8a8070;line-height:1.6;max-width:680px;flex:1;}
+#ps-cookie a{color:#c9a84c;text-decoration:underline;}
+.ps-cookie-btns{display:flex;gap:10px;flex-shrink:0;}
+.ps-cookie-accept{background:#c9a84c;color:#000;border:none;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;}
+.ps-cookie-accept:hover{background:#e8c97a;}
+.ps-cookie-refuse{background:none;border:1px solid #2e2a24;color:#8a8070;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;}
+.ps-cookie-refuse:hover{border-color:#8a8070;color:#f0ead8;}
+@media(max-width:600px){#ps-cookie{padding:16px 20px;flex-direction:column;}.ps-cookie-btns{width:100%;}}
+
 </style>
+<link rel="canonical" href="https://theprompt.studio/promptcraft-commerce.html">
+<meta property="og:image" content="https://theprompt.studio/og-commerce.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://theprompt.studio/og-commerce.png">
+<link rel="manifest" href="manifest.json">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product",
+"name":"The Prompt Studio · Commerce Pro",
+"description":"60 prompts IA premium + formation + workflows pour marketeurs et e-commerçants. Publicités, emails, fiches produits 5× plus vite.",
+"url":"https://theprompt.studio/promptcraft-commerce.html",
+"image":"https://theprompt.studio/og-commerce.png",
+"brand":{"@type":"Brand","name":"The Prompt Studio"},
+"offers":{"@type":"Offer","price":"57","priceCurrency":"EUR",
+"availability":"https://schema.org/InStock",
+"seller":{"@type":"Organization","name":"The Prompt Studio"}}}
+</script>
 </head>
 <body>
 
@@ -431,11 +465,13 @@ body.en .en-content { display: block; }
     <a href="contact.html" class="ps-nav-a">Contact</a>
   </div>
   <div class="ps-nav-right">
-    <div class="ps-lang-btns">
-      <button class="ps-lang-btn active" onclick="setLang('fr')">🇫🇷 FR</button>
-      <button class="ps-lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
-    </div>
-    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="ps-nav-cta">Pro — 19€/mois</a>
+    <div class="ps-lang-sel">
+      <button class="ps-lang-cur" id="ps-lang-btn">🇫🇷 FR ▾</button>
+      <div class="ps-lang-menu">
+        <div class="ps-lang-opt active" onclick="psSetLang('fr')"><span>🇫🇷</span> Français</div>
+        <div class="ps-lang-opt" onclick="psSetLang('en')"><span>🇬🇧</span> English</div>
+      </div>
+    </div><a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="ps-nav-cta">Pro — 19€/mois</a>
   </div>
 </nav>
 
@@ -845,16 +881,40 @@ body.en .en-content { display: block; }
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="footer-brand">The Prompt<em>Studio</em></div>
-  <div class="footer-links">
-    <a href="#" class="fr-content">Mentions légales</a><a href="#" class="en-content">Legal</a>
-    <a href="#" class="fr-content">CGV</a><a href="#" class="en-content">Terms</a>
-    <a href="#">theprompt.studio</a>
-    <a href="#" class="fr-content">Blog</a><a href="#" class="en-content">Blog</a>
-    <a href="#"><span class="__cf_email__" data-cfemail="4c2f2322382d2f380c3c3e23213c382f3e2d2a38622f23">[email&#160;protected]</span></a>
+<footer style="background:var(--surface, #111009);border-top:1px solid #2e2a24;padding:48px 40px 32px;position:relative;z-index:1;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;margin-bottom:12px;">The Prompt<em style="color:var(--gold, #c9a84c);font-style:italic;">Studio</em></div>
+        <p style="font-size:12px;color:#8a8070;line-height:1.7;max-width:240px;">Toolkits IA premium pour professionnels. Immo · Commerce · Legal · Finance.</p>
+        <a href="mailto:contact@theprompt.studio" style="font-size:12px;color:#8a8070;text-decoration:none;display:block;margin-top:12px;transition:color 0.2s;" onmouseover="this.style.color='var(--gold, #c9a84c)'" onmouseout="this.style.color='#8a8070'">contact@theprompt.studio</a>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Produits</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="promptcraft-immo.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Immo Pro</a>
+          <a href="promptcraft-commerce.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Commerce Pro</a>
+          <a href="promptcraft-legal.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Legal Pro</a>
+          <a href="finance.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Finance IA</a>
+          <a href="index.html#pro" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Pro Membership</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Informations légales</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="contact.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Contact</a>
+          <a href="mentions-legales.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Mentions légales</a>
+          <a href="cgv.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">CGV</a>
+          <a href="politique-confidentialite.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Politique de confidentialité</a>
+          <a href="https://shop.theprompt.studio" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'" target="_blank" rel="noopener">Boutique Lemon Squeezy ↗</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #2e2a24;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <p style="font-size:11px;color:#5a5040;">© 2026 The Prompt Studio — theprompt.studio — Tous droits réservés</p>
+      <p style="font-size:11px;color:#5a5040;">Paiements sécurisés via <a href="https://lemonsqueezy.com" target="_blank" rel="noopener" style="color:#5a5040;text-decoration:underline;">Lemon Squeezy</a> · TVA gérée dans 130+ pays</p>
+    </div>
   </div>
-  <p>© 2026 The Prompt Studio · <span class="fr-content">Tous droits réservés</span><span class="en-content">All rights reserved</span></p>
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -876,6 +936,30 @@ const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
 }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+<!-- COOKIE BANNER RGPD -->
+<div id="ps-cookie" role="dialog" aria-label="Gestion des cookies" aria-live="polite">
+  <p>Nous utilisons des cookies techniques nécessaires au fonctionnement du site (Google Fonts, analyse de trafic anonymisée). En cliquant sur "Accepter", vous consentez à leur utilisation. <a href="politique-confidentialite.html">Politique de confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a></p>
+  <div class="ps-cookie-btns">
+    <button class="ps-cookie-accept" onclick="psCookieAccept()">Accepter</button>
+    <button class="ps-cookie-refuse" onclick="psCookieRefuse()">Continuer sans accepter</button>
+  </div>
+</div>
+<script>
+(function(){
+  if(!localStorage.getItem('ps_cookie_consent')){
+    setTimeout(function(){ var b=document.getElementById('ps-cookie'); if(b) b.classList.add('show'); },800);
+  }
+})();
+function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
+function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
+function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
+</script>
+
+<script>
+function psSetLang(l){ setLang(l); var b=document.getElementById('ps-lang-btn'); if(b) b.innerHTML=(l==='en'?'🇬🇧 EN':'🇫🇷 FR')+' ▾'; document.querySelectorAll('.ps-lang-opt').forEach(function(o){o.classList.toggle('active',o.getAttribute('onclick')==="psSetLang('"+l+"')");});}
+(function(){ var l=localStorage.getItem('ps_lang'); if(l&&l!=='fr') psSetLang(l); })();
 </script>
 </body>
 </html>

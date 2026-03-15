@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="ps-title">Conditions Générales de Vente — The Prompt Studio</title>
+<meta name="description" id="ps-desc" content="CGV The Prompt Studio — Conditions de vente pour les produits numériques (toolkits IA, abonnement Pro).">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://theprompt.studio/cgv.html">
+<meta property="og:title" content="Conditions Générales de Vente — The Prompt Studio">
+<meta property="og:url" content="https://theprompt.studio/cgv.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2e2a24;--gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+/* ===== UNIFIED DROPDOWN NAV ===== */
+.ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);backdrop-filter:blur(18px);border-bottom:1px solid #2e2a24;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:58px;}
+.ps-nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
+.ps-nav-logo em{color:#c9a84c;font-style:italic;}
+.ps-nav-center{display:flex;align-items:center;gap:0;}
+.ps-nav-item{position:relative;}
+.ps-nav-btn{background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;letter-spacing:0.04em;padding:0 14px;height:58px;display:flex;align-items:center;gap:5px;transition:color 0.2s;}
+.ps-nav-btn:hover{color:#f0ead8;}
+.ps-nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;letter-spacing:0.04em;padding:0 14px;height:58px;text-decoration:none;display:flex;align-items:center;transition:color 0.2s;}
+.ps-nav-a:hover,.ps-nav-a.ps-active{color:#c9a84c;}
+.ps-dd{position:absolute;top:100%;left:-8px;background:#1a1814;border:1px solid #2e2a24;min-width:248px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);}
+.ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-dd-row{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;text-decoration:none;color:#f0ead8;font-family:'Outfit',sans-serif;font-size:13px;border-bottom:1px solid #2e2a24;transition:background 0.15s;}
+.ps-dd-row:last-child{border-bottom:none;}
+.ps-dd-row:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-dd-row.ps-soon{color:#4a4540;cursor:default;pointer-events:none;}
+.ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(0,137,123,0.18);border:1px solid rgba(0,137,123,0.4);color:#00897b;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-service{font-size:8px;padding:2px 7px;background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4fc3f7;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-soon{font-size:8px;padding:2px 7px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);color:#5a5040;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-nav-right{display:flex;align-items:center;gap:10px;}
+.ps-lang-sel{position:relative;}
+.ps-lang-cur{background:none;border:1px solid #2e2a24;color:#8a8070;padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.08em;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
+.ps-lang-cur:hover{border-color:#c9a84c;color:#c9a84c;}
+.ps-lang-menu{position:absolute;top:calc(100% + 4px);right:0;background:#1a1814;border:1px solid #2e2a24;min-width:150px;opacity:0;pointer-events:none;transform:translateY(-4px);transition:all 0.15s;z-index:200;}
+.ps-lang-sel:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-lang-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:13px;font-family:'Outfit',sans-serif;color:#8a8070;transition:all 0.15s;white-space:nowrap;}
+.ps-lang-opt:hover,.ps-lang-opt.active{background:rgba(201,168,76,0.06);color:#f0ead8;}
+.ps-nav-cta{background:#c9a84c;color:#000;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;padding:9px 18px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s;white-space:nowrap;}
+.ps-nav-cta:hover{background:#e8c97a;}
+@media(max-width:768px){.ps-nav-center{display:none;}.ps-nav{padding:0 20px;}}
+
+
+/* ===== COOKIE BANNER RGPD ===== */
+#ps-cookie{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1814;border-top:1px solid #2e2a24;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 -8px 32px rgba(0,0,0,0.4);transform:translateY(100%);transition:transform 0.4s ease;flex-wrap:wrap;}
+#ps-cookie.show{transform:translateY(0);}
+#ps-cookie p{font-size:12px;color:#8a8070;line-height:1.6;max-width:680px;flex:1;}
+#ps-cookie a{color:#c9a84c;text-decoration:underline;}
+.ps-cookie-btns{display:flex;gap:10px;flex-shrink:0;}
+.ps-cookie-accept{background:#c9a84c;color:#000;border:none;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;}
+.ps-cookie-accept:hover{background:#e8c97a;}
+.ps-cookie-refuse{background:none;border:1px solid #2e2a24;color:#8a8070;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;}
+.ps-cookie-refuse:hover{border-color:#8a8070;color:#f0ead8;}
+@media(max-width:600px){#ps-cookie{padding:16px 20px;flex-direction:column;}.ps-cookie-btns{width:100%;}}
+
+/* Legal content */
+.legal-wrap{max-width:760px;margin:0 auto;padding:120px 24px 80px;}
+.legal-eyebrow{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.legal-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,56px);font-weight:300;line-height:1;margin-bottom:8px;}
+.legal-title em{color:var(--gold);font-style:italic;}
+.legal-date{font-size:11px;color:var(--muted);margin-bottom:56px;letter-spacing:0.08em;}
+.legal-section{margin-bottom:44px;}
+.legal-h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--cream);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.legal-h3{font-size:14px;font-weight:600;color:var(--cream);margin:18px 0 8px;letter-spacing:0.04em;}
+.legal-wrap p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:12px;}
+.legal-wrap ul{font-size:14px;color:var(--muted);line-height:1.8;padding-left:20px;margin-bottom:12px;}
+.legal-wrap ul li{margin-bottom:6px;}
+.legal-wrap a{color:var(--gold);text-decoration:underline;}
+.legal-highlight{background:var(--card);border-left:3px solid var(--gold);padding:16px 20px;margin:20px 0;font-size:13px;color:var(--muted);}
+/* Show/hide lang */
+body.en .fr-c{display:none;}
+body:not(.en) .en-c{display:none;}
+@media(max-width:600px){.legal-wrap{padding:100px 20px 60px;}}
+</style>
+</head>
+<body>
+<nav class="ps-nav">
+  <a href="index.html" class="ps-nav-logo" aria-label="The Prompt Studio — Accueil">The Prompt<em>Studio</em></a>
+  <div class="ps-nav-center" role="navigation" aria-label="Navigation principale">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn" aria-haspopup="true" aria-expanded="false">Produits ▾</button>
+      <div class="ps-dd" role="menu">
+        <a href="promptcraft-immo.html" class="ps-dd-row" role="menuitem"><span>Immo Pro</span><span class="ps-badge-live">Live</span></a>
+        <a href="promptcraft-commerce.html" class="ps-dd-row" role="menuitem"><span>Commerce Pro</span><span class="ps-badge-live">Live</span></a>
+        <a href="promptcraft-legal.html" class="ps-dd-row" role="menuitem"><span>Legal Pro</span><span class="ps-badge-live">Live</span></a>
+        <a href="finance.html" class="ps-dd-row" role="menuitem"><span>Finance IA</span><span class="ps-badge-service">Service</span></a>
+        <span class="ps-dd-row ps-soon" role="menuitem" aria-disabled="true"><span>Coach Pro</span><span class="ps-badge-soon">Bientôt</span></span>
+        <span class="ps-dd-row ps-soon" role="menuitem" aria-disabled="true"><span>Recruit Pro</span><span class="ps-badge-soon">Bientôt</span></span>
+      </div>
+    </div>
+    <a href="finance.html" class="ps-nav-a">Finance IA</a>
+    <a href="index.html#pro" class="ps-nav-a">Pro Membership</a>
+    <a href="contact.html" class="ps-nav-a">Contact</a>
+  </div>
+  <div class="ps-nav-right">
+    <div class="ps-lang-sel">
+      <button class="ps-lang-cur" id="ps-lang-btn">🇫🇷 FR ▾</button>
+      <div class="ps-lang-menu">
+        <div class="ps-lang-opt active" onclick="psSetLang('fr')"><span>🇫🇷</span> Français</div>
+        <div class="ps-lang-opt" onclick="psSetLang('en')"><span>🇬🇧</span> English</div>
+      </div>
+    </div>
+    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="ps-nav-cta" aria-label="Rejoindre Pro — 19€ par mois">Pro — 19€/mois</a>
+  </div>
+</nav>
+
+<!-- COOKIE BANNER RGPD -->
+<div id="ps-cookie" role="dialog" aria-label="Gestion des cookies" aria-live="polite">
+  <p>Nous utilisons des cookies techniques nécessaires au fonctionnement du site (Google Fonts, analyse de trafic anonymisée). En cliquant sur "Accepter", vous consentez à leur utilisation. <a href="politique-confidentialite.html">Politique de confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a></p>
+  <div class="ps-cookie-btns">
+    <button class="ps-cookie-accept" onclick="psCookieAccept()">Accepter</button>
+    <button class="ps-cookie-refuse" onclick="psCookieRefuse()">Continuer sans accepter</button>
+  </div>
+</div>
+<script>
+(function(){
+  if(!localStorage.getItem('ps_cookie_consent')){
+    setTimeout(function(){ var b=document.getElementById('ps-cookie'); if(b) b.classList.add('show'); },800);
+  }
+})();
+function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
+function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
+function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
+</script>
+
+<main class="legal-wrap">
+  <div class="fr-c">
+    <div class="legal-eyebrow">E-commerce · Vente en ligne</div>
+<h1 class="legal-title">Conditions Générales <em>de Vente</em></h1>
+<p class="legal-date">Dernière mise à jour : mars 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Objet et champ d'application</h2>
+  <p>Les présentes Conditions Générales de Vente (CGV) régissent toutes les ventes de produits numériques effectuées sur le site theprompt.studio et via la boutique <a href="https://shop.theprompt.studio" target="_blank" rel="noopener">shop.theprompt.studio</a>.</p>
+  <p>En procédant à un achat, le client accepte sans réserve les présentes CGV.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Produits et services</h2>
+  <p>Les produits commercialisés sont des <strong>biens numériques immatériels</strong> :</p>
+  <ul>
+    <li>Immo Pro — Toolkit IA pour agents immobiliers (47€)</li>
+    <li>Commerce Pro — Toolkit IA pour marketeurs et e-commerçants (57€)</li>
+    <li>Legal Pro — Toolkit IA pour avocats et juristes (97€)</li>
+    <li>Pro Membership — Abonnement accès illimité (19€/mois)</li>
+    <li>Prestations de conseil IA Finance (tarif sur devis)</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Prix</h2>
+  <p>Les prix sont indiqués en euros, toutes taxes comprises (TTC). La TVA applicable dépend du pays de résidence de l'acheteur et est gérée automatiquement par notre prestataire de paiement Lemon Squeezy (Merchant of Record), conformément aux réglementations locales.</p>
+  <p>The Prompt Studio se réserve le droit de modifier ses prix à tout moment, sans préavis, pour les nouvelles commandes.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Paiement</h2>
+  <p>Les paiements sont traités de manière sécurisée par <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.), Merchant of Record, qui agit en tant que revendeur autorisé. Lemon Squeezy gère la collecte, le remboursement, la TVA et la conformité réglementaire dans plus de 130 pays.</p>
+  <p>Moyens de paiement acceptés : carte bancaire (Visa, Mastercard, American Express), et autres moyens disponibles selon votre région.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Livraison des produits numériques</h2>
+  <p>Les produits numériques sont livrés <strong>immédiatement après confirmation du paiement</strong> via un lien de téléchargement ou un accès à l'espace membre. Aucun délai de livraison physique ne s'applique.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Droit de rétractation</h2>
+  <div class="legal-highlight">
+    <strong>⚠ Dérogation au droit de rétractation pour contenus numériques</strong><br>
+    Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation de 14 jours <strong>ne s'applique pas</strong> aux contenus numériques fournis sur un support immatériel dont l'exécution a commencé après accord exprès préalable du consommateur et renoncement exprès à son droit de rétractation.
+  </div>
+  <p>En procédant au paiement, le client consent expressément à l'accès immédiat au contenu numérique et reconnaît renoncer à son droit de rétractation.</p>
+  <p>Pour toute réclamation ou insatisfaction, contactez-nous à <a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a> — nous traiterons votre demande avec bienveillance.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Abonnement Pro Membership</h2>
+  <p>L'abonnement Pro est un abonnement mensuel reconductible tacitement. Il peut être résilié à tout moment depuis votre espace Lemon Squeezy, sans frais ni pénalité. La résiliation prend effet à la fin de la période mensuelle en cours.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">8. Propriété intellectuelle et licence d'utilisation</h2>
+  <p>L'achat d'un toolkit confère une <strong>licence personnelle, non-exclusive et non-transférable</strong> d'utilisation du contenu. Il est strictement interdit de revendre, redistribuer, partager ou publier les produits achetés, en tout ou partie.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">9. Service client</h2>
+  <p>Pour toute question relative à une commande : <a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a></p>
+  <p>Délai de réponse : 24 à 48h ouvrées.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">10. Droit applicable — Règlement des litiges</h2>
+  <p>Les présentes CGV sont soumises au droit français. En cas de litige non résolu à l'amiable, le consommateur peut recourir à la médiation via la plateforme européenne de règlement en ligne des litiges : <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></p>
+</div>
+  </div>
+  <div class="en-c">
+    <div class="legal-eyebrow">E-commerce · Terms of Sale</div>
+<h1 class="legal-title">Terms and Conditions <em>of Sale</em></h1>
+<p class="legal-date">Last updated: March 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Scope</h2>
+  <p>These Terms and Conditions of Sale govern all sales of digital products on theprompt.studio and via the store <a href="https://shop.theprompt.studio" target="_blank" rel="noopener">shop.theprompt.studio</a>. By making a purchase, the customer unconditionally accepts these terms.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Products</h2>
+  <ul>
+    <li>Immo Pro — AI Toolkit for real estate agents (€47)</li>
+    <li>Commerce Pro — AI Toolkit for marketers & e-commerce (€57)</li>
+    <li>Legal Pro — AI Toolkit for lawyers (€97)</li>
+    <li>Pro Membership — Unlimited access subscription (€19/month)</li>
+    <li>Finance AI Consulting — Custom pricing on request</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Prices & Tax</h2>
+  <p>Prices are in euros, tax-inclusive. VAT is automatically managed by our payment processor Lemon Squeezy (Merchant of Record) in compliance with local regulations in 130+ countries.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Payment</h2>
+  <p>Payments are securely processed by <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.), who acts as Merchant of Record, handling all payment processing, tax collection and regulatory compliance.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Digital Delivery</h2>
+  <p>Digital products are delivered <strong>immediately after payment confirmation</strong> via download link or member access. No physical shipping applies.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Right of Withdrawal</h2>
+  <div class="legal-highlight">
+    <strong>⚠ Waiver of withdrawal right for digital content</strong><br>
+    In accordance with applicable consumer law, the 14-day right of withdrawal does <strong>not apply</strong> to digital content that has begun to be provided with the consumer's prior express consent and acknowledgment of waiving their right of withdrawal.
+  </div>
+  <p>By completing payment, the customer expressly consents to immediate access to the digital content and acknowledges waiving their right of withdrawal.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Intellectual Property</h2>
+  <p>Purchase grants a <strong>personal, non-exclusive, non-transferable</strong> license to use the content. Resale, redistribution or sharing is strictly prohibited.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">8. Contact</h2>
+  <p><a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a> — Response within 24-48 business hours.</p>
+</div>
+  </div>
+</main>
+<footer style="background:var(--surface, #111009);border-top:1px solid #2e2a24;padding:48px 40px 32px;position:relative;z-index:1;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;margin-bottom:12px;">The Prompt<em style="color:var(--gold, #c9a84c);font-style:italic;">Studio</em></div>
+        <p style="font-size:12px;color:#8a8070;line-height:1.7;max-width:240px;">Toolkits IA premium pour professionnels. Immo · Commerce · Legal · Finance.</p>
+        <a href="mailto:contact@theprompt.studio" style="font-size:12px;color:#8a8070;text-decoration:none;display:block;margin-top:12px;transition:color 0.2s;" onmouseover="this.style.color='var(--gold, #c9a84c)'" onmouseout="this.style.color='#8a8070'">contact@theprompt.studio</a>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Produits</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="promptcraft-immo.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Immo Pro</a>
+          <a href="promptcraft-commerce.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Commerce Pro</a>
+          <a href="promptcraft-legal.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Legal Pro</a>
+          <a href="finance.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Finance IA</a>
+          <a href="index.html#pro" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Pro Membership</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Informations légales</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="contact.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Contact</a>
+          <a href="mentions-legales.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Mentions légales</a>
+          <a href="cgv.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">CGV</a>
+          <a href="politique-confidentialite.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Politique de confidentialité</a>
+          <a href="https://shop.theprompt.studio" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'" target="_blank" rel="noopener">Boutique Lemon Squeezy ↗</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #2e2a24;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <p style="font-size:11px;color:#5a5040;">© 2026 The Prompt Studio — theprompt.studio — Tous droits réservés</p>
+      <p style="font-size:11px;color:#5a5040;">Paiements sécurisés via <a href="https://lemonsqueezy.com" target="_blank" rel="noopener" style="color:#5a5040;text-decoration:underline;">Lemon Squeezy</a> · TVA gérée dans 130+ pays</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Language switcher ──
+function psSetLang(lang){
+  document.body.className = lang === 'en' ? 'en' : 'fr';
+  var btn = document.getElementById('ps-lang-btn');
+  if(btn) btn.innerHTML = lang === 'en' ? '🇬🇧 EN ▾' : '🇫🇷 FR ▾';
+  document.querySelectorAll('.ps-lang-opt').forEach(function(o){
+    o.classList.toggle('active', o.getAttribute('onclick') === "psSetLang('"+lang+"')");
+  });
+  localStorage.setItem('ps_lang', lang);
+}
+(function(){ var l = localStorage.getItem('ps_lang'); if(l && l!=='fr') psSetLang(l); })();
+</script>
+
+<script>
+// Update title/desc on lang switch
+var _psSetLangOrig = psSetLang;
+psSetLang = function(lang){
+  _psSetLangOrig(lang);
+  document.getElementById('ps-title').textContent = lang==='en' ? 'Terms and Conditions — The Prompt Studio' : 'Conditions Générales de Vente — The Prompt Studio';
+  document.getElementById('ps-desc').content = lang==='en' ? 'Terms and conditions for The Prompt Studio digital products (AI toolkits, Pro subscription).' : 'CGV The Prompt Studio — Conditions de vente pour les produits numériques (toolkits IA, abonnement Pro).';
+  document.documentElement.lang = lang;
+};
+</script>
+</body>
+</html>
