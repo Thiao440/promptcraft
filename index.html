@@ -686,9 +686,9 @@ function setLang(lang) {
 
 // Hero h1 — special rendering (preserve em structure)
 (function fixHeroH1(){
-  const h1 = document.querySelector('h1');
+  var h1 = document.querySelector('h1');
   if(!h1) return;
-  h1.innerHTML = 'L'IA qui <em>transforme</em><br>votre productivité';
+  h1.innerHTML = "L\u2019IA qui <em>transforme</em><br>votre productivit\u00e9";
   h1.removeAttribute('data-i18n');
 })();
 

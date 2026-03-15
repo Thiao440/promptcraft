@@ -847,7 +847,7 @@ function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b
 
 <script>
 function psSetLang(l){ setLang(l); var b=document.getElementById('ps-lang-btn'); if(b) b.innerHTML=(l==='en'?'🇬🇧 EN':'🇫🇷 FR')+' ▾'; document.querySelectorAll('.ps-lang-opt').forEach(function(o){o.classList.toggle('active',o.getAttribute('onclick')==="psSetLang('"+l+"')");});}
-(function(){ var l=localStorage.getItem('ps_lang'); if(l&&l!=='fr') psSetLang(l); })();
+(function(){ try{ var l=localStorage.getItem('ps_lang'); if(l&&l!=='fr') psSetLang(l); }catch(e){} })();
 </script>
 </body>
 </html>

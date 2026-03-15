@@ -153,6 +153,7 @@ footer p{font-size:11px;color:var(--muted);}
 .ps-cookie-refuse:hover{border-color:#8a8070;color:#f0ead8;}
 @media(max-width:600px){#ps-cookie{padding:16px 20px;flex-direction:column;}.ps-cookie-btns{width:100%;}}
 
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;}.reveal.visible{opacity:1;transform:translateY(0);}
 </style>
 <meta property="og:image" content="https://theprompt.studio/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -160,6 +161,7 @@ footer p{font-size:11px;color:var(--muted);}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://theprompt.studio/og-image.png">
 <link rel="manifest" href="manifest.json">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ContactPage","name":"Contact — The Prompt Studio","url":"https://theprompt.studio/contact.html","description":"Contactez The Prompt Studio pour un diagnostic IA gratuit","mainEntity":{"@type":"Organization","name":"The Prompt Studio","email":"contact@theprompt.studio","url":"https://theprompt.studio"}}</script>
 </head>
 <body>
 
@@ -368,5 +370,13 @@ function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); 
 function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
 </script>
 
+<script>
+(function(){
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
+})();
+</script>
 </body>
 </html>
