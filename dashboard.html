@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Espace — The Prompt Studio</title>
+<meta name="description" content="Votre espace personnel The Prompt Studio — accédez à vos toolkits IA.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2e2a24;--gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;--em:#00897b;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);
+  backdrop-filter:blur(18px);border-bottom:1px solid var(--border);
+  padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;
+  color:var(--cream);text-decoration:none;letter-spacing:0.02em;}
+.nav-logo em{color:var(--gold);font-style:italic;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-user{font-size:13px;color:var(--muted);}
+.nav-user strong{color:var(--cream);}
+.btn-logout{background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:7px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif;
+  transition:all 0.2s;}
+.btn-logout:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── LAYOUT ── */
+.page{padding:90px 48px 60px;max-width:1100px;margin:0 auto;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.a1{animation:fadeUp 0.6s ease both 0s;}
+.a2{animation:fadeUp 0.6s ease both 0.1s;}
+.a3{animation:fadeUp 0.6s ease both 0.2s;}
+
+/* ── WELCOME BANNER ── */
+.welcome{margin-bottom:48px;}
+.welcome-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.welcome h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:300;}
+.welcome p{font-size:15px;color:var(--muted);margin-top:8px;}
+
+/* ── SUCCESS BANNER (shown after purchase) ── */
+.banner-success{background:rgba(0,137,123,0.12);border:1px solid rgba(0,137,123,0.3);
+  border-radius:14px;padding:20px 24px;margin-bottom:40px;display:none;}
+.banner-success h3{color:#4ecdc4;font-size:16px;margin-bottom:4px;}
+.banner-success p{font-size:14px;color:var(--muted);}
+
+/* ── PRODUCT GRID ── */
+.section-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;
+  color:var(--cream);margin-bottom:24px;}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.prod-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;
+  display:flex;flex-direction:column;gap:16px;}
+.prod-card-header{display:flex;align-items:flex-start;gap:14px;}
+.prod-icon{font-size:28px;line-height:1;flex-shrink:0;}
+.prod-info{flex:1;}
+.prod-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;color:var(--cream);margin-bottom:4px;}
+.prod-desc{font-size:13px;color:var(--muted);line-height:1.5;}
+.prod-badge{font-size:10px;background:var(--em);color:#fff;border-radius:4px;padding:2px 8px;
+  display:inline-block;margin-top:6px;}
+.prod-badge.via-pro{background:#2e2a24;color:var(--gold);}
+.prod-features{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.prod-features li{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.prod-features li::before{content:'✓';color:var(--gold);font-size:12px;font-weight:600;}
+.prod-actions{display:flex;gap:10px;margin-top:4px;}
+.btn-download{background:var(--gold);color:#0c0b09;border:none;border-radius:8px;
+  padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;
+  transition:opacity 0.2s;display:flex;align-items:center;gap:6px;}
+.btn-download:hover{opacity:0.85;}
+.btn-download:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-view{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;
+  padding:10px 18px;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;
+  transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+.btn-view:hover{border-color:var(--gold);color:var(--gold);}
+.download-msg{font-size:12px;color:var(--muted);margin-top:6px;display:none;}
+.download-msg.ok{color:#4ecdc4;}
+.download-msg.err{color:#ff8080;}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:80px 24px;}
+.empty-icon{font-size:48px;margin-bottom:20px;}
+.empty h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:12px;}
+.empty p{color:var(--muted);font-size:15px;margin-bottom:32px;max-width:400px;margin-left:auto;margin-right:auto;}
+.btn-primary{background:var(--gold);color:#0c0b09;border:none;border-radius:9px;
+  padding:13px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;
+  text-decoration:none;display:inline-block;transition:opacity 0.2s;}
+.btn-primary:hover{opacity:0.85;}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:80px 24px;color:var(--muted);}
+.spinner{display:inline-block;width:32px;height:32px;border:2px solid var(--border);
+  border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── SIDEBAR / ACCOUNT ── */
+.account-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;
+  margin-top:48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.account-info h3{font-size:15px;font-weight:500;margin-bottom:4px;}
+.account-info p{font-size:13px;color:var(--muted);}
+.account-actions{display:flex;gap:10px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .page{padding:80px 20px 40px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="/" class="nav-logo">The Prompt <em>Studio</em></a>
+  <div class="nav-right">
+    <span class="nav-user">
+      Bonjour, <strong id="user-name">…</strong>
+    </span>
+    <button class="btn-logout" onclick="logout()">Se déconnecter</button>
+  </div>
+</nav>
+
+<!-- ── PAGE CONTENT ── -->
+<div class="page">
+
+  <!-- Success banner (shown after purchase) -->
+  <div class="banner-success" id="welcome-banner">
+    <h3>🎉 Bienvenue ! Votre accès est activé.</h3>
+    <p id="welcome-text">Votre toolkit est maintenant disponible ci-dessous. Téléchargez votre PDF et commencez dès maintenant.</p>
+  </div>
+
+  <!-- Welcome -->
+  <div class="welcome a1">
+    <p class="welcome-label">Mon espace</p>
+    <h1>Mes toolkits <em style="color:var(--gold);font-style:italic;">IA</em></h1>
+    <p>Téléchargez vos toolkits et accédez à vos ressources exclusives.</p>
+  </div>
+
+  <!-- Products -->
+  <div id="content">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Chargement de vos produits…</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Config Supabase ───────────────────────────────────────────────────────
+// TODO: Replace with your Supabase project values
+const SUPABASE_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── Auth guard ────────────────────────────────────────────────────────────
+let currentSession = null;
+
+async function init() {
+  // Handle magic link callback (token in URL hash or query)
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (!session) {
+    // Try to exchange token from URL
+    await supabase.auth.exchangeCodeForSession(window.location.hash);
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      // Not logged in → redirect to login
+      window.location.href = '/login';
+      return;
+    }
+    currentSession = data.session;
+  } else {
+    currentSession = session;
+  }
+
+  // Display user name
+  const name = currentSession.user?.user_metadata?.full_name
+    || currentSession.user?.email?.split('@')[0] || 'vous';
+  document.getElementById('user-name').textContent = name;
+
+  // Show welcome banner if coming from purchase
+  const params = new URLSearchParams(window.location.search);
+  const welcome = params.get('welcome');
+  if (welcome) {
+    const banner = document.getElementById('welcome-banner');
+    const names = { immo:'ImmoPrompts Pro', commerce:'Commerce Pro', legal:'Juridique Pro', pro:'Pro Abonnement' };
+    document.getElementById('welcome-text').textContent =
+      `Votre toolkit "${names[welcome] || welcome}" est maintenant disponible ci-dessous. Téléchargez votre PDF et commencez dès maintenant.`;
+    banner.style.display = 'block';
+    // Clean URL
+    window.history.replaceState({}, '', '/dashboard');
+  }
+
+  // Load products
+  await loadProducts();
+}
+
+// ── Load products ─────────────────────────────────────────────────────────
+async function loadProducts() {
+  const content = document.getElementById('content');
+
+  try {
+    const resp = await fetch('/api/user-products', {
+      headers: { Authorization: `Bearer ${currentSession.access_token}` }
+    });
+
+    if (!resp.ok) throw new Error('API error');
+    const data = await resp.json();
+
+    if (!data.products || data.products.length === 0) {
+      renderEmpty(content);
+    } else {
+      renderProducts(content, data.products, data.has_pro);
+    }
+  } catch (err) {
+    console.error(err);
+    content.innerHTML = '<div class="loading"><p style="color:var(--muted)">Erreur de chargement. <a href="" style="color:var(--gold)">Réessayer</a></p></div>';
+  }
+}
+
+// ── Render products ───────────────────────────────────────────────────────
+function renderProducts(container, products, hasPro) {
+  const grid = products.map(p => `
+    <div class="prod-card a2">
+      <div class="prod-card-header">
+        <div class="prod-icon">${p.icon}</div>
+        <div class="prod-info">
+          <div class="prod-name">${p.name}</div>
+          <div class="prod-desc">${p.description}</div>
+          ${p.via_pro ? '<span class="prod-badge via-pro">⭐ Inclus avec Pro</span>' : '<span class="prod-badge">Accès à vie</span>'}
+        </div>
+      </div>
+      ${p.features ? `
+      <ul class="prod-features">
+        ${p.features.map(f => `<li>${f}</li>`).join('')}
+      </ul>` : ''}
+      <div class="prod-actions">
+        ${p.pdf ? `
+        <button class="btn-download" onclick="downloadPDF('${p.pdf}', this)">
+          ⬇ Télécharger le PDF
+        </button>` : ''}
+        <a href="${p.page}" class="btn-view" target="_blank">
+          Voir la page →
+        </a>
+      </div>
+      ${p.pdf ? `<div class="download-msg" id="msg-${p.pdf.replace(/\./g,'_')}"></div>` : ''}
+    </div>
+  `).join('');
+
+  container.innerHTML = `
+    <h2 class="section-title a2">Vos toolkits (${products.length})</h2>
+    <div class="prod-grid">${grid}</div>
+    <div class="account-card a3">
+      <div class="account-info">
+        <h3>Mon compte</h3>
+        <p id="account-email" style="color:var(--muted)">…</p>
+      </div>
+      <div class="account-actions">
+        <button class="btn-view" onclick="sendNewLink()">Recevoir un nouveau lien</button>
+        <button class="btn-logout" onclick="logout()">Se déconnecter</button>
+      </div>
+    </div>
+  `;
+
+  // Show email
+  if (currentSession?.user?.email) {
+    document.getElementById('account-email').textContent = currentSession.user.email;
+  }
+}
+
+function renderEmpty(container) {
+  container.innerHTML = `
+    <div class="empty a2">
+      <div class="empty-icon">📦</div>
+      <h2>Aucun toolkit pour l'instant</h2>
+      <p>Achetez votre premier toolkit pour y accéder ici. L'accès est activé immédiatement après le paiement.</p>
+      <a href="/#products" class="btn-primary">Découvrir les toolkits</a>
+    </div>
+  `;
+}
+
+// ── Download PDF ──────────────────────────────────────────────────────────
+async function downloadPDF(filename, btn) {
+  const msgId = 'msg-' + filename.replace(/\./g, '_');
+  const msg = document.getElementById(msgId);
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Préparation…';
+
+  try {
+    const resp = await fetch(`/api/download?file=${encodeURIComponent(filename)}`, {
+      headers: { Authorization: `Bearer ${currentSession.access_token}` }
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok || !data.url) throw new Error(data.message || 'Erreur téléchargement');
+
+    // Trigger download via temporary link
+    const a = document.createElement('a');
+    a.href = data.url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    if (msg) {
+      msg.textContent = '✓ Téléchargement démarré';
+      msg.className = 'download-msg ok';
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; }, 4000);
+    }
+  } catch (err) {
+    console.error(err);
+    if (msg) {
+      msg.textContent = '✗ Erreur : ' + err.message;
+      msg.className = 'download-msg err';
+      msg.style.display = 'block';
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⬇ Télécharger le PDF';
+}
+
+// ── Auth actions ──────────────────────────────────────────────────────────
+async function logout() {
+  await supabase.auth.signOut();
+  window.location.href = '/';
+}
+
+async function sendNewLink() {
+  if (!currentSession?.user?.email) return;
+  const { error } = await supabase.auth.signInWithOtp({
+    email: currentSession.user.email,
+    options: { emailRedirectTo: 'https://theprompt.studio/dashboard' },
+  });
+  if (!error) alert('✉️ Un nouveau lien vous a été envoyé par email.');
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

@@ -203,11 +203,11 @@ footer p{font-size:11px;color:var(--muted);}
 @media(max-width:600px){#ps-cookie{padding:16px 20px;flex-direction:column;}.ps-cookie-btns{width:100%;}}
 
 </style>
-<meta property="og:image" content="https://theprompt.studio/og-finance.png">
+<meta property="og:image" content="https://theprompt.studio/assets/images/og-finance.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://theprompt.studio/og-finance.png">
+<meta name="twitter:image" content="https://theprompt.studio/assets/images/og-finance.png">
 <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -231,7 +231,8 @@ footer p{font-size:11px;color:var(--muted);}
     <a href="contact.html" class="ps-nav-a">Contact</a>
   </div>
   <div class="ps-nav-right">
-    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="ps-nav-cta">Pro — 19€/mois</a>
+    <a href="/login" class="ps-nav-a" id="nav-account-link" onclick="checkNavSession(event)">Mon compte</a>
+    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c?checkout[custom][slug]=pro&checkout[success_url]=https://theprompt.studio/dashboard?welcome=pro" class="ps-nav-cta">Pro — 19€/mois</a>
   </div>
 </nav>
 

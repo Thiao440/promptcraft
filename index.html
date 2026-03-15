@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="fr" data-lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="robots" content="index, follow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="meta_title">The Prompt Studio — Toolkits IA Premium pour Professionnels</title>
-<meta name="description" data-i18n="meta_desc" content="Transformez votre productivité professionnelle avec l'IA. Toolkits complets pour agents immobiliers, marketeurs, avocats et équipes finance.">
+<title>The Prompt Studio — Toolkits IA Premium pour Professionnels</title>
+<meta name="description" content="Transformez votre productivité professionnelle avec l'IA. Toolkits complets pour agents immobiliers, marketeurs, avocats et équipes finance.">
 <link rel="alternate" hreflang="fr" href="https://theprompt.studio/">
 <link rel="alternate" hreflang="en" href="https://theprompt.studio/">
 <link rel="alternate" hreflang="es" href="https://theprompt.studio/">
@@ -17,12 +17,19 @@
 <meta property="og:url" content="https://theprompt.studio/">
 <meta property="og:title" content="The Prompt Studio — Toolkits IA Premium">
 <meta property="og:description" content="Toolkits IA complets pour professionnels — Immo, Commerce, Legal, Finance.">
+<meta property="og:image" content="https://theprompt.studio/assets/images/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Prompt Studio — Toolkits IA Premium">
+<meta name="twitter:description" content="Toolkits IA complets pour professionnels — Immo, Commerce, Legal, Finance.">
+<meta name="twitter:image" content="https://theprompt.studio/assets/images/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#c9a84c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio","description":"Toolkits IA premium pour professionnels","contactPoint":{"@type":"ContactPoint","email":"contact@theprompt.studio","contactType":"customer service"}}
+{"@context":"https://schema.org","@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio","logo":"https://theprompt.studio/assets/images/og-image.png","description":"Toolkits IA premium pour professionnels","contactPoint":{"@type":"ContactPoint","email":"contact@theprompt.studio","contactType":"customer service"},"sameAs":["https://www.linkedin.com/company/theprompt-studio","https://twitter.com/theprompt_studio"]}
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -34,6 +41,35 @@
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+/* ── LANGUAGE SYSTEM (CSS-only, zero JS risk) ── */
+/* Hide all lang variants by default */
+[data-fr],[data-en],[data-es],[data-pt],[data-ar]{display:none;}
+/* Show the active language */
+[data-lang="fr"] [data-fr]{display:revert;}
+[data-lang="en"] [data-en]{display:revert;}
+[data-lang="es"] [data-es]{display:revert;}
+[data-lang="pt"] [data-pt]{display:revert;}
+[data-lang="ar"] [data-ar]{display:revert;}
+/* Inline spans */
+span[data-fr],span[data-en],span[data-es],span[data-pt],span[data-ar]{display:none;}
+[data-lang="fr"] span[data-fr]{display:inline;}
+[data-lang="en"] span[data-en]{display:inline;}
+[data-lang="es"] span[data-es]{display:inline;}
+[data-lang="pt"] span[data-pt]{display:inline;}
+[data-lang="ar"] span[data-ar]{display:inline;}
+
+/* ── ANIMATIONS (CSS-only, always fire) ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.a1{animation:fadeUp 0.8s ease both 0s;}
+.a2{animation:fadeUp 0.8s ease both 0.12s;}
+.a3{animation:fadeUp 0.8s ease both 0.24s;}
+.a4{animation:fadeUp 0.8s ease both 0.36s;}
+.a5{animation:fadeUp 0.8s ease both 0.48s;}
+@media (prefers-reduced-motion:reduce){.a1,.a2,.a3,.a4,.a5{animation:none;}}
 
 /* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);
@@ -48,675 +84,635 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.9
   font-size:13px;color:var(--muted);letter-spacing:0.04em;padding:0 14px;
   height:60px;display:flex;align-items:center;gap:5px;transition:color 0.2s;}
 .nav-btn:hover{color:var(--cream);}
-.nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);
-  letter-spacing:0.04em;padding:0 14px;height:60px;text-decoration:none;
-  display:flex;align-items:center;transition:color 0.2s;}
-.nav-a:hover{color:var(--gold);}
-.nav-dd{position:absolute;top:100%;left:-8px;background:var(--card);
-  border:1px solid var(--border);min-width:248px;
-  opacity:0;pointer-events:none;transform:translateY(-6px);
-  transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);}
-.nav-item:hover .nav-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
-.nav-dd-row{display:flex;align-items:center;justify-content:space-between;
-  padding:12px 18px;text-decoration:none;color:var(--cream);
-  font-family:'Outfit',sans-serif;font-size:13px;
-  border-bottom:1px solid var(--border);transition:background 0.15s;}
-.nav-dd-row:last-child{border-bottom:none;}
-.nav-dd-row:hover{background:rgba(201,168,76,0.07);color:var(--gold);}
-.nav-dd-row.soon{color:#4a4540;cursor:default;pointer-events:none;}
-.badge-live{font-size:8px;padding:2px 7px;background:rgba(0,137,123,0.18);border:1px solid rgba(0,137,123,0.4);color:#00897b;letter-spacing:0.1em;text-transform:uppercase;}
-.badge-service{font-size:8px;padding:2px 7px;background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4fc3f7;letter-spacing:0.1em;text-transform:uppercase;}
-.badge-soon{font-size:8px;padding:2px 7px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);color:#5a5040;letter-spacing:0.1em;text-transform:uppercase;}
-.nav-right{display:flex;align-items:center;gap:10px;}
-.nav-cta{background:var(--gold);color:#000;font-family:'Outfit',sans-serif;font-size:12px;
-  font-weight:600;letter-spacing:0.06em;padding:9px 18px;text-decoration:none;
-  transition:background 0.2s;white-space:nowrap;}
-.nav-cta:hover{background:var(--gold-l);}
+.nav-btn svg{transition:transform 0.2s;}
+.nav-item:hover .nav-btn svg{transform:rotate(180deg);}
+.nav-dropdown{position:absolute;top:60px;left:0;min-width:220px;
+  background:#1a1814;border:1px solid var(--border);border-radius:10px;
+  padding:8px 0;opacity:0;pointer-events:none;transform:translateY(-6px);
+  transition:all 0.2s;z-index:100;}
+.nav-item:hover .nav-dropdown{opacity:1;pointer-events:auto;transform:translateY(0);}
+.nav-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 18px;
+  color:var(--muted);text-decoration:none;font-size:13px;transition:all 0.15s;}
+.nav-dropdown a:hover{color:var(--cream);background:rgba(201,168,76,0.06);}
+.nav-dropdown a .tag{font-size:10px;background:var(--em);color:#fff;
+  border-radius:4px;padding:1px 6px;margin-left:auto;}
+.nav-dropdown a .tag.soon{background:#444;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-cta{background:var(--gold);color:#0c0b09;border:none;border-radius:7px;
+  padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'Outfit',sans-serif;text-decoration:none;transition:opacity 0.2s;}
+.nav-cta:hover{opacity:0.85;}
 
-/* ── LANG SWITCHER ── */
-.lang-sel{position:relative;}
-.lang-current{background:none;border:1px solid var(--border);color:var(--muted);
-  padding:6px 12px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;
-  letter-spacing:0.08em;display:flex;align-items:center;gap:6px;transition:all 0.2s;}
-.lang-current:hover{border-color:var(--gold);color:var(--gold);}
-.lang-menu{position:absolute;top:calc(100%+4px);right:0;background:var(--card);
-  border:1px solid var(--border);min-width:150px;
-  opacity:0;pointer-events:none;transform:translateY(-4px);transition:all 0.15s;}
-.lang-sel:hover .lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
-.lang-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;
-  cursor:pointer;font-size:13px;color:var(--muted);transition:all 0.15s;}
-.lang-opt:hover,.lang-opt.active{background:rgba(201,168,76,0.06);color:var(--cream);}
-.lang-opt .flag{font-size:16px;}
-
-@media(max-width:768px){nav{padding:0 20px;}.nav-center{display:none;}}
+/* Lang switcher */
+.lang-drop{position:relative;}
+#lang-current{background:none;border:1px solid var(--border);border-radius:7px;
+  color:var(--cream);font-family:'Outfit',sans-serif;font-size:13px;
+  padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:4px;}
+#lang-current:hover{border-color:var(--gold);}
+.lang-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:150px;
+  background:#1a1814;border:1px solid var(--border);border-radius:10px;
+  padding:6px 0;opacity:0;pointer-events:none;transform:translateY(-4px);
+  transition:all 0.2s;z-index:200;}
+.lang-drop:hover .lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.lang-opt{display:block;width:100%;padding:9px 16px;background:none;border:none;
+  color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;
+  cursor:pointer;text-align:left;transition:all 0.15s;}
+.lang-opt:hover{color:var(--cream);background:rgba(201,168,76,0.06);}
+.lang-opt[aria-current="true"]{color:var(--gold);}
 
 /* ── HERO ── */
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  text-align:center;position:relative;padding:140px 24px 80px;overflow:hidden;}
-.hero-bg{position:absolute;inset:0;
-  background:radial-gradient(ellipse 90% 70% at 50% -10%,rgba(201,168,76,0.12) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 40% at 85% 85%,rgba(201,168,76,0.06) 0%,transparent 50%);}
-.hero-grid{position:absolute;inset:0;
-  background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);
-  background-size:64px 64px;
-  mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 20%,transparent 70%);}
-.hero-content{position:relative;z-index:1;max-width:880px;margin:0 auto;}
-.hero-pill{display:inline-flex;align-items:center;gap:8px;
-  background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);
-  color:var(--gold-l);padding:8px 22px;border-radius:100px;
-  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:40px;
-  animation:fadeUp 0.8s ease both;}
-.hero-pill::before{content:'✦';font-size:9px;}
-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,9vw,104px);
-  font-weight:300;line-height:0.92;letter-spacing:-0.02em;margin-bottom:32px;
-  animation:fadeUp 0.8s ease both 0.1s;}
-h1 em{font-style:italic;color:var(--gold);display:block;}
-.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--muted);max-width:560px;
-  margin:0 auto 48px;line-height:1.7;font-weight:300;animation:fadeUp 0.8s ease both 0.2s;}
-.hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.8s ease both 0.3s;}
-.btn-primary{background:var(--gold);color:#000;padding:16px 36px;font-weight:600;
-  font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
-.btn-primary:hover{background:var(--gold-l);transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,0.3);}
-.btn-ghost{background:none;border:1px solid var(--border);color:var(--cream);
-  padding:16px 36px;font-size:14px;text-decoration:none;letter-spacing:0.04em;
-  transition:all 0.25s;display:inline-block;}
-.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
-.hero-stats{margin-top:72px;display:flex;justify-content:center;gap:56px;flex-wrap:wrap;animation:fadeUp 0.8s ease both 0.4s;}
-.stat-item{text-align:center;}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;
-  color:var(--gold);display:block;line-height:1;}
-.stat-label{font-size:10px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:6px;}
+  text-align:center;padding:100px 24px 80px;position:relative;z-index:1;}
+.hero-pre{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,7vw,96px);
+  font-weight:300;line-height:1.08;margin-bottom:28px;color:var(--cream);}
+h1 em{color:var(--gold);font-style:italic;}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--muted);max-width:600px;
+  margin:0 auto 40px;line-height:1.6;}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:var(--gold);color:#0c0b09;border:none;border-radius:9px;
+  padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;
+  font-family:'Outfit',sans-serif;text-decoration:none;transition:opacity 0.2s;}
+.btn-primary:hover{opacity:0.85;}
+.btn-outline{background:transparent;color:var(--cream);
+  border:1px solid var(--border);border-radius:9px;
+  padding:14px 32px;font-size:15px;cursor:pointer;
+  font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.hero-trust{margin-top:48px;font-size:12px;color:var(--muted);letter-spacing:0.06em;}
+.hero-divider{width:40px;height:1px;background:var(--gold);margin:0 auto 80px;opacity:0.4;}
 
 /* ── SECTIONS ── */
-section{padding:100px 24px;position:relative;z-index:1;}
-.container{max-width:1080px;margin:0 auto;}
-.section-eyebrow{font-family:'Outfit',monospace;font-size:10px;letter-spacing:0.22em;
-  text-transform:uppercase;color:var(--gold);margin-bottom:20px;
-  display:flex;align-items:center;gap:10px;}
-.section-eyebrow::after{content:'';flex:1;max-width:36px;height:1px;background:var(--gold);opacity:0.35;}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5.5vw,64px);
-  font-weight:300;line-height:1;letter-spacing:-0.02em;margin-bottom:16px;}
-.section-title em{color:var(--gold);font-style:italic;}
-.section-lead{font-size:17px;color:var(--muted);line-height:1.75;max-width:580px;margin-bottom:60px;}
+section{padding:96px 24px;position:relative;z-index:1;}
+.container{max-width:1100px;margin:0 auto;}
+.section-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,56px);
+  font-weight:300;line-height:1.12;margin-bottom:20px;}
+.section-sub{font-size:16px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:60px;}
 
-/* ── VERTICALS ── */
-#verticals{background:var(--surface);}
-.vert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.vert-card{background:var(--card);border:1px solid var(--border);padding:40px 32px;
-  text-decoration:none;color:var(--cream);transition:all 0.25s;position:relative;overflow:hidden;}
-.vert-card::after{content:'';position:absolute;inset:0;opacity:0;
-  background:linear-gradient(135deg,rgba(201,168,76,0.05),transparent);transition:opacity 0.3s;}
-.vert-card:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-4px);}
-.vert-card:hover::after{opacity:1;}
-.vert-tag{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);
-  margin-bottom:20px;display:flex;align-items:center;gap:8px;}
-.vert-tag::before{content:'';width:20px;height:1px;background:var(--gold);opacity:0.5;}
-.vert-card h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;
-  margin-bottom:12px;letter-spacing:-0.01em;}
-.vert-card h3 em{color:var(--gold);font-style:italic;}
-.vert-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;}
-.vert-items{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
-.vert-item{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;}
-.vert-item::before{content:'→';color:var(--gold);font-size:10px;flex-shrink:0;}
-.vert-price{display:flex;align-items:baseline;gap:8px;margin-bottom:20px;}
-.vert-price-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);}
-.vert-price-period{font-size:12px;color:var(--muted);letter-spacing:0.05em;}
-.vert-link{font-size:12px;color:var(--gold);letter-spacing:0.06em;display:flex;align-items:center;gap:6px;}
-.vert-link::after{content:'→';transition:transform 0.2s;}
-.vert-card:hover .vert-link::after{transform:translateX(4px);}
+/* ── PRODUCT GRID ── */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;}
+.prod-card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:32px;transition:all 0.25s;text-decoration:none;display:block;}
+.prod-card:hover{border-color:var(--gold);transform:translateY(-4px);}
+.prod-icon{font-size:28px;margin-bottom:16px;}
+.prod-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;
+  color:var(--cream);margin-bottom:10px;}
+.prod-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px;}
+.prod-price{font-size:13px;color:var(--gold);font-weight:500;}
+.prod-card .tag{display:inline-block;font-size:10px;background:var(--em);color:#fff;
+  border-radius:4px;padding:2px 7px;margin-left:8px;}
+.prod-card .tag.soon{background:#333;color:var(--muted);}
 
-/* Finance card — full width */
-.vert-card.finance{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;
-  align-items:center;gap:40px;padding:48px 48px;}
-.vert-card.finance h3{font-size:36px;}
-.finance-tag{background:rgba(0,137,123,0.15);border:1px solid rgba(0,137,123,0.4);
-  color:#00897b;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
-  padding:6px 14px;display:inline-block;margin-bottom:16px;}
-.finance-cta{background:#00897b;color:#fff;padding:15px 32px;text-decoration:none;
-  font-size:14px;font-weight:600;letter-spacing:0.05em;transition:all 0.25s;
-  white-space:nowrap;display:inline-block;}
-.finance-cta:hover{background:#00796b;transform:translateY(-2px);}
+/* ── FEATURES ── */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;}
+.feat-item{text-align:center;}
+.feat-icon{font-size:32px;margin-bottom:12px;}
+.feat-title{font-size:15px;font-weight:500;color:var(--cream);margin-bottom:6px;}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.55;}
 
-/* ── MANIFESTO ── */
-#manifesto{background:var(--card);text-align:center;padding:120px 24px;}
-.manifesto-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4vw,48px);
-  font-weight:300;line-height:1.3;max-width:780px;margin:0 auto 40px;color:var(--cream);}
-.manifesto-quote em{color:var(--gold);font-style:italic;}
-.manifesto-author{font-size:11px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;}
+/* ── TESTIMONIALS ── */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;}
+.testi-text{font-size:15px;color:var(--cream);line-height:1.65;margin-bottom:20px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;}
+.testi-author{font-size:13px;color:var(--muted);}
+.testi-author strong{color:var(--gold);}
 
-/* ── PRO MEMBERSHIP ── */
-#pro{background:var(--surface);}
-.pro-card{max-width:720px;margin:0 auto;background:var(--card);
-  border:1px solid rgba(201,168,76,0.3);padding:60px 56px;text-align:center;}
-.pro-price{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;
-  color:var(--gold);line-height:1;margin-bottom:6px;}
-.pro-period{font-size:13px;color:var(--muted);margin-bottom:32px;letter-spacing:0.05em;}
-.pro-perks{display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto 40px;text-align:left;}
-.pro-perk{font-size:14px;color:var(--cream);display:flex;align-items:center;gap:12px;}
-.pro-perk::before{content:'✦';color:var(--gold);font-size:10px;flex-shrink:0;}
-
-/* ── REVEAL ── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
+/* ── CTA BANNER ── */
+.cta-banner{background:linear-gradient(135deg,#1a1814 0%,#111009 100%);
+  border:1px solid var(--border);border-radius:20px;padding:64px 48px;
+  text-align:center;}
+.cta-banner h2{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,48px);
+  font-weight:300;margin-bottom:16px;}
+.cta-banner p{color:var(--muted);font-size:16px;margin-bottom:36px;max-width:500px;margin-left:auto;margin-right:auto;}
 
 /* ── FOOTER ── */
 footer{background:var(--surface);border-top:1px solid var(--border);
-  padding:40px 48px;position:relative;z-index:1;}
-.footer-inner{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;
-  align-items:center;flex-wrap:wrap;gap:20px;}
-.footer-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--cream);}
-.footer-logo em{color:var(--gold);font-style:italic;}
-.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
-.footer-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s;}
-.footer-links a:hover{color:var(--gold);}
-.footer-copy{font-size:11px;color:var(--muted);}
+  padding:60px 48px 40px;position:relative;z-index:1;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;max-width:1100px;margin:0 auto;}
+.footer-brand .nav-logo{margin-bottom:12px;display:inline-block;}
+.footer-tagline{font-size:13px;color:var(--muted);line-height:1.6;margin-top:10px;}
+.footer-col h4{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:16px;}
+.footer-col a{display:block;color:var(--muted);text-decoration:none;
+  font-size:13px;margin-bottom:10px;transition:color 0.2s;}
+.footer-col a:hover{color:var(--cream);}
+.footer-bottom{max-width:1100px;margin:40px auto 0;padding-top:24px;
+  border-top:1px solid var(--border);display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-copy{font-size:12px;color:var(--muted);}
+.footer-legal{display:flex;gap:20px;}
+.footer-legal a{font-size:12px;color:var(--muted);text-decoration:none;}
+.footer-legal a:hover{color:var(--cream);}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-@media(max-width:900px){.vert-grid{grid-template-columns:1fr;}.vert-card.finance{grid-template-columns:1fr;gap:20px;}}
+/* ── RTL ── */
+html[dir="rtl"] nav{direction:rtl;}
+html[dir="rtl"] .nav-dropdown{left:auto;right:0;}
+html[dir="rtl"] .lang-menu{right:0;left:auto;}
+html[dir="rtl"] h1,html[dir="rtl"] .section-title{text-align:right;}
+html[dir="rtl"] .hero{text-align:right;}
+html[dir="rtl"] .hero-btns{justify-content:flex-end;}
 
-/* RTL support */
-[dir="rtl"] .section-eyebrow::after{margin-left:0;margin-right:auto;}
-[dir="rtl"] .vert-item::before{content:'←';}
-[dir="rtl"] .vert-link::after{content:'←';}
-[dir="rtl"] nav{direction:rtl;}
+/* ── COOKIE BANNER ── */
+#cookie-banner{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:#1a1814;border:1px solid var(--border);border-radius:14px;
+  padding:20px 28px;max-width:520px;width:calc(100% - 40px);z-index:9999;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+#cookie-banner p{font-size:13px;color:var(--muted);flex:1;line-height:1.5;}
+#cookie-banner a{color:var(--gold);}
+.cookie-btns{display:flex;gap:8px;}
+.btn-accept{background:var(--gold);color:#0c0b09;border:none;border-radius:7px;
+  padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-decline{background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:7px;padding:8px 16px;font-size:13px;cursor:pointer;}
 
-/* ===== COOKIE BANNER RGPD ===== */
-#ps-cookie{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1814;border-top:1px solid #2e2a24;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 -8px 32px rgba(0,0,0,0.4);transform:translateY(100%);transition:transform 0.4s ease;flex-wrap:wrap;}
-#ps-cookie.show{transform:translateY(0);}
-#ps-cookie p{font-size:12px;color:#8a8070;line-height:1.6;max-width:680px;flex:1;}
-#ps-cookie a{color:#c9a84c;text-decoration:underline;}
-.ps-cookie-btns{display:flex;gap:10px;flex-shrink:0;}
-.ps-cookie-accept{background:#c9a84c;color:#000;border:none;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;}
-.ps-cookie-accept:hover{background:#e8c97a;}
-.ps-cookie-refuse{background:none;border:1px solid #2e2a24;color:#8a8070;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;}
-.ps-cookie-refuse:hover{border-color:#8a8070;color:#f0ead8;}
-@media(max-width:600px){#ps-cookie{padding:16px 20px;flex-direction:column;}.ps-cookie-btns{width:100%;}}
-
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-center{display:none;}
+  footer{padding:48px 20px 32px;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .cta-banner{padding:40px 24px;}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr;}
+}
 </style>
-<meta property="og:image" content="https://theprompt.studio/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://theprompt.studio/og-image.png">
-<link rel="manifest" href="manifest.json">
 </head>
 <body>
 
+<!-- ── NAV ── -->
 <nav>
-  <a href="index.html" class="nav-logo">The Prompt<em>Studio</em></a>
+  <a href="/" class="nav-logo">The Prompt <em>Studio</em></a>
   <div class="nav-center">
     <div class="nav-item">
-      <button class="nav-btn" data-i18n="nav_products">Produits ▾</button>
-      <div class="nav-dd">
-        <a href="promptcraft-immo.html" class="nav-dd-row"><span>Immo Pro</span><span class="badge-live">Live</span></a>
-        <a href="promptcraft-commerce.html" class="nav-dd-row"><span>Commerce Pro</span><span class="badge-live">Live</span></a>
-        <a href="promptcraft-legal.html" class="nav-dd-row"><span>Legal Pro</span><span class="badge-live">Live</span></a>
-        <a href="finance.html" class="nav-dd-row"><span>Finance IA</span><span class="badge-service">Service</span></a>
-        <span class="nav-dd-row soon"><span>Coach Pro</span><span class="badge-soon" data-i18n="badge_soon">Bientôt</span></span>
-        <span class="nav-dd-row soon"><span>Recruit Pro</span><span class="badge-soon" data-i18n="badge_soon">Bientôt</span></span>
+      <button class="nav-btn">
+        <span data-fr>Produits</span><span data-en>Products</span><span data-es>Productos</span><span data-pt>Produtos</span><span data-ar>المنتجات</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="nav-dropdown">
+        <a href="promptcraft-immo.html">🏠 <span data-fr>Immo Pro</span><span data-en>Real Estate Pro</span><span data-es>Inmobiliaria Pro</span><span data-pt>Imobiliária Pro</span><span data-ar>عقارات برو</span> <span class="tag">€47</span></a>
+        <a href="promptcraft-commerce.html">🛒 <span data-fr>Commerce Pro</span><span data-en>Commerce Pro</span><span data-es>Comercio Pro</span><span data-pt>Comércio Pro</span><span data-ar>تجارة برو</span> <span class="tag">€57</span></a>
+        <a href="promptcraft-legal.html">⚖️ <span data-fr>Juridique Pro</span><span data-en>Legal Pro</span><span data-es>Jurídico Pro</span><span data-pt>Jurídico Pro</span><span data-ar>قانوني برو</span> <span class="tag">€97</span></a>
+        <a href="finance.html">💼 <span data-fr>Finance & Conseil</span><span data-en>Finance & Advisory</span><span data-es>Finanzas & Consultoría</span><span data-pt>Finanças & Consultoria</span><span data-ar>مالية واستشارات</span> <span class="tag soon"><span data-fr>Sur devis</span><span data-en>Custom</span><span data-es>A medida</span><span data-pt>Sob consulta</span><span data-ar>حسب الطلب</span></span></a>
       </div>
     </div>
-    <a href="finance.html" class="nav-a" data-i18n="nav_finance">Finance IA</a>
-    <a href="#pro" class="nav-a" data-i18n="nav_pro">Pro Membership</a>
-    <a href="contact.html" class="nav-a" data-i18n="nav_contact">Contact</a>
+    <div class="nav-item">
+      <button class="nav-btn">
+        <span data-fr>Services</span><span data-en>Services</span><span data-es>Servicios</span><span data-pt>Serviços</span><span data-ar>الخدمات</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="nav-dropdown">
+        <a href="finance.html">💼 <span data-fr>Conseil IA sur mesure</span><span data-en>Custom AI Advisory</span><span data-es>Asesoría IA a medida</span><span data-pt>Consultoria IA personalizada</span><span data-ar>استشارة ذكاء اصطناعي مخصصة</span></a>
+        <a href="contact.html">✉️ <span data-fr>Nous contacter</span><span data-en>Contact us</span><span data-es>Contáctenos</span><span data-pt>Contate-nos</span><span data-ar>اتصل بنا</span></a>
+      </div>
+    </div>
+    <a href="contact.html" class="nav-btn" style="text-decoration:none;">
+      <span data-fr>Contact</span><span data-en>Contact</span><span data-es>Contacto</span><span data-pt>Contato</span><span data-ar>تواصل</span>
+    </a>
   </div>
   <div class="nav-right">
-    <div class="lang-sel">
-      <button class="lang-current">🇫🇷 FR ▾</button>
+        <a href="/login" class="nav-btn" style="text-decoration:none;font-size:13px;" id="nav-account-link" onclick="checkSession(event)">Mon compte</a>
+    <div class="lang-drop">
+      <button id="lang-current">🇫🇷 ▾</button>
       <div class="lang-menu">
-        <div class="lang-opt active" onclick="setLang('fr')"><span class="flag">🇫🇷</span> Français</div>
-        <div class="lang-opt" onclick="setLang('en')"><span class="flag">🇬🇧</span> English</div>
-        <div class="lang-opt" onclick="setLang('es')"><span class="flag">🇪🇸</span> Español</div>
-        <div class="lang-opt" onclick="setLang('pt')"><span class="flag">🇧🇷</span> Português</div>
-        <div class="lang-opt" onclick="setLang('ar')"><span class="flag">🇸🇦</span> العربية</div>
+        <button class="lang-opt" onclick="setLang('fr')" aria-current="true">🇫🇷 Français</button>
+        <button class="lang-opt" onclick="setLang('en')" aria-current="false">🇬🇧 English</button>
+        <button class="lang-opt" onclick="setLang('es')" aria-current="false">🇪🇸 Español</button>
+        <button class="lang-opt" onclick="setLang('pt')" aria-current="false">🇧🇷 Português</button>
+        <button class="lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
       </div>
     </div>
-    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="nav-cta" data-i18n="nav_cta">Pro — 19€/mois</a>
+    <a href="promptcraft-immo.html" class="nav-cta">
+      <span data-fr>Voir les toolkits</span><span data-en>Browse toolkits</span><span data-es>Ver toolkits</span><span data-pt>Ver toolkits</span><span data-ar>استعرض الأدوات</span>
+    </a>
   </div>
 </nav>
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-content">
-    <div class="hero-pill" data-i18n="hero_pill">Toolkits IA · Professionnels</div>
-    <h1 data-i18n="hero_h1_raw">L'IA qui <em data-i18n="hero_h1_em">transforme</em><br>votre productivité</h1>
-    <p class="hero-sub" data-i18n="hero_sub">Des toolkits complets conçus pour les professionnels qui veulent débloquer tout le potentiel de l'IA — sans perdre de temps à tâtonner.</p>
-    <div class="hero-cta">
-      <a href="#verticals" class="btn-primary" data-i18n="hero_cta1">Découvrir les toolkits</a>
-      <a href="contact.html" class="btn-ghost" data-i18n="hero_cta2">Diagnostic gratuit</a>
+  <div>
+    <p class="hero-pre a1">
+      <span data-fr>Votre studio IA professionnel</span>
+      <span data-en>Your professional AI studio</span>
+      <span data-es>Tu estudio IA profesional</span>
+      <span data-pt>Seu estúdio IA profissional</span>
+      <span data-ar>استوديو الذكاء الاصطناعي المهني</span>
+    </p>
+    <h1 class="a2">
+      <span data-fr>L&rsquo;IA qui <em>transforme</em><br>votre productivit&eacute;</span>
+      <span data-en>The AI that <em>transforms</em><br>your productivity</span>
+      <span data-es>La IA que <em>transforma</em><br>tu productividad</span>
+      <span data-pt>A IA que <em>transforma</em><br>sua produtividade</span>
+      <span data-ar>الذكاء الاصطناعي الذي <em>يحوّل</em><br>إنتاجيتك</span>
+    </h1>
+    <p class="hero-sub a3">
+      <span data-fr>Des toolkits IA premium, pensés pour les professionnels exigeants. Agents immobiliers, commerçants, juristes — gagnez des heures chaque semaine.</span>
+      <span data-en>Premium AI toolkits built for demanding professionals. Real estate agents, merchants, lawyers — save hours every week.</span>
+      <span data-es>Toolkits IA premium diseñados para profesionales exigentes. Agentes inmobiliarios, comerciantes, juristas — ahorra horas cada semana.</span>
+      <span data-pt>Toolkits IA premium pensados para profissionais exigentes. Agentes imobiliários, comerciantes, juristas — ganhe horas por semana.</span>
+      <span data-ar>أدوات ذكاء اصطناعي متميزة مصممة للمحترفين المطّلعين. وكلاء العقارات، التجار، المحامون — وفّر ساعات كل أسبوع.</span>
+    </p>
+    <div class="hero-btns a4">
+      <a href="#products" class="btn-primary">
+        <span data-fr>Découvrir les toolkits</span>
+        <span data-en>Explore toolkits</span>
+        <span data-es>Descubrir toolkits</span>
+        <span data-pt>Descobrir toolkits</span>
+        <span data-ar>استكشف الأدوات</span>
+      </a>
+      <a href="contact.html" class="btn-outline">
+        <span data-fr>Nous contacter</span>
+        <span data-en>Contact us</span>
+        <span data-es>Contáctenos</span>
+        <span data-pt>Contate-nos</span>
+        <span data-ar>اتصل بنا</span>
+      </a>
     </div>
-    <div class="hero-stats">
-      <div class="stat-item reveal">
-        <span class="stat-num" data-i18n="stat1_num">5×</span>
-        <span class="stat-label" data-i18n="stat1_label">Plus rapide</span>
+    <p class="hero-trust a5">
+      <span data-fr>✦ Paiement sécurisé · Accès immédiat · Satisfait ou remboursé 30 jours</span>
+      <span data-en>✦ Secure payment · Instant access · 30-day money-back guarantee</span>
+      <span data-es>✦ Pago seguro · Acceso inmediato · Devolución garantizada 30 días</span>
+      <span data-pt>✦ Pagamento seguro · Acesso imediato · Garantia de 30 dias</span>
+      <span data-ar>✦ دفع آمن · وصول فوري · ضمان استرداد 30 يوم</span>
+    </p>
+  </div>
+</section>
+
+<div class="hero-divider"></div>
+
+<!-- ── PRODUCTS ── -->
+<section id="products">
+  <div class="container">
+    <p class="section-label a1">
+      <span data-fr>Nos Toolkits</span><span data-en>Our Toolkits</span><span data-es>Nuestros Toolkits</span><span data-pt>Nossos Toolkits</span><span data-ar>أدواتنا</span>
+    </p>
+    <h2 class="section-title a2">
+      <span data-fr>Un toolkit complet pour chaque métier</span>
+      <span data-en>A complete toolkit for every profession</span>
+      <span data-es>Un toolkit completo para cada profesión</span>
+      <span data-pt>Um toolkit completo para cada profissão</span>
+      <span data-ar>أداة متكاملة لكل مهنة</span>
+    </h2>
+    <p class="section-sub a3">
+      <span data-fr>Pas de prompts génériques. Chaque toolkit est conçu pour votre métier, testé en conditions réelles, livré avec formation et workflows clés-en-main.</span>
+      <span data-en>No generic prompts. Each toolkit is built for your profession, tested in real conditions, delivered with training and ready-to-use workflows.</span>
+      <span data-es>Sin prompts genéricos. Cada toolkit está diseñado para tu profesión, probado en condiciones reales, entregado con formación y workflows listos para usar.</span>
+      <span data-pt>Sem prompts genéricos. Cada toolkit é criado para a sua profissão, testado em condições reais, entregue com formação e workflows prontos.</span>
+      <span data-ar>لا أدوات عامة. كل toolkit مصمم لمهنتك، مُختبر في ظروف حقيقية، يُسلَّم مع تدريب وسير عمل جاهزة للاستخدام.</span>
+    </p>
+    <div class="prod-grid">
+      <!-- Immo -->
+      <a href="promptcraft-immo.html" class="prod-card a1">
+        <div class="prod-icon">🏠</div>
+        <div class="prod-title">
+          <span data-fr>ImmoPrompts Pro</span>
+          <span data-en>Real Estate Pro</span>
+          <span data-es>Inmobiliaria Pro</span>
+          <span data-pt>Imobiliária Pro</span>
+          <span data-ar>عقارات برو</span>
+        </div>
+        <div class="prod-desc">
+          <span data-fr>50 prompts + workflows IA pour agents immobiliers. Annonces, mandats, relances CRM automatisées.</span>
+          <span data-en>50 prompts + AI workflows for real estate agents. Listings, mandates, automated CRM follow-ups.</span>
+          <span data-es>50 prompts + workflows IA para agentes inmobiliarios. Anuncios, mandatos, seguimiento CRM automatizado.</span>
+          <span data-pt>50 prompts + workflows IA para agentes imobiliários. Anúncios, mandatos, seguimentos CRM automatizados.</span>
+          <span data-ar>50 موجّه + سير عمل ذكاء اصطناعي لوكلاء العقارات. إعلانات، عقود، متابعة CRM آلية.</span>
+        </div>
+        <div class="prod-price">€47 — <span data-fr>Accès à vie</span><span data-en>Lifetime access</span><span data-es>Acceso de por vida</span><span data-pt>Acesso vitalício</span><span data-ar>وصول مدى الحياة</span></div>
+      </a>
+      <!-- Commerce -->
+      <a href="promptcraft-commerce.html" class="prod-card a2">
+        <div class="prod-icon">🛒</div>
+        <div class="prod-title">
+          <span data-fr>Commerce Pro</span>
+          <span data-en>Commerce Pro</span>
+          <span data-es>Comercio Pro</span>
+          <span data-pt>Comércio Pro</span>
+          <span data-ar>تجارة برو</span>
+        </div>
+        <div class="prod-desc">
+          <span data-fr>Fiches produits, campagnes email, chatbots — l'IA au service de votre croissance e-commerce.</span>
+          <span data-en>Product descriptions, email campaigns, chatbots — AI powering your e-commerce growth.</span>
+          <span data-es>Fichas de producto, campañas email, chatbots — IA al servicio de tu crecimiento e-commerce.</span>
+          <span data-pt>Fichas de produto, campanhas email, chatbots — IA ao serviço do seu crescimento e-commerce.</span>
+          <span data-ar>أوصاف المنتجات، حملات البريد الإلكتروني، الدردشة الآلية — الذكاء الاصطناعي في خدمة نموك.</span>
+        </div>
+        <div class="prod-price">€57 — <span data-fr>Accès à vie</span><span data-en>Lifetime access</span><span data-es>Acceso de por vida</span><span data-pt>Acesso vitalício</span><span data-ar>وصول مدى الحياة</span></div>
+      </a>
+      <!-- Legal -->
+      <a href="promptcraft-legal.html" class="prod-card a3">
+        <div class="prod-icon">⚖️</div>
+        <div class="prod-title">
+          <span data-fr>Juridique Pro</span>
+          <span data-en>Legal Pro</span>
+          <span data-es>Jurídico Pro</span>
+          <span data-pt>Jurídico Pro</span>
+          <span data-ar>قانوني برو</span>
+        </div>
+        <div class="prod-desc">
+          <span data-fr>Rédaction de contrats, notes juridiques, recherches — l'IA pour les professionnels du droit.</span>
+          <span data-en>Contract drafting, legal notes, research — AI for legal professionals.</span>
+          <span data-es>Redacción de contratos, notas jurídicas, investigaciones — IA para profesionales del derecho.</span>
+          <span data-pt>Redação de contratos, notas jurídicas, pesquisas — IA para profissionais do direito.</span>
+          <span data-ar>صياغة العقود، الملاحظات القانونية، البحوث — الذكاء الاصطناعي للمحترفين القانونيين.</span>
+        </div>
+        <div class="prod-price">€97 — <span data-fr>Accès à vie</span><span data-en>Lifetime access</span><span data-es>Acceso de por vida</span><span data-pt>Acesso vitalício</span><span data-ar>وصول مدى الحياة</span></div>
+      </a>
+      <!-- Finance -->
+      <a href="finance.html" class="prod-card a4">
+        <div class="prod-icon">💼</div>
+        <div class="prod-title">
+          <span data-fr>Finance &amp; Conseil</span>
+          <span data-en>Finance &amp; Advisory</span>
+          <span data-es>Finanzas &amp; Consultoría</span>
+          <span data-pt>Finanças &amp; Consultoria</span>
+          <span data-ar>مالية واستشارات</span>
+        </div>
+        <div class="prod-desc">
+          <span data-fr>Accompagnement IA sur mesure pour dirigeants, CFO et équipes financières. Stratégie, automatisation, ROI.</span>
+          <span data-en>Custom AI advisory for executives, CFOs and finance teams. Strategy, automation, ROI.</span>
+          <span data-es>Asesoría IA a medida para directivos, CFOs y equipos financieros. Estrategia, automatización, ROI.</span>
+          <span data-pt>Consultoria IA personalizada para diretores, CFOs e equipas financeiras. Estratégia, automação, ROI.</span>
+          <span data-ar>استشارة ذكاء اصطناعي مخصصة للمديرين والمديرين الماليين والفرق المالية. استراتيجية وأتمتة وعائد استثمار.</span>
+        </div>
+        <div class="prod-price">
+          <span data-fr>Sur devis — Prestation personnalisée</span>
+          <span data-en>Custom quote — Tailored service</span>
+          <span data-es>A medida — Servicio personalizado</span>
+          <span data-pt>Sob consulta — Serviço personalizado</span>
+          <span data-ar>حسب الطلب — خدمة مخصصة</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY US ── -->
+<section style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <p class="section-label a1">
+      <span data-fr>Pourquoi The Prompt Studio</span><span data-en>Why The Prompt Studio</span><span data-es>Por qué The Prompt Studio</span><span data-pt>Por que The Prompt Studio</span><span data-ar>لماذا The Prompt Studio</span>
+    </p>
+    <h2 class="section-title a2">
+      <span data-fr>Conçu pour les professionnels,<br>pas pour les curieux</span>
+      <span data-en>Built for professionals,<br>not for hobbyists</span>
+      <span data-es>Diseñado para profesionales,<br>no para curiosos</span>
+      <span data-pt>Criado para profissionais,<br>não para curiosos</span>
+      <span data-ar>مصمم للمحترفين<br>وليس للهواة</span>
+    </h2>
+    <div class="feat-grid a3">
+      <div class="feat-item">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-title"><span data-fr>Spécialisé par métier</span><span data-en>Profession-specific</span><span data-es>Especializado por sector</span><span data-pt>Especializado por setor</span><span data-ar>متخصص حسب المهنة</span></div>
+        <div class="feat-desc"><span data-fr>Chaque toolkit est construit autour des tâches réelles de votre secteur.</span><span data-en>Each toolkit is built around the real tasks of your sector.</span><span data-es>Cada toolkit se construye en torno a las tareas reales de tu sector.</span><span data-pt>Cada toolkit é construído em torno das tarefas reais do seu setor.</span><span data-ar>كل toolkit مبني حول المهام الحقيقية لقطاعك.</span></div>
       </div>
-      <div class="stat-item reveal">
-        <span class="stat-num" data-i18n="stat2_num">175+</span>
-        <span class="stat-label" data-i18n="stat2_label">Prompts testés</span>
+      <div class="feat-item">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title"><span data-fr>Résultats immédiats</span><span data-en>Immediate results</span><span data-es>Resultados inmediatos</span><span data-pt>Resultados imediatos</span><span data-ar>نتائج فورية</span></div>
+        <div class="feat-desc"><span data-fr>Copiez-collez et utilisez. Pas de courbe d'apprentissage, pas de setup complexe.</span><span data-en>Copy, paste and use. No learning curve, no complex setup.</span><span data-es>Copia, pega y usa. Sin curva de aprendizaje, sin configuración compleja.</span><span data-pt>Copie, cole e use. Sem curva de aprendizado, sem configuração complexa.</span><span data-ar>انسخ والصق واستخدم. لا منحنى تعلم، لا إعداد معقد.</span></div>
       </div>
-      <div class="stat-item reveal">
-        <span class="stat-num" data-i18n="stat3_num">4</span>
-        <span class="stat-label" data-i18n="stat3_label">Verticales métiers</span>
+      <div class="feat-item">
+        <div class="feat-icon">🔄</div>
+        <div class="feat-title"><span data-fr>Mis à jour en continu</span><span data-en>Continuously updated</span><span data-es>Actualizado continuamente</span><span data-pt>Atualizado continuamente</span><span data-ar>محدّث باستمرار</span></div>
+        <div class="feat-desc"><span data-fr>L'IA évolue vite. Vos toolkits aussi. Mises à jour gratuites incluses.</span><span data-en>AI evolves fast. So do your toolkits. Free updates included.</span><span data-es>La IA evoluciona rápido. También tus toolkits. Actualizaciones gratuitas incluidas.</span><span data-pt>A IA evolui rápido. Os seus toolkits também. Atualizações gratuitas incluídas.</span><span data-ar>الذكاء الاصطناعي يتطور بسرعة. كذلك أدواتك. تحديثات مجانية مشمولة.</span></div>
       </div>
-      <div class="stat-item reveal">
-        <span class="stat-num" data-i18n="stat4_num">J+14</span>
-        <span class="stat-label" data-i18n="stat4_label">Premier résultat</span>
+      <div class="feat-item">
+        <div class="feat-icon">🌍</div>
+        <div class="feat-title"><span data-fr>Multilingue</span><span data-en>Multilingual</span><span data-es>Multilingüe</span><span data-pt>Multilíngue</span><span data-ar>متعدد اللغات</span></div>
+        <div class="feat-desc"><span data-fr>Disponible en FR, EN, ES, PT et AR. Adapté aux marchés locaux.</span><span data-en>Available in FR, EN, ES, PT and AR. Adapted to local markets.</span><span data-es>Disponible en FR, EN, ES, PT y AR. Adaptado a los mercados locales.</span><span data-pt>Disponível em FR, EN, ES, PT e AR. Adaptado aos mercados locais.</span><span data-ar>متاح بالفرنسية والإنجليزية والإسبانية والبرتغالية والعربية. مُكيَّف مع الأسواق المحلية.</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── VERTICALS ── -->
-<section id="verticals">
+<!-- ── TESTIMONIALS ── -->
+<section>
   <div class="container">
-    <div class="section-eyebrow" data-i18n="vert_eyebrow">Toolkits disponibles</div>
-    <h2 class="section-title" data-i18n="vert_title">Votre métier, <em>votre toolkit</em></h2>
-    <p class="section-lead" data-i18n="vert_lead">Chaque toolkit est conçu spécifiquement pour votre profession — diagnostic, formation, prompts premium, workflows et plan d'action.</p>
-
-    <div class="vert-grid">
-
-      <!-- IMMO -->
-      <a href="promptcraft-immo.html" class="vert-card reveal">
-        <div class="vert-tag" data-i18n="vert_immo_tag">Immobilier · 50 prompts</div>
-        <h3>Immo <em>Pro</em></h3>
-        <p class="vert-desc" data-i18n="vert_immo_desc">Rédigez des annonces irrésistibles, closez plus vite et automatisez votre prospection avec l'IA.</p>
-        <div class="vert-items">
-          <span class="vert-item" data-i18n="vert_immo_i1">Diagnostic des pain points agents</span>
-          <span class="vert-item" data-i18n="vert_immo_i2">50 prompts annonces, emails, prospection</span>
-          <span class="vert-item" data-i18n="vert_immo_i3">Workflows de la prise de mandat à la vente</span>
-        </div>
-        <div class="vert-price">
-          <span class="vert-price-num">47€</span>
-          <span class="vert-price-period" data-i18n="vert_once">accès à vie</span>
-        </div>
-        <span class="vert-link" data-i18n="vert_discover">Découvrir le toolkit</span>
-      </a>
-
-      <!-- COMMERCE -->
-      <a href="promptcraft-commerce.html" class="vert-card reveal">
-        <div class="vert-tag" data-i18n="vert_comm_tag">Marketing · E-commerce · 60 prompts</div>
-        <h3>Commerce <em>Pro</em></h3>
-        <p class="vert-desc" data-i18n="vert_comm_desc">Rédigez ads, emails et fiches produits 5× plus vite. Lancez des campagnes entières avec l'IA.</p>
-        <div class="vert-items">
-          <span class="vert-item" data-i18n="vert_comm_i1">Audit business & opportunités e-commerce</span>
-          <span class="vert-item" data-i18n="vert_comm_i2">60 prompts pub Meta, email, Shopify</span>
-          <span class="vert-item" data-i18n="vert_comm_i3">Workflows campagne de l'idée au lancement</span>
-        </div>
-        <div class="vert-price">
-          <span class="vert-price-num">57€</span>
-          <span class="vert-price-period" data-i18n="vert_once">accès à vie</span>
-        </div>
-        <span class="vert-link" data-i18n="vert_discover">Découvrir le toolkit</span>
-      </a>
-
-      <!-- LEGAL -->
-      <a href="promptcraft-legal.html" class="vert-card reveal">
-        <div class="vert-tag" data-i18n="vert_legal_tag">Droit · Cabinet · 65 prompts</div>
-        <h3>Legal <em>Pro</em></h3>
-        <p class="vert-desc" data-i18n="vert_legal_desc">Rédigez contrats, courriers et recherches juridiques 3× plus vite, en respectant la déontologie.</p>
-        <div class="vert-items">
-          <span class="vert-item" data-i18n="vert_legal_i1">Diagnostic des tâches chronophages cabinet</span>
-          <span class="vert-item" data-i18n="vert_legal_i2">65 prompts contrats, courriers, recherche</span>
-          <span class="vert-item" data-i18n="vert_legal_i3">Workflows de la prise de dossier à la clôture</span>
-        </div>
-        <div class="vert-price">
-          <span class="vert-price-num">97€</span>
-          <span class="vert-price-period" data-i18n="vert_once">accès à vie</span>
-        </div>
-        <span class="vert-link" data-i18n="vert_discover">Découvrir le toolkit</span>
-      </a>
-
-      <!-- FINANCE (full-width service card) -->
-      <a href="finance.html" class="vert-card finance reveal">
-        <div>
-          <div class="finance-tag" data-i18n="fin_tag">Service B2B · Équipes Finance</div>
-          <h3>Finance <em>IA</em></h3>
-          <p class="vert-desc" data-i18n="fin_desc">Automatisez vos reportings, déployez des dashboards IA et libérez vos équipes des tâches répétitives. Service de consulting sur-mesure.</p>
-          <div class="vert-items" style="max-width:480px;">
-            <span class="vert-item" data-i18n="fin_i1">Audit IA de votre processus financier (gratuit)</span>
-            <span class="vert-item" data-i18n="fin_i2">Dashboards & reporting automatisé</span>
-            <span class="vert-item" data-i18n="fin_i3">Intégration ERP × IA sur-mesure</span>
-          </div>
-        </div>
-        <div>
-          <a href="contact.html" class="finance-cta" data-i18n="fin_cta">Diagnostic gratuit (2h) →</a>
-        </div>
-      </a>
-
+    <p class="section-label a1">
+      <span data-fr>Témoignages</span><span data-en>Testimonials</span><span data-es>Testimonios</span><span data-pt>Depoimentos</span><span data-ar>شهادات</span>
+    </p>
+    <h2 class="section-title a2">
+      <span data-fr>Ce que disent nos clients</span>
+      <span data-en>What our clients say</span>
+      <span data-es>Lo que dicen nuestros clientes</span>
+      <span data-pt>O que dizem nossos clientes</span>
+      <span data-ar>ما يقوله عملاؤنا</span>
+    </h2>
+    <div class="testi-grid a3">
+      <div class="testi-card">
+        <p class="testi-text">
+          <span data-fr>« J'ai économisé 8 heures par semaine sur la rédaction d'annonces. Le ROI est immédiat. »</span>
+          <span data-en>"I saved 8 hours a week on listing descriptions. The ROI is immediate."</span>
+          <span data-es>«Ahorré 8 horas a la semana en la redacción de anuncios. El ROI es inmediato.»</span>
+          <span data-pt>«Economizei 8 horas por semana na redação de anúncios. O ROI é imediato.»</span>
+          <span data-ar>«وفّرت 8 ساعات أسبوعياً في كتابة الإعلانات. العائد على الاستثمار فوري.»</span>
+        </p>
+        <p class="testi-author"><strong>Sophie M.</strong> — <span data-fr>Agente immobilière, Lyon</span><span data-en>Real estate agent, Lyon</span><span data-es>Agente inmobiliaria, Lyon</span><span data-pt>Agente imobiliária, Lyon</span><span data-ar>وكيلة عقارية، ليون</span></p>
+      </div>
+      <div class="testi-card">
+        <p class="testi-text">
+          <span data-fr>« Les prompts juridiques m'ont fait gagner un temps précieux sur les contrats types. »</span>
+          <span data-en>"The legal prompts saved me precious time on standard contracts."</span>
+          <span data-es>«Los prompts jurídicos me ahorraron tiempo valioso en los contratos estándar.»</span>
+          <span data-pt>«Os prompts jurídicos me pouparam tempo precioso nos contratos padrão.»</span>
+          <span data-ar>«وفّرت لي الموجّهات القانونية وقتاً ثميناً في صياغة العقود النموذجية.»</span>
+        </p>
+        <p class="testi-author"><strong>Julien R.</strong> — <span data-fr>Avocat d'affaires, Paris</span><span data-en>Corporate lawyer, Paris</span><span data-es>Abogado de negocios, París</span><span data-pt>Advogado corporativo, Paris</span><span data-ar>محامي أعمال، باريس</span></p>
+      </div>
+      <div class="testi-card">
+        <p class="testi-text">
+          <span data-fr>« Mes fiches produits se rédigent en 2 minutes au lieu de 20. Mon taux de conversion a grimpé de 34%. »</span>
+          <span data-en>"My product descriptions now take 2 minutes instead of 20. My conversion rate jumped 34%."</span>
+          <span data-es>«Mis fichas de producto se redactan en 2 minutos en lugar de 20. Mi tasa de conversión subió un 34%.»</span>
+          <span data-pt>«Minhas fichas de produto ficam prontas em 2 minutos em vez de 20. Minha taxa de conversão subiu 34%.»</span>
+          <span data-ar>«أوصاف منتجاتي تُكتب في دقيقتين بدلاً من 20. ارتفع معدل تحويلي بنسبة 34%.»</span>
+        </p>
+        <p class="testi-author"><strong>Amina K.</strong> — <span data-fr>E-commerçante, Bruxelles</span><span data-en>E-commerce owner, Brussels</span><span data-es>Comerciante online, Bruselas</span><span data-pt>E-commerce, Bruxelas</span><span data-ar>صاحبة متجر إلكتروني، بروكسل</span></p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ── MANIFESTO ── -->
-<section id="manifesto">
+<!-- ── CTA ── -->
+<section>
   <div class="container">
-    <blockquote class="manifesto-quote reveal" data-i18n="manifesto">
-      "L'IA ne remplace pas les <em>meilleurs professionnels</em>.<br>Elle les <em>distingue</em> des autres."
-    </blockquote>
-    <p class="manifesto-author reveal" data-i18n="manifesto_author">— The Prompt Studio · 2026</p>
-  </div>
-</section>
-
-<!-- ── PRO MEMBERSHIP ── -->
-<section id="pro">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="pro_eyebrow">Pro Membership</div>
-    <h2 class="section-title" data-i18n="pro_title">Accès <em>illimité</em>,<br>pour les plus ambitieux</h2>
-    <div class="pro-card reveal">
-      <div class="pro-price" data-i18n="pro_price">19€</div>
-      <div class="pro-period" data-i18n="pro_period">par mois · Sans engagement · Résiliez en 1 clic</div>
-      <div class="pro-perks">
-        <div class="pro-perk" data-i18n="pro_perk1">Accès à tous les toolkits présents et à venir</div>
-        <div class="pro-perk" data-i18n="pro_perk2">Nouveaux prompts ajoutés chaque semaine</div>
-        <div class="pro-perk" data-i18n="pro_perk3">Workflows exclusifs Pro non disponibles en pack</div>
-        <div class="pro-perk" data-i18n="pro_perk4">Accès prioritaire aux nouveaux verticaux</div>
-        <div class="pro-perk" data-i18n="pro_perk5">Support direct par email · Réponse sous 24h</div>
+    <div class="cta-banner a1">
+      <h2>
+        <span data-fr>Prêt à transformer votre productivité ?</span>
+        <span data-en>Ready to transform your productivity?</span>
+        <span data-es>¿Listo para transformar tu productividad?</span>
+        <span data-pt>Pronto para transformar sua produtividade?</span>
+        <span data-ar>هل أنت مستعد لتحويل إنتاجيتك؟</span>
+      </h2>
+      <p>
+        <span data-fr>Rejoignez des centaines de professionnels qui utilisent déjà The Prompt Studio.</span>
+        <span data-en>Join hundreds of professionals already using The Prompt Studio.</span>
+        <span data-es>Únete a cientos de profesionales que ya usan The Prompt Studio.</span>
+        <span data-pt>Junte-se a centenas de profissionais que já usam The Prompt Studio.</span>
+        <span data-ar>انضم إلى مئات المحترفين الذين يستخدمون بالفعل The Prompt Studio.</span>
+      </p>
+      <div class="hero-btns">
+        <a href="promptcraft-immo.html" class="btn-primary">
+          <span data-fr>Voir les toolkits</span><span data-en>Browse toolkits</span><span data-es>Ver toolkits</span><span data-pt>Ver toolkits</span><span data-ar>استعرض الأدوات</span>
+        </a>
+        <a href="contact.html" class="btn-outline">
+          <span data-fr>Parler à l'équipe</span><span data-en>Talk to the team</span><span data-es>Hablar con el equipo</span><span data-pt>Falar com a equipe</span><span data-ar>تحدث مع الفريق</span>
+        </a>
       </div>
-      <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="btn-primary" data-i18n="pro_cta">Rejoindre Pro — 19€/mois</a>
     </div>
   </div>
 </section>
 
 <!-- ── FOOTER ── -->
-<footer style="background:var(--surface, #111009);border-top:1px solid #2e2a24;padding:48px 40px 32px;position:relative;z-index:1;">
-  <div style="max-width:1080px;margin:0 auto;">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px;flex-wrap:wrap;">
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;margin-bottom:12px;">The Prompt<em style="color:var(--gold, #c9a84c);font-style:italic;">Studio</em></div>
-        <p style="font-size:12px;color:#8a8070;line-height:1.7;max-width:240px;">Toolkits IA premium pour professionnels. Immo · Commerce · Legal · Finance.</p>
-        <a href="mailto:contact@theprompt.studio" style="font-size:12px;color:#8a8070;text-decoration:none;display:block;margin-top:12px;transition:color 0.2s;" onmouseover="this.style.color='var(--gold, #c9a84c)'" onmouseout="this.style.color='#8a8070'">contact@theprompt.studio</a>
-      </div>
-      <div>
-        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Produits</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <a href="promptcraft-immo.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Immo Pro</a>
-          <a href="promptcraft-commerce.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Commerce Pro</a>
-          <a href="promptcraft-legal.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Legal Pro</a>
-          <a href="finance.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Finance IA</a>
-          <a href="index.html#pro" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Pro Membership</a>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Informations légales</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <a href="contact.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Contact</a>
-          <a href="mentions-legales.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Mentions légales</a>
-          <a href="cgv.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">CGV</a>
-          <a href="politique-confidentialite.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Politique de confidentialité</a>
-          <a href="https://shop.theprompt.studio" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'" target="_blank" rel="noopener">Boutique Lemon Squeezy ↗</a>
-        </div>
-      </div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="nav-logo">The Prompt <em>Studio</em></a>
+      <p class="footer-tagline">
+        <span data-fr>Toolkits IA premium pour professionnels exigeants. Immo, Commerce, Juridique, Finance.</span>
+        <span data-en>Premium AI toolkits for demanding professionals. Real estate, Commerce, Legal, Finance.</span>
+        <span data-es>Toolkits IA premium para profesionales exigentes. Inmobiliaria, Comercio, Jurídico, Finanzas.</span>
+        <span data-pt>Toolkits IA premium para profissionais exigentes. Imobiliária, Comércio, Jurídico, Finanças.</span>
+        <span data-ar>أدوات ذكاء اصطناعي متميزة للمحترفين المطّلعين. عقارات، تجارة، قانون، مالية.</span>
+      </p>
     </div>
-    <div style="border-top:1px solid #2e2a24;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-      <p style="font-size:11px;color:#5a5040;">© 2026 The Prompt Studio — theprompt.studio — Tous droits réservés</p>
-      <p style="font-size:11px;color:#5a5040;">Paiements sécurisés via <a href="https://lemonsqueezy.com" target="_blank" rel="noopener" style="color:#5a5040;text-decoration:underline;">Lemon Squeezy</a> · TVA gérée dans 130+ pays</p>
+    <div class="footer-col">
+      <h4><span data-fr>Produits</span><span data-en>Products</span><span data-es>Productos</span><span data-pt>Produtos</span><span data-ar>المنتجات</span></h4>
+      <a href="promptcraft-immo.html"><span data-fr>Immo Pro</span><span data-en>Real Estate Pro</span><span data-es>Inmobiliaria Pro</span><span data-pt>Imobiliária Pro</span><span data-ar>عقارات برو</span></a>
+      <a href="promptcraft-commerce.html"><span data-fr>Commerce Pro</span><span data-en>Commerce Pro</span><span data-es>Comercio Pro</span><span data-pt>Comércio Pro</span><span data-ar>تجارة برو</span></a>
+      <a href="promptcraft-legal.html"><span data-fr>Juridique Pro</span><span data-en>Legal Pro</span><span data-es>Jurídico Pro</span><span data-pt>Jurídico Pro</span><span data-ar>قانوني برو</span></a>
+      <a href="finance.html"><span data-fr>Finance &amp; Conseil</span><span data-en>Finance &amp; Advisory</span><span data-es>Finanzas</span><span data-pt>Finanças</span><span data-ar>مالية واستشارات</span></a>
+    </div>
+    <div class="footer-col">
+      <h4><span data-fr>Entreprise</span><span data-en>Company</span><span data-es>Empresa</span><span data-pt>Empresa</span><span data-ar>الشركة</span></h4>
+      <a href="contact.html"><span data-fr>Contact</span><span data-en>Contact</span><span data-es>Contacto</span><span data-pt>Contato</span><span data-ar>تواصل</span></a>
+      <a href="finance.html"><span data-fr>Services sur mesure</span><span data-en>Custom services</span><span data-es>Servicios a medida</span><span data-pt>Serviços personalizados</span><span data-ar>خدمات مخصصة</span></a>
+    </div>
+    <div class="footer-col">
+      <h4><span data-fr>Légal</span><span data-en>Legal</span><span data-es>Legal</span><span data-pt>Legal</span><span data-ar>قانوني</span></h4>
+      <a href="mentions-legales.html"><span data-fr>Mentions légales</span><span data-en>Legal notice</span><span data-es>Aviso legal</span><span data-pt>Aviso legal</span><span data-ar>إشعار قانوني</span></a>
+      <a href="cgv.html"><span data-fr>CGV</span><span data-en>Terms of sale</span><span data-es>Condiciones de venta</span><span data-pt>Termos de venda</span><span data-ar>شروط البيع</span></a>
+      <a href="politique-confidentialite.html"><span data-fr>Confidentialité</span><span data-en>Privacy policy</span><span data-es>Privacidad</span><span data-pt>Privacidade</span><span data-ar>الخصوصية</span></a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 The Prompt Studio. <span data-fr>Tous droits réservés.</span><span data-en>All rights reserved.</span><span data-es>Todos los derechos reservados.</span><span data-pt>Todos os direitos reservados.</span><span data-ar>جميع الحقوق محفوظة.</span></p>
+    <div class="footer-legal">
+      <a href="mentions-legales.html"><span data-fr>Mentions légales</span><span data-en>Legal</span><span data-es>Legal</span><span data-pt>Legal</span><span data-ar>قانوني</span></a>
+      <a href="politique-confidentialite.html"><span data-fr>Confidentialité</span><span data-en>Privacy</span><span data-es>Privacidad</span><span data-pt>Privacidade</span><span data-ar>الخصوصية</span></a>
+      <a href="cgv.html">CGV</a>
     </div>
   </div>
 </footer>
 
-<script>
-// ═══════════════════════════════════════════════
-// TRANSLATIONS
-// ═══════════════════════════════════════════════
-const T = {
-  fr: {
-    meta_title: "The Prompt Studio — Toolkits IA Premium pour Professionnels",
-    meta_desc: "Transformez votre productivité professionnelle avec l'IA.",
-    nav_products: "Produits ▾", nav_finance: "Finance IA", nav_pro: "Pro Membership",
-    nav_contact: "Contact", nav_cta: "Pro — 19€/mois", nav_home: "Accueil",
-    nav_products_short: "Produits", badge_soon: "Bientôt",
-    hero_pill: "Toolkits IA · Professionnels",
-    hero_h1_raw: "L'IA qui", hero_h1_em: "transforme",
-    hero_sub: "Des toolkits complets conçus pour les professionnels qui veulent débloquer tout le potentiel de l'IA.",
-    hero_cta1: "Découvrir les toolkits", hero_cta2: "Diagnostic gratuit",
-    stat1_num: "5×", stat1_label: "Plus rapide", stat2_num: "175+", stat2_label: "Prompts testés",
-    stat3_num: "4", stat3_label: "Verticales métiers", stat4_num: "J+14", stat4_label: "Premier résultat",
-    vert_eyebrow: "Toolkits disponibles", vert_title: "Votre métier, votre toolkit",
-    vert_lead: "Chaque toolkit est conçu spécifiquement pour votre profession — diagnostic, formation, prompts premium, workflows et plan d'action.",
-    vert_immo_tag: "Immobilier · 50 prompts", vert_immo_desc: "Rédigez des annonces irrésistibles, closez plus vite et automatisez votre prospection.",
-    vert_immo_i1: "Diagnostic des pain points agents", vert_immo_i2: "50 prompts annonces, emails, prospection", vert_immo_i3: "Workflows de la prise de mandat à la vente",
-    vert_comm_tag: "Marketing · E-commerce · 60 prompts", vert_comm_desc: "Rédigez ads, emails et fiches produits 5× plus vite.",
-    vert_comm_i1: "Audit business & opportunités e-commerce", vert_comm_i2: "60 prompts pub Meta, email, Shopify", vert_comm_i3: "Workflows campagne de l'idée au lancement",
-    vert_legal_tag: "Droit · Cabinet · 65 prompts", vert_legal_desc: "Rédigez contrats et courriers 3× plus vite, en respectant la déontologie.",
-    vert_legal_i1: "Diagnostic des tâches chronophages", vert_legal_i2: "65 prompts contrats, courriers, recherche", vert_legal_i3: "Workflows de la prise de dossier à la clôture",
-    vert_once: "accès à vie", vert_discover: "Découvrir le toolkit",
-    fin_tag: "Service B2B · Équipes Finance", fin_desc: "Automatisez vos reportings et déployez des dashboards IA. Service de consulting sur-mesure.",
-    fin_i1: "Audit IA de votre processus financier (gratuit)", fin_i2: "Dashboards & reporting automatisé", fin_i3: "Intégration ERP × IA sur-mesure",
-    fin_cta: "Diagnostic gratuit (2h) →",
-    manifesto: '"L'IA ne remplace pas les meilleurs professionnels. Elle les distingue des autres."',
-    manifesto_author: "— The Prompt Studio · 2026",
-    pro_eyebrow: "Pro Membership", pro_title: "Accès illimité, pour les plus ambitieux",
-    pro_price: "19€", pro_period: "par mois · Sans engagement · Résiliez en 1 clic",
-    pro_perk1: "Accès à tous les toolkits présents et à venir",
-    pro_perk2: "Nouveaux prompts ajoutés chaque semaine",
-    pro_perk3: "Workflows exclusifs Pro non disponibles en pack",
-    pro_perk4: "Accès prioritaire aux nouveaux verticaux",
-    pro_perk5: "Support direct par email · Réponse sous 24h",
-    pro_cta: "Rejoindre Pro — 19€/mois",
-    footer_copy: "© 2026 The Prompt Studio · theprompt.studio · Tous droits réservés",
-  },
-  en: {
-    meta_title: "The Prompt Studio — Premium AI Toolkits for Professionals",
-    nav_products: "Products ▾", nav_finance: "Finance AI", nav_pro: "Pro Membership",
-    nav_contact: "Contact", nav_cta: "Pro — €19/mo", nav_home: "Home",
-    nav_products_short: "Products", badge_soon: "Soon",
-    hero_pill: "AI Toolkits · Professionals",
-    hero_h1_raw: "AI that", hero_h1_em: "transforms",
-    hero_sub: "Complete toolkits designed for professionals who want to unlock the full potential of AI — without wasting time figuring it out.",
-    hero_cta1: "Explore toolkits", hero_cta2: "Free diagnostic",
-    stat1_num: "5×", stat1_label: "Faster", stat2_num: "175+", stat2_label: "Tested prompts",
-    stat3_num: "4", stat3_label: "Professional verticals", stat4_num: "Day 14", stat4_label: "First results",
-    vert_eyebrow: "Available toolkits", vert_title: "Your profession, your toolkit",
-    vert_lead: "Each toolkit is built specifically for your profession — pain point diagnosis, training, premium prompts, workflows and a 30-day action plan.",
-    vert_immo_tag: "Real Estate · 50 prompts", vert_immo_desc: "Write irresistible listings, close faster and automate your prospecting with AI.",
-    vert_immo_i1: "Agent pain point diagnostic", vert_immo_i2: "50 prompts: listings, emails, prospecting", vert_immo_i3: "Workflows from first contact to signature",
-    vert_comm_tag: "Marketing · E-commerce · 60 prompts", vert_comm_desc: "Write ads, emails and product pages 5× faster. Launch full campaigns with AI.",
-    vert_comm_i1: "Business audit & e-commerce opportunities", vert_comm_i2: "60 prompts: Meta ads, email, Shopify", vert_comm_i3: "Campaign workflows from idea to launch",
-    vert_legal_tag: "Law · Practice · 65 prompts", vert_legal_desc: "Draft contracts and legal letters 3× faster, while respecting professional ethics.",
-    vert_legal_i1: "Time-draining tasks diagnostic", vert_legal_i2: "65 prompts: contracts, letters, research", vert_legal_i3: "Workflows from intake to case closure",
-    vert_once: "lifetime access", vert_discover: "Explore the toolkit",
-    fin_tag: "B2B Service · Finance Teams", fin_desc: "Automate your reporting, deploy AI dashboards and free your teams from repetitive tasks. Custom consulting service.",
-    fin_i1: "Free AI audit of your financial process", fin_i2: "AI dashboards & automated reporting", fin_i3: "Custom ERP × AI integration",
-    fin_cta: "Free 2h diagnostic →",
-    manifesto: '"AI doesn't replace the best professionals. It sets them apart from the rest."',
-    manifesto_author: "— The Prompt Studio · 2026",
-    pro_eyebrow: "Pro Membership", pro_title: "Unlimited access, for the most ambitious",
-    pro_price: "€19", pro_period: "per month · No commitment · Cancel anytime",
-    pro_perk1: "Access to all current and future toolkits",
-    pro_perk2: "New prompts added every week",
-    pro_perk3: "Exclusive Pro workflows not in individual packs",
-    pro_perk4: "Priority access to new verticals",
-    pro_perk5: "Direct email support · Reply within 24h",
-    pro_cta: "Join Pro — €19/month",
-    footer_copy: "© 2026 The Prompt Studio · theprompt.studio · All rights reserved",
-  },
-  es: {
-    meta_title: "The Prompt Studio — Toolkits IA Premium para Profesionales",
-    nav_products: "Productos ▾", nav_finance: "Finance IA", nav_pro: "Membresía Pro",
-    nav_contact: "Contacto", nav_cta: "Pro — 19€/mes", nav_home: "Inicio",
-    nav_products_short: "Productos", badge_soon: "Próximo",
-    hero_pill: "Toolkits IA · Profesionales",
-    hero_h1_raw: "La IA que", hero_h1_em: "transforma",
-    hero_sub: "Toolkits completos diseñados para profesionales que quieren desbloquear todo el potencial de la IA — sin perder tiempo aprendiéndola.",
-    hero_cta1: "Ver los toolkits", hero_cta2: "Diagnóstico gratuito",
-    stat1_num: "5×", stat1_label: "Más rápido", stat2_num: "175+", stat2_label: "Prompts probados",
-    stat3_num: "4", stat3_label: "Verticales", stat4_num: "Día 14", stat4_label: "Primeros resultados",
-    vert_eyebrow: "Toolkits disponibles", vert_title: "Tu profesión, tu toolkit",
-    vert_lead: "Cada toolkit está diseñado específicamente para tu profesión — diagnóstico, formación, prompts premium, flujos de trabajo y plan de acción.",
-    vert_immo_tag: "Inmobiliario · 50 prompts", vert_immo_desc: "Redacta anuncios irresistibles, cierra más rápido y automatiza tu prospección con IA.",
-    vert_immo_i1: "Diagnóstico de pain points", vert_immo_i2: "50 prompts: anuncios, emails, prospección", vert_immo_i3: "Flujos de trabajo de captación a firma",
-    vert_comm_tag: "Marketing · E-commerce · 60 prompts", vert_comm_desc: "Redacta anuncios, emails y fichas de producto 5× más rápido.",
-    vert_comm_i1: "Auditoría de negocio y oportunidades", vert_comm_i2: "60 prompts: Meta ads, email, Shopify", vert_comm_i3: "Flujos de campaña de la idea al lanzamiento",
-    vert_legal_tag: "Derecho · Despacho · 65 prompts", vert_legal_desc: "Redacta contratos y escritos 3× más rápido, respetando la deontología.",
-    vert_legal_i1: "Diagnóstico de tareas repetitivas", vert_legal_i2: "65 prompts: contratos, escritos, investigación", vert_legal_i3: "Flujos de expediente de apertura a cierre",
-    vert_once: "acceso de por vida", vert_discover: "Descubrir el toolkit",
-    fin_tag: "Servicio B2B · Equipos de Finanzas", fin_desc: "Automatiza tus reportes y despliega dashboards IA. Servicio de consultoría a medida.",
-    fin_i1: "Auditoría IA gratuita de tu proceso financiero", fin_i2: "Dashboards & reporting automatizado", fin_i3: "Integración ERP × IA a medida",
-    fin_cta: "Diagnóstico gratuito (2h) →",
-    manifesto: '"La IA no reemplaza a los mejores profesionales. Los distingue del resto."',
-    manifesto_author: "— The Prompt Studio · 2026",
-    pro_eyebrow: "Membresía Pro", pro_title: "Acceso ilimitado, para los más ambiciosos",
-    pro_price: "19€", pro_period: "por mes · Sin compromiso · Cancela cuando quieras",
-    pro_perk1: "Acceso a todos los toolkits presentes y futuros",
-    pro_perk2: "Nuevos prompts añadidos cada semana",
-    pro_perk3: "Flujos de trabajo Pro exclusivos",
-    pro_perk4: "Acceso prioritario a nuevos verticales",
-    pro_perk5: "Soporte directo por email · Respuesta en 24h",
-    pro_cta: "Unirse a Pro — 19€/mes",
-    footer_copy: "© 2026 The Prompt Studio · theprompt.studio · Todos los derechos reservados",
-  },
-  pt: {
-    meta_title: "The Prompt Studio — Toolkits IA Premium para Profissionais",
-    nav_products: "Produtos ▾", nav_finance: "Finance IA", nav_pro: "Membership Pro",
-    nav_contact: "Contato", nav_cta: "Pro — 19€/mês", nav_home: "Início",
-    nav_products_short: "Produtos", badge_soon: "Em breve",
-    hero_pill: "Toolkits IA · Profissionais",
-    hero_h1_raw: "A IA que", hero_h1_em: "transforma",
-    hero_sub: "Toolkits completos criados para profissionais que querem desbloquear todo o potencial da IA — sem perder tempo aprendendo.",
-    hero_cta1: "Ver os toolkits", hero_cta2: "Diagnóstico gratuito",
-    stat1_num: "5×", stat1_label: "Mais rápido", stat2_num: "175+", stat2_label: "Prompts testados",
-    stat3_num: "4", stat3_label: "Verticais", stat4_num: "Dia 14", stat4_label: "Primeiros resultados",
-    vert_eyebrow: "Toolkits disponíveis", vert_title: "Sua profissão, seu toolkit",
-    vert_lead: "Cada toolkit é criado especificamente para sua profissão — diagnóstico, formação, prompts premium, fluxos de trabalho e plano de ação.",
-    vert_immo_tag: "Imóveis · 50 prompts", vert_immo_desc: "Escreva anúncios irresistíveis, feche mais rápido e automatize sua prospecção com IA.",
-    vert_immo_i1: "Diagnóstico de pain points", vert_immo_i2: "50 prompts: anúncios, e-mails, prospecção", vert_immo_i3: "Fluxos de trabalho da captação à assinatura",
-    vert_comm_tag: "Marketing · E-commerce · 60 prompts", vert_comm_desc: "Escreva anúncios, e-mails e fichas de produto 5× mais rápido.",
-    vert_comm_i1: "Auditoria de negócio e oportunidades", vert_comm_i2: "60 prompts: Meta ads, e-mail, Shopify", vert_comm_i3: "Fluxos de campanha da ideia ao lançamento",
-    vert_legal_tag: "Direito · Escritório · 65 prompts", vert_legal_desc: "Redija contratos e peças processuais 3× mais rápido, respeitando a deontologia.",
-    vert_legal_i1: "Diagnóstico de tarefas demoradas", vert_legal_i2: "65 prompts: contratos, cartas, pesquisa", vert_legal_i3: "Fluxos da abertura ao encerramento do processo",
-    vert_once: "acesso vitalício", vert_discover: "Explorar o toolkit",
-    fin_tag: "Serviço B2B · Equipes de Finanças", fin_desc: "Automatize seus relatórios e implante dashboards IA. Serviço de consultoria sob medida.",
-    fin_i1: "Auditoria IA gratuita do seu processo financeiro", fin_i2: "Dashboards & reporting automatizado", fin_i3: "Integração ERP × IA sob medida",
-    fin_cta: "Diagnóstico gratuito (2h) →",
-    manifesto: '"A IA não substitui os melhores profissionais. Ela os distingue dos demais."',
-    manifesto_author: "— The Prompt Studio · 2026",
-    pro_eyebrow: "Membership Pro", pro_title: "Acesso ilimitado, para os mais ambiciosos",
-    pro_price: "19€", pro_period: "por mês · Sem compromisso · Cancele quando quiser",
-    pro_perk1: "Acesso a todos os toolkits atuais e futuros",
-    pro_perk2: "Novos prompts adicionados toda semana",
-    pro_perk3: "Fluxos de trabalho Pro exclusivos",
-    pro_perk4: "Acesso prioritário a novas verticais",
-    pro_perk5: "Suporte direto por e-mail · Resposta em 24h",
-    pro_cta: "Entrar no Pro — 19€/mês",
-    footer_copy: "© 2026 The Prompt Studio · theprompt.studio · Todos os direitos reservados",
-  },
-  ar: {
-    meta_title: "The Prompt Studio — مجموعات أدوات الذكاء الاصطناعي للمحترفين",
-    nav_products: "المنتجات ▾", nav_finance: "الذكاء المالي", nav_pro: "العضوية الاحترافية",
-    nav_contact: "اتصل بنا", nav_cta: "برو — 19€/شهر", nav_home: "الرئيسية",
-    nav_products_short: "المنتجات", badge_soon: "قريباً",
-    hero_pill: "مجموعات أدوات الذكاء الاصطناعي · للمحترفين",
-    hero_h1_raw: "الذكاء الاصطناعي الذي", hero_h1_em: "يحوّل",
-    hero_sub: "مجموعات أدوات متكاملة مصممة للمحترفين الذين يريدون إطلاق الإمكانات الكاملة للذكاء الاصطناعي.",
-    hero_cta1: "اكتشف المجموعات", hero_cta2: "تشخيص مجاني",
-    stat1_num: "5×", stat1_label: "أسرع", stat2_num: "175+", stat2_label: "نصوص مُختبَرة",
-    stat3_num: "4", stat3_label: "قطاعات مهنية", stat4_num: "يوم 14", stat4_label: "أول نتائج",
-    vert_eyebrow: "المجموعات المتاحة", vert_title: "مهنتك، مجموعتك",
-    vert_lead: "كل مجموعة أدوات مصممة خصيصاً لمهنتك — التشخيص، التدريب، النصوص الاحترافية، سير العمل وخطة العمل.",
-    vert_immo_tag: "العقارات · 50 نصاً", vert_immo_desc: "اكتب إعلانات لا تُقاوم، أغلق الصفقات أسرع وأتمتة التنقيب بالذكاء الاصطناعي.",
-    vert_immo_i1: "تشخيص نقاط الضعف لدى الوكلاء", vert_immo_i2: "50 نصاً: إعلانات، رسائل، تنقيب", vert_immo_i3: "سير العمل من الاستلام إلى التوقيع",
-    vert_comm_tag: "التسويق · التجارة الإلكترونية · 60 نصاً", vert_comm_desc: "اكتب الإعلانات والبريد الإلكتروني وصفحات المنتجات بسرعة 5 أضعاف.",
-    vert_comm_i1: "تدقيق الأعمال وفرص التجارة الإلكترونية", vert_comm_i2: "60 نصاً: إعلانات Meta، بريد إلكتروني، Shopify", vert_comm_i3: "سير عمل الحملة من الفكرة للإطلاق",
-    vert_legal_tag: "القانون · المكتب · 65 نصاً", vert_legal_desc: "صِغ العقود والمراسلات القانونية بسرعة 3 أضعاف مع احترام أخلاقيات المهنة.",
-    vert_legal_i1: "تشخيص المهام المستهلكة للوقت", vert_legal_i2: "65 نصاً: عقود، رسائل، بحث قانوني", vert_legal_i3: "سير العمل من فتح الملف إلى إغلاقه",
-    vert_once: "وصول مدى الحياة", vert_discover: "اكتشف المجموعة",
-    fin_tag: "خدمة B2B · فرق المالية", fin_desc: "أتمتة التقارير المالية ونشر لوحات التحكم الذكية. خدمة استشارية مخصصة.",
-    fin_i1: "تدقيق ذكاء اصطناعي مجاني لعملياتك المالية", fin_i2: "لوحات تحكم وتقارير آلية", fin_i3: "تكامل ERP × ذكاء اصطناعي مخصص",
-    fin_cta: "تشخيص مجاني (ساعتان) ←",
-    manifesto: '"الذكاء الاصطناعي لا يحل محل أفضل المحترفين. بل يميزهم عن الآخرين."',
-    manifesto_author: "— The Prompt Studio · 2026",
-    pro_eyebrow: "العضوية الاحترافية", pro_title: "وصول غير محدود، للأكثر طموحاً",
-    pro_price: "19€", pro_period: "شهرياً · بدون التزام · الغِ في أي وقت",
-    pro_perk1: "الوصول لجميع المجموعات الحالية والمستقبلية",
-    pro_perk2: "نصوص جديدة تُضاف كل أسبوع",
-    pro_perk3: "سير عمل Pro حصرية غير متاحة في الباقات الفردية",
-    pro_perk4: "أولوية الوصول للقطاعات الجديدة",
-    pro_perk5: "دعم مباشر عبر البريد الإلكتروني · رد خلال 24 ساعة",
-    pro_cta: "انضم إلى Pro — 19€/شهر",
-    footer_copy: "© 2026 The Prompt Studio · theprompt.studio · جميع الحقوق محفوظة",
-  },
-};
-
-let currentLang = 'fr';
-
-function setLang(lang) {
-  currentLang = lang;
-  const t = T[lang];
-  if (!t) return;
-
-  // RTL support
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-  // Update all data-i18n elements
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[key] !== undefined) {
-      // Handle elements that contain child <em> tags (hero h1)
-      if (el.tagName === 'H1') {
-        const em = el.querySelector('em[data-i18n]');
-        if (em) {
-          const emKey = em.getAttribute('data-i18n');
-          el.innerHTML = (t[key] || '') + ' <em>' + (t[emKey] || '') + '</em><br>' + (lang === 'ar' ? '' : '');
-          return;
-        }
-      }
-      el.innerHTML = t[key];
-    }
-  });
-
-  // Update lang switcher display
-  const flags = { fr: '🇫🇷 FR', en: '🇬🇧 EN', es: '🇪🇸 ES', pt: '🇧🇷 PT', ar: '🇸🇦 AR' };
-  const btn = document.querySelector('.lang-current');
-  if (btn) btn.innerHTML = (flags[lang] || lang.toUpperCase()) + ' ▾';
-
-  // Update active state
-  document.querySelectorAll('.lang-opt').forEach(opt => {
-    opt.classList.toggle('active', opt.getAttribute('onclick') === `setLang('${lang}')`);
-  });
-
-  // Update meta
-  if (t.meta_title) document.title = t.meta_title;
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc && t.meta_desc) metaDesc.content = t.meta_desc;
-}
-
-// Hero h1 — special rendering (preserve em structure)
-(function fixHeroH1(){
-  var h1 = document.querySelector('h1');
-  if(!h1) return;
-  h1.innerHTML = "L\u2019IA qui <em>transforme</em><br>votre productivit\u00e9";
-  h1.removeAttribute('data-i18n');
-})();
-
-// IntersectionObserver for .reveal
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
-}, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-</script>
-
-<!-- COOKIE BANNER RGPD -->
-<div id="ps-cookie" role="dialog" aria-label="Gestion des cookies" aria-live="polite">
-  <p>Nous utilisons des cookies techniques nécessaires au fonctionnement du site (Google Fonts, analyse de trafic anonymisée). En cliquant sur "Accepter", vous consentez à leur utilisation. <a href="politique-confidentialite.html">Politique de confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a></p>
-  <div class="ps-cookie-btns">
-    <button class="ps-cookie-accept" onclick="psCookieAccept()">Accepter</button>
-    <button class="ps-cookie-refuse" onclick="psCookieRefuse()">Continuer sans accepter</button>
+<!-- ── COOKIE BANNER ── -->
+<div id="cookie-banner" style="display:none;">
+  <p>
+    <span data-fr>Nous utilisons des cookies pour améliorer votre expérience. <a href="politique-confidentialite.html">En savoir plus</a>.</span>
+    <span data-en>We use cookies to improve your experience. <a href="politique-confidentialite.html">Learn more</a>.</span>
+    <span data-es>Usamos cookies para mejorar tu experiencia. <a href="politique-confidentialite.html">Saber más</a>.</span>
+    <span data-pt>Usamos cookies para melhorar a sua experiência. <a href="politique-confidentialite.html">Saiba mais</a>.</span>
+    <span data-ar>نستخدم ملفات تعريف الارتباط لتحسين تجربتك. <a href="politique-confidentialite.html">اعرف المزيد</a>.</span>
+  </p>
+  <div class="cookie-btns">
+    <button class="btn-accept" onclick="acceptCookies()">
+      <span data-fr>Accepter</span><span data-en>Accept</span><span data-es>Aceptar</span><span data-pt>Aceitar</span><span data-ar>قبول</span>
+    </button>
+    <button class="btn-decline" onclick="declineCookies()">
+      <span data-fr>Refuser</span><span data-en>Decline</span><span data-es>Rechazar</span><span data-pt>Recusar</span><span data-ar>رفض</span>
+    </button>
   </div>
 </div>
+
 <script>
-(function(){
-  if(!localStorage.getItem('ps_cookie_consent')){
-    setTimeout(function(){ var b=document.getElementById('ps-cookie'); if(b) b.classList.add('show'); },800);
-  }
+// ── LANGUAGE FLAGS MAP ──
+var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
+
+// ── SET LANGUAGE ──
+function setLang(lang) {
+  // Update html attributes
+  document.documentElement.setAttribute('data-lang', lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  // Update lang button label
+  var btn = document.getElementById('lang-current');
+  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
+  // Update aria-current on options
+  document.querySelectorAll('.lang-opt').forEach(function(o) {
+    var fn = o.getAttribute('onclick') || '';
+    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
+  });
+  // Persist
+  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
+}
+
+// ── INIT LANGUAGE ON LOAD ──
+(function() {
+  try {
+    var saved = localStorage.getItem('ps_lang');
+    var valid = ['fr','en','es','pt','ar'];
+    if (saved && valid.indexOf(saved) !== -1) {
+      setLang(saved);
+    }
+  } catch(e) {}
 })();
-function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
-function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
-function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
+
+// ── COOKIE BANNER ──
+function acceptCookies() {
+  try { localStorage.setItem('ps_cookies', 'accepted'); } catch(e) {}
+  var b = document.getElementById('cookie-banner');
+  if (b) b.style.display = 'none';
+}
+function declineCookies() {
+  try { localStorage.setItem('ps_cookies', 'declined'); } catch(e) {}
+  var b = document.getElementById('cookie-banner');
+  if (b) b.style.display = 'none';
+}
+(function() {
+  try {
+    if (!localStorage.getItem('ps_cookies')) {
+      var b = document.getElementById('cookie-banner');
+      if (b) b.style.display = 'flex';
+    }
+  } catch(e) {}
+})();
 </script>
 
+<!-- Supabase: smart "Mon compte" nav link -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(function() {
+  // TODO: Replace with your Supabase values
+  var SUPA_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';
+  var SUPA_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg';
+  if (SUPA_URL.indexOf('VOTRE') !== -1) return; // Not configured yet
+
+  try {
+    var sb = window.supabase.createClient(SUPA_URL, SUPA_ANON);
+    sb.auth.getSession().then(function(r) {
+      var link = document.getElementById('nav-account-link');
+      if (!link) return;
+      if (r.data && r.data.session) {
+        link.textContent = 'Mon espace';
+        link.href = '/dashboard';
+        link.removeAttribute('onclick');
+      } else {
+        link.href = '/login';
+        link.removeAttribute('onclick');
+      }
+    });
+  } catch(e) {}
+})();
+
+function checkSession(e) {
+  // Fallback: just navigate to login
+  // Replaced by the async check above when Supabase is configured
+}
+</script>
 </body>
 </html>
