@@ -102,7 +102,29 @@ supabase.auth.getSession().then(({ data: { session } }) => {
   if (session) window.location.href = '/dashboard';
 });
 
-// ── Handle magic link from email ──────────────────────────────────────────
+// ── Handle magic link (Supabase v2 PKCE flow) ─────────────────────────────
+// Si l'utilisateur arrive depuis un magic link avec ?code=xxx
+(async function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+  const errorParam = urlParams.get('error');
+
+  // Afficher un message si lien expiré
+  if (errorParam === 'lien_expire') {
+    const errEl = document.getElementById('msg-error');
+    const errTxt = document.getElementById('error-text');
+    errTxt.textContent = 'Votre lien a expiré. Entrez votre email pour en recevoir un nouveau.';
+    errEl.style.display = 'block';
+  }
+
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+    if (!error) {
+      window.location.href = '/dashboard';
+    }
+  }
+})();
+
 supabase.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN' && session) {
     window.location.href = '/dashboard';

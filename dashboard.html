@@ -162,22 +162,32 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 let currentSession = null;
 
 async function init() {
-  // Handle magic link callback (token in URL hash or query)
-  const { data: { session }, error } = await supabase.auth.getSession();
+  // ── Étape 1 : échanger le code PKCE si présent dans l'URL ────────────
+  // Supabase v2 passe le code dans ?code=xxx (pas dans le hash)
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
 
-  if (!session) {
-    // Try to exchange token from URL
-    await supabase.auth.exchangeCodeForSession(window.location.hash);
-    const { data } = await supabase.auth.getSession();
-    if (!data.session) {
-      // Not logged in → redirect to login
-      window.location.href = '/login';
+  if (code) {
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(
+      window.location.href  // passer l'URL complète
+    );
+    if (exchangeError) {
+      console.error('Lien invalide ou expiré :', exchangeError.message);
+      window.location.href = '/login?error=lien_expire';
       return;
     }
-    currentSession = data.session;
-  } else {
-    currentSession = session;
+    // Nettoyer l'URL (supprimer ?code=xxx)
+    window.history.replaceState({}, '', '/dashboard');
   }
+
+  // ── Étape 2 : vérifier la session ─────────────────────────────────────
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = '/login';
+    return;
+  }
+  currentSession = session;
 
   // Display user name
   const name = currentSession.user?.user_metadata?.full_name
