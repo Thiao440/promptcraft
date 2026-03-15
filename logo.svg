@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 60" width="320" height="60">
+  <defs>
+    <style>
+      .logo-main { font-family: 'Georgia', 'Times New Roman', serif; font-size: 28px; font-weight: 300; fill: #f0ead8; letter-spacing: 0.02em; }
+      .logo-em   { font-family: 'Georgia', 'Times New Roman', serif; font-size: 28px; font-weight: 400; font-style: italic; fill: #c9a84c; }
+      .logo-tag  { font-family: 'Arial', sans-serif; font-size: 9px; fill: #8a8070; letter-spacing: 0.2em; text-transform: uppercase; }
+    </style>
+  </defs>
+  <!-- Monogram badge -->
+  <rect x="0" y="8" width="44" height="44" rx="2" fill="#0c0b09" stroke="#2e2a24" stroke-width="1"/>
+  <text x="22" y="38" font-family="Georgia,serif" font-size="22" font-style="italic" font-weight="bold" fill="#c9a84c" text-anchor="middle">PS</text>
+  <!-- Separator -->
+  <line x1="56" y1="14" x2="56" y2="46" stroke="#2e2a24" stroke-width="1"/>
+  <!-- Brand name -->
+  <text x="68" y="28" class="logo-main">The Prompt</text>
+  <text x="68" y="28" class="logo-main"><tspan dx="140">&#8203;</tspan></text>
+  <text x="68" y="52" class="logo-tag">AI Studio for Professionals</text>
+  <!-- "Studio" italic gold -->
+  <text x="216" y="28" class="logo-em">Studio</text>
+</svg>

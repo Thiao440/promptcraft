@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — The Prompt Studio</title>
+<meta name="description" content="Contactez The Prompt Studio pour un diagnostic IA gratuit pour votre équipe finance, ou pour toute question sur nos packs de prompts professionnels.">
+<link rel="canonical" href="https://theprompt.studio/contact.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://theprompt.studio/contact.html">
+<meta property="og:title" content="Contact — The Prompt Studio">
+<meta property="og:description" content="Démarrons votre diagnostic IA gratuit ou parlez-nous de votre projet.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2a2620;
+  --gold:#c9a84c;--gold-l:#e8c97a;--cream:#f0ead8;--muted:#8a8070;
+  --em:#00897b;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(12,11,9,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:14px 48px;display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);text-decoration:none;}
+.nav-logo em{color:var(--gold);font-style:italic;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:0.04em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-links .active{color:var(--cream);}
+
+main{min-height:100vh;padding:140px 48px 96px;position:relative;z-index:1;}
+.container{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+
+.contact-left{}
+.eyebrow{font-family:'Outfit',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.eyebrow::after{content:'';flex:1;max-width:36px;height:1px;background:var(--gold);opacity:0.35;}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,6vw,72px);font-weight:300;line-height:0.95;letter-spacing:-0.02em;margin-bottom:24px;}
+h1 em{color:var(--gold);font-style:italic;display:block;}
+.intro{font-size:16px;color:var(--muted);line-height:1.75;margin-bottom:48px;}
+
+.contact-method{display:flex;flex-direction:column;gap:24px;margin-bottom:48px;}
+.cm-item{display:flex;align-items:flex-start;gap:16px;padding:20px 22px;background:var(--card);border:1px solid var(--border);text-decoration:none;color:var(--cream);transition:all 0.2s;}
+.cm-item:hover{border-color:rgba(201,168,76,0.3);transform:translateX(4px);}
+.cm-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.cm-content{}
+.cm-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.cm-value{font-size:15px;color:var(--cream);font-weight:400;}
+.cm-desc{font-size:12px;color:var(--muted);margin-top:3px;}
+
+.divider{width:100%;height:1px;background:linear-gradient(90deg,rgba(201,168,76,0.3),transparent);margin:32px 0;}
+
+.services-list{display:flex;flex-direction:column;gap:12px;}
+.svc-tag{font-size:11px;letter-spacing:0.1em;padding:6px 14px;border:1px solid var(--border);color:var(--muted);display:inline-block;text-transform:uppercase;}
+.svc-tags{display:flex;flex-wrap:wrap;gap:8px;}
+
+/* FORM */
+.contact-right{}
+.form-card{background:var(--card);border:1px solid var(--border);padding:44px 40px;}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;margin-bottom:6px;}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
+
+.form-group{margin-bottom:20px;}
+label{display:block;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+input,select,textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--cream);font-family:'Outfit',sans-serif;font-size:14px;padding:12px 16px;transition:border-color 0.2s;outline:none;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,0.4);}
+textarea{resize:vertical;min-height:120px;line-height:1.6;}
+select option{background:#1a1814;color:var(--cream);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+.btn-submit{width:100%;background:var(--gold);color:#000;border:none;padding:16px 32px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.25s;margin-top:8px;}
+.btn-submit:hover{background:var(--gold-l);}
+
+.form-note{font-size:11px;color:var(--muted);margin-top:16px;text-align:center;line-height:1.6;}
+
+.success-msg{display:none;text-align:center;padding:32px;color:var(--em);}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:32px 48px;text-align:center;position:relative;z-index:1;}
+.footer-links{display:flex;justify-content:center;gap:28px;margin-bottom:12px;flex-wrap:wrap;}
+.footer-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+footer p{font-size:11px;color:var(--muted);}
+
+@media(max-width:768px){nav{padding:12px 20px;}.nav-links{display:none;}.container{grid-template-columns:1fr;gap:48px;}main{padding:110px 24px 72px;}.form-card{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">The Prompt<em>Studio</em></a>
+  <div class="nav-links">
+    <a href="index.html">Products</a>
+    <a href="finance.html">Finance IA</a>
+    <a href="index.html#pro">Pro Membership</a>
+    <a href="contact.html" class="active">Contact</a>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+
+    <!-- LEFT -->
+    <div class="contact-left">
+      <div class="eyebrow">Contact</div>
+      <h1>Parlons de<br>votre <em>projet.</em></h1>
+      <p class="intro">Diagnostic IA pour votre équipe finance, question sur un pack de prompts, ou projet sur-mesure — répondez au formulaire ou contactez directement.</p>
+
+      <div class="contact-method">
+        <a href="mailto:mathieu.thiao@gmail.com" class="cm-item">
+          <span class="cm-icon">✉</span>
+          <div class="cm-content">
+            <div class="cm-label">Email</div>
+            <div class="cm-value">mathieu.thiao@gmail.com</div>
+            <div class="cm-desc">Réponse sous 24h en semaine</div>
+          </div>
+        </a>
+        <a href="https://shop.theprompt.studio" class="cm-item">
+          <span class="cm-icon">🛒</span>
+          <div class="cm-content">
+            <div class="cm-label">Boutique</div>
+            <div class="cm-value">shop.theprompt.studio</div>
+            <div class="cm-desc">Achat direct des packs prompts</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="margin-bottom:16px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">On peut vous aider avec</div>
+      <div class="svc-tags">
+        <span class="svc-tag">Diagnostic IA Finance</span>
+        <span class="svc-tag">Dashboards sur-mesure</span>
+        <span class="svc-tag">Automatisation ERP</span>
+        <span class="svc-tag">Pack Immo Pro</span>
+        <span class="svc-tag">Pack Commerce Pro</span>
+        <span class="svc-tag">Pack Legal Pro</span>
+        <span class="svc-tag">Pro Membership</span>
+        <span class="svc-tag">Prompts sur-mesure</span>
+      </div>
+    </div>
+
+    <!-- RIGHT — FORM -->
+    <div class="contact-right">
+      <div class="form-card">
+        <div class="form-title">Envoyez-nous un message</div>
+        <div class="form-sub">Diagnostic gratuit · Réponse sous 24h · Sans engagement</div>
+
+        <form id="contactForm" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fname">Prénom</label>
+              <input type="text" id="fname" name="fname" placeholder="Jean" required>
+            </div>
+            <div class="form-group">
+              <label for="lname">Nom</label>
+              <input type="text" id="lname" name="lname" placeholder="Dupont" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email professionnel</label>
+            <input type="email" id="email" name="email" placeholder="jean.dupont@entreprise.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="company">Entreprise</label>
+            <input type="text" id="company" name="company" placeholder="Votre entreprise">
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Sujet</label>
+            <select id="subject" name="subject" required>
+              <option value="" disabled selected>Choisissez un sujet</option>
+              <option value="diagnostic-finance">Diagnostic IA Finance (gratuit)</option>
+              <option value="dashboard">Dashboard / Application sur-mesure</option>
+              <option value="pack-immo">Pack Immo Pro (47€)</option>
+              <option value="pack-commerce">Pack Commerce Pro (57€)</option>
+              <option value="pack-legal">Pack Legal Pro (97€)</option>
+              <option value="pro-membership">Pro Membership (19€/mois)</option>
+              <option value="custom">Projet sur-mesure</option>
+              <option value="other">Autre</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Décrivez votre besoin, votre équipe, vos outils actuels..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit">Envoyer le message →</button>
+          <p class="form-note">En envoyant ce formulaire, vous acceptez d'être contacté par The Prompt Studio. Aucun spam, désabonnement en 1 clic.</p>
+        </form>
+
+        <div class="success-msg" id="successMsg">
+          <div style="font-size:32px;margin-bottom:12px;">✓</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);margin-bottom:8px;">Message envoyé</div>
+          <div style="font-size:14px;color:var(--muted);">Nous vous répondons sous 24h.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Accueil</a>
+    <a href="index.html#verticals">Packs prompts</a>
+    <a href="finance.html">Finance IA</a>
+    <a href="index.html#pro">Pro Membership</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <p>© 2026 The Prompt Studio · theprompt.studio · Tous droits réservés</p>
+</footer>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('successMsg');
+  const data = new FormData(form);
+  const mailto = `mailto:mathieu.thiao@gmail.com?subject=The Prompt Studio — ${data.get('subject')}&body=Prénom: ${data.get('fname')} ${data.get('lname')}%0AEmail: ${data.get('email')}%0AEntreprise: ${data.get('company')}%0A%0AMessage:%0A${data.get('message')}`;
+  window.location.href = mailto;
+  form.style.display = 'none';
+  success.style.display = 'block';
+}
+</script>
+</body>
+</html>

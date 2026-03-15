@@ -3,112 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="PromptCraft — The AI prompt studio for professionals. Premium prompt packs for real estate, law, marketing, coaching and recruiting.">
-<title>PromptCraft — AI Prompt Studio for Professionals</title>
+<title>The Prompt Studio — AI Prompts & AI Services for Professionals</title>
+<meta name="description" content="The Prompt Studio offers premium AI prompt packs and AI consulting services for real estate agents, lawyers, marketers, and finance teams. Boost productivity with precision AI.">
+<meta name="keywords" content="AI prompts professionals, ChatGPT prompts, AI productivity, prompt packs, AI finance, IA immobilier, AI consulting">
+<meta name="author" content="The Prompt Studio">
+<link rel="canonical" href="https://theprompt.studio/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://theprompt.studio/">
+<meta property="og:title" content="The Prompt Studio — AI for Professionals">
+<meta property="og:description" content="Premium AI prompt packs and AI consulting services. Real estate, legal, commerce, finance. Stop prompting from scratch.">
+<meta property="og:site_name" content="The Prompt Studio">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Prompt Studio — AI for Professionals">
+<meta name="twitter:description" content="Premium AI prompt packs and AI consulting services for professionals.">
+<!-- Favicon SVG -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- JSON-LD -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio","description":"Premium AI prompt packs and AI consulting services for professionals","sameAs":["https://shop.theprompt.studio"]}</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2a2620;
   --gold:#c9a84c;--gold-l:#e8c97a;--cream:#f0ead8;--muted:#8a8070;
+  --emerald:#00897b;
 }
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(12,11,9,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:14px 48px;display:flex;justify-content:space-between;align-items:center;}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);letter-spacing:0.02em;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);letter-spacing:0.02em;text-decoration:none;}
 .nav-logo em{color:var(--gold);font-style:italic;}
-.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links{display:flex;gap:28px;align-items:center;}
 .nav-links a{font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:0.04em;transition:color 0.2s;}
 .nav-links a:hover{color:var(--gold);}
-.nav-cta{background:var(--gold);color:#000;padding:9px 22px;font-size:12px;font-weight:600;letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;}
-.nav-cta:hover{background:var(--gold-l);}
+.nav-links .nav-finance{color:var(--emerald);}
+.nav-links .nav-finance:hover{color:#4db6ac;}
+.nav-cta{background:var(--gold);color:#000 !important;padding:9px 22px;font-size:12px;font-weight:600;letter-spacing:0.06em;transition:all 0.2s;}
+.nav-cta:hover{background:var(--gold-l) !important;transform:translateY(-1px);}
 
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(201,168,76,0.1) 0%,transparent 65%);pointer-events:none;}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 20%,transparent 70%);}
-.hero-content{position:relative;z-index:1;max-width:860px;}
-
+.hero-content{position:relative;z-index:1;max-width:900px;}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'Outfit',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:36px;animation:fadeUp 0.7s ease both;}
 .eyebrow::before,.eyebrow::after{content:'✦';font-size:8px;}
-
 h1{font-family:'Cormorant Garamond',serif;font-size:clamp(54px,9vw,100px);font-weight:300;line-height:0.92;letter-spacing:-0.02em;margin-bottom:28px;animation:fadeUp 0.7s ease both 0.1s;}
 h1 em{color:var(--gold);font-style:italic;display:block;}
-.hero-p{font-size:18px;color:var(--muted);max-width:520px;margin:0 auto 48px;line-height:1.7;font-weight:300;animation:fadeUp 0.7s ease both 0.2s;}
+.hero-p{font-size:17px;color:var(--muted);max-width:560px;margin:0 auto 48px;line-height:1.7;font-weight:300;animation:fadeUp 0.7s ease both 0.2s;}
 .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.7s ease both 0.3s;}
 .btn-g{background:var(--gold);color:#000;padding:15px 36px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
 .btn-g:hover{background:var(--gold-l);transform:translateY(-2px);box-shadow:0 12px 36px rgba(201,168,76,0.28);}
 .btn-o{background:none;border:1px solid var(--border);color:var(--cream);padding:15px 36px;font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
 .btn-o:hover{border-color:var(--gold);color:var(--gold);}
+.btn-e{background:var(--emerald);color:#fff;padding:15px 36px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
+.btn-e:hover{background:#00796b;transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,137,123,0.28);}
 
-.hero-bar{margin-top:72px;display:flex;justify-content:center;gap:0;border:1px solid var(--border);max-width:640px;margin-left:auto;margin-right:auto;animation:fadeUp 0.7s ease both 0.4s;}
+.hero-bar{margin-top:72px;display:flex;justify-content:center;border:1px solid var(--border);max-width:700px;margin-left:auto;margin-right:auto;animation:fadeUp 0.7s ease both 0.4s;}
 .hb-item{flex:1;padding:22px 16px;text-align:center;border-right:1px solid var(--border);background:var(--card);}
 .hb-item:last-child{border-right:none;}
 .hb-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);display:block;line-height:1;}
 .hb-lbl{font-size:9px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:5px;}
 
 section{padding:96px 24px;position:relative;z-index:1;}
-.container{max-width:1040px;margin:0 auto;}
+.container{max-width:1100px;margin:0 auto;}
 .sec-eye{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
 .sec-eye::after{content:'';flex:1;max-width:36px;height:1px;background:var(--gold);opacity:0.35;}
 h2{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5vw,58px);font-weight:300;line-height:1.05;letter-spacing:-0.015em;margin-bottom:12px;}
 h2 em{color:var(--gold);font-style:italic;}
 .sec-p{font-size:16px;color:var(--muted);max-width:520px;line-height:1.7;font-weight:300;margin-bottom:52px;}
 
-/* VERTICALS */
-.vert-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
-.vert-card{background:var(--card);border:1px solid transparent;padding:40px 36px;display:flex;flex-direction:column;gap:20px;transition:all 0.25s;text-decoration:none;color:var(--cream);position:relative;overflow:hidden;}
+.vert-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;}
+.vert-card{background:var(--card);border:1px solid transparent;padding:36px 32px;display:flex;flex-direction:column;gap:18px;transition:all 0.25s;text-decoration:none;color:var(--cream);position:relative;overflow:hidden;}
 .vert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;transition:opacity 0.3s;opacity:0;}
-.vert-card:hover{border-color:rgba(201,168,76,0.25);transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.vert-card:hover{border-color:rgba(201,168,76,0.2);transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
 .vert-card:hover::before{opacity:1;}
-.vc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-.vc-icon{font-size:32px;flex-shrink:0;}
-.vc-badge{font-family:'Outfit',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;padding:5px 12px;border:1px solid;border-radius:1px;white-space:nowrap;flex-shrink:0;}
-.vc-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;line-height:1.1;}
+.vc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.vc-icon{font-size:28px;flex-shrink:0;}
+.vc-badge{font-family:'Outfit',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border:1px solid;border-radius:1px;white-space:nowrap;}
+.vc-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;line-height:1.1;}
 .vc-name em{font-style:italic;}
 .vc-sub{font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
-.vc-desc{font-size:13px;color:var(--muted);line-height:1.65;}
-.vc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border);}
-.vc-price{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;}
-.vc-prompts{font-family:'Outfit',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;}
+.vc-desc{font-size:13px;color:var(--muted);line-height:1.65;flex:1;}
+.vc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);}
+.vc-price{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;}
+.vc-meta{font-family:'Outfit',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-align:right;line-height:1.4;}
 
-/* IMMO */
-.vc-immo::before{background:linear-gradient(90deg,transparent,#c9a84c,transparent);}
-.vc-immo .vc-badge{border-color:rgba(201,168,76,0.4);color:#c9a84c;background:rgba(201,168,76,0.07);}
-.vc-immo .vc-price{color:#c9a84c;}
-/* COMMERCE */
 .vc-commerce::before{background:linear-gradient(90deg,transparent,#4fc3f7,transparent);}
 .vc-commerce .vc-badge{border-color:rgba(79,195,247,0.4);color:#4fc3f7;background:rgba(79,195,247,0.07);}
 .vc-commerce .vc-price{color:#4fc3f7;}
-/* LEGAL */
+.vc-immo::before{background:linear-gradient(90deg,transparent,#c9a84c,transparent);}
+.vc-immo .vc-badge{border-color:rgba(201,168,76,0.4);color:#c9a84c;background:rgba(201,168,76,0.07);}
+.vc-immo .vc-price{color:#c9a84c;}
 .vc-legal::before{background:linear-gradient(90deg,transparent,#b0bec5,transparent);}
 .vc-legal .vc-badge{border-color:rgba(176,190,197,0.4);color:#b0bec5;background:rgba(176,190,197,0.05);}
 .vc-legal .vc-price{color:#b0bec5;}
-/* COACH */
+.vc-finance::before{background:linear-gradient(90deg,transparent,#00897b,transparent);}
+.vc-finance .vc-badge{border-color:rgba(0,137,123,0.4);color:#00897b;background:rgba(0,137,123,0.07);}
+.vc-finance .vc-price{color:#00897b;}
+.vc-finance:hover{border-color:rgba(0,137,123,0.2);}
 .vc-coach::before{background:linear-gradient(90deg,transparent,#a5d6a7,transparent);}
 .vc-coach .vc-badge{border-color:rgba(165,214,167,0.4);color:#a5d6a7;background:rgba(165,214,167,0.05);}
 .vc-coach .vc-price{color:#a5d6a7;}
-/* RECRUIT */
 .vc-recruit::before{background:linear-gradient(90deg,transparent,#ce93d8,transparent);}
 .vc-recruit .vc-badge{border-color:rgba(206,147,216,0.4);color:#ce93d8;background:rgba(206,147,216,0.05);}
 .vc-recruit .vc-price{color:#ce93d8;}
-
-.vc-coming{opacity:0.5;cursor:default;}
+.vc-coming{opacity:0.45;cursor:default;}
 .vc-coming:hover{transform:none;border-color:transparent;box-shadow:none;}
 
-/* PRO MEMBERSHIP */
 .pro-block{background:linear-gradient(135deg,#1a1710 0%,#1e1c0f 100%);border:1px solid rgba(201,168,76,0.25);padding:64px 56px;text-align:center;position:relative;overflow:hidden;}
 .pro-block::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.12) 0%,transparent 60%);pointer-events:none;}
-.pro-block h2{font-size:clamp(32px,5vw,54px);margin-bottom:12px;}
-.pro-block .sec-p{margin:0 auto 40px;text-align:center;}
 .pro-features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;}
 .pro-feat{background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.12);padding:20px 16px;text-align:center;}
 .pf-icon{font-size:20px;margin-bottom:8px;display:block;}
 .pf-title{font-size:13px;font-weight:500;margin-bottom:4px;}
 .pf-desc{font-size:11px;color:var(--muted);line-height:1.5;}
 
-/* MANIFESTO */
 .manifesto-block{background:var(--surface);padding:80px 48px;text-align:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
 blockquote{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3.5vw,38px);font-weight:300;line-height:1.45;color:var(--cream);letter-spacing:-0.01em;}
 blockquote em{color:var(--gold);font-style:italic;}
@@ -127,19 +141,20 @@ footer p{font-size:11px;color:var(--muted);}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 
+@media(max-width:960px){.vert-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){.vert-grid{grid-template-columns:1fr;}.pro-features{grid-template-columns:1fr 1fr;}.hero-bar{flex-direction:column;}.hb-item{border-right:none;border-bottom:1px solid var(--border);}.nav-links{display:none;}}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-logo">Prompt<em>Craft</em></div>
+  <a href="index.html" class="nav-logo">The Prompt<em>Studio</em></a>
   <div class="nav-links">
     <a href="#verticals">Products</a>
+    <a href="finance.html" class="nav-finance">Finance IA ↗</a>
     <a href="#pro">Pro Membership</a>
-    <a href="#about">About</a>
-    <a href="/cdn-cgi/l/email-protection#c0a3afaeb4a1a3b480b0b2afadb0b4a3b2a1a6b4eea3af">Contact</a>
-    <a href="#pro" class="nav-cta">Join Pro — €19/mo</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="nav-cta">Join Pro — €19/mo</a>
   </div>
 </nav>
 
@@ -149,15 +164,16 @@ footer p{font-size:11px;color:var(--muted);}
   <div class="hero-content">
     <div class="eyebrow">The AI prompt studio for professionals</div>
     <h1>Craft your<br><em>edge.</em></h1>
-    <p class="hero-p">Premium AI prompt packs built for real professionals — real estate agents, lawyers, marketers, coaches and recruiters. Stop prompting from scratch.</p>
+    <p class="hero-p">Premium AI prompt packs for real estate agents, lawyers & marketers — plus AI consulting services for finance teams. Stop prompting from scratch.</p>
     <div class="hero-cta">
-      <a href="#verticals" class="btn-g">Explore all packs</a>
-      <a href="#pro" class="btn-o">Pro Membership ↓</a>
+      <a href="#verticals" class="btn-g">Explore all products</a>
+      <a href="finance.html" class="btn-e">Finance IA ↗</a>
+      <a href="#pro" class="btn-o">Pro Membership</a>
     </div>
     <div class="hero-bar">
-      <div class="hb-item"><span class="hb-num">5</span><span class="hb-lbl">Verticals</span></div>
-      <div class="hb-item"><span class="hb-num">300+</span><span class="hb-lbl">Premium prompts</span></div>
-      <div class="hb-item"><span class="hb-num">32M</span><span class="hb-lbl">Target professionals</span></div>
+      <div class="hb-item"><span class="hb-num">5</span><span class="hb-lbl">Prompt packs</span></div>
+      <div class="hb-item"><span class="hb-num">350+</span><span class="hb-lbl">Premium prompts</span></div>
+      <div class="hb-item"><span class="hb-num">Finance</span><span class="hb-lbl">AI consulting</span></div>
       <div class="hb-item"><span class="hb-num">∞</span><span class="hb-lbl">Uses per prompt</span></div>
     </div>
   </div>
@@ -168,95 +184,100 @@ footer p{font-size:11px;color:var(--muted);}
 <!-- VERTICALS -->
 <section id="verticals">
   <div class="container">
-    <div class="sec-eye">Our products</div>
-    <h2>Five <em>verticals.</em><br>One standard.</h2>
-    <p class="sec-p">Each pack is purpose-built for one profession. No filler, no generic prompts — only battle-tested workflows that professionals actually use.</p>
+    <div class="sec-eye">Our products & services</div>
+    <h2>Five packs.<br>One <em>service.</em></h2>
+    <p class="sec-p">Each prompt pack is purpose-built for one profession. Our Finance service goes further — custom AI tools, dashboards, and automation for your team.</p>
 
     <div class="vert-grid reveal">
+
+      <!-- FINANCE — SERVICE, LIVE -->
+      <a href="finance.html" class="vert-card vc-finance" style="grid-column:1/-1;max-width:100%;">
+        <div class="vc-top">
+          <span class="vc-icon">◎</span>
+          <span class="vc-badge">Service — Live</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+          <div>
+            <div class="vc-name">The Prompt<em>Studio</em></div>
+            <div class="vc-sub">Finance — AI Consulting & Automation</div>
+            <p class="vc-desc" style="max-width:680px;margin-top:12px;">Audit IA de vos process finance, dashboards automatisés, applications sur-mesure et ERP augmenté. Moins de temps sur les tâches répétitives — plus de temps sur ce qui génère de la valeur.</p>
+          </div>
+          <div class="vc-footer" style="border:none;padding:0;flex-shrink:0;">
+            <span class="vc-price" style="font-size:20px;">Diagnostic gratuit →</span>
+          </div>
+        </div>
+      </a>
+
       <!-- COMMERCE — LIVE -->
       <a href="promptcraft-commerce.html" class="vert-card vc-commerce">
-        <div class="vc-top">
-          <span class="vc-icon">◈</span>
-          <span class="vc-badge">Live · Most popular</span>
-        </div>
+        <div class="vc-top"><span class="vc-icon">◈</span><span class="vc-badge">Live · Most popular</span></div>
         <div>
-          <div class="vc-name">Prompt<em>Craft</em></div>
+          <div class="vc-name">The Prompt<em>Studio</em></div>
           <div class="vc-sub">Commerce</div>
         </div>
-        <p class="vc-desc">60 prompts for marketers & e-commerce professionals. Meta Ads, email sequences, product pages, TikTok scripts, sales funnels and SEO content.</p>
+        <p class="vc-desc">60 prompts for marketers & e-commerce. Meta Ads, emails, product pages, TikTok scripts, funnels and SEO content.</p>
         <div class="vc-footer">
-          <span class="vc-price" style="color:#4fc3f7;">57€</span>
-          <span class="vc-prompts">60 PROMPTS · 6 CATEGORIES</span>
+          <span class="vc-price">57€</span>
+          <span class="vc-meta">60 PROMPTS<br>6 CATEGORIES</span>
         </div>
       </a>
 
       <!-- IMMO — LIVE -->
-      <a href="index.html" class="vert-card vc-immo">
-        <div class="vc-top">
-          <span class="vc-icon">⌂</span>
-          <span class="vc-badge">Live</span>
-        </div>
+      <a href="promptcraft-immo.html" class="vert-card vc-immo">
+        <div class="vc-top"><span class="vc-icon">⌂</span><span class="vc-badge">Live</span></div>
         <div>
-          <div class="vc-name">Prompt<em>Craft</em></div>
+          <div class="vc-name">The Prompt<em>Studio</em></div>
           <div class="vc-sub">Immo</div>
         </div>
-        <p class="vc-desc">50 prompts for real estate agents. Property listings, prospecting emails, closing scripts, social media content and local SEO articles.</p>
+        <p class="vc-desc">50 prompts for real estate agents. Listings, prospecting emails, closing scripts, social media and local SEO.</p>
         <div class="vc-footer">
           <span class="vc-price">47€</span>
-          <span class="vc-prompts">50 PROMPTS · 5 CATEGORIES</span>
+          <span class="vc-meta">50 PROMPTS<br>6 CATEGORIES</span>
         </div>
       </a>
 
-      <!-- LEGAL — COMING -->
-      <div class="vert-card vc-legal vc-coming">
-        <div class="vc-top">
-          <span class="vc-icon">⚖</span>
-          <span class="vc-badge" style="border-color:rgba(176,190,197,0.2);color:var(--muted);">Coming Q2 2026</span>
-        </div>
+      <!-- LEGAL — LIVE -->
+      <a href="promptcraft-legal.html" class="vert-card vc-legal">
+        <div class="vc-top"><span class="vc-icon">⚖</span><span class="vc-badge">Live</span></div>
         <div>
-          <div class="vc-name">Prompt<em>Craft</em></div>
+          <div class="vc-name">The Prompt<em>Studio</em></div>
           <div class="vc-sub">Legal</div>
         </div>
-        <p class="vc-desc">For lawyers & legal professionals. Contract drafting, client communications, legal research summaries, pitch to clients and court prep.</p>
+        <p class="vc-desc">65 prompts for lawyers & legal professionals. Contract drafting, client communications, legal research and court prep.</p>
         <div class="vc-footer">
-          <span class="vc-price" style="color:#b0bec5;">97€</span>
-          <span class="vc-prompts">60 PROMPTS · 6 CATEGORIES</span>
+          <span class="vc-price">97€</span>
+          <span class="vc-meta">65 PROMPTS<br>6 CATEGORIES</span>
         </div>
-      </div>
+      </a>
 
       <!-- COACH — COMING -->
       <div class="vert-card vc-coach vc-coming">
-        <div class="vc-top">
-          <span class="vc-icon">◉</span>
-          <span class="vc-badge" style="border-color:rgba(165,214,167,0.2);color:var(--muted);">Coming Q2 2026</span>
-        </div>
+        <div class="vc-top"><span class="vc-icon">◉</span><span class="vc-badge" style="border-color:rgba(165,214,167,0.2);color:var(--muted);">Coming Q2 2026</span></div>
         <div>
-          <div class="vc-name">Prompt<em>Craft</em></div>
+          <div class="vc-name">The Prompt<em>Studio</em></div>
           <div class="vc-sub">Coach</div>
         </div>
-        <p class="vc-desc">For coaches & consultants. Program design, client onboarding, session frameworks, newsletter content and sales page copywriting.</p>
+        <p class="vc-desc">For coaches & consultants. Program design, client onboarding, frameworks, newsletters and sales pages.</p>
         <div class="vc-footer">
-          <span class="vc-price" style="color:#a5d6a7;">67€</span>
-          <span class="vc-prompts">55 PROMPTS · 5 CATEGORIES</span>
+          <span class="vc-price">67€</span>
+          <span class="vc-meta">55 PROMPTS<br>5 CATEGORIES</span>
         </div>
       </div>
 
       <!-- RECRUIT — COMING -->
-      <a class="vert-card vc-recruit vc-coming" style="grid-column:1/-1;max-width:600px;margin:0 auto;width:100%;">
-        <div class="vc-top">
-          <span class="vc-icon">◆</span>
-          <span class="vc-badge" style="border-color:rgba(206,147,216,0.2);color:var(--muted);">Coming Q3 2026</span>
-        </div>
+      <div class="vert-card vc-recruit vc-coming">
+        <div class="vc-top"><span class="vc-icon">◆</span><span class="vc-badge" style="border-color:rgba(206,147,216,0.2);color:var(--muted);">Coming Q3 2026</span></div>
         <div>
-          <div class="vc-name">Prompt<em>Craft</em></div>
+          <div class="vc-name">The Prompt<em>Studio</em></div>
           <div class="vc-sub">Recruit</div>
         </div>
-        <p class="vc-desc">For HR professionals & recruiters. Job descriptions, candidate outreach, interview frameworks, employer branding and onboarding communications.</p>
+        <p class="vc-desc">For HR & recruiters. Job descriptions, candidate outreach, interview frameworks and employer branding.</p>
         <div class="vc-footer">
-          <span class="vc-price" style="color:#ce93d8;">57€</span>
-          <span class="vc-prompts">55 PROMPTS · 5 CATEGORIES</span>
+          <span class="vc-price">57€</span>
+          <span class="vc-meta">55 PROMPTS<br>5 CATEGORIES</span>
         </div>
-      </a>
+      </div>
+
     </div>
   </div>
 </section>
@@ -267,12 +288,12 @@ footer p{font-size:11px;color:var(--muted);}
     <div class="pro-block reveal">
       <div class="sec-eye" style="justify-content:center;">Pro Membership</div>
       <h2>One subscription.<br>All <em>verticals.</em></h2>
-      <p class="sec-p">2 new packs every month across all verticals. As AI evolves, so do your prompts — automatically.</p>
+      <p class="sec-p" style="margin:0 auto 40px;text-align:center;">2 new packs every month. As AI evolves, so do your prompts — automatically.</p>
       <div class="pro-features">
-        <div class="pro-feat"><span class="pf-icon">◈</span><div class="pf-title">2 packs/month</div><div class="pf-desc">New prompts delivered every month across all professions</div></div>
-        <div class="pro-feat"><span class="pf-icon">◉</span><div class="pf-title">Full archive</div><div class="pf-desc">Access every pack ever released — all verticals</div></div>
-        <div class="pro-feat"><span class="pf-icon">⌂</span><div class="pf-title">Always updated</div><div class="pf-desc">Prompts updated as AI models evolve. Never outdated.</div></div>
-        <div class="pro-feat"><span class="pf-icon">◆</span><div class="pf-title">On-demand</div><div class="pf-desc">Request custom prompts for your specific use case</div></div>
+        <div class="pro-feat"><span class="pf-icon">◈</span><div class="pf-title">2 packs/month</div><div class="pf-desc">New prompts delivered monthly across all professions</div></div>
+        <div class="pro-feat"><span class="pf-icon">◉</span><div class="pf-title">Full archive</div><div class="pf-desc">Access every pack ever released</div></div>
+        <div class="pro-feat"><span class="pf-icon">⌂</span><div class="pf-title">Always updated</div><div class="pf-desc">Prompts updated as AI models evolve</div></div>
+        <div class="pro-feat"><span class="pf-icon">◆</span><div class="pf-title">On-demand</div><div class="pf-desc">Request custom prompts for your use case</div></div>
       </div>
       <div style="display:flex;align-items:baseline;gap:8px;justify-content:center;margin-bottom:32px;">
         <span style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:var(--gold);">19€</span>
@@ -292,23 +313,28 @@ footer p{font-size:11px;color:var(--muted);}
       We sell <em>precision</em> — the kind<br>
       that turns professionals into experts."
     </blockquote>
-    <cite>PromptCraft · 2026</cite>
-    <p style="margin-top:32px;font-size:14px;color:var(--muted);max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">PromptCraft was built on one observation: the gap between professionals who use AI generically and those who use it with precision is enormous — in output quality, time saved, and revenue generated. We close that gap.</p>
+    <cite>The Prompt Studio · 2026</cite>
+    <p style="margin-top:32px;font-size:14px;color:var(--muted);max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">The Prompt Studio was built on one observation: the gap between professionals who use AI generically and those who use it with precision is enormous — in output quality, time saved, and revenue generated. We close that gap.</p>
   </div>
 </section>
 
 <footer>
-  <div class="footer-logo">PromptCraft</div>
+  <div class="footer-logo">The Prompt Studio</div>
   <div class="footer-links">
     <a href="#verticals">Products</a>
+    <a href="finance.html">Finance IA</a>
     <a href="#pro">Pro Membership</a>
-    <a href="#about">About</a>
-    <a href="/cdn-cgi/l/email-protection#c6a5a9a8b2a7a5b286b6b4a9abb6b2a5b4a7a0b2e8a5a9"><span class="__cf_email__" data-cfemail="2d4e4243594c4e596d5d5f42405d594e5f4c4b59034e42">[email&#160;protected]</span></a>
-    <a href="#">Legal</a>
-    <a href="#">Terms</a>
+    <a href="contact.html">Contact</a>
+    <a href="mailto:mathieu.thiao@gmail.com">mathieu.thiao@gmail.com</a>
   </div>
-  <p>© 2026 PromptCraft · promptcraft.co · All rights reserved</p>
+  <p>© 2026 The Prompt Studio · theprompt.studio · All rights reserved</p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-c
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
