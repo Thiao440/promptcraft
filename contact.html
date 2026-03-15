@@ -84,17 +84,83 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:32px
 footer p{font-size:11px;color:var(--muted);}
 
 @media(max-width:768px){nav{padding:12px 20px;}.nav-links{display:none;}.container{grid-template-columns:1fr;gap:48px;}main{padding:110px 24px 72px;}.form-card{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
+
+/* ===== UNIFIED DROPDOWN NAV (The Prompt Studio) ===== */
+.ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(12,11,9,0.96);backdrop-filter:blur(18px);
+  border-bottom:1px solid #2e2a24;padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;height:58px;}
+.ps-nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;
+  color:#f0ead8;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
+.ps-nav-logo em{color:#c9a84c;font-style:italic;}
+.ps-nav-center{display:flex;align-items:center;gap:0;}
+.ps-nav-item{position:relative;}
+.ps-nav-btn{background:none;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;
+  letter-spacing:0.04em;padding:0 14px;height:58px;
+  display:flex;align-items:center;gap:5px;transition:color 0.2s;}
+.ps-nav-btn:hover{color:#f0ead8;}
+.ps-nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;
+  letter-spacing:0.04em;padding:0 14px;height:58px;text-decoration:none;
+  display:flex;align-items:center;transition:color 0.2s;}
+.ps-nav-a:hover,.ps-nav-a.ps-active{color:#c9a84c;}
+.ps-dd{position:absolute;top:100%;left:-8px;background:#1a1814;
+  border:1px solid #2e2a24;min-width:248px;
+  opacity:0;pointer-events:none;transform:translateY(-6px);
+  transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);}
+.ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-dd-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px;text-decoration:none;color:#f0ead8;
+  font-family:'Outfit',sans-serif;font-size:13px;
+  border-bottom:1px solid #2e2a24;transition:background 0.15s;}
+.ps-dd-row:last-child{border-bottom:none;}
+.ps-dd-row:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-dd-row.ps-soon{color:#4a4540;cursor:default;pointer-events:none;}
+.ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(0,137,123,0.18);
+  border:1px solid rgba(0,137,123,0.4);color:#00897b;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-service{font-size:8px;padding:2px 7px;background:rgba(79,195,247,0.12);
+  border:1px solid rgba(79,195,247,0.3);color:#4fc3f7;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-soon{font-size:8px;padding:2px 7px;background:rgba(201,168,76,0.06);
+  border:1px solid rgba(201,168,76,0.15);color:#5a5040;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-nav-right{display:flex;align-items:center;gap:10px;}
+.ps-lang-btns{display:flex;gap:6px;}
+.ps-lang-btn{background:none;border:1px solid #2e2a24;color:#8a8070;
+  padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif;
+  font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s;}
+.ps-lang-btn.active,.ps-lang-btn:hover{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,0.08);}
+.ps-nav-cta{background:#c9a84c;color:#000;font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:0.06em;padding:9px 18px;
+  border:none;cursor:pointer;text-decoration:none;display:inline-block;
+  transition:background 0.2s;white-space:nowrap;}
+.ps-nav-cta:hover{background:#e8c97a;}
+@media(max-width:768px){
+  .ps-nav-center{display:none;}
+  .ps-nav{padding:0 20px;}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-logo">The Prompt<em>Studio</em></a>
-  <div class="nav-links">
-    <a href="index.html">Products</a>
-    <a href="finance.html">Finance IA</a>
-    <a href="index.html#pro">Pro Membership</a>
-    <a href="contact.html" class="active">Contact</a>
+<nav class="ps-nav">
+  <a href="index.html" class="ps-nav-logo">The Prompt<em>Studio</em></a>
+  <div class="ps-nav-center">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn">Produits ▾</button>
+      <div class="ps-dd">
+        <a href="promptcraft-immo.html" class="ps-dd-row"><span>Immo Pro</span><span class="ps-badge-live">Live</span></a>
+        <a href="promptcraft-commerce.html" class="ps-dd-row"><span>Commerce Pro</span><span class="ps-badge-live">Live</span></a>
+        <a href="promptcraft-legal.html" class="ps-dd-row"><span>Legal Pro</span><span class="ps-badge-live">Live</span></a>
+        <a href="finance.html" class="ps-dd-row"><span>Finance IA</span><span class="ps-badge-service">Service</span></a>
+        <span class="ps-dd-row ps-soon"><span>Coach Pro</span><span class="ps-badge-soon">Bientôt</span></span>
+        <span class="ps-dd-row ps-soon"><span>Recruit Pro</span><span class="ps-badge-soon">Bientôt</span></span>
+      </div>
+    </div>
+    <a href="finance.html" class="ps-nav-a">Finance IA</a>
+    <a href="index.html#pro" class="ps-nav-a">Pro Membership</a>
+    <a href="contact.html" class="ps-nav-a ps-active">Contact</a>
+  </div>
+  <div class="ps-nav-right">
+    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="ps-nav-cta">Pro — 19€/mois</a>
   </div>
 </nav>
 
