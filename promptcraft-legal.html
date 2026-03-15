@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PromptCraft Legal — 65 prompts IA premium pour avocats et juristes. Rédigez contrats, conclusions et communications clients 4× plus vite.">
+<meta name="keywords" content="prompts IA avocat, ChatGPT droit, intelligence artificielle cabinet avocat, prompts juridiques, rédaction juridique IA">
+<meta property="og:title" content="PromptCraft Legal — AI Prompts for Lawyers & Legal Professionals">
+<title>PromptCraft Legal — Prompts IA pour Avocats & Juristes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#080b10;
+  --surface:#0c1018;
+  --card:#111820;
+  --border:#1e2c3a;
+  --silver:#b0bec5;
+  --silver2:#d0dde4;
+  --silver3:#ecf2f6;
+  --navy:#0a1628;
+  --text:#e0e8f0;
+  --muted:#607080;
+  --border-glow:rgba(176,190,197,0.15);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+/* subtle grain */
+body::after{content:'';position:fixed;inset:0;opacity:0.02;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,11,16,0.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:14px 48px;display:flex;justify-content:space-between;align-items:center;}
+.nav-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--text);letter-spacing:0.02em;}
+.nav-brand em{color:var(--silver);font-style:italic;}
+.nav-brand sup{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;vertical-align:top;margin-top:4px;display:inline-block;margin-left:6px;}
+.lang-btns{display:flex;gap:6px;}
+.lang-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s;}
+.lang-btn.active,.lang-btn:hover{border-color:var(--silver);color:var(--silver);background:rgba(176,190,197,0.05);}
+
+/* BRAND STRIP */
+.brand-strip{margin-top:52px;background:var(--surface);border-bottom:1px solid var(--border);padding:16px 48px;}
+.brand-strip-inner{max-width:1020px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.strip-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;}
+.verts{display:flex;gap:6px;flex-wrap:wrap;}
+.v-tag{border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;letter-spacing:0.08em;}
+.v-tag.active{border-color:rgba(176,190,197,0.4);color:var(--silver);background:rgba(176,190,197,0.05);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 24px 80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse 70% 50% at 50% 30%,rgba(176,190,197,0.07) 0%,transparent 65%);pointer-events:none;}
+/* Fine grid */
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(176,190,197,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(176,190,197,0.025) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 100% 70% at 50% 0%,black 20%,transparent 70%);}
+
+.hero-content{position:relative;z-index:1;max-width:840px;}
+.eyebrow-row{display:inline-flex;align-items:center;gap:12px;margin-bottom:40px;animation:fadeUp 0.7s ease both;}
+.eyebrow-pill{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--silver);background:rgba(176,190,197,0.07);border:1px solid rgba(176,190,197,0.2);padding:7px 18px;}
+.eyebrow-rule{width:40px;height:1px;background:var(--silver);opacity:0.3;}
+
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(50px,8.5vw,94px);font-weight:300;line-height:0.91;letter-spacing:-0.02em;margin-bottom:30px;animation:fadeUp 0.7s ease both 0.1s;}
+h1 em{color:var(--silver);font-style:italic;display:block;}
+.hero-p{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:520px;margin:0 auto 44px;line-height:1.75;font-weight:300;animation:fadeUp 0.7s ease both 0.2s;}
+.hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.7s ease both 0.3s;}
+.btn-p{background:var(--silver);color:#080b10;padding:15px 36px;font-weight:600;font-size:13px;text-decoration:none;letter-spacing:0.06em;transition:all 0.25s;display:inline-block;}
+.btn-p:hover{background:var(--silver2);transform:translateY(-2px);box-shadow:0 14px 40px rgba(176,190,197,0.2);}
+.btn-s{background:none;border:1px solid var(--border);color:var(--text);padding:15px 36px;font-size:13px;text-decoration:none;letter-spacing:0.06em;transition:all 0.25s;display:inline-block;}
+.btn-s:hover{border-color:var(--silver);color:var(--silver);}
+
+.hero-stats{margin-top:68px;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);max-width:680px;margin-left:auto;margin-right:auto;animation:fadeUp 0.7s ease both 0.4s;}
+.hs-item{padding:22px 16px;text-align:center;border-right:1px solid var(--border);background:rgba(17,24,32,0.6);}
+.hs-item:last-child{border-right:none;}
+.hs-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--silver);display:block;line-height:1;}
+.hs-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:5px;}
+
+/* SECTION */
+section{padding:96px 24px;position:relative;z-index:1;}
+.container{max-width:1020px;margin:0 auto;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--silver);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.eyebrow::after{content:'';flex:1;max-width:32px;height:1px;background:var(--silver);opacity:0.3;}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5vw,56px);font-weight:300;line-height:1.05;letter-spacing:-0.015em;margin-bottom:12px;}
+h2 em{color:var(--silver);font-style:italic;}
+.sec-p{font-size:15px;color:var(--muted);max-width:500px;line-height:1.75;font-weight:300;margin-bottom:52px;}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+.pain-card{background:var(--card);padding:32px 26px;position:relative;overflow:hidden;transition:background 0.2s;}
+.pain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--silver),transparent);opacity:0;transition:opacity 0.3s;}
+.pain-card:hover{background:#131c26;}
+.pain-card:hover::before{opacity:0.6;}
+.pain-icon{font-size:24px;margin-bottom:16px;display:block;}
+.pain-card h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:10px;}
+.pain-card p{font-size:13px;color:var(--muted);line-height:1.65;}
+.pain-card p strong{color:var(--silver2);}
+
+/* CATEGORIES */
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+.cat-card{background:var(--card);padding:24px 20px;transition:background 0.2s;}
+.cat-card:hover{background:#131c26;}
+.cat-icon{font-size:20px;margin-bottom:10px;display:block;}
+.cat-card h4{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;margin-bottom:3px;}
+.cat-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--silver);letter-spacing:0.12em;margin-bottom:8px;display:block;}
+.cat-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* PACK */
+.pack-wrap{border:1px solid var(--border);background:var(--card);overflow:hidden;}
+.pack-header{background:linear-gradient(135deg,#0c1520 0%,#101a28 100%);border-bottom:1px solid var(--border);padding:40px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;position:relative;overflow:hidden;}
+.pack-header::after{content:'⚖';position:absolute;right:48px;top:50%;transform:translateY(-50%);font-size:100px;color:rgba(176,190,197,0.04);line-height:1;}
+.pack-name{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;}
+.pack-name span{color:var(--silver);font-style:italic;}
+.pack-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:0.06em;}
+.pack-price{font-family:'Cormorant Garamond',serif;font-size:54px;font-weight:300;color:var(--silver);line-height:1;}
+.pack-pnote{font-size:11px;color:var(--muted);margin-top:4px;}
+
+.pack-body{padding:48px;}
+.prompts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:32px;}
+.prompt-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);padding:16px 18px;transition:all 0.2s;}
+.prompt-card:hover{border-color:rgba(176,190,197,0.25);background:rgba(176,190,197,0.02);}
+.p-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--silver);letter-spacing:0.1em;margin-bottom:5px;display:block;opacity:0.6;}
+.prompt-card p{font-size:12px;color:var(--text);line-height:1.55;}
+.prompt-card .warn{font-size:10px;color:var(--muted);font-style:italic;margin-top:4px;display:block;}
+
+.pack-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;padding-top:28px;border-top:1px solid var(--border);}
+.includes{display:flex;flex-direction:column;gap:7px;}
+.inc-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
+.inc-item::before{content:'◆';color:var(--silver);font-size:7px;flex-shrink:0;}
+
+/* SUBSCRIPTION */
+.sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);}
+.sub-card{background:var(--card);padding:44px 36px;position:relative;}
+.sub-card.featured{background:linear-gradient(135deg,#0d1a28 0%,#101f30 100%);}
+.sub-badge{position:absolute;top:-1px;right:28px;background:var(--silver);color:#080b10;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;}
+.sub-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;margin-bottom:6px;}
+.sub-price-row{display:flex;align-items:baseline;gap:5px;margin-bottom:28px;}
+.sub-price{font-family:'Cormorant Garamond',serif;font-size:50px;font-weight:300;color:var(--silver);}
+.sub-per{font-size:14px;color:var(--muted);}
+.sub-feats{display:flex;flex-direction:column;gap:12px;margin-bottom:36px;}
+.sub-feat{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text);line-height:1.5;}
+.sf-chk{width:18px;height:18px;background:rgba(176,190,197,0.1);border:1px solid rgba(176,190,197,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:var(--silver);margin-top:1px;}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+.testi{background:var(--card);padding:28px;position:relative;}
+.testi::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:68px;color:var(--silver);opacity:0.12;position:absolute;top:8px;left:18px;line-height:1;}
+.stars{color:#c9a84c;font-size:11px;margin-bottom:8px;}
+.testi-text{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:18px;padding-top:16px;font-style:italic;}
+.testi-name{font-family:'DM Mono',monospace;font-size:11px;color:var(--silver);font-weight:500;letter-spacing:0.05em;}
+.testi-role{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* BLOG */
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+.blog-card{background:var(--card);overflow:hidden;transition:background 0.2s;}
+.blog-card:hover{background:#131c26;}
+.blog-thumb{height:120px;background:linear-gradient(135deg,#0c1520 0%,#101a28 100%);display:flex;align-items:center;justify-content:center;font-size:34px;border-bottom:1px solid var(--border);}
+.blog-body{padding:20px;}
+.blog-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--silver);margin-bottom:8px;display:block;}
+.blog-card h3{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;line-height:1.3;margin-bottom:8px;}
+.blog-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:1px;background:var(--border);}
+.faq-item{background:var(--card);overflow:hidden;}
+.faq-q{padding:20px 26px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:400;transition:color 0.2s;user-select:none;}
+.faq-q:hover{color:var(--silver);}
+.faq-q::after{content:'+';font-size:20px;color:var(--silver);transition:transform 0.3s;font-weight:300;}
+.faq-item.open .faq-q::after{transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s;padding:0 26px;font-size:13px;color:var(--muted);line-height:1.75;}
+.faq-item.open .faq-a{max-height:300px;padding:0 26px 20px;}
+
+/* DISCLAIMER */
+.disclaimer{background:rgba(176,190,197,0.04);border:1px solid rgba(176,190,197,0.12);padding:20px 24px;display:flex;gap:14px;align-items:flex-start;}
+.disc-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.disc-text{font-size:12px;color:var(--muted);line-height:1.65;}
+.disc-text strong{color:var(--silver2);}
+
+/* FINAL CTA */
+.final-cta{text-align:center;padding:100px 24px;position:relative;overflow:hidden;}
+.final-cta::before{content:'';position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(176,190,197,0.08) 0%,transparent 65%);pointer-events:none;}
+
+/* DIVIDER */
+.div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(176,190,197,0.2),transparent);}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:36px 48px;text-align:center;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--silver);margin-bottom:14px;}
+.footer-links{display:flex;justify-content:center;gap:28px;margin:16px 0;flex-wrap:wrap;}
+.footer-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--silver);}
+footer p{font-size:11px;color:var(--muted);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+.fr-content{display:block;}.en-content{display:none;}
+body.en .fr-content{display:none;}body.en .en-content{display:block;}
+
+@media(max-width:768px){
+  .pain-grid,.cats,.testi-grid,.blog-grid,.sub-grid{grid-template-columns:1fr;background:none;}
+  .prompts-grid{grid-template-columns:1fr;}
+  .hero-stats{grid-template-columns:1fr 1fr;}
+  .pack-header{padding:24px;}.pack-body{padding:24px;}
+  .nav{padding:12px 20px;}.brand-strip{padding:14px 20px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">Prompt<em>Craft</em> <sup>Legal</sup></div>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 FR</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+  </div>
+</nav>
+
+<div class="brand-strip">
+  <div class="brand-strip-inner">
+    <span class="strip-label fr-content">PromptCraft · Cinq verticales</span>
+    <span class="strip-label en-content">PromptCraft · Five verticals</span>
+    <div class="verts">
+      <span class="v-tag">Immo</span>
+      <span class="v-tag">Commerce</span>
+      <span class="v-tag active">Legal ✦</span>
+      <span class="v-tag">Coach</span>
+      <span class="v-tag">Recruit</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+
+    <div class="fr-content">
+      <div class="eyebrow-row">
+        <div class="eyebrow-rule"></div>
+        <div class="eyebrow-pill">65 prompts · Avocats & Juristes</div>
+        <div class="eyebrow-rule"></div>
+      </div>
+      <h1>La précision<br>au service<br>du <em>droit.</em></h1>
+      <p class="hero-p">Rédigez contrats, conclusions et communications clients 4× plus vite. Sans compromettre la rigueur. Sans sacrifier la qualité.</p>
+      <div class="hero-cta">
+        <a href="#pack" class="btn-p">Obtenir le Pack — 97€</a>
+        <a href="#apercu" class="btn-s">Voir les prompts ↓</a>
+      </div>
+    </div>
+
+    <div class="en-content">
+      <div class="eyebrow-row">
+        <div class="eyebrow-rule"></div>
+        <div class="eyebrow-pill">65 prompts · Lawyers & Legal professionals</div>
+        <div class="eyebrow-rule"></div>
+      </div>
+      <h1>Precision<br>in service<br>of <em>law.</em></h1>
+      <p class="hero-p">Draft contracts, pleadings and client communications 4× faster. Without compromising rigour. Without sacrificing quality.</p>
+      <div class="hero-cta">
+        <a href="#pack" class="btn-p">Get the Pack — €97</a>
+        <a href="#apercu" class="btn-s">See the prompts ↓</a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hs-item"><span class="hs-num">65</span><span class="hs-lbl fr-content">Prompts</span><span class="hs-lbl en-content">Prompts</span></div>
+      <div class="hs-item"><span class="hs-num">4×</span><span class="hs-lbl fr-content">Plus rapide</span><span class="hs-lbl en-content">Faster</span></div>
+      <div class="hs-item"><span class="hs-num">6</span><span class="hs-lbl fr-content">Catégories</span><span class="hs-lbl en-content">Categories</span></div>
+      <div class="hs-item"><span class="hs-num">97€</span><span class="hs-lbl fr-content">Une fois</span><span class="hs-lbl en-content">One-time</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- DISCLAIMER -->
+<section style="background:var(--surface);padding:32px 24px;">
+  <div class="container">
+    <div class="disclaimer">
+      <span class="disc-icon">⚠</span>
+      <p class="disc-text fr-content"><strong>Note déontologique :</strong> Ces prompts sont des outils d'assistance à la rédaction. Ils ne constituent pas un avis juridique et ne remplacent pas le jugement professionnel de l'avocat. Toute production générée par IA doit être vérifiée, adaptée et validée avant utilisation dans un contexte réel. Conforme à l'usage des technologies IA par les barreaux français et européens.</p>
+      <p class="disc-text en-content"><strong>Professional note:</strong> These prompts are drafting assistance tools. They do not constitute legal advice and do not replace professional legal judgment. Any AI-generated content must be reviewed, adapted and validated before use in a real context. Compliant with bar association guidelines on AI use.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="eyebrow fr-content">Le problème</div>
+    <div class="eyebrow en-content">The problem</div>
+    <h2 class="fr-content">Ce que le temps<br><em>vous coûte</em></h2>
+    <h2 class="en-content">What time<br><em>costs you</em></h2>
+    <div class="pain-grid reveal">
+      <div class="pain-card">
+        <span class="pain-icon">📄</span>
+        <h3 class="fr-content">3h pour un contrat type</h3>
+        <h3 class="en-content">3h for a standard contract</h3>
+        <p class="fr-content">Un contrat de prestation de services que vous avez rédigé 50 fois prend encore 2–3h. Avec un prompt calibré, la structure et les clauses essentielles sont prêtes en <strong>15 minutes</strong> — à adapter et valider, pas à inventer.</p>
+        <p class="en-content">A service agreement you've drafted 50 times still takes 2–3 hours. With a calibrated prompt, the structure and key clauses are ready in <strong>15 minutes</strong> — to adapt and validate, not invent from scratch.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">✉</span>
+        <h3 class="fr-content">Communication client sous-optimale</h3>
+        <h3 class="en-content">Suboptimal client communication</h3>
+        <p class="fr-content">Expliquer le droit à un client non-juriste de façon claire, rassurante et sans ambiguïté prend du talent et du temps. Nos prompts <strong>traduisent la complexité juridique en clarté client</strong> automatiquement.</p>
+        <p class="en-content">Explaining law to a non-lawyer client clearly, reassuringly and without ambiguity takes talent and time. Our prompts <strong>translate legal complexity into client clarity</strong> automatically.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">🔍</span>
+        <h3 class="fr-content">Développement cabinet négligé</h3>
+        <h3 class="en-content">Neglected business development</h3>
+        <p class="fr-content">LinkedIn, articles de blog, prospection grands comptes — les avocats qui développent leur visibilité gagnent plus. Mais qui a le temps ? <strong>PromptCraft Legal génère tout le contenu de développement</strong> en quelques minutes.</p>
+        <p class="en-content">LinkedIn, blog articles, enterprise prospecting — lawyers who build visibility earn more. But who has time? <strong>PromptCraft Legal generates all business development content</strong> in minutes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="apercu">
+  <div class="container">
+    <div class="eyebrow fr-content">Contenu du pack</div>
+    <div class="eyebrow en-content">Pack contents</div>
+    <h2 class="fr-content">6 <em>catégories</em></h2>
+    <h2 class="en-content">6 <em>categories</em></h2>
+    <p class="sec-sub fr-content">65 prompts couvrant l'ensemble de l'activité du cabinet — de la rédaction contractuelle à la plaidoirie, de la communication client au développement commercial.</p>
+    <p class="sec-sub en-content">65 prompts covering the full scope of law firm activity — from contract drafting to pleadings, client communications to business development.</p>
+    <div class="cats reveal">
+      <div class="cat-card">
+        <span class="cat-icon">📋</span>
+        <h4 class="fr-content">Rédaction juridique</h4>
+        <h4 class="en-content">Legal drafting</h4>
+        <span class="cat-count">15 PROMPTS</span>
+        <p class="fr-content">Contrats, mises en demeure, conclusions, clauses spéciales, protocoles transactionnels.</p>
+        <p class="en-content">Contracts, formal notices, pleadings, special clauses, settlement protocols.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">✉</span>
+        <h4 class="fr-content">Communication client</h4>
+        <h4 class="en-content">Client communications</h4>
+        <span class="cat-count">12 PROMPTS</span>
+        <p class="fr-content">Prise en charge, notes de synthèse, relances honoraires, réponses aux mécontentements.</p>
+        <p class="en-content">Engagement letters, briefing notes, fee reminders, complaint responses.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">🏛</span>
+        <h4 class="fr-content">Plaidoirie & argumentation</h4>
+        <h4 class="en-content">Advocacy & argumentation</h4>
+        <span class="cat-count">10 PROMPTS</span>
+        <p class="fr-content">Plans de plaidoirie, contre-arguments, réquisitoires, notes de stratégie de dossier.</p>
+        <p class="en-content">Pleading plans, counter-arguments, opening statements, case strategy notes.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">📊</span>
+        <h4 class="fr-content">Gestion de cabinet</h4>
+        <h4 class="en-content">Firm management</h4>
+        <span class="cat-count">10 PROMPTS</span>
+        <p class="fr-content">Conventions d'honoraires, procédures internes, appels d'offres, prospection grands comptes.</p>
+        <p class="en-content">Fee agreements, internal procedures, RFP responses, enterprise prospecting.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">🔍</span>
+        <h4 class="fr-content">Recherche & veille</h4>
+        <h4 class="en-content">Research & monitoring</h4>
+        <span class="cat-count">10 PROMPTS</span>
+        <p class="fr-content">Synthèses de jurisprudence, notes de veille réglementaire, analyses de risques contractuels.</p>
+        <p class="en-content">Case law summaries, regulatory monitoring notes, contract risk analysis.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">🌐</span>
+        <h4 class="fr-content">Contenu & développement</h4>
+        <h4 class="en-content">Content & BD</h4>
+        <span class="cat-count">8 PROMPTS</span>
+        <p class="fr-content">Blog SEO, profil LinkedIn, newsletters clients, pitchs cabinet, scripts de webinaire.</p>
+        <p class="en-content">SEO blog, LinkedIn profile, client newsletters, firm pitches, webinar scripts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACK -->
+<section style="background:var(--surface);" id="pack">
+  <div class="container">
+    <div class="eyebrow fr-content">Le produit</div>
+    <div class="eyebrow en-content">The product</div>
+    <h2 class="fr-content">Pack <em>Legal Pro</em></h2>
+    <h2 class="en-content"><em>Legal Pro</em> Pack</h2>
+    <p class="sec-p fr-content">65 prompts. Copiez, personnalisez, validez. Résultat professionnel en fraction du temps habituel.</p>
+    <p class="sec-p en-content">65 prompts. Copy, customise, validate. Professional results in a fraction of the usual time.</p>
+
+    <div class="pack-wrap reveal">
+      <div class="pack-header">
+        <div>
+          <div class="pack-name fr-content">Pack <span>Legal Pro</span></div>
+          <div class="pack-name en-content">Pack <span>Legal Pro</span></div>
+          <div class="pack-meta fr-content">65 prompts · 6 catégories · PDF premium · mises à jour incluses</div>
+          <div class="pack-meta en-content">65 prompts · 6 categories · Premium PDF · updates included</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="pack-price">97€</div>
+          <div class="pack-pnote fr-content">paiement unique · accès à vie</div>
+          <div class="pack-pnote en-content">one-time · lifetime access</div>
+        </div>
+      </div>
+      <div class="pack-body">
+        <div class="prompts-grid">
+          <div class="prompt-card">
+            <span class="p-num">01 — RÉDACTION</span>
+            <p>Structure et clauses essentielles d'un [type de contrat] entre [Partie A] et [Partie B]. Droit applicable : [France]. Signale les clauses à risque.</p>
+            <span class="warn">⚠ À adapter à votre juridiction</span>
+          </div>
+          <div class="prompt-card">
+            <span class="p-num">02 — MISE EN DEMEURE</span>
+            <p>Lettre de mise en demeure pour [client] contre [débiteur] concernant [objet]. Délai : [jours]. Ton ferme, base légale, conséquences du défaut.</p>
+          </div>
+          <div class="prompt-card">
+            <span class="p-num">06 — EMAIL CLIENT</span>
+            <p>Email de prise en charge d'un nouveau dossier [type]. Confirmation mission, documents requis, honoraires, prochaines étapes. Ton rassurant, précis.</p>
+          </div>
+          <div class="prompt-card">
+            <span class="p-num">07 — NOTE SYNTHÈSE</span>
+            <p>Note de synthèse sur [problème juridique] pour client non-juriste. Enjeux, options, avantages/inconvénients, recommandation. 300 mots sans jargon.</p>
+          </div>
+          <div class="prompt-card">
+            <span class="p-num">11 — PLAIDOIRIE</span>
+            <p>Plan de plaidoirie pour [type d'audience] devant [juridiction]. Accroche 30s, narration, argumentation 3 points, réfutation adverse, conclusion.</p>
+          </div>
+          <div class="prompt-card">
+            <span class="p-num">21 — BLOG SEO</span>
+            <p>Article de blog 900 mots sur '[sujet juridique accessible]' pour le site du cabinet [spécialité]. H1 kw, structure H2, CTA consultation. Méta incluse.</p>
+          </div>
+        </div>
+        <div style="text-align:center;padding:14px;color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;border-top:1px solid var(--border);">
+          <span class="fr-content">+ 59 prompts supplémentaires dans le pack complet</span>
+          <span class="en-content">+ 59 additional prompts in the full pack</span>
+        </div>
+        <div class="pack-footer" style="margin-top:20px;">
+          <div class="includes">
+            <div class="inc-item fr-content">PDF téléchargeable instantanément</div>
+            <div class="inc-item en-content">Instantly downloadable PDF</div>
+            <div class="inc-item fr-content">Compatible ChatGPT-4o & Claude Sonnet</div>
+            <div class="inc-item en-content">Compatible ChatGPT-4o & Claude Sonnet</div>
+            <div class="inc-item fr-content">Note déontologique par catégorie</div>
+            <div class="inc-item en-content">Ethics note per category</div>
+            <div class="inc-item fr-content">Mises à jour gratuites à vie</div>
+            <div class="inc-item en-content">Free lifetime updates</div>
+            <div class="inc-item fr-content">Garantie 14 jours</div>
+            <div class="inc-item en-content">14-day guarantee</div>
+          </div>
+          <a href="#" class="btn-p fr-content">Acheter — 97€</a>
+          <a href="#" class="btn-p en-content">Buy — €97</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBSCRIPTION -->
+<section>
+  <div class="container">
+    <div class="eyebrow fr-content">Récurrent</div>
+    <div class="eyebrow en-content">Subscription</div>
+    <h2 class="fr-content">Le droit <em>évolue.</em><br>Vos prompts aussi.</h2>
+    <h2 class="en-content">Law <em>evolves.</em><br>Your prompts do too.</h2>
+    <div class="sub-grid reveal">
+      <div class="sub-card">
+        <div class="sub-name fr-content">Pack Unique</div>
+        <div class="sub-name en-content">One-Time Pack</div>
+        <div class="sub-price-row"><div class="sub-price">97€</div><div class="sub-per fr-content">une fois</div><div class="sub-per en-content">once</div></div>
+        <div class="sub-feats">
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">65 prompts Legal Pro</span><span class="en-content">65 Legal Pro prompts</span></div>
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">PDF premium immédiat</span><span class="en-content">Instant premium PDF</span></div>
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">1 mise à jour majeure</span><span class="en-content">1 major update</span></div>
+        </div>
+        <a href="#" class="btn-s fr-content" style="display:block;text-align:center;">Choisir ce pack</a>
+        <a href="#" class="btn-s en-content" style="display:block;text-align:center;">Choose this pack</a>
+      </div>
+      <div class="sub-card featured">
+        <div class="sub-badge fr-content">Recommandé</div>
+        <div class="sub-badge en-content">Recommended</div>
+        <div class="sub-name fr-content">Membre Pro</div>
+        <div class="sub-name en-content">Pro Member</div>
+        <div class="sub-price-row"><div class="sub-price">19€</div><div class="sub-per fr-content">/mois</div><div class="sub-per en-content">/month</div></div>
+        <div class="sub-feats">
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">2 nouveaux packs/mois · toutes verticales</span><span class="en-content">2 new packs/month · all verticals</span></div>
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">Accès archive complète (Legal + Immo + Commerce...)</span><span class="en-content">Full archive access (Legal + Immo + Commerce...)</span></div>
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">Mises à jour législatives et jurisprudentielles</span><span class="en-content">Legislative and case law updates</span></div>
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">Q&A mensuel exclusif</span><span class="en-content">Exclusive monthly Q&A</span></div>
+          <div class="sub-feat"><div class="sf-chk">✓</div><span class="fr-content">Prompts sur demande pour cas spécifiques</span><span class="en-content">On-demand prompts for specific cases</span></div>
+        </div>
+        <a href="#" class="btn-p fr-content" style="display:block;text-align:center;">Rejoindre — 19€/mois</a>
+        <a href="#" class="btn-p en-content" style="display:block;text-align:center;">Join — €19/month</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="eyebrow fr-content">Témoignages</div>
+    <div class="eyebrow en-content">Testimonials</div>
+    <h2 class="fr-content">Ce qu'ils <em>disent</em></h2>
+    <h2 class="en-content">What they <em>say</em></h2>
+    <div class="testi-grid reveal">
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text fr-content">J'ai utilisé le prompt de mise en demeure pour une affaire de loyers impayés. En 20 minutes, j'avais un document que j'aurais mis 2h à rédiger. Évidemment relu et adapté, mais la structure est parfaite.</p>
+        <p class="testi-text en-content">I used the formal notice prompt for an unpaid rent case. In 20 minutes I had a document that would have taken me 2 hours to draft. Obviously reviewed and adapted, but the structure is perfect.</p>
+        <div class="testi-name">Maître C. Dupont</div>
+        <div class="testi-role fr-content">Avocate, droit immobilier, Paris</div>
+        <div class="testi-role en-content">Property lawyer, Paris</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text fr-content">Le prompt de note de synthèse pour client non-juriste est exactement ce dont j'avais besoin. Mes clients comprennent enfin la situation sans que j'aie à tout réexpliquer.</p>
+        <p class="testi-text en-content">The briefing note prompt for non-lawyer clients is exactly what I needed. My clients finally understand the situation without me having to re-explain everything.</p>
+        <div class="testi-name">Me A. Bernard</div>
+        <div class="testi-role fr-content">Avocat d'affaires, Lyon</div>
+        <div class="testi-role en-content">Corporate lawyer, Lyon</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text fr-content">Le pack développement cabinet a transformé ma présence LinkedIn. 3 articles publiés en 1 semaine, 12 nouveaux contacts qualifiés. Le ROI est réel et mesurable.</p>
+        <p class="testi-text en-content">The BD pack transformed my LinkedIn presence. 3 articles published in 1 week, 12 new qualified contacts. The ROI is real and measurable.</p>
+        <div class="testi-name">Maître S. Moreau</div>
+        <div class="testi-role fr-content">Avocate associée, cabinet 8 personnes, Bordeaux</div>
+        <div class="testi-role en-content">Partner, 8-person firm, Bordeaux</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEO BLOG -->
+<section>
+  <div class="container">
+    <div class="eyebrow">SEO · Blog</div>
+    <h2 class="fr-content">Trafic <em>organique</em></h2>
+    <h2 class="en-content"><em>Organic</em> traffic</h2>
+    <div class="blog-grid reveal">
+      <div class="blog-card">
+        <div class="blog-thumb">⚖</div>
+        <div class="blog-body">
+          <span class="blog-tag">SEO · FR</span>
+          <h3>ChatGPT pour avocats : guide complet 2026</h3>
+          <p class="fr-content">Mot-clé : "ChatGPT avocat" — 1 600/mois FR</p>
+          <p class="en-content">Keyword: "ChatGPT lawyer" — 4 400/month EN</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb">📋</div>
+        <div class="blog-body">
+          <span class="blog-tag">SEO · FR/EN</span>
+          <h3 class="fr-content">IA et rédaction juridique : ce que les avocats doivent savoir</h3>
+          <h3 class="en-content">AI and legal drafting: what lawyers need to know</h3>
+          <p class="fr-content">Mot-clé : "intelligence artificielle droit" — 2 900/mois</p>
+          <p class="en-content">Keyword: "AI legal drafting" — 5 400/month</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb">🔍</div>
+        <div class="blog-body">
+          <span class="blog-tag">SEO · EN</span>
+          <h3>Best AI prompts for lawyers in 2026</h3>
+          <p class="fr-content">Mot-clé : "AI prompts for lawyers" — 3 200/mois EN</p>
+          <p class="en-content">Keyword: "AI prompts for lawyers" — 3 200/month</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="eyebrow">FAQ</div>
+    <h2 class="fr-content">Questions <em>fréquentes</em></h2>
+    <h2 class="en-content">Frequently asked <em>questions</em></h2>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q fr-content">Est-ce compatible avec les règles déontologiques du barreau ?</div>
+        <div class="faq-q en-content">Is it compatible with bar association ethics rules?</div>
+        <div class="faq-a fr-content">Oui, à condition d'utiliser l'IA comme outil d'assistance et non de substitution au jugement professionnel. Chaque prompt inclut une note sur les points de validation nécessaires. L'avocat reste seul responsable des actes produits.</div>
+        <div class="faq-a en-content">Yes, provided AI is used as an assistance tool and not a substitute for professional judgment. Each prompt includes a note on required validation points. The lawyer remains solely responsible for produced documents.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Les prompts sont-ils adaptés à d'autres droits que le droit français ?</div>
+        <div class="faq-q en-content">Do the prompts work for jurisdictions other than French law?</div>
+        <div class="faq-a fr-content">La structure et la logique de rédaction sont universelles. Pour les références légales spécifiques, chaque prompt indique comment préciser votre juridiction (France, Belgique, Suisse, UK, etc.) pour que l'IA adapte les références applicables.</div>
+        <div class="faq-a en-content">The drafting structure and logic are universal. For specific legal references, each prompt indicates how to specify your jurisdiction (France, Belgium, Switzerland, UK, etc.) so the AI adapts applicable references.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Les documents générés ont-ils une valeur juridique ?</div>
+        <div class="faq-q en-content">Do generated documents have legal standing?</div>
+        <div class="faq-a fr-content">Non directement — aucun document IA n'a de valeur juridique par lui-même. Ces prompts produisent des bases de travail de très haute qualité que l'avocat adapte, complète et signe sous sa responsabilité professionnelle.</div>
+        <div class="faq-a en-content">Not directly — no AI document has legal standing in itself. These prompts produce very high quality working drafts that the lawyer adapts, completes and signs under their professional responsibility.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Mes données et celles de mes clients sont-elles protégées ?</div>
+        <div class="faq-q en-content">Are my data and my clients' data protected?</div>
+        <div class="faq-a fr-content">PromptCraft vous recommande de ne jamais saisir de données clients identifiables dans les IA en ligne. Utilisez des données fictives ou anonymisées lors de l'utilisation des prompts — le résultat est identique en qualité.</div>
+        <div class="faq-a en-content">PromptCraft recommends never entering identifiable client data into online AI tools. Use fictional or anonymised data when using the prompts — the quality of results is identical.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="fr-content">La précision<br>à <em>votre service.</em></h2>
+    <h2 class="en-content">Precision<br>at <em>your service.</em></h2>
+    <p class="sec-p fr-content" style="margin:0 auto 44px;text-align:center;">Rejoignez les avocats qui ont fait de l'IA un avantage compétitif — sans compromis sur la rigueur.</p>
+    <p class="sec-p en-content" style="margin:0 auto 44px;text-align:center;">Join the lawyers who've made AI a competitive advantage — without compromising rigour.</p>
+    <div class="hero-cta" style="position:relative;z-index:1;">
+      <a href="#" class="btn-p fr-content">Obtenir le Pack Legal — 97€</a>
+      <a href="#" class="btn-p en-content">Get the Legal Pack — €97</a>
+      <a href="#" class="btn-s fr-content">Abonnement Pro — 19€/mois</a>
+      <a href="#" class="btn-s en-content">Pro Subscription — €19/month</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">PromptCraft</div>
+  <div class="footer-links">
+    <a href="promptcraft-hub.html">promptcraft.co</a>
+    <a href="#" class="fr-content">Mentions légales</a><a href="#" class="en-content">Legal</a>
+    <a href="#" class="fr-content">CGV</a><a href="#" class="en-content">Terms</a>
+    <a href="#"><span class="__cf_email__" data-cfemail="284b47465c494b5c68585a4745585c4b5a494e5c064b47">[email&#160;protected]</span></a>
+  </div>
+  <p>© 2026 PromptCraft · promptcraft.co · All rights reserved</p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function setLang(l){document.body.className=l==='en'?'en':'';document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');document.documentElement.lang=l;}
+document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{const i=q.closest('.faq-item'),w=i.classList.contains('open');document.querySelectorAll('.faq-item').forEach(x=>x.classList.remove('open'));if(!w)i.classList.add('open');});});
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.t

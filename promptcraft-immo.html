@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ImmoPrompts — 50 prompts IA premium pour agents immobiliers. Rédigez des annonces irrésistibles, closez plus vite, automatisez votre prospection.">
+<meta name="keywords" content="prompts IA agent immobilier, ChatGPT immobilier, intelligence artificielle immobilier, annonces immobilières IA">
+<meta property="og:title" content="ImmoPrompts — L'IA au service des agents immobiliers">
+<meta property="og:description" content="50 prompts testés pour rédiger, prospecter et closer 3x plus vite.">
+<title>ImmoPrompts — Prompts IA Premium pour Agents Immobiliers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0c0b09;
+  --surface: #121110;
+  --card: #1a1814;
+  --border: #2e2a24;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-pale: #f5e8c0;
+  --text: #f0ead8;
+  --muted: #8a8070;
+  --white: #faf8f3;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+}
+
+/* LANG SWITCHER */
+.lang-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(12,11,9,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.lang-btns { display: flex; gap: 8px; }
+
+.lang-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.lang-btn.active, .lang-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201,168,76,0.08);
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: 120px 24px 80px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(201,168,76,0.06) 0%, transparent 50%);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 30%, transparent 70%);
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-light);
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-badge::before { content: '✦'; font-size: 10px; }
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(52px, 9vw, 96px);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin-bottom: 32px;
+  animation: fadeUp 0.8s ease both 0.1s;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--gold);
+  display: block;
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+  font-weight: 300;
+  animation: fadeUp 0.8s ease both 0.2s;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s ease both 0.3s;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: #000;
+  padding: 16px 36px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: all 0.25s;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(201,168,76,0.3);
+}
+
+.btn-secondary {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 16px 36px;
+  border-radius: 3px;
+  font-size: 15px;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: all 0.25s;
+  display: inline-block;
+}
+
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+.hero-social-proof {
+  margin-top: 64px;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  animation: fadeUp 0.8s ease both 0.4s;
+}
+
+.proof-item { text-align: center; }
+
+.proof-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+
+.proof-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* SECTION STRUCTURE */
+section { padding: 100px 24px; }
+.container { max-width: 1000px; margin: 0 auto; }
+
+.section-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  max-width: 40px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+
+h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+h2 em { font-style: italic; color: var(--gold); }
+
+.section-sub {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 60px;
+}
+
+/* PROBLEM SECTION */
+.problem-section { background: var(--surface); }
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 16px;
+}
+
+.problem-card {
+  background: var(--card);
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.problem-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.problem-card:hover::before { opacity: 1; }
+
+.problem-icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+  display: block;
+  filter: grayscale(0.3);
+}
+
+.problem-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.problem-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+/* PACK REVEAL */
+.pack-section { position: relative; }
+
+.pack-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pack-header {
+  background: linear-gradient(135deg, #1e1a12 0%, #251f14 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pack-header::after {
+  content: '⌂';
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 120px;
+  color: rgba(201,168,76,0.06);
+  line-height: 1;
+}
+
+.pack-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 300;
+}
+
+.pack-title span { color: var(--gold); font-style: italic; }
+
+.pack-price-block { text-align: right; }
+
+.pack-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.pack-price-note { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.pack-body { padding: 48px; }
+
+.prompts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.prompt-item {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 18px 20px;
+  transition: all 0.2s;
+  cursor: default;
+}
+
+.prompt-item:hover {
+  border-color: rgba(201,168,76,0.3);
+  background: rgba(201,168,76,0.03);
+}
+
+.prompt-num {
+  font-size: 10px;
+  color: var(--gold);
+  font-family: 'Outfit', monospace;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  display: block;
+  opacity: 0.7;
+}
+
+.prompt-item p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.prompt-item p em { color: var(--muted); font-style: normal; font-size: 12px; }
+
+.pack-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.pack-includes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.include-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.include-item::before {
+  content: '✦';
+  color: var(--gold);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* SUBSCRIPTION */
+.sub-section { background: var(--surface); }
+
+.sub-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.sub-card {
+  background: var(--card);
+  padding: 48px 40px;
+  position: relative;
+}
+
+.sub-card.featured {
+  background: linear-gradient(135deg, #1e1b12 0%, #221d11 100%);
+  border: 1px solid rgba(201,168,76,0.3);
+}
+
+.sub-badge {
+  position: absolute;
+  top: -1px; right: 32px;
+  background: var(--gold);
+  color: #000;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 0 0 4px 4px;
+}
+
+.sub-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.sub-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 32px;
+}
+
+.sub-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--gold);
+}
+
+.sub-period { font-size: 15px; color: var(--muted); }
+
+.sub-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
+
+.sub-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.feat-check {
+  width: 20px; height: 20px;
+  background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--gold);
+  margin-top: 1px;
+}
+
+/* TESTIMONIALS */
+.testimonials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 60px; }
+
+.testimonial {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px;
+  position: relative;
+}
+
+.testimonial::before {
+  content: '"';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px;
+  color: var(--gold);
+  opacity: 0.2;
+  position: absolute;
+  top: 8px; left: 20px;
+  line-height: 1;
+}
+
+.testimonial-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  font-style: italic;
+}
+
+.testimonial-author { font-size: 12px; color: var(--gold); font-weight: 500; }
+.testimonial-role { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.stars { color: var(--gold); font-size: 12px; margin-bottom: 8px; }
+
+/* SEO BLOG SECTION */
+.seo-section { background: var(--surface); }
+
+.blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.blog-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.blog-card:hover { border-color: rgba(201,168,76,0.4); }
+
+.blog-thumb {
+  height: 140px;
+  background: linear-gradient(135deg, #1a1712 0%, #221e14 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.blog-body { padding: 24px; }
+
+.blog-tag {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.blog-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.blog-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ZAPIER / AUTOMATION */
+.automation-section { }
+
+.automation-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 48px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+.flow-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px 20px;
+  min-width: 160px;
+  text-align: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.flow-step:hover { border-color: var(--gold); }
+
+.flow-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+.flow-step h4 { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+.flow-step p { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+.flow-arrow {
+  color: var(--gold);
+  font-size: 20px;
+  padding: 0 8px;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* FAQ */
+.faq-section { background: var(--surface); }
+
+.faq-list { display: flex; flex-direction: column; gap: 2px; }
+
+.faq-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.faq-q {
+  padding: 22px 28px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 400;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.faq-q:hover { color: var(--gold); }
+
+.faq-q::after {
+  content: '+';
+  font-size: 22px;
+  color: var(--gold);
+  transition: transform 0.3s;
+  font-weight: 300;
+}
+
+.faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s;
+  padding: 0 28px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.faq-item.open .faq-a {
+  max-height: 300px;
+  padding: 0 28px 22px;
+}
+
+/* FINAL CTA */
+.final-cta {
+  text-align: center;
+  padding: 120px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  bottom: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 500px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.final-cta h2 {
+  font-size: clamp(40px, 6vw, 72px);
+  margin-bottom: 24px;
+}
+
+.final-cta .section-sub { margin: 0 auto 48px; text-align: center; }
+
+/* FOOTER */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 40px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+footer p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+.footer-links { display: flex; justify-content: center; gap: 32px; margin: 20px 0; }
+.footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--gold); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .problem-grid, .sub-grid, .testimonials, .blog-grid { grid-template-columns: 1fr; }
+  .prompts-grid { grid-template-columns: 1fr; }
+  .pack-header { padding: 28px; }
+  .pack-body { padding: 28px; }
+  .hero-social-proof { gap: 24px; flex-wrap: wrap; }
+  .lang-bar { padding: 12px 20px; }
+  section { padding: 70px 20px; }
+}
+
+/* BILINGUAL */
+.fr-content { display: block; }
+.en-content { display: none; }
+body.en .fr-content { display: none; }
+body.en .en-content { display: block; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="lang-bar">
+  <div class="logo">ImmoPrompts</div>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 FR</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+
+    <div class="fr-content">
+      <div class="hero-badge">50 prompts testés · Résultats immédiats</div>
+      <h1>L'IA qui travaille<br>pour votre <em>agence</em></h1>
+      <p class="hero-sub">Rédigez des annonces irrésistibles, closez 3× plus vite et automatisez votre prospection — en moins de 5 minutes par jour.</p>
+      <div class="hero-cta">
+        <a href="#pack" class="btn-primary">Obtenir le Pack — 47€</a>
+        <a href="#apercu" class="btn-secondary">Voir les prompts ↓</a>
+      </div>
+    </div>
+
+    <div class="en-content">
+      <div class="hero-badge">50 tested prompts · Instant results</div>
+      <h1>The AI that works<br>for your <em>agency</em></h1>
+      <p class="hero-sub">Write irresistible listings, close 3× faster, and automate your prospecting — in less than 5 minutes a day.</p>
+      <div class="hero-cta">
+        <a href="#pack" class="btn-primary">Get the Pack — €47</a>
+        <a href="#apercu" class="btn-secondary">See the prompts ↓</a>
+      </div>
+    </div>
+
+    <div class="hero-social-proof">
+      <div class="proof-item">
+        <span class="proof-num">50</span>
+        <span class="proof-label fr-content">Prompts premium</span>
+        <span class="proof-label en-content">Premium prompts</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-num">3×</span>
+        <span class="proof-label fr-content">Plus vite</span>
+        <span class="proof-label en-content">Faster</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-num">∞</span>
+        <span class="proof-label fr-content">Utilisations</span>
+        <span class="proof-label en-content">Uses</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-num">5min</span>
+        <span class="proof-label fr-content">Par annonce</span>
+        <span class="proof-label en-content">Per listing</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLÈME -->
+<section class="problem-section">
+  <div class="container">
+    <div class="section-eyebrow fr-content">Le problème</div>
+    <div class="section-eyebrow en-content">The problem</div>
+    <h2 class="fr-content">Ce que vous <em>perdez</em> chaque jour</h2>
+    <h2 class="en-content">What you <em>lose</em> every day</h2>
+
+    <div class="problem-grid reveal">
+      <div class="problem-card">
+        <span class="problem-icon">⏳</span>
+        <h3 class="fr-content">2h par annonce</h3>
+        <h3 class="en-content">2 hours per listing</h3>
+        <p class="fr-content">Vous passez plus de temps à rédiger qu'à vendre. Chaque annonce from scratch vous coûte des mandats.</p>
+        <p class="en-content">You spend more time writing than selling. Every listing from scratch costs you mandates.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">📉</span>
+        <h3 class="fr-content">Prospects non closés</h3>
+        <h3 class="en-content">Unconverted prospects</h3>
+        <p class="fr-content">Sans scripts de relance optimisés, vos prospects froids restent froids. L'IA change ça en 30 secondes.</p>
+        <p class="en-content">Without optimized follow-up scripts, cold prospects stay cold. AI changes that in 30 seconds.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">📱</span>
+        <h3 class="fr-content">Réseaux sociaux négligés</h3>
+        <h3 class="en-content">Neglected social media</h3>
+        <p class="fr-content">Publier régulièrement prend du temps. Nos prompts génèrent 30 posts en 10 minutes.</p>
+        <p class="en-content">Posting regularly takes time. Our prompts generate 30 posts in 10 minutes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACK -->
+<section class="pack-section" id="pack">
+  <div class="container">
+    <div class="section-eyebrow fr-content">Le produit</div>
+    <div class="section-eyebrow en-content">The product</div>
+    <h2 class="fr-content">Pack <em>Agent Immobilier</em></h2>
+    <h2 class="en-content">Real Estate <em>Agent Pack</em></h2>
+    <p class="section-sub fr-content">50 prompts organisés en 5 catégories. Copy-paste dans ChatGPT ou Claude, résultat en 10 secondes.</p>
+    <p class="section-sub en-content">50 prompts organized in 5 categories. Copy-paste into ChatGPT or Claude, results in 10 seconds.</p>
+
+    <div class="pack-container reveal" id="apercu">
+      <div class="pack-header">
+        <div>
+          <div class="pack-title fr-content">Pack <span>Agent Immo Pro</span></div>
+          <div class="pack-title en-content">Pack <span>Real Estate Pro</span></div>
+          <div style="font-size:13px;color:var(--muted);margin-top:8px;" class="fr-content">50 prompts · PDF + accès membre · Mises à jour incluses</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:8px;" class="en-content">50 prompts · PDF + member access · Updates included</div>
+        </div>
+        <div class="pack-price-block">
+          <div class="pack-price">47€</div>
+          <div class="pack-price-note fr-content">paiement unique · accès à vie</div>
+          <div class="pack-price-note en-content">one-time · lifetime access</div>
+        </div>
+      </div>
+
+      <div class="pack-body">
+        <div class="prompts-grid">
+          <div class="prompt-item">
+            <span class="prompt-num">01 — ANNONCES</span>
+            <p>Rédigez une annonce pour un <em>[type de bien]</em> de <em>[surface]</em> situé à <em>[ville]</em>, mettant en valeur <em>[3 atouts]</em>, ton émotionnel et accrocheur…</p>
+          </div>
+          <div class="prompt-item">
+            <span class="prompt-num">02 — PROSPECTION</span>
+            <p>Écris un email de prospection pour un propriétaire qui n'a pas vendu depuis 90 jours, ton empathique, sans pression, avec une proposition de valeur claire…</p>
+          </div>
+          <div class="prompt-item">
+            <span class="prompt-num">03 — CLOSING</span>
+            <p>Je dois rappeler un acheteur hésitant sur un bien. Rédige un script téléphonique de 90 secondes pour traiter l'objection <em>[prix trop élevé]</em>…</p>
+          </div>
+          <div class="prompt-item">
+            <span class="prompt-num">04 — RÉSEAUX</span>
+            <p>Génère 10 posts LinkedIn pour un agent immobilier spécialisé en <em>[luxe/résidentiel/locatif]</em>, mix éducatif/storytelling/preuve sociale…</p>
+          </div>
+          <div class="prompt-item">
+            <span class="prompt-num">05 — MANDATS</span>
+            <p>Prépare une présentation de mandat pour convaincre un propriétaire de choisir mon agence vs. les concurrents. Arguments différenciants, ton confiant…</p>
+          </div>
+          <div class="prompt-item">
+            <span class="prompt-num">06 — SEO LOCAL</span>
+            <p>Rédige un article de blog SEO sur "acheter un appartement à <em>[ville]</em>" pour mon site agence, 800 mots, optimisé pour Google, ton expert local…</p>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;letter-spacing:0.08em;">
+          + 44 prompts supplémentaires inclus dans le pack complet
+        </div>
+
+        <div class="pack-cta-row">
+          <div class="pack-includes">
+            <div class="include-item fr-content">PDF immédiatement téléchargeable</div>
+            <div class="include-item en-content">Immediately downloadable PDF</div>
+            <div class="include-item fr-content">Guide d'utilisation ChatGPT & Claude</div>
+            <div class="include-item en-content">ChatGPT & Claude usage guide</div>
+            <div class="include-item fr-content">Mises à jour gratuites à vie</div>
+            <div class="include-item en-content">Free lifetime updates</div>
+            <div class="include-item fr-content">Garantie satisfait ou remboursé 14 jours</div>
+            <div class="include-item en-content">14-day money-back guarantee</div>
+          </div>
+          <a href="#" class="btn-primary fr-content">Acheter maintenant — 47€</a>
+          <a href="#" class="btn-primary en-content">Buy now — €47</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABONNEMENT -->
+<section class="sub-section">
+  <div class="container">
+    <div class="section-eyebrow fr-content">Récurrent</div>
+    <div class="section-eyebrow en-content">Subscription</div>
+    <h2 class="fr-content">Ou devenez <em>membre</em></h2>
+    <h2 class="en-content">Or become a <em>member</em></h2>
+    <p class="section-sub fr-content">2 nouveaux packs chaque mois. L'IA évolue, vos prompts aussi.</p>
+    <p class="section-sub en-content">2 new packs every month. AI evolves, so do your prompts.</p>
+
+    <div class="sub-grid reveal">
+      <div class="sub-card">
+        <div class="sub-name fr-content">Pack Unique</div>
+        <div class="sub-name en-content">One-Time Pack</div>
+        <div class="sub-price-row">
+          <div class="sub-price">47€</div>
+          <div class="sub-period fr-content">une fois</div>
+          <div class="sub-period en-content">once</div>
+        </div>
+        <div class="sub-features">
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">50 prompts Agent Immo</span><span class="en-content">50 Real Estate prompts</span></div>
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">PDF téléchargeable</span><span class="en-content">Downloadable PDF</span></div>
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">1 mise à jour majeure</span><span class="en-content">1 major update</span></div>
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">Accès communauté</span><span class="en-content">Community access</span></div>
+        </div>
+        <a href="#" class="btn-secondary fr-content" style="display:block;text-align:center;">Choisir ce pack</a>
+        <a href="#" class="btn-secondary en-content" style="display:block;text-align:center;">Choose this pack</a>
+      </div>
+
+      <div class="sub-card featured">
+        <div class="sub-badge fr-content">Recommandé</div>
+        <div class="sub-badge en-content">Recommended</div>
+        <div class="sub-name fr-content">Membre Pro</div>
+        <div class="sub-name en-content">Pro Member</div>
+        <div class="sub-price-row">
+          <div class="sub-price">19€</div>
+          <div class="sub-period fr-content">/mois</div>
+          <div class="sub-period en-content">/month</div>
+        </div>
+        <div class="sub-features">
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">2 nouveaux packs/mois</span><span class="en-content">2 new packs/month</span></div>
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">Accès archive complète (tous les packs)</span><span class="en-content">Full archive access (all packs)</span></div>
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">Mises à jour illimitées</span><span class="en-content">Unlimited updates</span></div>
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">Q&A mensuel exclusif</span><span class="en-content">Exclusive monthly Q&A</span></div>
+          <div class="sub-feature"><div class="feat-check">✓</div><span class="fr-content">Prompts sur demande</span><span class="en-content">On-demand prompts</span></div>
+        </div>
+        <a href="#" class="btn-primary fr-content" style="display:block;text-align:center;">Rejoindre — 19€/mois</a>
+        <a href="#" class="btn-primary en-content" style="display:block;text-align:center;">Join — €19/month</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow fr-content">Témoignages</div>
+    <div class="section-eyebrow en-content">Testimonials</div>
+    <h2 class="fr-content">Ce qu'ils <em>disent</em></h2>
+    <h2 class="en-content">What they <em>say</em></h2>
+
+    <div class="testimonials reveal">
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text fr-content">J'ai closé un mandat en moins de 48h avec le script de prospection. Le ROI est immédiat, je recommande sans hésiter.</p>
+        <p class="testimonial-text en-content">I closed a mandate in less than 48h with the prospecting script. The ROI is immediate, I recommend without hesitation.</p>
+        <div class="testimonial-author">Sophie M.</div>
+        <div class="testimonial-role fr-content">Agent indépendante, Lyon</div>
+        <div class="testimonial-role en-content">Independent agent, Lyon</div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text fr-content">Mes annonces ont 40% de vues en plus depuis que j'utilise ces prompts. Le temps de rédaction est passé de 2h à 15min.</p>
+        <p class="testimonial-text en-content">My listings have 40% more views since using these prompts. Writing time went from 2h to 15min.</p>
+        <div class="testimonial-author">Marc T.</div>
+        <div class="testimonial-role fr-content">Directeur agence, Paris 16e</div>
+        <div class="testimonial-role en-content">Agency director, Paris 16th</div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text fr-content">L'abonnement Pro vaut 10x son prix. Chaque nouveau pack m'apporte de nouvelles techniques que j'applique le lendemain.</p>
+        <p class="testimonial-text en-content">The Pro subscription is worth 10x its price. Each new pack brings new techniques I apply the next day.</p>
+        <div class="testimonial-author">Isabelle K.</div>
+        <div class="testimonial-role fr-content">Agent immobilier de luxe, Cannes</div>
+        <div class="testimonial-role en-content">Luxury real estate agent, Cannes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTOMATION -->
+<section class="automation-section" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-eyebrow">Zapier · Automation</div>
+    <h2 class="fr-content">Le système tourne <em>tout seul</em></h2>
+    <h2 class="en-content">The system runs <em>by itself</em></h2>
+    <p class="section-sub fr-content">Une fois connecté, Zapier automatise la livraison, les emails et le suivi client sans intervention manuelle.</p>
+    <p class="section-sub en-content">Once connected, Zapier automates delivery, emails and client follow-up with no manual intervention.</p>
+
+    <div class="automation-flow reveal">
+      <div class="flow-step">
+        <span class="flow-icon">🛒</span>
+        <h4 class="fr-content">Achat</h4>
+        <h4 class="en-content">Purchase</h4>
+        <p>Gumroad / Stripe</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-icon">⚡</span>
+        <h4>Zapier</h4>
+        <p class="fr-content">Déclenche l'automation</p>
+        <p class="en-content">Triggers automation</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-icon">📧</span>
+        <h4 class="fr-content">Email J+0</h4>
+        <h4 class="en-content">Email D+0</h4>
+        <p class="fr-content">Livraison immédiate + bienvenue</p>
+        <p class="en-content">Instant delivery + welcome</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-icon">🔁</span>
+        <h4 class="fr-content">Séquence 7j</h4>
+        <h4 class="en-content">7-day sequence</h4>
+        <p class="fr-content">Onboarding + valeur + upsell</p>
+        <p class="en-content">Onboarding + value + upsell</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-icon">💰</span>
+        <h4 class="fr-content">Abonnement</h4>
+        <h4 class="en-content">Subscription</h4>
+        <p class="fr-content">Offre Membre Pro proposée</p>
+        <p class="en-content">Pro Member offer presented</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEO BLOG -->
+<section class="seo-section">
+  <div class="container">
+    <div class="section-eyebrow">SEO · Blog</div>
+    <h2 class="fr-content">Du trafic <em>gratuit</em> en continu</h2>
+    <h2 class="en-content"><em>Free</em> traffic, continuously</h2>
+    <p class="section-sub fr-content">Chaque article attire des agents immobiliers qui cherchent à utiliser l'IA. Ils deviennent clients.</p>
+    <p class="section-sub en-content">Each article attracts real estate agents looking to use AI. They become customers.</p>
+
+    <div class="blog-grid reveal">
+      <div class="blog-card">
+        <div class="blog-thumb">🏠</div>
+        <div class="blog-body">
+          <span class="blog-tag">Guide SEO</span>
+          <h3 class="fr-content">Comment utiliser ChatGPT pour rédiger vos annonces immobilières en 2025</h3>
+          <h3 class="en-content">How to use ChatGPT to write real estate listings in 2025</h3>
+          <p class="fr-content">Mot-clé : "ChatGPT agent immobilier" — 2 400 recherches/mois</p>
+          <p class="en-content">Keyword: "ChatGPT real estate agent" — 8,100 searches/month</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb">📱</div>
+        <div class="blog-body">
+          <span class="blog-tag">Guide SEO</span>
+          <h3 class="fr-content">Les 10 meilleurs prompts IA pour prospecter en immobilier</h3>
+          <h3 class="en-content">The 10 best AI prompts for real estate prospecting</h3>
+          <p class="fr-content">Mot-clé : "prompts immobilier IA" — 1 900 recherches/mois</p>
+          <p class="en-content">Keyword: "real estate AI prompts" — 5,400 searches/month</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb">🤖</div>
+        <div class="blog-body">
+          <span class="blog-tag">Tutoriel</span>
+          <h3 class="fr-content">Automatiser sa prospection immo avec l'intelligence artificielle</h3>
+          <h3 class="en-content">Automate real estate prospecting with artificial intelligence</h3>
+          <p class="fr-content">Mot-clé : "automatisation prospection immobilier" — 1 200/mois</p>
+          <p class="en-content">Keyword: "automate real estate prospecting" — 3,600/month</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="container">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 class="fr-content">Questions <em>fréquentes</em></h2>
+    <h2 class="en-content">Frequently asked <em>questions</em></h2>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q fr-content">Dois-je être expert en IA pour utiliser ces prompts ?</div>
+        <div class="faq-q en-content">Do I need to be an AI expert to use these prompts?</div>
+        <div class="faq-a fr-content">Non. Chaque prompt est prêt à l'emploi. Vous copiez, collez dans ChatGPT ou Claude, et vous obtenez votre texte en 10 secondes. Aucune compétence technique requise.</div>
+        <div class="faq-a en-content">No. Every prompt is ready to use. You copy, paste into ChatGPT or Claude, and get your text in 10 seconds. No technical skills required.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Les prompts fonctionnent avec quel outil IA ?</div>
+        <div class="faq-q en-content">Which AI tools do the prompts work with?</div>
+        <div class="faq-a fr-content">Tous les prompts sont testés et optimisés pour ChatGPT (GPT-4) et Claude (Anthropic). Ils fonctionnent également avec Gemini et la plupart des outils IA du marché.</div>
+        <div class="faq-a en-content">All prompts are tested and optimized for ChatGPT (GPT-4) and Claude (Anthropic). They also work with Gemini and most AI tools on the market.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Puis-je annuler l'abonnement à tout moment ?</div>
+        <div class="faq-q en-content">Can I cancel the subscription at any time?</div>
+        <div class="faq-a fr-content">Oui, l'abonnement est sans engagement. Vous pouvez annuler en un clic depuis votre espace membre. Aucune question posée.</div>
+        <div class="faq-a en-content">Yes, the subscription is commitment-free. You can cancel with one click from your member area. No questions asked.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Les prompts sont-ils régulièrement mis à jour ?</div>
+        <div class="faq-q en-content">Are the prompts regularly updated?</div>
+        <div class="faq-a fr-content">Les membres Pro reçoivent 2 nouveaux packs chaque mois. Les acheteurs du pack unique reçoivent les mises à jour majeures gratuitement à vie.</div>
+        <div class="faq-a en-content">Pro members receive 2 new packs every month. One-time pack buyers receive major updates for free, forever.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="fr-content">Prêt à vendre <em>plus vite</em> ?</h2>
+    <h2 class="en-content">Ready to sell <em>faster</em>?</h2>
+    <p class="section-sub fr-content">Rejoignez les agents immobiliers qui utilisent l'IA comme avantage concurrentiel. Téléchargement immédiat.</p>
+    <p class="section-sub en-content">Join real estate agents using AI as a competitive advantage. Immediate download.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary fr-content">Obtenir le Pack — 47€</a>
+      <a href="#" class="btn-primary en-content">Get the Pack — €47</a>
+      <a href="#" class="btn-secondary fr-content">Abonnement Pro — 19€/mois</a>
+      <a href="#" class="btn-secondary en-content">Pro Subscription — €19/month</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ImmoPrompts</div>
+  <div class="footer-links">
+    <a href="#" class="fr-content">Mentions légales</a>
+    <a href="#" class="en-content">Legal</a>
+    <a href="#" class="fr-content">CGV</a>
+    <a href="#" class="en-content">Terms</a>
+    <a href="#" class="fr-content">Contact</a>
+    <a href="#" class="en-content">Contact</a>
+    <a href="#" class="fr-content">Blog SEO</a>
+    <a href="#" class="en-content">SEO Blog</a>
+  </div>
+  <p>© 2026 ImmoPrompts · <span class="fr-content">Tous droits réservés</span><span class="en-content">All rights reserved</span></p>
+</footer>
+
+<script>
+// LANG SWITCHER
+function setLang(lang) {
+  document.body.className = lang === 'en' ? 'en' : '';
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.documentElement.lang = lang;
+}
+
+// FAQ TOGGLE
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

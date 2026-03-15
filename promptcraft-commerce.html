@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PromptCraft Commerce — 60 AI prompts for marketers & e-commerce professionals. Write ads, emails, product pages and campaigns 5× faster.">
+<meta name="keywords" content="AI prompts marketing, ChatGPT e-commerce, prompts publicité Facebook, copywriting IA, prompts Shopify">
+<meta property="og:title" content="PromptCraft Commerce — AI Prompts for Marketers & E-commerce">
+<meta property="og:description" content="60 battle-tested prompts to write ads, emails, product pages and campaigns 5× faster.">
+<title>PromptCraft Commerce — AI Prompts for Marketers & E-commerce</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #080a0c;
+  --surface: #0f1214;
+  --card: #161a1e;
+  --border: #252c33;
+  --accent: #4fc3f7;
+  --accent2: #0288d1;
+  --gold: #c9a84c;
+  --text: #e8edf2;
+  --muted: #6b7a8a;
+  --white: #f4f8fc;
+  --border-glow: rgba(79,195,247,0.18);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+
+/* NOISE */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(8,10,12,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 400;
+  color: var(--text); letter-spacing: 0.02em;
+}
+.nav-brand em { color: var(--accent); font-style: italic; }
+.nav-brand span { color: var(--muted); font-size: 13px; font-family: 'Outfit', sans-serif; margin-left: 8px; }
+.lang-btns { display: flex; gap: 6px; }
+.lang-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: 5px 12px; border-radius: 2px; cursor: pointer;
+  font-family: 'Outfit', sans-serif; font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
+}
+.lang-btn.active, .lang-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(79,195,247,0.06); }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; position: relative; padding: 120px 24px 80px; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(2,136,209,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 90%, rgba(79,195,247,0.08) 0%, transparent 50%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(79,195,247,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,195,247,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, black 20%, transparent 70%);
+}
+.hero-content { position: relative; z-index: 1; max-width: 820px; }
+
+.eyebrow-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(79,195,247,0.08); border: 1px solid rgba(79,195,247,0.25);
+  color: var(--accent); padding: 8px 20px; border-radius: 100px;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 40px; animation: fadeUp 0.7s ease both;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(48px, 8.5vw, 92px);
+  font-weight: 300; line-height: 0.93; letter-spacing: -0.02em;
+  margin-bottom: 28px; animation: fadeUp 0.7s ease both 0.1s;
+}
+h1 em { font-style: italic; color: var(--accent); display: block; }
+h1 .sub-em { color: var(--gold); font-style: italic; }
+
+.hero-p {
+  font-size: clamp(15px, 2vw, 19px); color: var(--muted);
+  max-width: 540px; margin: 0 auto 44px; line-height: 1.7; font-weight: 300;
+  animation: fadeUp 0.7s ease both 0.2s;
+}
+.hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.7s ease both 0.3s; }
+
+.btn-p {
+  background: var(--accent); color: #000; padding: 15px 34px; border-radius: 2px;
+  font-weight: 600; font-size: 14px; text-decoration: none; letter-spacing: 0.04em;
+  transition: all 0.25s; display: inline-block;
+}
+.btn-p:hover { background: #81d4fa; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(79,195,247,0.3); }
+.btn-s {
+  background: none; border: 1px solid var(--border); color: var(--text);
+  padding: 15px 34px; border-radius: 2px; font-size: 14px; text-decoration: none;
+  letter-spacing: 0.04em; transition: all 0.25s; display: inline-block;
+}
+.btn-s:hover { border-color: var(--accent); color: var(--accent); }
+
+.hero-nums {
+  margin-top: 64px; display: flex; justify-content: center; gap: 56px;
+  animation: fadeUp 0.7s ease both 0.4s; flex-wrap: wrap;
+}
+.num-item { text-align: center; }
+.num-big { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--accent); display: block; line-height: 1; }
+.num-label { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 6px; }
+
+/* SECTIONS */
+section { padding: 96px 24px; position: relative; z-index: 1; }
+.container { max-width: 1020px; margin: 0 auto; }
+.eyebrow { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+.eyebrow::after { content: ''; flex: 1; max-width: 36px; height: 1px; background: var(--accent); opacity: 0.35; }
+h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 5vw, 58px); font-weight: 300; line-height: 1.05; letter-spacing: -0.015em; margin-bottom: 14px; }
+h2 em { font-style: italic; color: var(--accent); }
+.sec-sub { font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.7; font-weight: 300; margin-bottom: 56px; }
+
+/* PAIN SECTION */
+.pain-bg { background: var(--surface); }
+.pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.pain-card { background: var(--card); padding: 32px 26px; position: relative; overflow: hidden; transition: border-color 0.2s; border: 1px solid transparent; }
+.pain-card:hover { border-color: var(--border-glow); }
+.pain-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.3s; }
+.pain-card:hover::before { opacity: 1; }
+.pain-icon { font-size: 26px; margin-bottom: 18px; display: block; }
+.pain-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 400; margin-bottom: 10px; }
+.pain-card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+.pain-card p strong { color: var(--text); }
+
+/* PACK */
+.pack-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.pack-top {
+  background: linear-gradient(135deg, #0f1720 0%, #131d26 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 48px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
+  position: relative; overflow: hidden;
+}
+.pack-top::after { content: '◈'; position: absolute; right: 48px; top: 50%; transform: translateY(-50%); font-size: 110px; color: rgba(79,195,247,0.05); line-height: 1; }
+.pack-name { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 300; }
+.pack-name span { color: var(--accent); font-style: italic; }
+.pack-meta { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.pack-price-box { text-align: right; }
+.pack-price { font-family: 'Cormorant Garamond', serif; font-size: 54px; font-weight: 300; color: var(--accent); line-height: 1; }
+.pack-price-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.pack-body { padding: 48px; }
+.prompts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 36px; }
+.prompt-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 3px; padding: 16px 18px; transition: all 0.2s; }
+.prompt-card:hover { border-color: rgba(79,195,247,0.3); background: rgba(79,195,247,0.03); }
+.p-num { font-size: 9px; color: var(--accent); font-family: 'Outfit', monospace; letter-spacing: 0.1em; margin-bottom: 6px; display: block; opacity: 0.7; }
+.prompt-card p { font-size: 12px; color: var(--text); line-height: 1.55; }
+.prompt-card p em { color: var(--muted); font-style: normal; font-size: 11px; }
+
+.pack-footer {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+  padding-top: 28px; border-top: 1px solid var(--border);
+}
+.includes { display: flex; flex-direction: column; gap: 7px; }
+.inc-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.inc-item::before { content: '◆'; color: var(--accent); font-size: 8px; flex-shrink: 0; }
+
+/* CATEGORIES */
+.cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 40px; }
+.cat-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 3px;
+  padding: 24px 20px; transition: all 0.2s; cursor: default;
+}
+.cat-card:hover { border-color: rgba(79,195,247,0.35); transform: translateY(-2px); }
+.cat-icon { font-size: 22px; margin-bottom: 12px; display: block; }
+.cat-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; margin-bottom: 4px; }
+.cat-count { font-family: 'Outfit', monospace; font-size: 10px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 8px; display: block; }
+.cat-card p { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* SUBSCRIPTION */
+.sub-bg { background: var(--surface); }
+.sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.sub-card { background: var(--card); padding: 44px 36px; position: relative; }
+.sub-card.featured {
+  background: linear-gradient(135deg, #0d1822 0%, #111f2e 100%);
+  border: 1px solid rgba(79,195,247,0.25);
+}
+.sub-badge {
+  position: absolute; top: -1px; right: 28px;
+  background: var(--accent); color: #000;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 0 0 3px 3px;
+}
+.sub-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; margin-bottom: 6px; }
+.sub-price-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 28px; }
+.sub-price { font-family: 'Cormorant Garamond', serif; font-size: 50px; font-weight: 300; color: var(--accent); }
+.sub-per { font-size: 14px; color: var(--muted); }
+.sub-feats { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+.sub-feat { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text); line-height: 1.5; }
+.sf-check { width: 18px; height: 18px; background: rgba(79,195,247,0.12); border: 1px solid rgba(79,195,247,0.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9px; color: var(--accent); margin-top: 1px; }
+
+/* METRICS */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: 48px; }
+.metric { background: var(--card); border: 1px solid var(--border); padding: 28px 20px; text-align: center; }
+.metric-num { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; color: var(--accent); display: block; line-height: 1; margin-bottom: 8px; }
+.metric-label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; line-height: 1.4; }
+.metric-source { font-size: 9px; color: rgba(107,122,138,0.5); margin-top: 4px; letter-spacing: 0.05em; }
+
+/* TESTIMONIALS */
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.testi { background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 26px; position: relative; }
+.testi::before { content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 72px; color: var(--accent); opacity: 0.15; position: absolute; top: 8px; left: 18px; line-height: 1; }
+.stars { color: var(--gold); font-size: 11px; margin-bottom: 8px; }
+.testi-text { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 18px; padding-top: 16px; font-style: italic; }
+.testi-name { font-size: 12px; color: var(--accent); font-weight: 500; }
+.testi-role { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* BLOG */
+.blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.blog-card { background: var(--card); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; transition: border-color 0.2s; }
+.blog-card:hover { border-color: rgba(79,195,247,0.35); }
+.blog-thumb { height: 120px; background: linear-gradient(135deg, #0d1822 0%, #131d26 100%); display: flex; align-items: center; justify-content: center; font-size: 36px; border-bottom: 1px solid var(--border); }
+.blog-body { padding: 20px; }
+.blog-tag { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; display: block; }
+.blog-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 400; line-height: 1.3; margin-bottom: 8px; }
+.blog-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 2px; }
+.faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.faq-q { padding: 20px 26px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 400; transition: color 0.2s; user-select: none; }
+.faq-q:hover { color: var(--accent); }
+.faq-q::after { content: '+'; font-size: 20px; color: var(--accent); transition: transform 0.3s; font-weight: 300; }
+.faq-item.open .faq-q::after { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; padding: 0 26px; font-size: 13px; color: var(--muted); line-height: 1.75; }
+.faq-item.open .faq-a { max-height: 300px; padding: 0 26px 20px; }
+
+/* FINAL CTA */
+.final-cta { text-align: center; padding: 110px 24px; position: relative; overflow: hidden; }
+.final-cta::before { content: ''; position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%); width: 700px; height: 500px; background: radial-gradient(ellipse, rgba(2,136,209,0.15) 0%, transparent 65%); pointer-events: none; }
+
+/* COMPARISON TABLE */
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th { background: rgba(79,195,247,0.08); color: var(--accent); font-family: 'Outfit', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 13px 18px; text-align: left; border-bottom: 1px solid var(--border); }
+.compare-table td { padding: 13px 18px; border-bottom: 1px solid rgba(37,44,51,0.6); font-size: 13px; color: var(--text); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table td.price-col { color: var(--accent); font-weight: 500; font-size: 15px; }
+.compare-table td.check { color: var(--accent); }
+.compare-table td.cross { color: var(--muted); }
+
+/* DIVIDER */
+.div { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(79,195,247,0.3), transparent); margin: 0; }
+
+/* FOOTER */
+footer { background: var(--surface); border-top: 1px solid var(--border); padding: 36px 40px; text-align: center; }
+.footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; margin-bottom: 14px; }
+.footer-brand em { color: var(--accent); font-style: italic; }
+.footer-links { display: flex; justify-content: center; gap: 28px; margin: 16px 0; flex-wrap: wrap; }
+.footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--accent); }
+footer p { font-size: 12px; color: var(--muted); }
+
+/* BRAND STRIP */
+.brand-strip { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 40px; }
+.brand-strip-inner { max-width: 1020px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.brand-strip p { font-family: 'Outfit', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+.verticals-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.vert-tag { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--muted); font-size: 10px; padding: 4px 10px; letter-spacing: 0.06em; }
+.vert-tag.active { border-color: rgba(79,195,247,0.4); color: var(--accent); background: rgba(79,195,247,0.06); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.fr-content { display: block; }
+.en-content { display: none; }
+body.en .fr-content { display: none; }
+body.en .en-content { display: block; }
+
+@media (max-width: 768px) {
+  .pain-grid, .sub-grid, .testi-grid, .blog-grid, .cats { grid-template-columns: 1fr; }
+  .prompts-grid { grid-template-columns: 1fr; }
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .pack-top { padding: 24px; }
+  .pack-body { padding: 24px; }
+  .nav { padding: 12px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">Prompt<em>Craft</em> <span>Commerce</span></div>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 FR</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+  </div>
+</nav>
+
+<!-- BRAND STRIP -->
+<div class="brand-strip" style="margin-top:52px;">
+  <div class="brand-strip-inner">
+    <p class="fr-content">Une marque · Cinq verticales</p>
+    <p class="en-content">One brand · Five verticals</p>
+    <div class="verticals-row">
+      <span class="vert-tag">Immo</span>
+      <span class="vert-tag active">Commerce ✦</span>
+      <span class="vert-tag">Legal</span>
+      <span class="vert-tag">Coach</span>
+      <span class="vert-tag">Recruit</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="fr-content">
+      <div class="eyebrow-pill">60 prompts testés · Résultats immédiats</div>
+      <h1>Le copywriting<br>qui <em>convertit</em>,<br>en <span class="sub-em">10 secondes</span></h1>
+      <p class="hero-p">Rédigez des ads Facebook qui convertissent, des emails qui vendent et des fiches produit qui closent — sans agence, sans budget créatif.</p>
+      <div class="hero-cta">
+        <a href="#pack" class="btn-p">Obtenir le Pack — 57€</a>
+        <a href="#apercu" class="btn-s">Voir les prompts ↓</a>
+      </div>
+    </div>
+    <div class="en-content">
+      <div class="eyebrow-pill">60 battle-tested prompts · Instant results</div>
+      <h1>The copy that<br><em>converts</em>,<br>in <span class="sub-em">10 seconds</span></h1>
+      <p class="hero-p">Write Facebook ads that convert, emails that sell and product pages that close — no agency, no creative budget needed.</p>
+      <div class="hero-cta">
+        <a href="#pack" class="btn-p">Get the Pack — €57</a>
+        <a href="#apercu" class="btn-s">See the prompts ↓</a>
+      </div>
+    </div>
+    <div class="hero-nums">
+      <div class="num-item"><span class="num-big">60</span><span class="num-label fr-content">Prompts premium</span><span class="num-label en-content">Premium prompts</span></div>
+      <div class="num-item"><span class="num-big">5×</span><span class="num-label fr-content">Plus rapide</span><span class="num-label en-content">Faster</span></div>
+      <div class="num-item"><span class="num-big">6</span><span class="num-label fr-content">Catégories métier</span><span class="num-label en-content">Job categories</span></div>
+      <div class="num-item"><span class="num-big">∞</span><span class="num-label fr-content">Utilisations</span><span class="num-label en-content">Unlimited use</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- MARKET DATA -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="eyebrow fr-content">Marché — données réelles</div>
+    <div class="eyebrow en-content">Market — real data</div>
+    <h2 class="fr-content">Pourquoi <em>maintenant</em></h2>
+    <h2 class="en-content">Why <em>now</em></h2>
+    <div class="metrics reveal">
+      <div class="metric">
+        <span class="metric-num">88%</span>
+        <span class="metric-label fr-content">des marketeurs utilisent l'IA au quotidien</span>
+        <span class="metric-label en-content">of marketers use AI daily</span>
+        <span class="metric-source">SurveyMonkey 2025</span>
+      </div>
+      <div class="metric">
+        <span class="metric-num">$47B</span>
+        <span class="metric-label fr-content">marché IA marketing en 2025</span>
+        <span class="metric-label en-content">AI marketing market in 2025</span>
+        <span class="metric-source">Grand View Research</span>
+      </div>
+      <div class="metric">
+        <span class="metric-num">5×</span>
+        <span class="metric-label fr-content">plus vite avec des prompts maîtrisés vs. scratch</span>
+        <span class="metric-label en-content">faster with mastered prompts vs. scratch</span>
+        <span class="metric-source">HubSpot 2025</span>
+      </div>
+      <div class="metric">
+        <span class="metric-num">$64B</span>
+        <span class="metric-label fr-content">IA e-commerce d'ici 2034</span>
+        <span class="metric-label en-content">AI e-commerce market by 2034</span>
+        <span class="metric-source">Precedence Research</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="pain-bg">
+  <div class="container">
+    <div class="eyebrow fr-content">Le problème</div>
+    <div class="eyebrow en-content">The problem</div>
+    <h2 class="fr-content">Ce que vous <em>perdez</em></h2>
+    <h2 class="en-content">What you're <em>losing</em></h2>
+    <div class="pain-grid reveal">
+      <div class="pain-card">
+        <span class="pain-icon">⏳</span>
+        <h3 class="fr-content">3h par campagne</h3>
+        <h3 class="en-content">3h per campaign</h3>
+        <p class="fr-content">Écrire une séquence email de 5 messages prend une journée. Avec les bons prompts : <strong>moins de 20 minutes</strong>. Les agences facturent 2 000€ ce que vous pouvez générer ce soir.</p>
+        <p class="en-content">Writing a 5-email sequence takes a full day. With the right prompts: <strong>under 20 minutes</strong>. Agencies charge €2,000 for what you can generate tonight.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">📉</span>
+        <h3 class="fr-content">Ads qui ne convertissent pas</h3>
+        <h3 class="en-content">Ads that don't convert</h3>
+        <p class="fr-content">Sans framework de copywriting testé, votre ROAS reste bas. Nos prompts intègrent les structures <strong>AIDA, PAS, Story-sell</strong> qui ont fait leurs preuves sur 10M€+ de dépenses pub.</p>
+        <p class="en-content">Without a tested copywriting framework, your ROAS stays low. Our prompts embed proven <strong>AIDA, PAS, Story-sell</strong> structures from €10M+ in ad spend.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">🔄</span>
+        <h3 class="fr-content">Dépendance aux freelances</h3>
+        <h3 class="en-content">Freelance dependency</h3>
+        <p class="fr-content">Un copywriter coûte 500–2 000€ la mission. Et il faut attendre. <strong>PromptCraft Commerce vous rend autonome</strong> — brief à 9h, copy prêt à 9h10.</p>
+        <p class="en-content">A copywriter costs €500–2,000 per project. And you wait. <strong>PromptCraft Commerce makes you autonomous</strong> — briefing at 9am, copy ready at 9:10.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="apercu">
+  <div class="container">
+    <div class="eyebrow fr-content">Contenu du pack</div>
+    <div class="eyebrow en-content">Pack contents</div>
+    <h2 class="fr-content">6 <em>catégories</em> métier</h2>
+    <h2 class="en-content">6 <em>professional</em> categories</h2>
+    <p class="sec-sub fr-content">60 prompts organisés autour des tâches qui génèrent du revenu : de la publicité à l'email, de la fiche produit au tunnel de vente.</p>
+    <p class="sec-sub en-content">60 prompts built around revenue-generating tasks: from advertising to email, product pages to sales funnels.</p>
+
+    <div class="cats reveal">
+      <div class="cat-card">
+        <span class="cat-icon">📣</span>
+        <h4 class="fr-content">Publicité</h4>
+        <h4 class="en-content">Advertising</h4>
+        <span class="cat-count">12 PROMPTS</span>
+        <p class="fr-content">Meta Ads, Google Ads, TikTok Ads. Hooks, corps d'annonce, CTA, A/B variants.</p>
+        <p class="en-content">Meta Ads, Google Ads, TikTok Ads. Hooks, ad copy, CTAs, A/B variants.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">📧</span>
+        <h4>Email Marketing</h4>
+        <span class="cat-count">12 PROMPTS</span>
+        <p class="fr-content">Séquences de bienvenue, promotions, relance panier, réactivation, newsletters.</p>
+        <p class="en-content">Welcome sequences, promotions, cart recovery, reactivation, newsletters.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">🛍️</span>
+        <h4 class="fr-content">Fiches Produit</h4>
+        <h4 class="en-content">Product Pages</h4>
+        <span class="cat-count">10 PROMPTS</span>
+        <p class="fr-content">Titres SEO, descriptions persuasives, bullet points bénéfices, FAQ produit.</p>
+        <p class="en-content">SEO titles, persuasive descriptions, benefit bullets, product FAQ.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">📱</span>
+        <h4 class="fr-content">Réseaux Sociaux</h4>
+        <h4 class="en-content">Social Media</h4>
+        <span class="cat-count">10 PROMPTS</span>
+        <p class="fr-content">Captions Instagram, scripts TikTok/Reels, threads LinkedIn, posts viraux.</p>
+        <p class="en-content">Instagram captions, TikTok/Reels scripts, LinkedIn threads, viral posts.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">🔗</span>
+        <h4 class="fr-content">Tunnels de Vente</h4>
+        <h4 class="en-content">Sales Funnels</h4>
+        <span class="cat-count">8 PROMPTS</span>
+        <p class="fr-content">Landing pages, VSL scripts, pages de vente longues, order bumps, upsells.</p>
+        <p class="en-content">Landing pages, VSL scripts, long-form sales pages, order bumps, upsells.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-icon">🔍</span>
+        <h4>SEO & Content</h4>
+        <span class="cat-count">8 PROMPTS</span>
+        <p class="fr-content">Articles de blog optimisés, méta-descriptions, pages catégories, contenu pilier.</p>
+        <p class="en-content">Optimized blog posts, meta descriptions, category pages, pillar content.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACK -->
+<section style="background:var(--surface);" id="pack">
+  <div class="container">
+    <div class="eyebrow fr-content">Le produit</div>
+    <div class="eyebrow en-content">The product</div>
+    <h2 class="fr-content">Pack <em>Commerce Pro</em></h2>
+    <h2 class="en-content"><em>Commerce Pro</em> Pack</h2>
+    <p class="sec-sub fr-content">60 prompts. Copy-paste dans ChatGPT ou Claude. Résultat professionnel en 10 secondes.</p>
+    <p class="sec-sub en-content">60 prompts. Copy-paste into ChatGPT or Claude. Professional result in 10 seconds.</p>
+
+    <div class="pack-wrap reveal">
+      <div class="pack-top">
+        <div>
+          <div class="pack-name fr-content">Pack <span>Commerce Pro</span></div>
+          <div class="pack-name en-content">Pack <span>Commerce Pro</span></div>
+          <div class="pack-meta fr-content">60 prompts · 6 catégories · PDF + accès membre · Mises à jour incluses</div>
+          <div class="pack-meta en-content">60 prompts · 6 categories · PDF + member access · Updates included</div>
+        </div>
+        <div class="pack-price-box">
+          <div class="pack-price">57€</div>
+          <div class="pack-price-note fr-content">paiement unique · accès à vie</div>
+          <div class="pack-price-note en-content">one-time · lifetime access</div>
+        </div>
+      </div>
+      <div class="pack-body">
+        <div class="prompts-grid">
+          <div class="prompt-card"><span class="p-num">01 — META ADS</span><p>Rédige 5 variantes d'une publicité Facebook pour <em>[produit]</em> ciblant <em>[audience]</em>. Budget : <em>[€/jour]</em>. Utilise le framework AIDA. 1 variante vidéo, 4 image. Include 3 hooks alternatifs.</p></div>
+          <div class="prompt-card"><span class="p-num">02 — EMAIL BIENVENUE</span><p>Séquence de 5 emails de bienvenue pour un nouveau client de <em>[marque]</em> dans le secteur <em>[niche]</em>. J+0 confirmation, J+1 valeur, J+3 bestseller, J+5 avis, J+7 fidélisation.</p></div>
+          <div class="prompt-card"><span class="p-num">03 — FICHE PRODUIT</span><p>Rédige une fiche produit Shopify pour <em>[produit]</em> à <em>[prix€]</em>. SEO title, description 150 mots, 5 bullet benefits, FAQ 3 questions. Ton : <em>[premium/lifestyle/technique]</em>.</p></div>
+          <div class="prompt-card"><span class="p-num">04 — RELANCE PANIER</span><p>3 emails de récupération panier abandonné pour <em>[produit à €X]</em>. Email 1 (1h) : rappel neutre. Email 2 (24h) : urgence douce. Email 3 (72h) : promo -<em>[%]</em> limitée.</p></div>
+          <div class="prompt-card"><span class="p-num">05 — TIKTOK SCRIPT</span><p>Script de 30 secondes pour TikTok/Reel présentant <em>[produit]</em>. Hook fort 3s, problème 5s, solution démo 15s, CTA 7s. Ton : <em>[éducatif/choquant/before-after]</em>.</p></div>
+          <div class="prompt-card"><span class="p-num">06 — LANDING PAGE</span><p>Structure complète d'une landing page pour <em>[offre]</em> à <em>[prix€]</em>. Hero, bénéfices, preuves sociales, FAQ, garantie, CTA multiples. Copywriting framework PAS.</p></div>
+        </div>
+        <div style="text-align:center;padding:14px;color:var(--muted);font-size:12px;letter-spacing:0.08em;border-top:1px solid var(--border);">
+          <span class="fr-content">+ 54 prompts supplémentaires dans le pack complet</span>
+          <span class="en-content">+ 54 additional prompts in the full pack</span>
+        </div>
+        <div class="pack-footer" style="margin-top:20px;">
+          <div class="includes">
+            <div class="inc-item fr-content">PDF téléchargeable instantanément</div>
+            <div class="inc-item en-content">Instantly downloadable PDF</div>
+            <div class="inc-item fr-content">Compatible ChatGPT-4o & Claude Sonnet</div>
+            <div class="inc-item en-content">Compatible with ChatGPT-4o & Claude Sonnet</div>
+            <div class="inc-item fr-content">Mises à jour gratuites à vie</div>
+            <div class="inc-item en-content">Free lifetime updates</div>
+            <div class="inc-item fr-content">Garantie satisfait ou remboursé 14 jours</div>
+            <div class="inc-item en-content">14-day money-back guarantee</div>
+          </div>
+          <a href="#" class="btn-p fr-content">Acheter maintenant — 57€</a>
+          <a href="#" class="btn-p en-content">Buy now — €57</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBSCRIPTION -->
+<section>
+  <div class="container">
+    <div class="eyebrow fr-content">Récurrent</div>
+    <div class="eyebrow en-content">Subscription</div>
+    <h2 class="fr-content">Devenez <em>membre</em> Pro</h2>
+    <h2 class="en-content">Become a <em>Pro</em> member</h2>
+    <p class="sec-sub fr-content">Les algorithmes changent. Les tendances évoluent. Vos prompts aussi — automatiquement.</p>
+    <p class="sec-sub en-content">Algorithms change. Trends evolve. Your prompts do too — automatically.</p>
+    <div class="sub-grid reveal">
+      <div class="sub-card">
+        <div class="sub-name fr-content">Pack Unique</div>
+        <div class="sub-name en-content">One-Time Pack</div>
+        <div class="sub-price-row"><div class="sub-price">57€</div><div class="sub-per fr-content">une fois</div><div class="sub-per en-content">once</div></div>
+        <div class="sub-feats">
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">60 prompts Commerce</span><span class="en-content">60 Commerce prompts</span></div>
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">PDF immédiat</span><span class="en-content">Instant PDF</span></div>
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">1 mise à jour majeure</span><span class="en-content">1 major update</span></div>
+        </div>
+        <a href="#" class="btn-s fr-content" style="display:block;text-align:center;">Choisir ce pack</a>
+        <a href="#" class="btn-s en-content" style="display:block;text-align:center;">Choose this pack</a>
+      </div>
+      <div class="sub-card featured">
+        <div class="sub-badge fr-content">Recommandé</div>
+        <div class="sub-badge en-content">Recommended</div>
+        <div class="sub-name fr-content">Membre Pro</div>
+        <div class="sub-name en-content">Pro Member</div>
+        <div class="sub-price-row"><div class="sub-price">19€</div><div class="sub-per fr-content">/mois</div><div class="sub-per en-content">/month</div></div>
+        <div class="sub-feats">
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">2 nouveaux packs chaque mois (toutes verticales)</span><span class="en-content">2 new packs monthly (all verticals)</span></div>
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">Accès archive complète</span><span class="en-content">Full archive access</span></div>
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">Mises à jour illimitées</span><span class="en-content">Unlimited updates</span></div>
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">Q&A mensuel exclusif</span><span class="en-content">Exclusive monthly Q&A</span></div>
+          <div class="sub-feat"><div class="sf-check">✓</div><span class="fr-content">Prompts personnalisés sur demande</span><span class="en-content">Custom prompts on demand</span></div>
+        </div>
+        <a href="#" class="btn-p fr-content" style="display:block;text-align:center;">Rejoindre — 19€/mois</a>
+        <a href="#" class="btn-p en-content" style="display:block;text-align:center;">Join — €19/month</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="eyebrow fr-content">Témoignages</div>
+    <div class="eyebrow en-content">Testimonials</div>
+    <h2 class="fr-content">Ce qu'ils <em>disent</em></h2>
+    <h2 class="en-content">What they <em>say</em></h2>
+    <div class="testi-grid reveal">
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text fr-content">Mon ROAS Meta est passé de 1.8 à 3.2 en 3 semaines. J'ai simplement remplacé mes copies par celles générées avec les prompts Ads. Résultat immédiat.</p>
+        <p class="testi-text en-content">My Meta ROAS went from 1.8 to 3.2 in 3 weeks. I simply replaced my copy with what the Ads prompts generated. Immediate result.</p>
+        <div class="testi-name">Julien R.</div>
+        <div class="testi-role fr-content">Fondateur e-commerce mode, 2M€/an</div>
+        <div class="testi-role en-content">Fashion e-commerce founder, €2M/year</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text fr-content">J'ai généré une séquence email complète pour notre lancement en 25 minutes. Avec une agence, ça m'aurait coûté 1 800€ et 2 semaines d'aller-retour.</p>
+        <p class="testi-text en-content">I generated a complete email sequence for our launch in 25 minutes. An agency would have charged me €1,800 and 2 weeks of back-and-forth.</p>
+        <div class="testi-name">Amira K.</div>
+        <div class="testi-role fr-content">CMO, DTC beauté, London</div>
+        <div class="testi-role en-content">CMO, DTC beauty brand, London</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text fr-content">L'abonnement Pro vaut 20 fois son prix. Chaque mois, les nouveaux packs s'adaptent aux tendances actuelles. C'est mon avantage concurrentiel.</p>
+        <p class="testi-text en-content">The Pro subscription is worth 20× its price. Every month, the new packs adapt to current trends. It's my competitive edge.</p>
+        <div class="testi-name">Thomas M.</div>
+        <div class="testi-role fr-content">Growth marketer freelance, Paris</div>
+        <div class="testi-role en-content">Freelance growth marketer, Paris</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEO BLOG -->
+<section>
+  <div class="container">
+    <div class="eyebrow">SEO · Blog</div>
+    <h2 class="fr-content">Trafic <em>gratuit</em></h2>
+    <h2 class="en-content"><em>Free</em> traffic</h2>
+    <div class="blog-grid reveal">
+      <div class="blog-card">
+        <div class="blog-thumb">📣</div>
+        <div class="blog-body">
+          <span class="blog-tag">SEO · FR</span>
+          <h3 class="fr-content">Les 10 meilleurs prompts ChatGPT pour créer des publicités Meta qui convertissent</h3>
+          <h3 class="en-content">Top 10 ChatGPT prompts for Meta ads that convert</h3>
+          <p class="fr-content">Mot-clé : "prompts publicité Facebook" — 2 100/mois</p>
+          <p class="en-content">Keyword: "ChatGPT prompts Facebook ads" — 6 600/month</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb">📧</div>
+        <div class="blog-body">
+          <span class="blog-tag">SEO · EN</span>
+          <h3 class="fr-content">How to write e-commerce emails with AI in 2026</h3>
+          <h3 class="en-content">How to write e-commerce emails with AI in 2026</h3>
+          <p class="fr-content">Mot-clé : "AI ecommerce email prompts" — 4 400/mois</p>
+          <p class="en-content">Keyword: "AI ecommerce email prompts" — 4 400/month</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb">🛍️</div>
+        <div class="blog-body">
+          <span class="blog-tag">SEO · FR/EN</span>
+          <h3 class="fr-content">ChatGPT pour Shopify : guide complet 2026</h3>
+          <h3 class="en-content">ChatGPT for Shopify: the complete 2026 guide</h3>
+          <p class="fr-content">Mot-clé : "ChatGPT Shopify" — 8 100/mois EN</p>
+          <p class="en-content">Keyword: "ChatGPT Shopify" — 8 100/month</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="eyebrow">FAQ</div>
+    <h2 class="fr-content">Questions <em>fréquentes</em></h2>
+    <h2 class="en-content">Frequently asked <em>questions</em></h2>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q fr-content">Les prompts fonctionnent sur quelle plateforme publicitaire ?</div>
+        <div class="faq-q en-content">Which ad platforms do the prompts work for?</div>
+        <div class="faq-a fr-content">Tous. Le pack inclut des prompts spécifiques pour Meta Ads (Facebook/Instagram), Google Ads (Search + Display), TikTok Ads et LinkedIn Ads. Chaque prompt précise la plateforme et les contraintes de caractères.</div>
+        <div class="faq-a en-content">All of them. The pack includes specific prompts for Meta Ads (Facebook/Instagram), Google Ads (Search + Display), TikTok Ads and LinkedIn Ads. Each prompt specifies the platform and character constraints.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Est-ce que ça fonctionne pour du dropshipping / print-on-demand ?</div>
+        <div class="faq-q en-content">Does it work for dropshipping / print-on-demand?</div>
+        <div class="faq-a fr-content">Oui. Les prompts sont conçus pour s'adapter à tout type de produit physique ou digital. Vous insérez simplement les informations de votre produit dans les crochets prévus.</div>
+        <div class="faq-a en-content">Yes. The prompts are designed to adapt to any physical or digital product. You simply insert your product information into the designated brackets.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Je n'ai aucune expérience en copywriting — ça marche quand même ?</div>
+        <div class="faq-q en-content">I have no copywriting experience — does it still work?</div>
+        <div class="faq-a fr-content">C'est précisément pour ça que le pack existe. Les frameworks de copywriting (AIDA, PAS, etc.) sont intégrés dans les prompts. Vous n'avez pas besoin de les connaître — l'IA les applique pour vous.</div>
+        <div class="faq-a en-content">That's exactly why the pack exists. Copywriting frameworks (AIDA, PAS, etc.) are built into the prompts. You don't need to know them — the AI applies them for you.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q fr-content">Quelle différence avec les prompts gratuits qu'on trouve partout ?</div>
+        <div class="faq-q en-content">What's different from free prompts found everywhere?</div>
+        <div class="faq-a fr-content">Les prompts génériques donnent des résultats génériques. Les nôtres sont calibrés pour le commerce : ils intègrent les variables clés (audience, objections, prix, urgence) et ont été testés sur de vraies campagnes avec des données réelles.</div>
+        <div class="faq-a en-content">Generic prompts give generic results. Ours are calibrated for commerce: they integrate key variables (audience, objections, price, urgency) and have been tested on real campaigns with real data.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="fr-content">Prêt à écrire du copy qui <em>vend</em> ?</h2>
+    <h2 class="en-content">Ready to write copy that <em>sells</em>?</h2>
+    <p class="sec-sub fr-content" style="margin:0 auto 44px;text-align:center;">Rejoignez les e-commerçants et marketeurs qui ont remplacé leur agence par PromptCraft Commerce. Téléchargement immédiat.</p>
+    <p class="sec-sub en-content" style="margin:0 auto 44px;text-align:center;">Join the e-commerce sellers and marketers who replaced their agency with PromptCraft Commerce. Instant download.</p>
+    <div class="hero-cta" style="position:relative;z-index:1;">
+      <a href="#" class="btn-p fr-content">Obtenir le Pack — 57€</a>
+      <a href="#" class="btn-p en-content">Get the Pack — €57</a>
+      <a href="#" class="btn-s fr-content">Abonnement Pro — 19€/mois</a>
+      <a href="#" class="btn-s en-content">Pro Subscription — €19/month</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Prompt<em>Craft</em></div>
+  <div class="footer-links">
+    <a href="#" class="fr-content">Mentions légales</a><a href="#" class="en-content">Legal</a>
+    <a href="#" class="fr-content">CGV</a><a href="#" class="en-content">Terms</a>
+    <a href="#">promptcraft.co</a>
+    <a href="#" class="fr-content">Blog</a><a href="#" class="en-content">Blog</a>
+    <a href="#"><span class="__cf_email__" data-cfemail="4c2f2322382d2f380c3c3e23213c382f3e2d2a38622f23">[email&#160;protected]</span></a>
+  </div>
+  <p>© 2026 PromptCraft · <span class="fr-content">Tous droits réservés</span><span class="en-content">All rights reserved</span></p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function setLang(lang) {
+  document.body.className = lang === 'en' ? 'en' : '';
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.documentElement.lang = lang;
+}
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.closest('.faq-item');
+    const was = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!was) item.classList.add('open');
+  });
+});
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.class
