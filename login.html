@@ -58,8 +58,8 @@ input[type="email"]::placeholder{color:var(--muted);}
   <a href="/" class="logo">The Prompt <em>Studio</em></a>
 
   <div class="card">
-    <h1>Connexion</h1>
-    <p class="sub">Entrez votre email pour recevoir un lien de connexion magique — aucun mot de passe nécessaire.</p>
+    <h1>Accéder à mon espace</h1>
+    <p class="sub">Entrez votre email — nous vous envoyons un lien magique pour vous connecter instantanément, sans mot de passe.</p>
 
     <form id="login-form">
       <label for="email">Adresse email</label>
@@ -67,7 +67,7 @@ input[type="email"]::placeholder{color:var(--muted);}
         placeholder="vous@exemple.com" required autocomplete="email">
 
       <button type="submit" class="btn" id="submit-btn">
-        Envoyer le lien de connexion
+        Recevoir mon lien de connexion →
       </button>
     </form>
 
@@ -147,17 +147,21 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Envoi en cours…';
 
+  const siteBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? `${window.location.protocol}//${window.location.host}`
+    : 'https://theprompt.studio';
+
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: 'https://theprompt.studio/dashboard',
+      emailRedirectTo: `${siteBase}/dashboard`,
       shouldCreateUser: false, // Only allow existing users to log in
                                // New accounts are created by the webhook
     },
   });
 
   btn.disabled = false;
-  btn.textContent = 'Envoyer le lien de connexion';
+  btn.textContent = 'Recevoir mon lien de connexion →';
 
   if (error) {
     // "User not found" → redirect to shop
