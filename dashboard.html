@@ -1,394 +1,410 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mon Espace — The Prompt Studio</title>
-<meta name="robots" content="noindex, nofollow">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2e2a24;
-  --gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;--em:#00897b;
-  --bronze:#cd7f32;--silver-tier:#a8a9ad;
-}
-body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-.a1{animation:fadeUp 0.5s ease both 0s;}
-.a2{animation:fadeUp 0.5s ease both 0.08s;}
-.a3{animation:fadeUp 0.5s ease both 0.16s;}
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon espace – The Prompt Studio</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/ps-auth.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #0f1117;
+      --surface: #1a1d27;
+      --border:  #2a2d3e;
+      --text:    #e8eaf0;
+      --muted:   #7c8098;
+      --accent:  #6c63ff;
+      --accent2: #a78bfa;
+      --sidebar: 240px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(12,11,9,0.97);
-  backdrop-filter:blur(18px);border-bottom:1px solid var(--border);
-  padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:60px;}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;
-  color:var(--cream);text-decoration:none;letter-spacing:0.02em;}
-.nav-logo em{color:var(--gold);font-style:italic;}
-.nav-right{display:flex;align-items:center;gap:12px;}
-.nav-tier{font-size:12px;padding:4px 12px;border-radius:20px;font-weight:500;}
-.tier-badge-bronze{background:rgba(205,127,50,.15);color:var(--bronze);}
-.tier-badge-silver{background:rgba(168,169,173,.15);color:var(--silver-tier);}
-.tier-badge-gold  {background:rgba(201,168,76,.15);color:var(--gold);}
-.nav-user{font-size:13px;color:var(--muted);}
-.btn-sm{background:transparent;color:var(--muted);border:1px solid var(--border);
-  border-radius:7px;padding:5px 12px;font-size:12px;cursor:pointer;
-  font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;}
-.btn-sm:hover{border-color:var(--gold);color:var(--gold);}
+    /* ── Sidebar ── */
+    .sidebar { width: var(--sidebar); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top:0; left:0; bottom:0; z-index: 50; }
+    .sb-logo { padding: 22px 20px; border-bottom: 1px solid var(--border); }
+    .sb-logo a { text-decoration: none; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .sb-logo span { color: var(--accent2); }
+    .sb-nav { flex: 1; padding: 14px 0; overflow-y: auto; }
+    .nav-section { padding: 10px 18px 4px; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 18px; color: var(--muted); text-decoration: none; font-size: .875rem; transition: background .14s, color .14s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+    .nav-item:hover { background: rgba(108,99,255,.07); color: var(--text); }
+    .nav-item.active { background: rgba(108,99,255,.14); color: var(--accent2); }
+    .nav-item .ico { font-size: 1rem; width: 20px; text-align: center; }
 
-/* ── SIDEBAR + MAIN ── */
-.layout{display:flex;min-height:100vh;padding-top:60px;}
-.sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
-  padding:32px 0;position:fixed;top:60px;left:0;bottom:0;overflow-y:auto;}
-.sidebar-section{padding:0 20px;margin-bottom:8px;}
-.sidebar-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
-  color:var(--muted);padding:12px 16px 6px;}
-.sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 16px;
-  color:var(--muted);text-decoration:none;font-size:13px;border-radius:8px;
-  transition:all 0.15s;cursor:pointer;border:none;background:none;width:100%;text-align:left;}
-.sidebar-link:hover{color:var(--cream);background:rgba(255,255,255,0.04);}
-.sidebar-link.active{color:var(--cream);background:rgba(201,168,76,0.08);}
-.sidebar-link .icon{font-size:16px;width:20px;text-align:center;}
-.sidebar-link.locked{opacity:0.4;cursor:default;}
-.sidebar-link.locked:hover{color:var(--muted);background:none;}
-.sidebar-divider{height:1px;background:var(--border);margin:12px 20px;}
-.upgrade-box{margin:20px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);
-  border-radius:10px;padding:16px;}
-.upgrade-box p{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;}
-.upgrade-box a{display:block;text-align:center;background:var(--gold);color:#0c0b09;
-  border-radius:7px;padding:8px;font-size:12px;font-weight:600;text-decoration:none;}
+    /* Vertical nav items — color per vertical */
+    .nav-item[data-v="immo"].active    { background: rgba(59,130,246,.12); color: #3b82f6; }
+    .nav-item[data-v="commerce"].active{ background: rgba(249,115,22,.12); color: #f97316; }
+    .nav-item[data-v="legal"].active   { background: rgba(239,68,68,.12);  color: #ef4444; }
+    .nav-item[data-v="finance"].active { background: rgba(34,197,94,.12);  color: #22c55e; }
 
-/* ── MAIN CONTENT ── */
-.main{margin-left:240px;flex:1;padding:40px 48px;}
-.page-header{margin-bottom:40px;}
-.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3vw,40px);font-weight:300;}
-.page-title em{color:var(--gold);font-style:italic;}
-.page-sub{font-size:14px;color:var(--muted);margin-top:6px;}
+    .sb-footer { padding: 14px 18px; border-top: 1px solid var(--border); }
+    .sb-email { font-size: .73rem; color: var(--muted); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn { display: flex; align-items: center; gap: 7px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: .85rem; padding: 5px 0; transition: color .14s; }
+    .logout-btn:hover { color: #ef4444; }
 
-/* ── STATS BAR ── */
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--cream);}
-.stat-label{font-size:12px;color:var(--muted);margin-top:4px;}
-.stat-sub{font-size:11px;color:var(--muted);margin-top:4px;opacity:0.6;}
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar); flex: 1; display: flex; flex-direction: column; }
 
-/* ── VERTICAL TABS ── */
-.vtabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;}
-.vtab{background:none;border:1px solid var(--border);border-radius:8px;
-  padding:8px 16px;font-size:13px;color:var(--muted);cursor:pointer;
-  font-family:'Outfit',sans-serif;transition:all 0.15s;}
-.vtab.active,.vtab:hover{border-color:var(--gold);color:var(--cream);}
+    /* Top bar */
+    .topbar { padding: 18px 32px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: space-between; }
+    .topbar-left h1 { font-size: 1.2rem; font-weight: 700; }
+    .topbar-left p  { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
 
-/* ── TOOLS GRID ── */
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
-.tool-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:22px;display:flex;flex-direction:column;gap:10px;transition:all 0.2s;position:relative;}
-.tool-card:not(.locked):hover{border-color:var(--gold);transform:translateY(-2px);}
-.tool-card.locked{opacity:0.55;}
-.tool-card-top{display:flex;align-items:flex-start;justify-content:space-between;}
-.tool-icon{font-size:24px;}
-.tier-pill{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;flex-shrink:0;}
-.pill-bronze{background:rgba(205,127,50,.15);color:var(--bronze);}
-.pill-silver{background:rgba(168,169,173,.15);color:var(--silver-tier);}
-.pill-gold  {background:rgba(201,168,76,.15);color:var(--gold);}
-.tool-name{font-size:14px;font-weight:500;color:var(--cream);line-height:1.3;}
-.tool-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
-.tool-footer{display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
-.btn-tool{background:var(--gold);color:#0c0b09;border:none;border-radius:7px;
-  padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;
-  font-family:'Outfit',sans-serif;text-decoration:none;transition:opacity 0.2s;}
-.btn-tool:hover{opacity:0.85;}
-.lock-msg{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+    /* Quota pill */
+    .quota-pill { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: .8rem; }
+    .quota-bar { width: 60px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .quota-fill { height: 100%; border-radius: 3px; transition: width .4s; }
 
-/* ── LOADING / EMPTY ── */
-.spinner-wrap{display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:12px;}
-.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);
-  border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.empty-sub{background:var(--card);border:1px solid var(--border);border-radius:16px;
-  padding:48px;text-align:center;max-width:500px;margin:0 auto;}
-.empty-sub h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:12px;}
-.empty-sub p{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.6;}
-.btn-primary{background:var(--gold);color:#0c0b09;border:none;border-radius:9px;
-  padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;
-  font-family:'Outfit',sans-serif;text-decoration:none;}
+    /* Vertical tab bar */
+    .vtab-bar { display: flex; align-items: center; gap: 2px; padding: 0 32px; border-bottom: 1px solid var(--border); background: var(--surface); overflow-x: auto; }
+    .vtab-btn { display: flex; align-items: center; gap: 7px; padding: 13px 20px; font-size: .875rem; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--muted); border-bottom: 2px solid transparent; transition: all .18s; white-space: nowrap; }
+    .vtab-btn:hover { color: var(--text); }
+    .vtab-btn.active { font-weight: 600; }
+    .vtab-btn[data-v="immo"].active    { color: #3b82f6; border-bottom-color: #3b82f6; }
+    .vtab-btn[data-v="commerce"].active{ color: #f97316; border-bottom-color: #f97316; }
+    .vtab-btn[data-v="legal"].active   { color: #ef4444; border-bottom-color: #ef4444; }
+    .vtab-btn[data-v="finance"].active { color: #22c55e; border-bottom-color: #22c55e; }
+    .vtab-btn .tier-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .tier-dot.bronze { background: #cd7f32; }
+    .tier-dot.silver { background: #a8a9ad; }
+    .tier-dot.gold   { background: #c9a84c; }
 
-/* ── USAGE BAR ── */
-.usage-bar-wrap{background:var(--border);border-radius:4px;height:6px;margin-top:8px;overflow:hidden;}
-.usage-bar-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 0.4s;}
-.usage-bar-fill.warning{background:#e67e22;}
-.usage-bar-fill.danger{background:#e74c3c;}
+    /* Content area */
+    .content { flex: 1; padding: 28px 32px; }
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .sidebar{display:none;}
-  .main{margin-left:0;padding:24px 20px;}
-  .stats-bar{grid-template-columns:repeat(2,1fr);}
-  nav{padding:0 20px;}
-}
-</style>
+    /* Vertical header banner */
+    .v-banner { border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border: 1px solid; }
+    .v-banner-left { display: flex; align-items: center; gap: 14px; }
+    .v-banner-icon { font-size: 2rem; }
+    .v-banner-title { font-size: 1.1rem; font-weight: 700; }
+    .v-banner-sub   { font-size: .82rem; margin-top: 2px; opacity: .8; }
+    .v-banner-right { text-align: right; }
+    .v-banner-quota { font-size: .8rem; opacity: .8; }
+    .v-banner-bar   { width: 120px; height: 5px; background: rgba(255,255,255,.15); border-radius: 3px; overflow: hidden; margin-top: 6px; margin-left: auto; }
+    .v-banner-fill  { height: 100%; background: rgba(255,255,255,.7); border-radius: 3px; transition: width .4s; }
+
+    /* Tools grid */
+    .tools-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .tools-header h2 { font-size: 1rem; font-weight: 600; }
+    .filter-row { display: flex; gap: 8px; }
+    .filter-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: .78rem; cursor: pointer; transition: all .15s; }
+    .filter-btn.active, .filter-btn:hover { border-color: currentColor; }
+
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+
+    .tool-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px; transition: border-color .18s, transform .18s; position: relative; }
+    .tool-card:hover { transform: translateY(-2px); }
+    .tool-card.accessible { cursor: pointer; }
+    .tool-card.locked { opacity: .65; }
+    .tool-card .tc-icon { font-size: 1.6rem; }
+    .tool-card .tc-name { font-size: .9rem; font-weight: 600; }
+    .tool-card .tc-desc { font-size: .8rem; color: var(--muted); line-height: 1.4; flex: 1; }
+    .tool-card .tc-tier { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 8px; width: fit-content; }
+    .tc-tier.bronze { background: rgba(205,127,50,.13); color: #cd7f32; }
+    .tc-tier.silver { background: rgba(168,169,173,.13); color: #a8a9ad; }
+    .tc-tier.gold   { background: rgba(201,168,76,.13);  color: #c9a84c; }
+    .tool-card .tc-action { margin-top: 4px; font-size: .82rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+    .lock-overlay { position: absolute; top: 10px; right: 10px; font-size: 1rem; opacity: .6; }
+    .upgrade-hint { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+    /* Empty / no subscription */
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-state .big { font-size: 3.5rem; margin-bottom: 16px; }
+    .empty-state h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .empty-state p { color: var(--muted); font-size: .9rem; line-height: 1.6; margin-bottom: 24px; }
+    .btn-cta { display: inline-block; padding: 12px 28px; background: var(--accent); color: #fff; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: .95rem; transition: background .2s; }
+    .btn-cta:hover { background: #5a52e0; }
+
+    /* Welcome toast */
+    .welcome-banner { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2); border-radius: 12px; padding: 14px 20px; margin-bottom: 22px; display: flex; align-items: center; gap: 12px; font-size: .875rem; }
+    .welcome-banner button { margin-left: auto; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
+
+    /* Skeleton */
+    .skel { background: linear-gradient(90deg,var(--border) 25%,rgba(255,255,255,.04) 50%,var(--border) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    @media(max-width:700px) { .sidebar{display:none;} .main{margin-left:0;} .vtab-bar,.topbar,.content{padding-left:16px;padding-right:16px;} }
+  </style>
 </head>
 <body>
 
-<nav>
-  <a href="/" class="nav-logo">The Prompt <em>Studio</em></a>
-  <div class="nav-right">
-    <span class="nav-tier tier-badge-bronze" id="nav-tier" style="display:none"></span>
-    <span class="nav-user" id="nav-user"></span>
-    <a href="/account.html" class="btn-sm">Mon compte</a>
-    <button class="btn-sm" onclick="PS.logout()">Déconnexion</button>
+<aside class="sidebar">
+  <div class="sb-logo"><a href="/index.html">The <span>Prompt</span> Studio</a></div>
+  <nav class="sb-nav">
+    <div class="nav-section">Mes espaces</div>
+    <div id="sidebar-verticals">
+      <div class="nav-item" style="color:var(--muted);font-size:.82rem;padding-left:18px;">Chargement…</div>
+    </div>
+    <div class="nav-section" style="margin-top:8px;">Navigation</div>
+    <a href="/account.html" class="nav-item"><span class="ico">👤</span> Mon compte</a>
+    <a href="/tarifs.html"  class="nav-item"><span class="ico">➕</span> Ajouter une verticale</a>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-email" id="sb-email"></div>
+    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
   </div>
-</nav>
+</aside>
 
-<div class="layout">
-
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
-    <p class="sidebar-label">Mes outils</p>
-    <button class="sidebar-link active" onclick="showVertical('immo',this)"><span class="icon">🏠</span> Immobilier</button>
-    <button class="sidebar-link" onclick="showVertical('commerce',this)"><span class="icon">🛒</span> Commerce</button>
-    <button class="sidebar-link" onclick="showVertical('legal',this)"><span class="icon">⚖️</span> Juridique</button>
-    <button class="sidebar-link" onclick="showVertical('finance',this)"><span class="icon">💼</span> Finance</button>
-
-    <div class="sidebar-divider"></div>
-    <p class="sidebar-label">Compte</p>
-    <a href="/account.html" class="sidebar-link"><span class="icon">👤</span> Mon abonnement</a>
-    <a href="/account.html#history" class="sidebar-link"><span class="icon">📜</span> Historique</a>
-
-    <div id="upgrade-box-wrap"></div>
-  </aside>
-
-  <!-- ── MAIN ── -->
-  <main class="main">
-
-    <!-- Header -->
-    <div class="page-header a1">
-      <h1 class="page-title">Mes outils <em>IA</em></h1>
-      <p class="page-sub" id="page-sub">Chargement…</p>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1 id="topbar-title">Mon espace</h1>
+      <p id="topbar-sub">Chargement…</p>
     </div>
-
-    <!-- Stats -->
-    <div class="stats-bar a2" id="stats-bar" style="display:none">
-      <div class="stat-card">
-        <div class="stat-val" id="stat-tier">—</div>
-        <div class="stat-label">Abonnement actif</div>
+    <div class="topbar-right">
+      <div class="quota-pill" id="quota-pill" style="display:none">
+        <span id="quota-text">— / —</span>
+        <div class="quota-bar"><div class="quota-fill" id="quota-fill" style="width:0%"></div></div>
       </div>
-      <div class="stat-card">
-        <div class="stat-val" id="stat-usage">—</div>
-        <div class="stat-label">Générations ce mois</div>
-        <div class="usage-bar-wrap"><div class="usage-bar-fill" id="usage-bar" style="width:0%"></div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="stat-quota">—</div>
-        <div class="stat-label">Quota mensuel</div>
-        <div class="stat-sub" id="stat-renewal"></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="stat-tools">—</div>
-        <div class="stat-label">Outils disponibles</div>
-      </div>
+      <a href="/tarifs.html" style="font-size:.8rem;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:7px;transition:all .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">+ Verticale</a>
     </div>
+  </div>
 
-    <!-- Vertical tabs -->
-    <div class="vtabs a3" id="vtabs" style="display:none">
-      <button class="vtab active" onclick="showVertical('immo',this)">🏠 Immobilier</button>
-      <button class="vtab" onclick="showVertical('commerce',this)">🛒 Commerce</button>
-      <button class="vtab" onclick="showVertical('legal',this)">⚖️ Juridique</button>
-      <button class="vtab" onclick="showVertical('finance',this)">💼 Finance</button>
+  <!-- Vertical tab bar -->
+  <div class="vtab-bar" id="vtab-bar"></div>
+
+  <div class="content" id="content">
+    <!-- Filled by JS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+      ${Array(6).fill('<div class="skel" style="height:140px;border-radius:12px;"></div>').join('')}
     </div>
-
-    <!-- Tools grid -->
-    <div id="content">
-      <div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--muted);font-size:14px">Chargement…</p></div>
-    </div>
-
-  </main>
+  </div>
 </div>
 
-<script src="/js/ps-auth.js"></script>
 <script>
-// ── Tools data (same as tarifs.html) ─────────────────────────────────────
+const VMETA = PS.VERTICALS;
+const TIER_LABELS = { bronze:'🥉 Bronze', silver:'🥈 Silver', gold:'🥇 Gold' };
+const QUOTA_MAX   = { bronze:50, silver:150, gold:Infinity };
+
 const ALL_TOOLS = {
   immo: [
-    { slug:'immo-annonce',        name:'Générateur d\'annonces',       desc:'Annonce immobilière percutante en 30 secondes',          icon:'📝', tier:'bronze' },
-    { slug:'immo-email-suivi',    name:'Email de suivi acquéreur',     desc:'Relancez vos prospects avec des emails personnalisés',   icon:'📧', tier:'bronze' },
-    { slug:'immo-rapport-visite', name:'Rapport de visite',            desc:'Compte-rendu de visite professionnel automatisé',        icon:'📋', tier:'silver' },
-    { slug:'immo-analyse-prix',   name:'Analyse comparative de prix',  desc:'Analyse de marché argumentée pour votre client',        icon:'📊', tier:'silver' },
-    { slug:'immo-script-prosp',   name:'Script de prospection',        desc:'Scripts d\'appel et SMS pour décrocher des mandats',    icon:'📞', tier:'silver' },
-    { slug:'immo-mandat-exclusif',name:'Argumentaire mandat exclusif', desc:'Argumentaire pour convaincre de signer en exclusivité', icon:'🏆', tier:'gold'   },
-    { slug:'immo-posts-sociaux',  name:'Posts réseaux sociaux',        desc:'Contenu LinkedIn/Instagram pour promouvoir vos biens',  icon:'📱', tier:'gold'   },
-    { slug:'immo-email-vendeur',  name:'Email présentation vendeur',   desc:'Email professionnel pour présenter une offre',          icon:'💌', tier:'gold'   },
+    {slug:'immo-annonce',        icon:'📝',name:"Générateur d'annonces",       desc:'Annonces percutantes en 30s',         tier:'bronze'},
+    {slug:'immo-email-suivi',    icon:'📧',name:'Email de suivi acquéreur',     desc:'Relancez vos prospects',              tier:'bronze'},
+    {slug:'immo-rapport-visite', icon:'📋',name:'Rapport de visite',            desc:'Compte-rendu professionnel',          tier:'silver'},
+    {slug:'immo-analyse-prix',   icon:'📊',name:'Analyse comparative de prix',  desc:'Analyse de marché argumentée',        tier:'silver'},
+    {slug:'immo-script-prosp',   icon:'📞',name:'Script de prospection',        desc:'Appels & SMS nouveaux mandats',       tier:'silver'},
+    {slug:'immo-mandat-exclusif',icon:'🏆',name:'Argumentaire mandat exclusif', desc:'Décrochez le mandat exclusif',        tier:'gold'  },
+    {slug:'immo-posts-sociaux',  icon:'📱',name:'Posts réseaux sociaux',        desc:'LinkedIn/Instagram pour vos biens',  tier:'gold'  },
+    {slug:'immo-email-vendeur',  icon:'💌',name:'Email présentation vendeur',   desc:'Présentez une offre au vendeur',      tier:'gold'  },
   ],
   commerce: [
-    { slug:'commerce-fiche-produit',   name:'Générateur de fiches produits',  desc:'Fiches produits SEO-optimisées en masse',              icon:'🛒', tier:'bronze' },
-    { slug:'commerce-email-promo',     name:'Email promotionnel',             desc:'Emails marketing qui convertissent',                   icon:'📧', tier:'bronze' },
-    { slug:'commerce-seo-description', name:'Description SEO',                desc:'Optimisez vos descriptions pour le référencement',     icon:'🔍', tier:'silver' },
-    { slug:'commerce-posts-sociaux',   name:'Contenu réseaux sociaux',        desc:'Posts pour Instagram, Facebook, TikTok',               icon:'📱', tier:'silver' },
-    { slug:'commerce-relance-panier',  name:'Relance panier abandonné',       desc:'Récupérez jusqu\'à 15% des paniers abandonnés',        icon:'🛍️', tier:'silver' },
-    { slug:'commerce-chatbot-sav',     name:'Script chatbot SAV',             desc:'Script de chatbot service client complet',             icon:'💬', tier:'gold'   },
-    { slug:'commerce-strategie',       name:'Stratégie de contenu',           desc:'Plan de contenu marketing mensuel complet',            icon:'🎯', tier:'gold'   },
-    { slug:'commerce-analyse-concur',  name:'Analyse concurrentielle',        desc:'Positionnement IA face à la concurrence',             icon:'📊', tier:'gold'   },
+    {slug:'commerce-fiche-produit',   icon:'🛒',name:'Fiches produits SEO',          desc:'Fiches optimisées en masse',          tier:'bronze'},
+    {slug:'commerce-email-promo',     icon:'📧',name:'Email promotionnel',           desc:'Emails marketing qui convertissent',  tier:'bronze'},
+    {slug:'commerce-seo-description', icon:'🔍',name:'Description SEO',              desc:'Optimisez pour le référencement',     tier:'silver'},
+    {slug:'commerce-posts-sociaux',   icon:'📱',name:'Contenu réseaux sociaux',      desc:'Posts Instagram, Facebook, TikTok',   tier:'silver'},
+    {slug:'commerce-relance-panier',  icon:'🛍️',name:'Relance panier abandonné',     desc:'Récupérez les paniers',               tier:'silver'},
+    {slug:'commerce-chatbot-sav',     icon:'💬',name:'Script chatbot SAV',           desc:'Script service client complet',       tier:'gold'  },
+    {slug:'commerce-strategie',       icon:'🎯',name:'Stratégie de contenu',         desc:'Plan marketing mensuel complet',      tier:'gold'  },
+    {slug:'commerce-analyse-concur',  icon:'📊',name:'Analyse concurrentielle',      desc:'Positionnement vs concurrence',       tier:'gold'  },
   ],
   legal: [
-    { slug:'legal-courrier',          name:'Rédacteur de courriers',      desc:'Courriers juridiques professionnels en quelques clics', icon:'✉️', tier:'bronze' },
-    { slug:'legal-resume-contrat',    name:'Résumé de contrat',           desc:'Points clés d\'un contrat en moins d\'1 minute',        icon:'📋', tier:'bronze' },
-    { slug:'legal-note-juridique',    name:'Note juridique',              desc:'Note de synthèse juridique structurée',                icon:'⚖️', tier:'silver' },
-    { slug:'legal-analyse-clause',    name:'Analyse de clause',           desc:'Identifiez les risques dans une clause contractuelle', icon:'🔎', tier:'silver' },
-    { slug:'legal-mise-en-demeure',   name:'Mise en demeure',             desc:'Mise en demeure légalement solide',                    icon:'📜', tier:'silver' },
-    { slug:'legal-contrat-standard',  name:'Contrat type',                desc:'Contrat adapté à votre situation',                    icon:'📄', tier:'gold'   },
-    { slug:'legal-jurisprudence',     name:'Recherche jurisprudentielle', desc:'Synthèse de jurisprudence sur une question de droit', icon:'🏛️', tier:'gold'   },
-    { slug:'legal-plaidoirie',        name:'Arguments de plaidoirie',     desc:'Structurez vos arguments pour une audience',          icon:'🎤', tier:'gold'   },
+    {slug:'legal-courrier',         icon:'✉️',name:'Rédacteur de courriers',      desc:'Courriers juridiques professionnels',  tier:'bronze'},
+    {slug:'legal-resume-contrat',   icon:'📋',name:'Résumé de contrat',           desc:"Points clés en moins d'1 minute",     tier:'bronze'},
+    {slug:'legal-note-juridique',   icon:'⚖️',name:'Note juridique',              desc:'Note de synthèse structurée',          tier:'silver'},
+    {slug:'legal-analyse-clause',   icon:'🔎',name:'Analyse de clause',           desc:'Identifiez les risques contractuels',  tier:'silver'},
+    {slug:'legal-mise-en-demeure',  icon:'📜',name:'Mise en demeure',             desc:'Rédaction légalement solide',          tier:'silver'},
+    {slug:'legal-contrat-standard', icon:'📄',name:'Contrat type',                desc:'Contrat adapté à votre situation',     tier:'gold'  },
+    {slug:'legal-jurisprudence',    icon:'🏛️',name:'Recherche jurisprudentielle', desc:'Synthèse sur une question de droit',   tier:'gold'  },
+    {slug:'legal-plaidoirie',       icon:'🎤',name:'Arguments de plaidoirie',     desc:'Structurez vos arguments',             tier:'gold'  },
   ],
   finance: [
-    { slug:'finance-synthese',         name:'Synthèse de rapport',         desc:'Résumez un rapport financier complexe en points clés', icon:'📊', tier:'bronze' },
-    { slug:'finance-email-pro',        name:'Email professionnel finance', desc:'Emails formels pour dirigeants et investisseurs',      icon:'📧', tier:'bronze' },
-    { slug:'finance-analyse-kpi',      name:'Analyse de KPIs',             desc:'Interprétez vos indicateurs financiers avec l\'IA',   icon:'📈', tier:'silver' },
-    { slug:'finance-rapport-invest',   name:'Rapport d\'investissement',   desc:'Analyse d\'investissement structurée',                icon:'💰', tier:'silver' },
-    { slug:'finance-budget-prevision', name:'Budget prévisionnel',         desc:'Commentaire et analyse de votre budget',              icon:'📅', tier:'silver' },
-    { slug:'finance-deck-invest',      name:'Deck investisseur',           desc:'Contenu d\'un pitch deck pour levée de fonds',        icon:'🚀', tier:'gold'   },
-    { slug:'finance-strategie',        name:'Stratégie financière',        desc:'Recommandations IA pour optimiser votre stratégie',   icon:'🎯', tier:'gold'   },
-    { slug:'finance-due-diligence',    name:'Due diligence',               desc:'Check-list et analyse IA pour une acquisition',      icon:'🔬', tier:'gold'   },
+    {slug:'finance-synthese',        icon:'📊',name:'Synthèse de rapport',           desc:'Résumez un rapport financier',         tier:'bronze'},
+    {slug:'finance-email-pro',       icon:'📧',name:'Email professionnel finance',   desc:'Emails formels pour DAF/investisseurs', tier:'bronze'},
+    {slug:'finance-analyse-kpi',     icon:'📈',name:'Analyse de KPIs',              desc:'Interprétez vos indicateurs',          tier:'silver'},
+    {slug:'finance-rapport-invest',  icon:'💰',name:"Rapport d'investissement",     desc:"Analyse d'investissement",             tier:'silver'},
+    {slug:'finance-budget-prevision',icon:'📅',name:'Budget prévisionnel',          desc:'Commentaire de votre budget',          tier:'silver'},
+    {slug:'finance-deck-invest',     icon:'🚀',name:'Deck investisseur',            desc:'Pitch deck pour levée de fonds',       tier:'gold'  },
+    {slug:'finance-strategie',       icon:'🎯',name:'Stratégie financière',         desc:'Optimisez votre stratégie',            tier:'gold'  },
+    {slug:'finance-due-diligence',   icon:'🔬',name:'Due diligence',                desc:'Analyse IA pour une acquisition',      tier:'gold'  },
   ],
 };
-const QUOTA = { bronze: 50, silver: 150, gold: Infinity };
-const TIER_ORDER = { bronze: 1, silver: 2, gold: 3 };
-const TIER_LABEL = { bronze: '🥉 Bronze', silver: '🥈 Silver', gold: '🥇 Gold' };
-let currentVertical = 'immo';
 
-// ── Boot ──────────────────────────────────────────────────────────────────
-async function boot() {
-  const ok = await PS.requireAuth('/dashboard');
+let activeV = null;
+let usageCount = 0;
+
+// ── Render sidebar verticals ───────────────────────────────────────────────
+function renderSidebar() {
+  const subs = PS.subs;
+  const el   = document.getElementById('sidebar-verticals');
+  if (!subs.length) { el.innerHTML = ''; return; }
+  el.innerHTML = subs.map(s => {
+    const m = VMETA[s.vertical] || {};
+    return `<button class="nav-item" data-v="${s.vertical}" onclick="switchVertical('${s.vertical}')">
+      <span class="ico">${m.icon||'📁'}</span>
+      <span>${m.label||s.vertical}</span>
+      <span style="margin-left:auto;font-size:.68rem;opacity:.6">${TIER_LABELS[s.tier]?.replace(/[^a-zA-Z]/g,'')||s.tier}</span>
+    </button>`;
+  }).join('');
+}
+
+// ── Render vertical tab bar ────────────────────────────────────────────────
+function renderTabBar() {
+  const bar = document.getElementById('vtab-bar');
+  bar.innerHTML = PS.subs.map(s => {
+    const m = VMETA[s.vertical] || {};
+    return `<button class="vtab-btn" data-v="${s.vertical}" onclick="switchVertical('${s.vertical}')">
+      <span>${m.icon||'📁'}</span>
+      <span>${m.label||s.vertical}</span>
+      <span class="tier-dot ${s.tier}"></span>
+    </button>`;
+  }).join('');
+}
+
+// ── Switch vertical ────────────────────────────────────────────────────────
+async function switchVertical(v) {
+  activeV = v;
+  const sub = PS.subForVertical(v);
+  const m   = VMETA[v] || {};
+
+  // Update tabs
+  document.querySelectorAll('.vtab-btn').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+  document.querySelectorAll('.nav-item[data-v]').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+
+  // Update topbar
+  document.getElementById('topbar-title').textContent = `${m.icon || ''} ${m.label || v}`;
+  document.getElementById('topbar-sub').textContent   = sub ? `${TIER_LABELS[sub.tier]} · accès aux outils ${m.label}` : '';
+
+  // Update quota pill
+  await updateQuota(v, sub);
+
+  // Render tools
+  renderTools(v, sub);
+}
+
+// ── Update quota display ───────────────────────────────────────────────────
+async function updateQuota(v, sub) {
+  if (!sub) return;
+  const count = await PS.getMonthlyUsage();
+  usageCount  = count;
+  const max   = QUOTA_MAX[sub.tier] ?? 50;
+  const pct   = max === Infinity ? 5 : Math.min(100, Math.round(count/max*100));
+  const color = VMETA[v]?.color || '#6c63ff';
+  const pill  = document.getElementById('quota-pill');
+  pill.style.display = 'flex';
+  document.getElementById('quota-text').textContent = max === Infinity ? `${count} générés` : `${count} / ${max}`;
+  const fill = document.getElementById('quota-fill');
+  fill.style.width      = pct + '%';
+  fill.style.background = pct > 80 ? '#ef4444' : color;
+}
+
+// ── Render tools for a vertical ────────────────────────────────────────────
+function renderTools(v, sub) {
+  const content = document.getElementById('content');
+  const tools   = ALL_TOOLS[v] || [];
+  const m       = VMETA[v] || {};
+  const max     = sub ? (QUOTA_MAX[sub.tier] ?? 50) : 0;
+  const pct     = max === Infinity ? 5 : Math.min(100, Math.round(usageCount/max*100));
+
+  // Banner
+  const bannerStyle = `background:${m.bg||'rgba(108,99,255,.1)'};border-color:${m.border||'rgba(108,99,255,.3)'};color:${m.color||'#6c63ff'}`;
+
+  let html = `
+    <div class="v-banner" style="${bannerStyle}">
+      <div class="v-banner-left">
+        <span class="v-banner-icon">${m.icon||'📁'}</span>
+        <div>
+          <div class="v-banner-title">${m.label||v}</div>
+          <div class="v-banner-sub">${sub ? TIER_LABELS[sub.tier] + ' · ' + (max===Infinity?'Illimité':max+' générations/mois') : 'Aucun abonnement actif'}</div>
+        </div>
+      </div>
+      <div class="v-banner-right">
+        <div class="v-banner-quota">${max===Infinity?usageCount+' utilisées':'Quota: '+usageCount+' / '+max}</div>
+        <div class="v-banner-bar"><div class="v-banner-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+
+  html += `<div class="tools-header">
+    <h2>${tools.length} outils disponibles</h2>
+  </div>`;
+
+  html += `<div class="tools-grid">`;
+  tools.forEach(t => {
+    const access = PS.canUseTool(t.slug, t.tier, v);
+    const color  = m.color || '#6c63ff';
+    if (access.allowed) {
+      html += `
+        <div class="tool-card accessible" style="border-color:transparent" onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='transparent'" onclick="window.location.href='/tools/${t.slug}.html'">
+          <span class="tc-icon">${t.icon}</span>
+          <div class="tc-name">${t.name}</div>
+          <div class="tc-desc">${t.desc}</div>
+          <span class="tc-tier ${t.tier}">${TIER_LABELS[t.tier]}</span>
+          <a href="/tools/${t.slug}.html" class="tc-action" style="color:${color}">Utiliser l'outil →</a>
+        </div>`;
+    } else {
+      const reason = access.reason === 'upgrade_required'
+        ? `Requiert ${TIER_LABELS[access.required]}`
+        : 'Abonnement requis';
+      html += `
+        <div class="tool-card locked">
+          <span class="lock-overlay">🔒</span>
+          <span class="tc-icon">${t.icon}</span>
+          <div class="tc-name">${t.name}</div>
+          <div class="tc-desc">${t.desc}</div>
+          <span class="tc-tier ${t.tier}">${TIER_LABELS[t.tier]}</span>
+          <div class="upgrade-hint">${reason} · <a href="/tarifs.html?v=${v}" style="color:${color};text-decoration:none;font-size:.75rem;">Upgrade →</a></div>
+        </div>`;
+    }
+  });
+  html += '</div>';
+
+  content.innerHTML = html;
+}
+
+// ── No subscription state ──────────────────────────────────────────────────
+function renderNoSub() {
+  document.getElementById('vtab-bar').innerHTML = '';
+  document.getElementById('topbar-title').textContent = 'Mon espace';
+  document.getElementById('topbar-sub').textContent   = 'Aucun abonnement actif';
+  document.getElementById('content').innerHTML = `
+    <div class="empty-state">
+      <div class="big">🚀</div>
+      <h2>Choisissez votre verticale</h2>
+      <p>Sélectionnez le secteur qui correspond à votre métier.<br>Vos outils IA seront disponibles immédiatement après souscription.</p>
+      <a href="/tarifs.html" class="btn-cta">Voir les offres →</a>
+    </div>`;
+}
+
+// ── Welcome banner ─────────────────────────────────────────────────────────
+function maybeShowWelcome() {
+  const welcome = new URLSearchParams(window.location.search).get('welcome');
+  if (!welcome) return;
+  const v = welcome;
+  const m = VMETA[v];
+  if (!m) return;
+  const banner = document.createElement('div');
+  banner.className = 'welcome-banner';
+  banner.innerHTML = `<span style="font-size:1.4rem">${m.icon}</span> <span>Bienvenue ! Votre accès <strong>${m.label}</strong> est actif. Bonne génération ! ✨</span> <button onclick="this.closest('.welcome-banner').remove()">✕</button>`;
+  document.getElementById('content').prepend(banner);
+  window.history.replaceState({}, '', '/dashboard.html');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+async function init() {
+  const ok = await PS.requireAuth('/dashboard.html');
   if (!ok) return;
 
-  const user = PS.session.user;
-  const sub  = PS.sub;
+  document.getElementById('sb-email').textContent = PS.session.user.email;
 
-  // Nav
-  const name = user.user_metadata?.full_name || user.email.split('@')[0];
-  document.getElementById('nav-user').textContent = name;
-  if (sub) {
-    const el = document.getElementById('nav-tier');
-    el.textContent = TIER_LABEL[sub.tier] || sub.tier;
-    el.className = `nav-tier tier-badge-${sub.tier}`;
-    el.style.display = 'inline-block';
-  }
-
-  if (!sub) {
+  if (!PS.hasAnySubscription()) {
     renderNoSub();
     return;
   }
 
-  // Stats
-  const usage = await PS.getMonthlyUsage();
-  const quota = QUOTA[sub.tier];
-  const pct   = quota === Infinity ? 5 : Math.min(100, Math.round(usage / quota * 100));
-  const availableTools = Object.values(ALL_TOOLS).flat()
-    .filter(t => PS.canUseTool(t.slug, t.tier, t.vertical).allowed).length;
+  renderSidebar();
+  renderTabBar();
 
-  document.getElementById('stat-tier').textContent = TIER_LABEL[sub.tier];
-  document.getElementById('stat-usage').textContent = usage;
-  document.getElementById('stat-quota').textContent = quota === Infinity ? '∞' : quota;
-  document.getElementById('stat-tools').textContent = availableTools + ' / 32';
-  document.getElementById('page-sub').textContent =
-    `Bonjour ${name} — ${availableTools} outils disponibles avec votre abonnement ${sub.tier}`;
-
-  const bar = document.getElementById('usage-bar');
-  bar.style.width = pct + '%';
-  if (pct >= 90) bar.className = 'usage-bar-fill danger';
-  else if (pct >= 70) bar.className = 'usage-bar-fill warning';
-
-  if (sub.current_period_end) {
-    const d = new Date(sub.current_period_end).toLocaleDateString('fr-FR');
-    document.getElementById('stat-renewal').textContent = `Renouvellement le ${d}`;
-  }
-
-  document.getElementById('stats-bar').style.display = 'grid';
-  document.getElementById('vtabs').style.display = 'flex';
-
-  // Upgrade box if not Gold
-  if (sub.tier !== 'gold') {
-    document.getElementById('upgrade-box-wrap').innerHTML = `
-      <div class="upgrade-box">
-        <p>Passez à l'offre supérieure pour débloquer plus d'outils.</p>
-        <a href="/tarifs.html">Voir les offres ↗</a>
-      </div>`;
-  }
-
-  showVertical('immo', document.querySelector('.vtab'));
+  // Default to first subscribed vertical (or ?v= param)
+  const urlV = new URLSearchParams(window.location.search).get('v');
+  const firstV = (urlV && PS.subForVertical(urlV)) ? urlV : PS.subs[0]?.vertical;
+  await switchVertical(firstV);
+  maybeShowWelcome();
 }
 
-// ── Render tools for a vertical ───────────────────────────────────────────
-function showVertical(v, tabEl) {
-  currentVertical = v;
-
-  // Update all tab buttons (both sidebar + main)
-  document.querySelectorAll('.vtab, .sidebar-link[onclick*="showVertical"]').forEach(t => {
-    t.classList.toggle('active', t.getAttribute('onclick')?.includes(`'${v}'`));
-  });
-
-  const tools = ALL_TOOLS[v] || [];
-  const content = document.getElementById('content');
-
-  content.innerHTML = `<div class="tools-grid">${tools.map(t => renderToolCard(t, v)).join('')}</div>`;
-}
-
-function renderToolCard(t, vertical) {
-  const access = PS.canUseTool(t.slug, t.tier, vertical);
-  const pillClass = `pill-${t.tier}`;
-  const tierLabel = t.tier.charAt(0).toUpperCase() + t.tier.slice(1);
-
-  if (access.allowed) {
-    return `
-      <div class="tool-card">
-        <div class="tool-card-top">
-          <span class="tool-icon">${t.icon}</span>
-          <span class="tier-pill ${pillClass}">${tierLabel}</span>
-        </div>
-        <div class="tool-name">${t.name}</div>
-        <div class="tool-desc">${t.desc}</div>
-        <div class="tool-footer">
-          <a href="/tools/${t.slug}.html" class="btn-tool">Utiliser →</a>
-        </div>
-      </div>`;
-  } else {
-    let lockMsg = '🔒 ';
-    if (access.reason === 'upgrade_required') lockMsg += `Nécessite ${access.required}`;
-    else if (access.reason === 'wrong_vertical') lockMsg += `Réservé à votre verticale`;
-    else if (access.reason === 'no_subscription') lockMsg += 'Abonnement requis';
-    else lockMsg += 'Non disponible';
-
-    return `
-      <div class="tool-card locked">
-        <div class="tool-card-top">
-          <span class="tool-icon">${t.icon}</span>
-          <span class="tier-pill ${pillClass}">${tierLabel}</span>
-        </div>
-        <div class="tool-name">${t.name}</div>
-        <div class="tool-desc">${t.desc}</div>
-        <div class="tool-footer">
-          <span class="lock-msg">${lockMsg}</span>
-          <a href="/tarifs.html" style="font-size:11px;color:var(--gold);text-decoration:none;">Upgrader</a>
-        </div>
-      </div>`;
-  }
-}
-
-function renderNoSub() {
-  document.getElementById('page-sub').textContent = 'Choisissez un abonnement pour accéder aux outils';
-  document.getElementById('content').innerHTML = `
-    <div class="empty-sub">
-      <h3>Aucun abonnement actif</h3>
-      <p>Souscrivez à une offre Bronze, Silver ou Gold pour accéder à vos outils IA.</p>
-      <a href="/tarifs.html" class="btn-primary">Voir les tarifs →</a>
-    </div>`;
-}
-
-boot();
+init();
 </script>
 </body>
 </html>

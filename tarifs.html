@@ -1,433 +1,370 @@
 <!DOCTYPE html>
-<html lang="fr" data-lang="fr" dir="ltr">
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tarifs — The Prompt Studio</title>
-<meta name="description" content="Choisissez votre offre The Prompt Studio. Bronze, Silver ou Gold — des outils IA pour chaque niveau d'ambition professionnelle.">
-<link rel="canonical" href="https://theprompt.studio/tarifs">
-<meta property="og:title" content="Tarifs — The Prompt Studio">
-<meta property="og:description" content="Abonnements Bronze, Silver, Gold — outils IA pour professionnels.">
-<meta property="og:image" content="https://theprompt.studio/assets/images/og-image.png">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2e2a24;
-  --gold:#c9a84c;--gold-l:#e8c97a;--cream:#f0ead8;--muted:#8a8070;
-  --bronze:#cd7f32;--silver:#a8a9ad;--gold-tier:#c9a84c;
-}
-body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.a1{animation:fadeUp 0.7s ease both 0s;}
-.a2{animation:fadeUp 0.7s ease both 0.1s;}
-.a3{animation:fadeUp 0.7s ease both 0.2s;}
-.a4{animation:fadeUp 0.7s ease both 0.3s;}
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Offres & Tarifs – The Prompt Studio</title>
+  <meta name="description" content="Choisissez votre verticale et votre offre. Accès instantané aux outils IA conçus pour votre métier."/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #0f1117;
+      --surface: #1a1d27;
+      --border:  #2a2d3e;
+      --text:    #e8eaf0;
+      --muted:   #7c8098;
+      --accent:  #6c63ff;
+      --v-color:  #3b82f6;
+      --v-bg:     rgba(59,130,246,.12);
+      --v-border: rgba(59,130,246,.3);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);
-  backdrop-filter:blur(18px);border-bottom:1px solid var(--border);
-  padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:60px;}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;
-  color:var(--cream);text-decoration:none;letter-spacing:0.02em;}
-.nav-logo em{color:var(--gold);font-style:italic;}
-.nav-links{display:flex;align-items:center;gap:4px;}
-.nav-link{color:var(--muted);text-decoration:none;font-size:13px;padding:0 14px;
-  height:60px;display:flex;align-items:center;transition:color 0.2s;}
-.nav-link:hover,.nav-link.active{color:var(--cream);}
-.nav-cta{background:var(--gold);color:#0c0b09;border:none;border-radius:7px;
-  padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;
-  font-family:'Outfit',sans-serif;text-decoration:none;transition:opacity 0.2s;}
-.nav-cta:hover{opacity:0.85;}
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px; border-bottom: 1px solid var(--border);
+      background: var(--surface); position: sticky; top: 0; z-index: 50;
+    }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; text-decoration: none; color: var(--text); }
+    .nav-logo span { color: #a78bfa; }
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .btn-nav { padding: 8px 18px; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-size: .875rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn-nav:hover { background: #5a52e0; }
 
-/* ── HERO ── */
-.hero{padding:120px 24px 72px;text-align:center;}
-.hero-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,64px);
-  font-weight:300;line-height:1.1;margin-bottom:20px;}
-.hero h1 em{color:var(--gold);font-style:italic;}
-.hero-sub{font-size:17px;color:var(--muted);max-width:560px;margin:0 auto 16px;line-height:1.6;}
-.billing-toggle{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:32px;}
-.toggle-label{font-size:13px;color:var(--muted);}
-.toggle-label.active{color:var(--cream);}
-.toggle{width:44px;height:24px;background:#2e2a24;border-radius:12px;cursor:pointer;
-  position:relative;transition:background 0.2s;border:none;outline:none;}
-.toggle.yearly{background:var(--gold);}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;
-  background:#fff;border-radius:50%;transition:transform 0.2s;}
-.toggle.yearly::after{transform:translateX(20px);}
-.badge-save{background:rgba(0,137,123,0.15);color:#4ecdc4;border:1px solid rgba(0,137,123,0.3);
-  font-size:11px;padding:3px 10px;border-radius:20px;letter-spacing:0.04em;}
+    .hero { text-align: center; padding: 64px 20px 36px; max-width: 680px; margin: 0 auto; }
+    .hero-tag { display: inline-block; background: rgba(108,99,255,.15); color: #a78bfa; border: 1px solid rgba(108,99,255,.3); font-size: .78rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .06em; }
+    .hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.2; margin-bottom: 14px; }
+    .hero p { color: var(--muted); font-size: 1rem; line-height: 1.6; }
+    .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 28px; font-size: .82rem; }
+    .step { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+    .step .num { width: 22px; height: 22px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: .72rem; font-weight: 700; }
+    .step.active .num { background: var(--accent); color: #fff; }
+    .step.active { color: var(--text); }
+    .step-sep { color: var(--border); }
 
-/* ── PRICING GRID ── */
-.pricing-section{padding:0 24px 96px;max-width:1100px;margin:0 auto;}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-.plan-card{background:var(--card);border:1px solid var(--border);border-radius:20px;
-  padding:36px 32px;display:flex;flex-direction:column;gap:0;position:relative;
-  transition:transform 0.2s;}
-.plan-card:hover{transform:translateY(-4px);}
-.plan-card.featured{border-color:var(--gold);background:linear-gradient(160deg,#1f1c14 0%,#1a1814 100%);}
-.plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);
-  background:var(--gold);color:#0c0b09;font-size:11px;font-weight:600;
-  padding:4px 16px;border-radius:20px;letter-spacing:0.06em;white-space:nowrap;}
+    .section-title { text-align: center; font-size: 1.1rem; font-weight: 700; margin: 44px 0 20px; }
+    .section-title span { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: 8px; }
 
-/* Tier color accents */
-.tier-bronze .plan-icon{color:var(--bronze);}
-.tier-silver .plan-icon{color:var(--silver);}
-.tier-gold   .plan-icon{color:var(--gold-tier);}
-.tier-bronze .plan-name{color:var(--bronze);}
-.tier-silver .plan-name{color:var(--silver);}
-.tier-gold   .plan-name{color:var(--gold-tier);}
+    .vertical-tabs { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; padding: 0 20px; margin-bottom: 44px; }
+    .vtab { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 24px; border: 2px solid var(--border); border-radius: 14px; cursor: pointer; background: var(--surface); transition: all .22s; min-width: 130px; text-align: center; }
+    .vtab:hover { transform: translateY(-2px); }
+    .vtab .v-icon { font-size: 1.8rem; }
+    .vtab .v-name { font-size: .875rem; font-weight: 600; }
+    .vtab .v-desc { font-size: .72rem; color: var(--muted); }
+    .vtab[data-v="immo"].active    { border-color: #3b82f6; background: rgba(59,130,246,.1); }
+    .vtab[data-v="commerce"].active{ border-color: #f97316; background: rgba(249,115,22,.1); }
+    .vtab[data-v="legal"].active   { border-color: #ef4444; background: rgba(239,68,68,.1);  }
+    .vtab[data-v="finance"].active { border-color: #22c55e; background: rgba(34,197,94,.1);  }
+    .vtab[data-v="immo"].active     .v-name { color: #3b82f6; }
+    .vtab[data-v="commerce"].active .v-name { color: #f97316; }
+    .vtab[data-v="legal"].active    .v-name { color: #ef4444; }
+    .vtab[data-v="finance"].active  .v-name { color: #22c55e; }
 
-.plan-icon{font-size:32px;margin-bottom:16px;}
-.plan-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;margin-bottom:8px;}
-.plan-tagline{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
-.plan-price{margin-bottom:28px;}
-.price-amount{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;line-height:1;}
-.price-amount sup{font-size:24px;vertical-align:super;}
-.price-period{font-size:13px;color:var(--muted);margin-top:4px;}
-.price-yearly{font-size:12px;color:#4ecdc4;margin-top:4px;display:none;}
-.price-yearly.show{display:block;}
-.plan-divider{height:1px;background:var(--border);margin:0 0 28px;}
-.plan-features{list-style:none;display:flex;flex-direction:column;gap:10px;flex:1;margin-bottom:32px;}
-.plan-features li{font-size:14px;color:var(--muted);display:flex;align-items:flex-start;gap:10px;line-height:1.4;}
-.plan-features li .check{font-size:13px;flex-shrink:0;margin-top:1px;}
-.plan-features li .check.yes{color:var(--gold);}
-.plan-features li .check.no{color:#3a3530;font-size:16px;}
-.plan-features li.highlight{color:var(--cream);}
-.plan-features li.section-head{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
-  color:var(--muted);margin-top:8px;margin-bottom:2px;}
-.btn-plan{width:100%;border:none;border-radius:10px;padding:14px;font-size:15px;
-  font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;
-  text-decoration:none;display:block;text-align:center;transition:all 0.2s;}
-.btn-bronze{background:var(--bronze);color:#fff;}
-.btn-bronze:hover{opacity:0.85;}
-.btn-silver{background:var(--silver);color:#0c0b09;}
-.btn-silver:hover{opacity:0.85;}
-.btn-gold{background:var(--gold);color:#0c0b09;}
-.btn-gold:hover{opacity:0.85;}
+    .plans-section { max-width: 1060px; margin: 0 auto; padding: 0 20px 72px; }
+    .plans-header { text-align: center; margin-bottom: 32px; }
+    .plans-header h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+    .plans-header p { color: var(--muted); font-size: .875rem; }
+    .billing-toggle { display: inline-flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 5px 16px; margin: 14px auto 0; cursor: pointer; font-size: .83rem; }
+    .toggle-sw { width: 36px; height: 18px; background: var(--border); border-radius: 9px; position: relative; transition: background .2s; }
+    .toggle-sw.on { background: var(--accent); }
+    .toggle-sw::after { content:''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: transform .2s; }
+    .toggle-sw.on::after { transform: translateX(18px); }
+    .save-tag { background: rgba(34,197,94,.12); color: #22c55e; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(34,197,94,.2); }
 
-/* ── TOOLS PREVIEW ── */
-.tools-section{background:var(--surface);border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);padding:96px 24px;}
-.tools-container{max-width:1100px;margin:0 auto;}
-.section-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,48px);
-  font-weight:300;line-height:1.12;margin-bottom:48px;}
-.vertical-tabs{display:flex;gap:8px;margin-bottom:40px;flex-wrap:wrap;}
-.vtab{background:none;border:1px solid var(--border);border-radius:8px;
-  padding:8px 18px;font-size:13px;color:var(--muted);cursor:pointer;
-  font-family:'Outfit',sans-serif;transition:all 0.2s;}
-.vtab.active,.vtab:hover{border-color:var(--gold);color:var(--cream);}
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
-.tool-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;
-  display:flex;flex-direction:column;gap:8px;}
-.tool-card-top{display:flex;align-items:center;justify-content:space-between;}
-.tool-icon{font-size:22px;}
-.tool-tier-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;}
-.badge-bronze{background:rgba(205,127,50,0.15);color:var(--bronze);}
-.badge-silver{background:rgba(168,169,173,0.15);color:var(--silver);}
-.badge-gold  {background:rgba(201,168,76,0.15);color:var(--gold);}
-.tool-name{font-size:14px;font-weight:500;color:var(--cream);}
-.tool-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+    .plans-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    @media(max-width:860px) { .plans-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
 
-/* ── FAQ ── */
-.faq-section{padding:96px 24px;max-width:760px;margin:0 auto;}
-.faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
-.faq-q{font-size:16px;font-weight:500;color:var(--cream);cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;gap:16px;}
-.faq-q::after{content:'+';font-size:20px;color:var(--gold);flex-shrink:0;transition:transform 0.2s;}
-.faq-item.open .faq-q::after{transform:rotate(45deg);}
-.faq-a{font-size:14px;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;
-  transition:max-height 0.3s ease,padding 0.3s;}
-.faq-item.open .faq-a{max-height:300px;padding-top:12px;}
+    .plan-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; position: relative; transition: border-color .2s, transform .2s; display: flex; flex-direction: column; }
+    .plan-card:hover { transform: translateY(-3px); }
+    .plan-card.popular { border-color: var(--v-color); box-shadow: 0 0 0 1px var(--v-color); }
+    .pop-tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--v-color); color: #fff; font-size: .7rem; font-weight: 800; padding: 2px 12px; border-radius: 10px; white-space: nowrap; text-transform: uppercase; letter-spacing: .04em; }
+    .plan-tier { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+    .plan-tier.bronze { color: #cd7f32; }
+    .plan-tier.silver { color: #a8a9ad; }
+    .plan-tier.gold   { color: #c9a84c; }
+    .plan-price { font-size: 2.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+    .plan-price .per { font-size: .85rem; font-weight: 400; color: var(--muted); }
+    .plan-yearly { font-size: .78rem; color: var(--muted); margin-bottom: 16px; min-height: 18px; }
+    .plan-yearly.ok { color: #22c55e; font-weight: 600; }
+    .plan-desc { font-size: .85rem; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+    .plan-feats { list-style: none; margin-bottom: 22px; flex: 1; }
+    .plan-feats li { display: flex; align-items: flex-start; gap: 7px; padding: 5px 0; font-size: .85rem; border-bottom: 1px solid var(--border); }
+    .plan-feats li:last-child { border-bottom: none; }
+    .ck { color: #22c55e; flex-shrink: 0; }
+    .lk { color: var(--muted); flex-shrink: 0; }
+    .lt { color: var(--muted); }
+    .plan-cta { display: block; width: 100%; padding: 12px; border-radius: 9px; border: none; font-size: .92rem; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; transition: all .2s; }
+    .plan-cta.solid { background: var(--v-color); color: #fff; }
+    .plan-cta.solid:hover { opacity: .88; transform: translateY(-1px); }
+    .plan-cta.outline { background: transparent; border: 2px solid var(--v-color); color: var(--v-color); }
+    .plan-cta.outline:hover { background: var(--v-bg); }
 
-/* ── FOOTER ── */
-footer{background:var(--surface);border-top:1px solid var(--border);
-  padding:48px;text-align:center;font-size:13px;color:var(--muted);}
-footer a{color:var(--muted);text-decoration:none;margin:0 12px;}
-footer a:hover{color:var(--cream);}
+    .tools-preview { max-width: 1060px; margin: 0 auto 72px; padding: 0 20px; }
+    .tools-preview h3 { text-align: center; font-size: 1.05rem; font-weight: 700; margin-bottom: 18px; }
+    .tools-mini-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    @media(max-width:860px) { .tools-mini-grid { grid-template-columns: repeat(2,1fr); } }
+    .tool-mini { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; transition: border-color .2s; }
+    .tool-mini:hover { border-color: var(--v-color); }
+    .tm-icon { font-size: 1.2rem; margin-bottom: 5px; }
+    .tm-name { font-size: .82rem; font-weight: 600; margin-bottom: 3px; }
+    .tm-desc { font-size: .75rem; color: var(--muted); line-height: 1.3; }
+    .tm-tier { display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 7px; border-radius: 8px; margin-top: 6px; }
+    .tm-tier.bronze { background: rgba(205,127,50,.13); color: #cd7f32; }
+    .tm-tier.silver { background: rgba(168,169,173,.13); color: #a8a9ad; }
+    .tm-tier.gold   { background: rgba(201,168,76,.13);  color: #c9a84c; }
 
-@media(max-width:900px){
-  .pricing-grid{grid-template-columns:1fr;}
-  nav{padding:0 20px;}
-  .nav-links{display:none;}
-}
-</style>
+    .faq { max-width: 700px; margin: 0 auto 80px; padding: 0 20px; }
+    .faq h3 { text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
+    .faq-item { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+    .faq-q { padding: 14px 18px; font-weight: 600; font-size: .875rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .faq-q:hover { background: rgba(255,255,255,.02); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .28s ease, padding .28s; font-size: .85rem; color: var(--muted); line-height: 1.6; }
+    .faq-a.open { max-height: 200px; padding: 0 18px 14px; }
+    .faq-arrow { transition: transform .25s; font-size: .8rem; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+  </style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="nav-logo">The Prompt <em>Studio</em></a>
+  <a class="nav-logo" href="/index.html">The <span>Prompt</span> Studio</a>
   <div class="nav-links">
-    <a href="/" class="nav-link">Accueil</a>
-    <a href="/tarifs.html" class="nav-link active">Tarifs</a>
-    <a href="/contact.html" class="nav-link">Contact</a>
+    <a href="/index.html">Accueil</a>
+    <a href="/tarifs.html">Tarifs</a>
+    <a href="/dashboard.html" id="nav-dash" style="display:none">Mon espace</a>
+    <a href="/login.html" class="btn-nav" id="nav-cta">Commencer</a>
   </div>
-  <a href="/login" class="nav-cta">Mon espace</a>
 </nav>
 
-<!-- ── HERO ── -->
 <div class="hero">
-  <p class="hero-label a1">Abonnements</p>
-  <h1 class="a2">Des outils IA pour chaque<br><em>niveau d'ambition</em></h1>
-  <p class="hero-sub a3">Sans engagement. Changez d'offre à tout moment. Accès immédiat aux outils dès la souscription.</p>
-  <div class="billing-toggle a4">
-    <span class="toggle-label active" id="label-monthly">Mensuel</span>
-    <button class="toggle" id="billing-toggle" onclick="toggleBilling()"></button>
-    <span class="toggle-label" id="label-yearly">Annuel</span>
-    <span class="badge-save">-20%</span>
+  <div class="hero-tag">Sans engagement · Accès immédiat</div>
+  <h1>L'IA conçue pour<br><span id="hero-label" style="color:#3b82f6">votre métier</span></h1>
+  <p>Choisissez votre domaine, sélectionnez votre offre.<br>Vos outils IA sont disponibles immédiatement après paiement.</p>
+  <div class="steps">
+    <div class="step active"><span class="num">1</span> Choisir une verticale</div>
+    <div class="step-sep">›</div>
+    <div class="step" id="step2"><span class="num">2</span> Sélectionner une offre</div>
+    <div class="step-sep">›</div>
+    <div class="step"><span class="num">3</span> Accès immédiat</div>
   </div>
 </div>
 
-<!-- ── PRICING ── -->
-<div class="pricing-section">
-  <div class="pricing-grid">
-
-    <!-- BRONZE -->
-    <div class="plan-card tier-bronze a2">
-      <div class="plan-icon">🥉</div>
-      <div class="plan-name">Bronze</div>
-      <p class="plan-tagline">1 verticale métier<br>Les outils essentiels pour démarrer</p>
-      <div class="plan-price">
-        <div class="price-amount"><sup>€</sup><span class="price-val" data-monthly="29" data-yearly="23">29</span></div>
-        <div class="price-period">par mois · 1 verticale</div>
-        <div class="price-yearly">soit €276/an (économisez €72)</div>
-      </div>
-      <div class="plan-divider"></div>
-      <ul class="plan-features">
-        <li class="section-head">Accès</li>
-        <li class="highlight"><span class="check yes">✦</span> 1 verticale au choix (immo, commerce, juridique ou finance)</li>
-        <li><span class="check yes">✓</span> 2 outils essentiels par verticale</li>
-        <li><span class="check yes">✓</span> 50 générations IA / mois</li>
-        <li><span class="check yes">✓</span> Historique des 30 derniers jours</li>
-        <li class="section-head">Support</li>
-        <li><span class="check yes">✓</span> Documentation complète</li>
-        <li><span class="check no">—</span> <span style="opacity:0.4">Support email</span></li>
-        <li><span class="check no">—</span> <span style="opacity:0.4">Accès multi-verticales</span></li>
-      </ul>
-      <a href="https://shop.theprompt.studio/checkout/buy/BRONZE_VARIANT_ID?checkout[custom][tier]=bronze" class="btn-plan btn-bronze" id="btn-bronze">
-        Commencer avec Bronze
-      </a>
-    </div>
-
-    <!-- SILVER -->
-    <div class="plan-card tier-silver featured a3">
-      <div class="plan-badge">⭐ LE PLUS POPULAIRE</div>
-      <div class="plan-icon">🥈</div>
-      <div class="plan-name">Silver</div>
-      <p class="plan-tagline">2 verticales métier<br>Les outils avancés pour performer</p>
-      <div class="plan-price">
-        <div class="price-amount"><sup>€</sup><span class="price-val" data-monthly="59" data-yearly="47">59</span></div>
-        <div class="price-period">par mois · 2 verticales</div>
-        <div class="price-yearly">soit €564/an (économisez €144)</div>
-      </div>
-      <div class="plan-divider"></div>
-      <ul class="plan-features">
-        <li class="section-head">Accès</li>
-        <li class="highlight"><span class="check yes">✦</span> 2 verticales au choix</li>
-        <li><span class="check yes">✓</span> 5 outils par verticale (bronze + silver)</li>
-        <li><span class="check yes">✓</span> 150 générations IA / mois</li>
-        <li><span class="check yes">✓</span> Historique illimité</li>
-        <li><span class="check yes">✓</span> Export des générations (PDF/texte)</li>
-        <li class="section-head">Support</li>
-        <li><span class="check yes">✓</span> Support email (48h)</li>
-        <li><span class="check yes">✓</span> Mises à jour en avant-première</li>
-        <li><span class="check no">—</span> <span style="opacity:0.4">Toutes les verticales</span></li>
-      </ul>
-      <a href="https://shop.theprompt.studio/checkout/buy/SILVER_VARIANT_ID?checkout[custom][tier]=silver" class="btn-plan btn-silver" id="btn-silver">
-        Commencer avec Silver
-      </a>
-    </div>
-
-    <!-- GOLD -->
-    <div class="plan-card tier-gold a4">
-      <div class="plan-icon">🥇</div>
-      <div class="plan-name">Gold</div>
-      <p class="plan-tagline">Toutes les verticales<br>L'arsenal complet pour les pros exigeants</p>
-      <div class="plan-price">
-        <div class="price-amount"><sup>€</sup><span class="price-val" data-monthly="99" data-yearly="79">99</span></div>
-        <div class="price-period">par mois · toutes verticales</div>
-        <div class="price-yearly">soit €948/an (économisez €240)</div>
-      </div>
-      <div class="plan-divider"></div>
-      <ul class="plan-features">
-        <li class="section-head">Accès</li>
-        <li class="highlight"><span class="check yes">✦</span> Toutes les verticales (4+)</li>
-        <li><span class="check yes">✓</span> Tous les outils — bronze, silver et gold</li>
-        <li><span class="check yes">✓</span> Générations illimitées</li>
-        <li><span class="check yes">✓</span> Historique illimité + exports</li>
-        <li><span class="check yes">✓</span> Nouveaux outils en exclusivité</li>
-        <li class="section-head">Support</li>
-        <li><span class="check yes">✓</span> Support email prioritaire (24h)</li>
-        <li><span class="check yes">✓</span> Accès Discord membres Gold</li>
-        <li><span class="check yes">✓</span> 1h onboarding personnalisé</li>
-      </ul>
-      <a href="https://shop.theprompt.studio/checkout/buy/GOLD_VARIANT_ID?checkout[custom][tier]=gold" class="btn-plan btn-gold" id="btn-gold">
-        Commencer avec Gold
-      </a>
-    </div>
-
+<div class="section-title">Pour quel secteur travaillez-vous ? <span>Étape 1/2</span></div>
+<div class="vertical-tabs">
+  <div class="vtab active" data-v="immo" onclick="selectV('immo')">
+    <span class="v-icon">🏠</span><span class="v-name">Immobilier</span><span class="v-desc">Agents, promoteurs, syndics</span>
   </div>
-
-  <!-- Guarantee -->
-  <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:32px;">
-    🔒 Paiement sécurisé · Sans engagement · Résiliation en 1 clic · Satisfait ou remboursé 14 jours
-  </p>
+  <div class="vtab" data-v="commerce" onclick="selectV('commerce')">
+    <span class="v-icon">🛒</span><span class="v-name">Commerce</span><span class="v-desc">E-commerce, retail, marques</span>
+  </div>
+  <div class="vtab" data-v="legal" onclick="selectV('legal')">
+    <span class="v-icon">⚖️</span><span class="v-name">Juridique</span><span class="v-desc">Avocats, juristes, notaires</span>
+  </div>
+  <div class="vtab" data-v="finance" onclick="selectV('finance')">
+    <span class="v-icon">📈</span><span class="v-name">Finance</span><span class="v-desc">CGP, analystes, DAF</span>
+  </div>
 </div>
 
-<!-- ── TOOLS PREVIEW ── -->
-<section class="tools-section">
-  <div class="tools-container">
-    <p class="section-label a1">Outils inclus</p>
-    <h2 class="section-title a2">32 outils IA répartis sur<br>4 verticales métier</h2>
-
-    <div class="vertical-tabs">
-      <button class="vtab active" onclick="showVertical('immo', this)">🏠 Immobilier</button>
-      <button class="vtab" onclick="showVertical('commerce', this)">🛒 Commerce</button>
-      <button class="vtab" onclick="showVertical('legal', this)">⚖️ Juridique</button>
-      <button class="vtab" onclick="showVertical('finance', this)">💼 Finance</button>
-    </div>
-
-    <div class="tools-grid" id="tools-grid">
-      <!-- Filled by JS -->
+<div class="plans-section">
+  <div class="plans-header">
+    <h2>Offres <span id="plans-vname" style="color:#3b82f6">Immobilier</span> <span style="color:var(--muted);font-size:1rem" id="plans-vicon">🏠</span></h2>
+    <p>Bronze pour démarrer · Silver pour les actifs · Gold pour tout exploiter</p>
+    <div class="billing-toggle" onclick="toggleBilling()">
+      <span style="color:var(--muted)">Mensuel</span>
+      <div class="toggle-sw" id="tsw"></div>
+      <span style="color:var(--muted)">Annuel</span>
+      <span class="save-tag">-20%</span>
     </div>
   </div>
-</section>
+  <div class="plans-grid" id="plans-grid"></div>
+</div>
 
-<!-- ── FAQ ── -->
-<section class="faq-section">
-  <p class="section-label">FAQ</p>
-  <h2 class="section-title" style="font-size:36px;margin-bottom:40px;">Questions fréquentes</h2>
+<div class="tools-preview">
+  <h3 id="tools-title">🔧 Les 8 outils <span id="tools-vname" style="color:#3b82f6">Immobilier</span></h3>
+  <div class="tools-mini-grid" id="tools-grid"></div>
+</div>
 
+<div class="faq">
+  <h3>Questions fréquentes</h3>
   <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Puis-je changer de formule ?</div>
-    <div class="faq-a">Oui, à tout moment depuis votre espace compte. Le changement prend effet immédiatement et la différence est proratisée.</div>
+    <div class="faq-q" onclick="faq(this)">Puis-je m'abonner à plusieurs verticales ? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a">Oui. Chaque abonnement est indépendant par verticale. Un consultant peut s'abonner à Finance et Juridique avec des offres différentes sur chacune. Votre espace affiche uniquement les verticales auxquelles vous êtes abonné.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Que se passe-t-il si j'atteins mon quota de générations ?</div>
-    <div class="faq-a">Vous êtes notifié à 80% de consommation. Vous pouvez upgrader votre offre ou attendre le renouvellement mensuel. Aucune génération ne sera facturée en plus.</div>
+    <div class="faq-q" onclick="faq(this)">Puis-je changer de verticale ? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a">Votre abonnement est lié à une verticale. Pour accéder à un autre secteur, souscrivez un abonnement supplémentaire. Vous pouvez résilier l'ancien à tout moment.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Pour le Bronze, comment choisir ma verticale ?</div>
-    <div class="faq-a">Lors de la souscription, vous choisissez votre verticale (Immobilier, Commerce, Juridique ou Finance). Vous pouvez changer de verticale une fois par mois depuis votre espace compte.</div>
+    <div class="faq-q" onclick="faq(this)">Qu'est-ce qu'une "génération" ? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a">Une génération = un appel à l'IA (annonce, email, rapport…). Bronze = 50/mois, Silver = 150/mois, Gold = illimité. Le compteur se remet à zéro le 1er de chaque mois.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Les outils utilisent quelle IA ?</div>
-    <div class="faq-a">Nos outils utilisent Claude (Anthropic), l'IA la plus avancée pour les textes professionnels. Chaque outil dispose d'un prompt système optimisé pour votre métier.</div>
+    <div class="faq-q" onclick="faq(this)">Y a-t-il un engagement ? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a">Aucun. Résiliation possible à tout moment depuis votre espace compte. L'accès reste actif jusqu'à la fin de la période payée.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Puis-je obtenir un remboursement ?</div>
-    <div class="faq-a">Oui, nous offrons une garantie satisfait ou remboursé de 14 jours à compter de la souscription, sans question posée.</div>
+    <div class="faq-q" onclick="faq(this)">Comment accéder après paiement ? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a">Dès le paiement validé, vous recevez un email avec un lien magique. Un clic et vous êtes connecté — sans mot de passe.</div>
   </div>
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Y a-t-il un accès pour les équipes ?</div>
-    <div class="faq-a">Des offres équipes (multi-comptes) sont en cours de développement. Contactez-nous pour en discuter.</div>
-  </div>
-</section>
+</div>
 
-<footer>
-  <a href="/">© 2025 The Prompt Studio</a>
-  <a href="/mentions-legales.html">Mentions légales</a>
-  <a href="/cgv.html">CGV</a>
-  <a href="/politique-confidentialite.html">Confidentialité</a>
-  <a href="/contact.html">Contact</a>
-</footer>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// ── TOOLS DATA ────────────────────────────────────────────────────────────
+const VMETA = {
+  immo:     { label:'Immobilier', icon:'🏠', color:'#3b82f6', bg:'rgba(59,130,246,.12)',  border:'rgba(59,130,246,.3)'  },
+  commerce: { label:'Commerce',   icon:'🛒', color:'#f97316', bg:'rgba(249,115,22,.12)',  border:'rgba(249,115,22,.3)'  },
+  legal:    { label:'Juridique',  icon:'⚖️', color:'#ef4444', bg:'rgba(239,68,68,.12)',   border:'rgba(239,68,68,.3)'   },
+  finance:  { label:'Finance',    icon:'📈', color:'#22c55e', bg:'rgba(34,197,94,.12)',   border:'rgba(34,197,94,.3)'   },
+};
+const CHECKOUT = 'https://your-store.lemonsqueezy.com/checkout';
+const VIDS = {
+  immo:     { bronze:'IMMO_BRONZE',     silver:'IMMO_SILVER',     gold:'IMMO_GOLD'     },
+  commerce: { bronze:'COMMERCE_BRONZE', silver:'COMMERCE_SILVER', gold:'COMMERCE_GOLD' },
+  legal:    { bronze:'LEGAL_BRONZE',    silver:'LEGAL_SILVER',    gold:'LEGAL_GOLD'    },
+  finance:  { bronze:'FINANCE_BRONZE',  silver:'FINANCE_SILVER',  gold:'FINANCE_GOLD'  },
+};
 const TOOLS = {
-  immo: [
-    { slug:'immo-annonce',        name:'Générateur d\'annonces',        desc:'Rédigez une annonce immobilière percutante en 30 secondes', icon:'📝', tier:'bronze' },
-    { slug:'immo-email-suivi',    name:'Email de suivi acquéreur',      desc:'Relancez vos prospects avec des emails personnalisés',       icon:'📧', tier:'bronze' },
-    { slug:'immo-rapport-visite', name:'Rapport de visite',             desc:'Compte-rendu de visite professionnel automatisé',           icon:'📋', tier:'silver' },
-    { slug:'immo-analyse-prix',   name:'Analyse comparative de prix',   desc:'Analyse de marché argumentée pour votre client',           icon:'📊', tier:'silver' },
-    { slug:'immo-script-prosp',   name:'Script de prospection',         desc:'Scripts d\'appel et SMS pour décrocher de nouveaux mandats', icon:'📞', tier:'silver' },
-    { slug:'immo-mandat-exclusif',name:'Argumentaire mandat exclusif',  desc:'Argumentaire personnalisé pour convaincre de signer',      icon:'🏆', tier:'gold' },
-    { slug:'immo-posts-sociaux',  name:'Posts réseaux sociaux',         desc:'Contenu LinkedIn/Instagram pour promouvoir vos biens',     icon:'📱', tier:'gold' },
-    { slug:'immo-email-vendeur',  name:'Email de présentation vendeur', desc:'Email professionnel pour présenter une offre au vendeur',  icon:'💌', tier:'gold' },
+  immo:     [
+    {slug:'immo-annonce',        icon:'📝',name:"Générateur d'annonces",      desc:'Annonces percutantes en 30s',         tier:'bronze'},
+    {slug:'immo-email-suivi',    icon:'📧',name:'Email de suivi acquéreur',    desc:'Relancez vos prospects',              tier:'bronze'},
+    {slug:'immo-rapport-visite', icon:'📋',name:'Rapport de visite',           desc:'Compte-rendu professionnel',          tier:'silver'},
+    {slug:'immo-analyse-prix',   icon:'📊',name:'Analyse comparative de prix', desc:'Analyse de marché argumentée',        tier:'silver'},
+    {slug:'immo-script-prosp',   icon:'📞',name:'Script de prospection',       desc:'Appels & SMS nouveaux mandats',       tier:'silver'},
+    {slug:'immo-mandat-exclusif',icon:'🏆',name:'Argumentaire mandat exclusif',desc:'Décrochez le mandat exclusif',        tier:'gold'  },
+    {slug:'immo-posts-sociaux',  icon:'📱',name:'Posts réseaux sociaux',       desc:'LinkedIn/Instagram pour vos biens',  tier:'gold'  },
+    {slug:'immo-email-vendeur',  icon:'💌',name:'Email présentation vendeur',  desc:'Présentez une offre au vendeur',      tier:'gold'  },
   ],
   commerce: [
-    { slug:'commerce-fiche-produit',   name:'Générateur de fiches produits',   desc:'Fiches produits SEO-optimisées en masse',                icon:'🛒', tier:'bronze' },
-    { slug:'commerce-email-promo',     name:'Email promotionnel',              desc:'Emails marketing qui convertissent',                     icon:'📧', tier:'bronze' },
-    { slug:'commerce-seo-description', name:'Description SEO',                 desc:'Optimisez vos descriptions pour le référencement',       icon:'🔍', tier:'silver' },
-    { slug:'commerce-posts-sociaux',   name:'Contenu réseaux sociaux',         desc:'Posts produits pour Instagram, Facebook, TikTok',        icon:'📱', tier:'silver' },
-    { slug:'commerce-relance-panier',  name:'Relance panier abandonné',        desc:'Récupérez jusqu\'à 15% des paniers abandonnés',           icon:'🛍️', tier:'silver' },
-    { slug:'commerce-chatbot-sav',     name:'Script chatbot SAV',              desc:'Script de chatbot service client complet',               icon:'💬', tier:'gold' },
-    { slug:'commerce-strategie',       name:'Stratégie de contenu',            desc:'Plan de contenu marketing mensuel complet',              icon:'🎯', tier:'gold' },
-    { slug:'commerce-analyse-concur',  name:'Analyse concurrentielle',         desc:'Positionnement IA face à la concurrence',               icon:'📊', tier:'gold' },
+    {slug:'commerce-fiche-produit',   icon:'🛒',name:'Fiches produits SEO',         desc:'Fiches optimisées en masse',          tier:'bronze'},
+    {slug:'commerce-email-promo',     icon:'📧',name:'Email promotionnel',          desc:'Emails marketing qui convertissent',  tier:'bronze'},
+    {slug:'commerce-seo-description', icon:'🔍',name:'Description SEO',             desc:'Optimisez pour le référencement',     tier:'silver'},
+    {slug:'commerce-posts-sociaux',   icon:'📱',name:'Contenu réseaux sociaux',     desc:'Posts Instagram, Facebook, TikTok',   tier:'silver'},
+    {slug:'commerce-relance-panier',  icon:'🛍️',name:'Relance panier abandonné',    desc:'Récupérez les paniers',               tier:'silver'},
+    {slug:'commerce-chatbot-sav',     icon:'💬',name:'Script chatbot SAV',          desc:'Script service client complet',       tier:'gold'  },
+    {slug:'commerce-strategie',       icon:'🎯',name:'Stratégie de contenu',        desc:'Plan marketing mensuel complet',      tier:'gold'  },
+    {slug:'commerce-analyse-concur',  icon:'📊',name:'Analyse concurrentielle',     desc:'Positionnement vs concurrence',       tier:'gold'  },
   ],
   legal: [
-    { slug:'legal-courrier',          name:'Rédacteur de courriers',        desc:'Courriers juridiques professionnels en quelques clics',   icon:'✉️', tier:'bronze' },
-    { slug:'legal-resume-contrat',    name:'Résumé de contrat',             desc:'Points clés d\'un contrat en moins d\'1 minute',          icon:'📋', tier:'bronze' },
-    { slug:'legal-note-juridique',    name:'Note juridique',                desc:'Note de synthèse juridique structurée',                  icon:'⚖️', tier:'silver' },
-    { slug:'legal-analyse-clause',    name:'Analyse de clause',             desc:'Identifiez les risques dans une clause contractuelle',   icon:'🔎', tier:'silver' },
-    { slug:'legal-mise-en-demeure',   name:'Mise en demeure',               desc:'Mise en demeure légalement solide',                      icon:'📜', tier:'silver' },
-    { slug:'legal-contrat-standard',  name:'Contrat type',                  desc:'Contrat adapté à votre situation spécifique',            icon:'📄', tier:'gold' },
-    { slug:'legal-jurisprudence',     name:'Recherche jurisprudentielle',   desc:'Synthèse de jurisprudence sur une question de droit',    icon:'🏛️', tier:'gold' },
-    { slug:'legal-plaidoirie',        name:'Arguments de plaidoirie',       desc:'Structurez vos arguments pour une audience',             icon:'🎤', tier:'gold' },
+    {slug:'legal-courrier',         icon:'✉️',name:'Rédacteur de courriers',     desc:'Courriers juridiques professionnels', tier:'bronze'},
+    {slug:'legal-resume-contrat',   icon:'📋',name:'Résumé de contrat',          desc:"Points clés en moins d'1 minute",    tier:'bronze'},
+    {slug:'legal-note-juridique',   icon:'⚖️',name:'Note juridique',             desc:'Note de synthèse structurée',         tier:'silver'},
+    {slug:'legal-analyse-clause',   icon:'🔎',name:'Analyse de clause',          desc:'Identifiez les risques contractuels', tier:'silver'},
+    {slug:'legal-mise-en-demeure',  icon:'📜',name:'Mise en demeure',            desc:'Rédaction légalement solide',         tier:'silver'},
+    {slug:'legal-contrat-standard', icon:'📄',name:'Contrat type',               desc:'Contrat adapté à votre situation',    tier:'gold'  },
+    {slug:'legal-jurisprudence',    icon:'🏛️',name:'Recherche jurisprudentielle',desc:'Synthèse sur une question de droit',  tier:'gold'  },
+    {slug:'legal-plaidoirie',       icon:'🎤',name:'Arguments de plaidoirie',    desc:'Structurez vos arguments',            tier:'gold'  },
   ],
   finance: [
-    { slug:'finance-synthese',        name:'Synthèse de rapport',           desc:'Résumez un rapport financier complexe en points clés',   icon:'📊', tier:'bronze' },
-    { slug:'finance-email-pro',       name:'Email professionnel finance',   desc:'Emails formels pour dirigeants et investisseurs',        icon:'📧', tier:'bronze' },
-    { slug:'finance-analyse-kpi',     name:'Analyse de KPIs',               desc:'Interprétez vos indicateurs financiers avec l\'IA',       icon:'📈', tier:'silver' },
-    { slug:'finance-rapport-invest',  name:'Rapport d\'investissement',     desc:'Analyse d\'investissement structurée',                   icon:'💰', tier:'silver' },
-    { slug:'finance-budget-prevision',name:'Budget prévisionnel',           desc:'Commentaire et analyse de votre budget',                 icon:'📅', tier:'silver' },
-    { slug:'finance-deck-invest',     name:'Deck investisseur',             desc:'Contenu d\'un pitch deck pour levée de fonds',           icon:'🚀', tier:'gold' },
-    { slug:'finance-strategie',       name:'Stratégie financière',          desc:'Recommandations IA pour optimiser votre stratégie',      icon:'🎯', tier:'gold' },
-    { slug:'finance-due-diligence',   name:'Due diligence',                 desc:'Check-list et analyse IA pour une acquisition',         icon:'🔬', tier:'gold' },
+    {slug:'finance-synthese',        icon:'📊',name:'Synthèse de rapport',          desc:'Résumez un rapport financier',        tier:'bronze'},
+    {slug:'finance-email-pro',       icon:'📧',name:'Email professionnel finance',  desc:'Emails formels pour DAF/investisseurs',tier:'bronze'},
+    {slug:'finance-analyse-kpi',     icon:'📈',name:'Analyse de KPIs',             desc:'Interprétez vos indicateurs',         tier:'silver'},
+    {slug:'finance-rapport-invest',  icon:'💰',name:"Rapport d'investissement",    desc:"Analyse d'investissement",            tier:'silver'},
+    {slug:'finance-budget-prevision',icon:'📅',name:'Budget prévisionnel',         desc:'Commentaire de votre budget',         tier:'silver'},
+    {slug:'finance-deck-invest',     icon:'🚀',name:'Deck investisseur',           desc:'Pitch deck pour levée de fonds',      tier:'gold'  },
+    {slug:'finance-strategie',       icon:'🎯',name:'Stratégie financière',        desc:'Optimisez votre stratégie',           tier:'gold'  },
+    {slug:'finance-due-diligence',   icon:'🔬',name:'Due diligence',               desc:'Analyse IA pour une acquisition',     tier:'gold'  },
   ],
 };
+const PLANS_DEF = [
+  { tier:'bronze', label:'🥉 Bronze', price:29, desc:"Démarrez avec les outils essentiels.",
+    features:['2 outils essentiels','50 générations / mois','Accès immédiat','Support email'],
+    locked:['Outils avancés (Silver)','Outils premium (Gold)'] },
+  { tier:'silver', label:'🥈 Silver', price:59, popular:true, desc:"Les outils avancés pour les professionnels actifs.",
+    features:['5 outils essentiels & avancés','150 générations / mois','Accès immédiat','Support prioritaire'],
+    locked:['Outils premium (Gold)'] },
+  { tier:'gold',   label:'🥇 Gold',   price:99, desc:"Accès complet à tous les outils.",
+    features:['8 outils complets','Générations illimitées','Accès immédiat','Support dédié','Nouveaux outils en avant-première'],
+    locked:[] },
+];
 
-// ── Render tools grid ──────────────────────────────────────────────────────
-function showVertical(v, tab) {
-  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
-  const tools = TOOLS[v] || [];
-  const grid = document.getElementById('tools-grid');
-  grid.innerHTML = tools.map(t => `
-    <div class="tool-card">
-      <div class="tool-card-top">
-        <span class="tool-icon">${t.icon}</span>
-        <span class="tool-tier-badge badge-${t.tier}">${t.tier.charAt(0).toUpperCase()+t.tier.slice(1)}</span>
-      </div>
-      <div class="tool-name">${t.name}</div>
-      <div class="tool-desc">${t.desc}</div>
-    </div>
-  `).join('');
+let activeV = 'immo';
+let yearly  = false;
+
+function selectV(v) {
+  activeV = v;
+  const m = VMETA[v];
+  document.querySelectorAll('.vtab').forEach(t => t.classList.toggle('active', t.dataset.v === v));
+  document.getElementById('hero-label').textContent  = m.label;
+  document.getElementById('hero-label').style.color  = m.color;
+  document.getElementById('plans-vname').textContent = m.label;
+  document.getElementById('plans-vname').style.color = m.color;
+  document.getElementById('plans-vicon').textContent = m.icon;
+  document.getElementById('tools-vname').textContent = m.label;
+  document.getElementById('tools-vname').style.color = m.color;
+  document.getElementById('step2').classList.add('active');
+  document.documentElement.style.setProperty('--v-color',  m.color);
+  document.documentElement.style.setProperty('--v-bg',     m.bg);
+  document.documentElement.style.setProperty('--v-border', m.border);
+  renderPlans(); renderTools();
 }
-showVertical('immo', document.querySelector('.vtab'));
 
-// ── Billing toggle ─────────────────────────────────────────────────────────
-let isYearly = false;
+function renderPlans() {
+  const m = VMETA[activeV];
+  document.getElementById('plans-grid').innerHTML = PLANS_DEF.map(p => {
+    const price   = yearly ? Math.round(p.price * .8) : p.price;
+    const annuel  = Math.round(p.price * 12 * .8);
+    const vid     = VIDS[activeV]?.[p.tier] || '';
+    const url     = `${CHECKOUT}?variant=${vid}&checkout[custom][tier]=${p.tier}&checkout[custom][vertical]=${activeV}`;
+    return `<div class="plan-card ${p.popular?'popular':''}">
+      ${p.popular?`<div class="pop-tag" style="background:${m.color}">⭐ Le plus populaire</div>`:''}
+      <div class="plan-tier ${p.tier}">${p.label}</div>
+      <div class="plan-price">${price}<span class="per">€/mois</span></div>
+      <div class="plan-yearly ${yearly?'ok':''}">${yearly?`✅ ${annuel}€/an — économie ${p.price*12-annuel}€`:`soit ${annuel}€/an en annuel`}</div>
+      <p class="plan-desc">${p.desc}</p>
+      <ul class="plan-feats">
+        ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
+        ${p.locked.map(f=>`<li><span class="lk">✕</span><span class="lt">${f}</span></li>`).join('')}
+      </ul>
+      <a href="${url}" class="plan-cta ${p.popular?'solid':'outline'}" style="${p.popular?`background:${m.color}`:`border-color:${m.color};color:${m.color}`}" target="_blank" rel="noopener">
+        ${p.tier==='bronze'?'Commencer →':p.tier==='silver'?'Commencer en Silver →':'Tout accéder →'}
+      </a>
+    </div>`;
+  }).join('');
+}
+
+function renderTools() {
+  const m = VMETA[activeV];
+  const tiers = {bronze:'🥉 Bronze',silver:'🥈 Silver',gold:'🥇 Gold'};
+  document.getElementById('tools-grid').innerHTML = (TOOLS[activeV]||[]).map(t =>
+    `<div class="tool-mini">
+      <div class="tm-icon">${t.icon}</div>
+      <div class="tm-name">${t.name}</div>
+      <div class="tm-desc">${t.desc}</div>
+      <span class="tm-tier ${t.tier}">${tiers[t.tier]}</span>
+    </div>`
+  ).join('');
+}
+
 function toggleBilling() {
-  isYearly = !isYearly;
-  const btn = document.getElementById('billing-toggle');
-  btn.classList.toggle('yearly', isYearly);
-  document.getElementById('label-monthly').classList.toggle('active', !isYearly);
-  document.getElementById('label-yearly').classList.toggle('active', isYearly);
-
-  document.querySelectorAll('.price-val').forEach(el => {
-    el.textContent = isYearly ? el.dataset.yearly : el.dataset.monthly;
-  });
-  document.querySelectorAll('.price-yearly').forEach(el => {
-    el.classList.toggle('show', isYearly);
-  });
-
-  // Update checkout links
-  const suffix = isYearly ? '&checkout[custom][billing]=yearly' : '';
-  document.getElementById('btn-bronze').href = `https://shop.theprompt.studio/checkout/buy/BRONZE_VARIANT_ID?checkout[custom][tier]=bronze${suffix}`;
-  document.getElementById('btn-silver').href = `https://shop.theprompt.studio/checkout/buy/SILVER_VARIANT_ID?checkout[custom][tier]=silver${suffix}`;
-  document.getElementById('btn-gold').href   = `https://shop.theprompt.studio/checkout/buy/GOLD_VARIANT_ID?checkout[custom][tier]=gold${suffix}`;
+  yearly = !yearly;
+  document.getElementById('tsw').classList.toggle('on', yearly);
+  renderPlans();
 }
 
-// ── FAQ ────────────────────────────────────────────────────────────────────
-function toggleFaq(el) {
-  el.parentElement.classList.toggle('open');
+function faq(el) {
+  const item = el.closest('.faq-item');
+  item.classList.toggle('open');
+  item.querySelector('.faq-a').classList.toggle('open');
 }
+
+async function checkAuth() {
+  try {
+    const sb = window.supabase.createClient('https://jbrloxoqtfeqvghkzupj.supabase.co','sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg');
+    const { data:{session} } = await sb.auth.getSession();
+    if (session) {
+      document.getElementById('nav-dash').style.display = 'inline';
+      document.getElementById('nav-cta').textContent = 'Mon espace →';
+      document.getElementById('nav-cta').href = '/dashboard.html';
+    }
+  } catch(e) {}
+}
+
+const urlV = new URLSearchParams(window.location.search).get('v');
+selectV(VMETA[urlV] ? urlV : 'immo');
+checkAuth();
 </script>
 </body>
 </html>
