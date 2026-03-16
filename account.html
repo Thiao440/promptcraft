@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon compte – The Prompt Studio</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/ps-auth.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --border:   #2a2d3e;
+      --text:     #e8eaf0;
+      --muted:    #7c8098;
+      --accent:   #6c63ff;
+      --accent2:  #a78bfa;
+      --danger:   #ef4444;
+      --success:  #22c55e;
+      --bronze:   #cd7f32;
+      --silver:   #a8a9ad;
+      --gold:     #c9a84c;
+      --sidebar-w: 240px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 50;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo a {
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .sidebar-logo span { color: var(--accent2); }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .9rem;
+      border-radius: 0;
+      transition: background .15s, color .15s;
+    }
+    .nav-item:hover { background: rgba(108,99,255,.08); color: var(--text); }
+    .nav-item.active { background: rgba(108,99,255,.15); color: var(--accent2); }
+    .nav-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .9rem;
+      padding: 8px 0;
+      transition: color .15s;
+      width: 100%;
+    }
+    .logout-btn:hover { color: var(--danger); }
+
+    /* ── Main ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 32px;
+      max-width: calc(100vw - var(--sidebar-w));
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+    .page-header p {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: .9rem;
+    }
+
+    /* ── Cards grid ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    @media(max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Subscription card ── */
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: .9rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .plan-badge.bronze { background: rgba(205,127,50,.15); color: var(--bronze); border: 1px solid rgba(205,127,50,.3); }
+    .plan-badge.silver { background: rgba(168,169,173,.15); color: var(--silver); border: 1px solid rgba(168,169,173,.3); }
+    .plan-badge.gold   { background: rgba(201,168,76,.15);  color: var(--gold);   border: 1px solid rgba(201,168,76,.3); }
+    .plan-badge.none   { background: rgba(124,128,152,.15); color: var(--muted);  border: 1px solid var(--border); }
+
+    .sub-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: .875rem;
+    }
+    .sub-meta-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sub-meta-row:last-child { border-bottom: none; }
+    .sub-meta-row .label { color: var(--muted); }
+    .sub-meta-row .value { font-weight: 500; }
+    .status-active  { color: var(--success); }
+    .status-cancelled { color: var(--danger); }
+    .status-expired { color: var(--muted); }
+
+    /* ── Usage card ── */
+    .usage-bar-wrap {
+      margin: 12px 0;
+    }
+    .usage-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .usage-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .usage-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 4px;
+      transition: width .5s ease;
+    }
+    .usage-fill.danger { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+    /* ── Profile form ── */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .825rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: .9rem;
+      transition: border-color .2s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #5a52e0; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); }
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(239,68,68,.3);
+    }
+    .btn-danger:hover { background: rgba(239,68,68,.1); }
+    .btn-sm { padding: 6px 14px; font-size: .8rem; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+    /* ── Plan comparison ── */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 4px;
+    }
+    @media(max-width: 800px) {
+      .plan-grid { grid-template-columns: 1fr; }
+    }
+
+    .plan-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      position: relative;
+      transition: border-color .2s;
+    }
+    .plan-card.current {
+      border-color: var(--accent);
+    }
+    .plan-card .current-tag {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .plan-card h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    .plan-card .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .plan-card .price span {
+      font-size: .8rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+    .plan-card .feature-list {
+      list-style: none;
+      font-size: .825rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .plan-card .feature-list li {
+      padding: 3px 0;
+    }
+    .plan-card .feature-list li::before {
+      content: '✓ ';
+      color: var(--success);
+    }
+
+    /* ── Vertical selector ── */
+    .vertical-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .vertical-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      user-select: none;
+    }
+    .vertical-opt:hover { border-color: var(--accent2); background: rgba(108,99,255,.06); }
+    .vertical-opt.selected { border-color: var(--accent); background: rgba(108,99,255,.12); }
+    .vertical-opt input[type=radio] { display: none; }
+    .vertical-icon { font-size: 1.3rem; }
+    .vertical-label { font-size: .875rem; font-weight: 500; }
+
+    /* ── Danger zone ── */
+    .danger-zone {
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    .danger-zone .card-title { color: var(--danger); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: .875rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s ease;
+      z-index: 1000;
+      max-width: 320px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 3px solid var(--success); }
+    .toast.error   { border-left: 3px solid var(--danger); }
+
+    /* ── Loading skeleton ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,.05) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Mobile ── */
+    @media(max-width: 700px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="/index.html">The <span>Prompt</span> Studio</a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="/dashboard.html" class="nav-item">
+      <span class="icon">🧰</span> Mes outils
+    </a>
+    <a href="/account.html" class="nav-item active">
+      <span class="icon">👤</span> Mon compte
+    </a>
+    <a href="/tarifs.html" class="nav-item">
+      <span class="icon">💎</span> Offres & Tarifs
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div id="user-email" style="font-size:.8rem;color:var(--muted);margin-bottom:8px;"></div>
+    <button class="logout-btn" onclick="PS.logout()">
+      <span>↩</span> Se déconnecter
+    </button>
+  </div>
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="main">
+
+  <div class="page-header">
+    <h1>Mon compte</h1>
+    <p>Gérez votre abonnement, votre profil et vos préférences.</p>
+  </div>
+
+  <!-- Top row: subscription + usage -->
+  <div class="grid-2">
+
+    <!-- Subscription card -->
+    <div class="card">
+      <div class="card-title">💳 Mon abonnement</div>
+      <div id="sub-content">
+        <div class="skeleton" style="height:28px;width:120px;margin-bottom:16px;"></div>
+        <div class="skeleton" style="height:14px;width:100%;margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:14px;width:80%;margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:14px;width:90%;"></div>
+      </div>
+    </div>
+
+    <!-- Usage card -->
+    <div class="card">
+      <div class="card-title">📊 Utilisation ce mois</div>
+      <div id="usage-content">
+        <div class="skeleton" style="height:14px;width:100%;margin-bottom:16px;"></div>
+        <div class="skeleton" style="height:8px;width:100%;border-radius:4px;margin-bottom:20px;"></div>
+        <div class="skeleton" style="height:14px;width:60%;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Change plan section -->
+  <div class="card" id="plans-card" style="margin-bottom:24px;">
+    <div class="card-title">🚀 Changer d'offre</div>
+    <div class="plan-grid" id="plan-grid">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- Profile + Vertical (for Bronze) -->
+  <div class="grid-2">
+
+    <!-- Profile form -->
+    <div class="card">
+      <div class="card-title">👤 Mon profil</div>
+      <form id="profile-form">
+        <div class="form-group">
+          <label>Prénom & Nom</label>
+          <input type="text" id="full-name" placeholder="Ex: Marie Dupont"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="user-email-input" disabled style="opacity:.6;cursor:not-allowed;"/>
+        </div>
+        <div class="form-group">
+          <label>Langue préférée</label>
+          <select id="preferred-lang">
+            <option value="fr">🇫🇷 Français</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="pt">🇧🇷 Português</option>
+            <option value="ar">🇸🇦 العربية</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" id="save-profile-btn">
+          Enregistrer
+        </button>
+      </form>
+    </div>
+
+    <!-- Vertical selector (Bronze only) -->
+    <div class="card" id="vertical-card">
+      <div class="card-title">🎯 Ma verticale</div>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">
+        Votre offre Bronze vous donne accès à <strong style="color:var(--text)">une verticale</strong> au choix. Vous pouvez la changer une fois par mois.
+      </p>
+      <form id="vertical-form">
+        <div class="vertical-grid">
+          <label class="vertical-opt" data-v="immo">
+            <input type="radio" name="vertical" value="immo"/>
+            <span class="vertical-icon">🏠</span>
+            <span class="vertical-label">Immobilier</span>
+          </label>
+          <label class="vertical-opt" data-v="commerce">
+            <input type="radio" name="vertical" value="commerce"/>
+            <span class="vertical-icon">🛒</span>
+            <span class="vertical-label">Commerce</span>
+          </label>
+          <label class="vertical-opt" data-v="legal">
+            <input type="radio" name="vertical" value="legal"/>
+            <span class="vertical-icon">⚖️</span>
+            <span class="vertical-label">Juridique</span>
+          </label>
+          <label class="vertical-opt" data-v="finance">
+            <input type="radio" name="vertical" value="finance"/>
+            <span class="vertical-icon">📈</span>
+            <span class="vertical-label">Finance</span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary" id="save-vertical-btn" style="margin-top:16px;">
+          Changer de verticale
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Danger zone -->
+  <div class="danger-zone">
+    <div class="card-title">⚠️ Zone de danger</div>
+    <p style="font-size:.875rem;color:var(--muted);margin-bottom:16px;">
+      Ces actions sont irréversibles. Assurez-vous de bien comprendre les conséquences avant de continuer.
+    </p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-danger" onclick="confirmCancel()">
+        ✕ Résilier mon abonnement
+      </button>
+    </div>
+    <p id="cancel-note" style="font-size:.8rem;color:var(--muted);margin-top:10px;display:none;">
+      Votre accès reste actif jusqu'à la fin de la période en cours.
+    </p>
+  </div>
+
+</main>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPABASE_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg';
+
+  const QUOTA = { bronze: 50, silver: 150, gold: Infinity };
+
+  const PLANS = [
+    {
+      tier: 'bronze',
+      name: '🥉 Bronze',
+      price: 29,
+      color: 'var(--bronze)',
+      features: ['1 verticale au choix', '50 générations/mois', 'Outils essentiels'],
+      variantId: 'BRONZE_VARIANT_ID',
+    },
+    {
+      tier: 'silver',
+      name: '🥈 Silver',
+      price: 59,
+      color: 'var(--silver)',
+      features: ['2 verticales', '150 générations/mois', 'Outils avancés'],
+      variantId: 'SILVER_VARIANT_ID',
+    },
+    {
+      tier: 'gold',
+      name: '🥇 Gold',
+      price: 99,
+      color: 'var(--gold)',
+      features: ['Toutes les verticales', 'Illimité', 'Tous les outils'],
+      variantId: 'GOLD_VARIANT_ID',
+    },
+  ];
+
+  // ── Toast helper ─────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── Vertical UI helpers ───────────────────────────────
+  function initVerticalSelector(current) {
+    document.querySelectorAll('.vertical-opt').forEach(el => {
+      const v = el.dataset.v;
+      if (v === current) {
+        el.classList.add('selected');
+        el.querySelector('input').checked = true;
+      }
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.vertical-opt').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        el.querySelector('input').checked = true;
+      });
+    });
+  }
+
+  // ── Render subscription card ──────────────────────────
+  function renderSubCard(sub) {
+    const el = document.getElementById('sub-content');
+    if (!sub) {
+      el.innerHTML = `
+        <span class="plan-badge none">Aucun abonnement actif</span>
+        <p style="font-size:.875rem;color:var(--muted);margin-bottom:16px;">
+          Choisissez une offre pour accéder aux outils IA.
+        </p>
+        <a href="/tarifs.html" class="btn btn-primary">Voir les offres →</a>
+      `;
+      document.getElementById('vertical-card').style.display = 'none';
+      return;
+    }
+
+    const tierName = { bronze: '🥉 Bronze', silver: '🥈 Silver', gold: '🥇 Gold' }[sub.tier] || sub.tier;
+    const statusLabel = { active: 'Actif', cancelled: 'Résilié', past_due: 'Paiement en retard', expired: 'Expiré', trialing: 'Essai' }[sub.status] || sub.status;
+    const statusClass = sub.status === 'active' ? 'status-active' : sub.status === 'cancelled' ? 'status-cancelled' : 'status-expired';
+
+    const endDate = sub.current_period_end
+      ? new Date(sub.current_period_end).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '—';
+
+    const verticalLabel = { immo: '🏠 Immobilier', commerce: '🛒 Commerce', legal: '⚖️ Juridique', finance: '📈 Finance' }[sub.vertical] || 'Toutes';
+
+    el.innerHTML = `
+      <span class="plan-badge ${sub.tier}">${tierName}</span>
+      <div class="sub-meta">
+        <div class="sub-meta-row">
+          <span class="label">Statut</span>
+          <span class="value ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="sub-meta-row">
+          <span class="label">Prochain renouvellement</span>
+          <span class="value">${endDate}</span>
+        </div>
+        <div class="sub-meta-row">
+          <span class="label">Verticale(s)</span>
+          <span class="value">${verticalLabel}</span>
+        </div>
+      </div>
+    `;
+
+    // Bronze: show vertical selector
+    if (sub.tier !== 'bronze') {
+      document.getElementById('vertical-card').style.display = 'none';
+    } else {
+      initVerticalSelector(sub.vertical);
+    }
+  }
+
+  // ── Render usage card ─────────────────────────────────
+  function renderUsageCard(count, sub) {
+    const el = document.getElementById('usage-content');
+    if (!sub) {
+      el.innerHTML = `<p style="color:var(--muted);font-size:.875rem;">Aucun abonnement actif.</p>`;
+      return;
+    }
+
+    const quota = QUOTA[sub.tier] || 50;
+    const pct = quota === Infinity ? 0 : Math.min(100, Math.round((count / quota) * 100));
+    const isDanger = pct > 80;
+    const quotaLabel = quota === Infinity ? '∞' : quota;
+
+    el.innerHTML = `
+      <div class="usage-bar-wrap">
+        <div class="usage-label">
+          <span>Générations utilisées</span>
+          <span><strong>${count}</strong> / ${quotaLabel}</span>
+        </div>
+        <div class="usage-bar">
+          <div class="usage-fill ${isDanger ? 'danger' : ''}" style="width:${pct}%"></div>
+        </div>
+      </div>
+      <p style="font-size:.8rem;color:var(--muted);">
+        ${quota === Infinity
+          ? '🎉 Générations illimitées avec votre offre Gold.'
+          : `Réinitialisation le 1er du mois prochain. ${quota - count > 0 ? `<strong style="color:var(--text)">${quota - count} restantes.</strong>` : '<strong style="color:var(--danger)">Quota atteint.</strong>'}`}
+      </p>
+    `;
+  }
+
+  // ── Render plan change grid ───────────────────────────
+  function renderPlanGrid(currentTier) {
+    const grid = document.getElementById('plan-grid');
+    grid.innerHTML = PLANS.map(p => {
+      const isCurrent = p.tier === currentTier;
+      const isUpgrade = !isCurrent;
+      return `
+        <div class="plan-card ${isCurrent ? 'current' : ''}">
+          ${isCurrent ? '<span class="current-tag">Plan actuel</span>' : ''}
+          <h3 style="color:${p.color}">${p.name}</h3>
+          <div class="price">${p.price}€<span>/mois</span></div>
+          <ul class="feature-list">
+            ${p.features.map(f => `<li>${f}</li>`).join('')}
+          </ul>
+          ${isCurrent
+            ? `<button class="btn btn-outline btn-sm" disabled>Offre actuelle</button>`
+            : `<a href="https://your-store.lemonsqueezy.com/checkout?variant=${p.variantId}"
+                  class="btn btn-primary btn-sm" target="_blank" rel="noopener">
+                 ${isUpgrade ? '🚀 Passer à ' : '⬇ Rétrograder à '} ${p.name}
+               </a>`
+          }
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ── Cancel subscription ───────────────────────────────
+  function confirmCancel() {
+    if (!PS.sub) return showToast('Aucun abonnement actif à résilier.', 'error');
+    const ok = confirm('⚠️ Êtes-vous sûr de vouloir résilier votre abonnement ?\n\nVotre accès reste actif jusqu\'à la fin de la période en cours.');
+    if (!ok) return;
+    // Redirect to Lemon Squeezy customer portal
+    window.open('https://app.lemonsqueezy.com/my-orders', '_blank');
+    document.getElementById('cancel-note').style.display = 'block';
+  }
+
+  // ── Main init ─────────────────────────────────────────
+  async function init() {
+    const ok = await PS.requireAuth('/account.html');
+    if (!ok) return;
+
+    // Set email in sidebar + form
+    const email = PS.session.user.email;
+    document.getElementById('user-email').textContent = email;
+    document.getElementById('user-email-input').value = email;
+
+    // Load profile
+    const { data: profile } = await PS.supabase
+      .from('profiles')
+      .select('full_name, preferred_lang')
+      .eq('id', PS.session.user.id)
+      .single();
+
+    if (profile) {
+      document.getElementById('full-name').value = profile.full_name || '';
+      document.getElementById('preferred-lang').value = profile.preferred_lang || 'fr';
+    }
+
+    // Render sub + usage
+    renderSubCard(PS.sub);
+    const usage = await PS.getMonthlyUsage();
+    renderUsageCard(usage, PS.sub);
+
+    // Plan grid
+    renderPlanGrid(PS.sub?.tier || null);
+  }
+
+  // ── Profile form submit ───────────────────────────────
+  document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('save-profile-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
+
+    const { error } = await PS.supabase
+      .from('profiles')
+      .upsert({
+        id: PS.session.user.id,
+        full_name: document.getElementById('full-name').value.trim(),
+        preferred_lang: document.getElementById('preferred-lang').value,
+        updated_at: new Date().toISOString(),
+      });
+
+    btn.disabled = false;
+    btn.textContent = 'Enregistrer';
+    if (error) return showToast('Erreur lors de la sauvegarde.', 'error');
+    showToast('Profil mis à jour avec succès !');
+  });
+
+  // ── Vertical form submit ──────────────────────────────
+  document.getElementById('vertical-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const selected = document.querySelector('input[name=vertical]:checked')?.value;
+    if (!selected) return showToast('Veuillez choisir une verticale.', 'error');
+
+    const btn = document.getElementById('save-vertical-btn');
+    btn.disabled = true;
+    btn.textContent = 'Mise à jour…';
+
+    const { error } = await PS.supabase
+      .from('subscriptions')
+      .update({ vertical: selected, updated_at: new Date().toISOString() })
+      .eq('user_id', PS.session.user.id);
+
+    btn.disabled = false;
+    btn.textContent = 'Changer de verticale';
+    if (error) return showToast('Erreur lors du changement de verticale.', 'error');
+    PS.sub.vertical = selected;
+    showToast('Verticale mise à jour !');
+  });
+
+  init();
+</script>
+</body>
+</html>

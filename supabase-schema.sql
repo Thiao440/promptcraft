@@ -89,6 +89,7 @@ ALTER TABLE public.download_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles       ENABLE ROW LEVEL SECURITY;
 
 -- user_products: users can see their own products
+DROP POLICY IF EXISTS "Users can view own products" ON public.user_products;
 CREATE POLICY "Users can view own products"
   ON public.user_products FOR SELECT
   USING (auth.uid() = user_id);
@@ -97,15 +98,18 @@ CREATE POLICY "Users can view own products"
 -- (No INSERT/UPDATE policy = only service_role can write)
 
 -- download_logs: users can view their own logs
+DROP POLICY IF EXISTS "Users can view own download logs" ON public.download_logs;
 CREATE POLICY "Users can view own download logs"
   ON public.download_logs FOR SELECT
   USING (auth.uid() = user_id);
 
 -- profiles: users can view and update their own profile
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 CREATE POLICY "Users can view own profile"
   ON public.profiles FOR SELECT
   USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile"
   ON public.profiles FOR UPDATE
   USING (auth.uid() = id);

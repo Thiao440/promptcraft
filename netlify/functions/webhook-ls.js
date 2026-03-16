@@ -1,60 +1,55 @@
 /**
- * Lemon Squeezy Webhook Handler
- * ─────────────────────────────
- * Triggered on: order_created, subscription_created, subscription_cancelled
- *
- * Flow:
- *   1. Verify HMAC-SHA256 signature
- *   2. Parse event type + customer email
- *   3. Upsert user in Supabase Auth
- *   4. Grant product access in user_products table
- *   5. Send magic link email so user can access dashboard
+ * Lemon Squeezy Webhook Handler — v2 (SaaS Subscriptions)
+ * ─────────────────────────────────────────────────────────
+ * Handles:
+ *   order_created           — one-shot PDF purchase (legacy)
+ *   subscription_created    — new SaaS subscription (Bronze/Silver/Gold)
+ *   subscription_updated    — renewal, payment retry
+ *   subscription_cancelled  — user cancelled (access until period end)
+ *   subscription_expired    — period ended, revoke access
+ *   order_refunded          — refund, revoke access
  *
  * Env vars required:
  *   LS_WEBHOOK_SECRET    — from Lemon Squeezy → Settings → Webhooks
  *   SUPABASE_URL         — your Supabase project URL
- *   SUPABASE_SERVICE_KEY — service_role key (never expose on frontend)
+ *   SUPABASE_SERVICE_KEY — service_role key (backend only, never on frontend)
  *   SITE_URL             — https://theprompt.studio
  */
 
 const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 
-// ── Product variant UUID → slug mapping ──────────────────────────────────
-// These UUIDs come from your Lemon Squeezy checkout URLs
-const VARIANT_MAP = {
-  'dc72fcc3-ad4c-4f94-a689-4892d19434eb': { slug: 'immo',     name: 'ImmoPrompts Pro',  pdf: 'ImmoPrompts_Pack_AgentImmo_Pro.pdf' },
-  '4b484a81-7d4d-43ef-b827-9292eb78cd91': { slug: 'commerce', name: 'Commerce Pro',      pdf: 'PromptCraft_Commerce_Pro.pdf' },
-  'eaa20d56-b434-4335-80b4-942a637e77d1': { slug: 'legal',    name: 'Juridique Pro',     pdf: 'PromptCraft_Legal_Pro.pdf' },
-  '61739466-c94c-4f49-a6ee-c8b188204f3c': { slug: 'pro',      name: 'Pro Abonnement',    pdf: null },
+// ── Tier variant mapping ──────────────────────────────────────────────────────
+// Replace these UUIDs with your real Lemon Squeezy variant IDs once created
+// Checkout URL: /checkout?variant=VARIANT_ID&checkout[custom][tier]=bronze&checkout[custom][vertical]=immo
+const TIER_VARIANT_MAP = {
+  'BRONZE_VARIANT_UUID': 'bronze',
+  'SILVER_VARIANT_UUID': 'silver',
+  'GOLD_VARIANT_UUID':   'gold',
 };
 
-// Also match by product name as fallback
-const PRODUCT_NAME_MAP = {
-  'immo':     { slug: 'immo',     pdf: 'ImmoPrompts_Pack_AgentImmo_Pro.pdf' },
-  'commerce': { slug: 'commerce', pdf: 'PromptCraft_Commerce_Pro.pdf' },
-  'legal':    { slug: 'legal',    pdf: 'PromptCraft_Legal_Pro.pdf' },
-  'juridique':{ slug: 'legal',    pdf: 'PromptCraft_Legal_Pro.pdf' },
-  'pro':      { slug: 'pro',      pdf: null },
+// ── Legacy PDF product mapping (one-shot orders) ──────────────────────────────
+const LEGACY_VARIANT_MAP = {
+  'dc72fcc3-ad4c-4f94-a689-4892d19434eb': { slug: 'immo',     pdf: 'ImmoPrompts_Pack_AgentImmo_Pro.pdf' },
+  '4b484a81-7d4d-43ef-b827-9292eb78cd91': { slug: 'commerce', pdf: 'PromptCraft_Commerce_Pro.pdf' },
+  'eaa20d56-b434-4335-80b4-942a637e77d1': { slug: 'legal',    pdf: 'PromptCraft_Legal_Pro.pdf' },
 };
 
+// ── Main handler ──────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
-  // Only accept POST
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  // ── 1. Verify Lemon Squeezy HMAC signature ────────────────────────────
+  // ── 1. Verify HMAC-SHA256 signature ────────────────────────────────────────
   const secret = process.env.LS_WEBHOOK_SECRET;
   if (!secret) {
-    console.error('LS_WEBHOOK_SECRET not set');
+    console.error('LS_WEBHOOK_SECRET not configured');
     return { statusCode: 500, body: 'Server misconfiguration' };
   }
 
   const signature = event.headers['x-signature'] || event.headers['X-Signature'];
-  if (!signature) {
-    return { statusCode: 401, body: 'Missing signature' };
-  }
+  if (!signature) return { statusCode: 401, body: 'Missing signature' };
 
   const hash = crypto
     .createHmac('sha256', secret)
@@ -66,133 +61,224 @@ exports.handler = async (event) => {
     return { statusCode: 401, body: 'Invalid signature' };
   }
 
-  // ── 2. Parse payload ──────────────────────────────────────────────────
+  // ── 2. Parse payload ────────────────────────────────────────────────────────
   let payload;
   try {
     payload = JSON.parse(event.body);
-  } catch (e) {
+  } catch {
     return { statusCode: 400, body: 'Invalid JSON' };
   }
 
   const eventName = payload?.meta?.event_name;
-  console.log('LS Webhook received:', eventName);
+  console.log('LS Webhook:', eventName, payload?.data?.id);
 
-  // ── 3. Handle relevant events ─────────────────────────────────────────
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-  );
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
+  // ── 3. Route event ──────────────────────────────────────────────────────────
   try {
-    if (eventName === 'order_created') {
-      await handleOrderCreated(payload, supabase);
-    } else if (eventName === 'subscription_created') {
-      await handleSubscriptionCreated(payload, supabase);
-    } else if (eventName === 'subscription_cancelled' || eventName === 'subscription_expired') {
-      await handleSubscriptionCancelled(payload, supabase);
-    } else if (eventName === 'order_refunded') {
-      await handleRefund(payload, supabase);
+    switch (eventName) {
+      case 'order_created':
+        await handleOrderCreated(payload, supabase);
+        break;
+      case 'subscription_created':
+        await handleSubscriptionCreated(payload, supabase);
+        break;
+      case 'subscription_updated':
+        await handleSubscriptionUpdated(payload, supabase);
+        break;
+      case 'subscription_cancelled':
+        await handleSubscriptionCancelled(payload, supabase);
+        break;
+      case 'subscription_expired':
+        await handleSubscriptionExpired(payload, supabase);
+        break;
+      case 'order_refunded':
+        await handleRefund(payload, supabase);
+        break;
+      default:
+        console.log('Unhandled event, skipping:', eventName);
     }
-    // Ignore other events (subscription_updated, etc.)
   } catch (err) {
-    console.error('Webhook processing error:', err);
+    console.error('Webhook error:', err);
     return { statusCode: 500, body: 'Processing error' };
   }
 
   return { statusCode: 200, body: 'OK' };
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Event handlers ────────────────────────────────────────────────────────────
+
+/**
+ * order_created — legacy one-shot PDF purchase
+ */
 async function handleOrderCreated(payload, supabase) {
-  const attrs = payload.data?.attributes || {};
-  const email = attrs.user_email;
-  const name  = attrs.user_name || '';
-  const orderId = payload.data?.id;
+  const attrs   = payload.data?.attributes || {};
+  const email   = attrs.user_email;
+  const name    = attrs.user_name || '';
+  const orderId = String(payload.data?.id);
+  const item    = attrs.first_order_item || {};
 
-  // Get product info from first_order_item
-  const item = attrs.first_order_item || {};
-  const productSlug = resolveProduct(
-    payload.meta?.custom_data?.slug,
-    item.variant_id,
-    item.product_name,
-    item.variant_name
-  );
+  if (!email) return console.error('No email in order payload');
 
-  if (!email) {
-    console.error('No email in order payload');
+  // Check if this is actually a subscription order (skip — handled by subscription_created)
+  if (attrs.first_subscription_item) {
+    console.log('Subscription order — waiting for subscription_created event');
     return;
   }
+
+  // Resolve legacy PDF product
+  const variantId   = String(item.variant_id || '');
+  const legacyProd  = LEGACY_VARIANT_MAP[variantId];
+  const customSlug  = payload.meta?.custom_data?.slug;
+  const productSlug = legacyProd?.slug || customSlug || null;
+
   if (!productSlug) {
-    console.warn('Could not resolve product slug for order', orderId);
+    console.warn('Could not resolve product for order', orderId);
     return;
   }
 
-  console.log(`Order created: ${email} → ${productSlug}`);
-
-  // Upsert user
+  console.log(`PDF order: ${email} → ${productSlug}`);
   const userId = await upsertUser(supabase, email, name);
   if (!userId) return;
 
-  // Grant product access
-  await grantAccess(supabase, userId, productSlug, {
-    lemon_order_id: String(orderId),
-    status: 'active',
-  });
+  await supabase.from('user_products').upsert({
+    user_id:        userId,
+    product_slug:   productSlug,
+    lemon_order_id: orderId,
+    status:         'active',
+  }, { onConflict: 'user_id,product_slug' });
 
-  // Send magic link to access dashboard
-  await sendMagicLink(supabase, email, productSlug);
+  await sendMagicLink(supabase, email, productSlug, 'pdf');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * subscription_created — new SaaS subscription
+ */
 async function handleSubscriptionCreated(payload, supabase) {
-  const attrs = payload.data?.attributes || {};
-  const email = attrs.user_email;
-  const name  = attrs.user_name || '';
-  const subId = payload.data?.id;
-  const variantId = attrs.variant_id;
+  const attrs   = payload.data?.attributes || {};
+  const email   = attrs.user_email;
+  const name    = attrs.user_name || '';
+  const subId   = String(payload.data?.id);
+  const variantId = String(attrs.variant_id || '');
 
-  const productSlug = resolveProduct(
-    payload.meta?.custom_data?.slug,
-    variantId,
-    null,
-    null
-  ) || 'pro';
+  if (!email) return console.error('No email in subscription payload');
 
-  if (!email) return;
+  // Resolve tier from variant or custom data
+  const customTier     = payload.meta?.custom_data?.tier?.toLowerCase();
+  const customVertical = payload.meta?.custom_data?.vertical?.toLowerCase() || null;
+  const tier = customTier || TIER_VARIANT_MAP[variantId] || 'bronze';
 
-  console.log(`Subscription created: ${email} → ${productSlug}`);
+  // Period end
+  const periodEnd = attrs.renews_at
+    ? new Date(attrs.renews_at).toISOString()
+    : (() => { const d = new Date(); d.setMonth(d.getMonth() + 1); return d.toISOString(); })();
+
+  console.log(`Subscription created: ${email} → ${tier} (vertical: ${customVertical || 'all'})`);
 
   const userId = await upsertUser(supabase, email, name);
   if (!userId) return;
 
-  // Compute expiry (1 month for monthly sub, managed by webhook updates)
-  const expiresAt = new Date();
-  expiresAt.setMonth(expiresAt.getMonth() + 1);
+  // Upsert into subscriptions table (v2 schema)
+  const { error } = await supabase.from('subscriptions').upsert({
+    user_id:                userId,
+    tier,
+    status:                 'active',
+    vertical:               customVertical,
+    lemon_subscription_id:  subId,
+    lemon_order_id:         String(attrs.order_id || ''),
+    current_period_start:   attrs.created_at || new Date().toISOString(),
+    current_period_end:     periodEnd,
+    updated_at:             new Date().toISOString(),
+  }, { onConflict: 'user_id' });
 
-  await grantAccess(supabase, userId, productSlug, {
-    lemon_subscription_id: String(subId),
-    status: 'active',
-    expires_at: expiresAt.toISOString(),
-  });
+  if (error) console.error('Subscription upsert error:', error);
 
-  await sendMagicLink(supabase, email, productSlug);
+  await sendMagicLink(supabase, email, tier, 'subscription');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * subscription_updated — renewal or plan change
+ */
+async function handleSubscriptionUpdated(payload, supabase) {
+  const attrs = payload.data?.attributes || {};
+  const subId = String(payload.data?.id);
+
+  const periodEnd = attrs.renews_at
+    ? new Date(attrs.renews_at).toISOString()
+    : null;
+
+  const update = {
+    status:             attrs.status || 'active',
+    updated_at:         new Date().toISOString(),
+  };
+  if (periodEnd) update.current_period_end = periodEnd;
+
+  // Map LS status to our status
+  const statusMap = {
+    active:    'active',
+    paused:    'active',      // still has access
+    past_due:  'past_due',
+    unpaid:    'past_due',
+    cancelled: 'cancelled',
+    expired:   'expired',
+  };
+  update.status = statusMap[attrs.status] || 'active';
+
+  const { error } = await supabase
+    .from('subscriptions')
+    .update(update)
+    .eq('lemon_subscription_id', subId);
+
+  if (error) console.error('Subscription update error:', error);
+  else console.log(`Subscription updated: ${subId} → status=${update.status}`);
+}
+
+/**
+ * subscription_cancelled — user cancelled (keep access until period end)
+ */
 async function handleSubscriptionCancelled(payload, supabase) {
   const attrs = payload.data?.attributes || {};
   const subId = String(payload.data?.id);
 
+  const periodEnd = attrs.ends_at
+    ? new Date(attrs.ends_at).toISOString()
+    : new Date().toISOString();
+
   const { error } = await supabase
-    .from('user_products')
-    .update({ status: 'cancelled', expires_at: new Date().toISOString() })
+    .from('subscriptions')
+    .update({
+      status:              'cancelled',
+      cancelled_at:        new Date().toISOString(),
+      current_period_end:  periodEnd,
+      updated_at:          new Date().toISOString(),
+    })
     .eq('lemon_subscription_id', subId);
 
-  if (error) console.error('Cancel sub error:', error);
-  else console.log(`Subscription cancelled: ${subId}`);
+  if (error) console.error('Subscription cancel error:', error);
+  else console.log(`Subscription cancelled: ${subId}, access until ${periodEnd}`);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * subscription_expired — access period ended
+ */
+async function handleSubscriptionExpired(payload, supabase) {
+  const subId = String(payload.data?.id);
+
+  const { error } = await supabase
+    .from('subscriptions')
+    .update({
+      status:     'expired',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('lemon_subscription_id', subId);
+
+  if (error) console.error('Subscription expire error:', error);
+  else console.log(`Subscription expired: ${subId}`);
+}
+
+/**
+ * order_refunded — revoke PDF access
+ */
 async function handleRefund(payload, supabase) {
   const orderId = String(payload.data?.id);
 
@@ -205,46 +291,25 @@ async function handleRefund(payload, supabase) {
   else console.log(`Order refunded: ${orderId}`);
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Shared helpers ────────────────────────────────────────────────────────────
 
-function resolveProduct(customSlug, variantId, productName, variantName) {
-  // 1. Custom data (most reliable — passed via checkout URL ?checkout[custom][slug]=immo)
-  if (customSlug && PRODUCT_NAME_MAP[customSlug.toLowerCase()]) {
-    return PRODUCT_NAME_MAP[customSlug.toLowerCase()].slug;
-  }
-
-  // 2. Variant UUID (from our VARIANT_MAP)
-  if (variantId) {
-    const found = VARIANT_MAP[String(variantId)];
-    if (found) return found.slug;
-  }
-
-  // 3. Product name pattern matching
-  const combined = `${productName || ''} ${variantName || ''}`.toLowerCase();
-  if (combined.includes('immo'))     return 'immo';
-  if (combined.includes('commerce')) return 'commerce';
-  if (combined.includes('legal') || combined.includes('juridique')) return 'legal';
-  if (combined.includes('pro'))      return 'pro';
-
-  return null;
-}
-
+/**
+ * Upsert user in Supabase Auth — returns user ID
+ */
 async function upsertUser(supabase, email, name) {
-  // Check if user exists
-  const { data: existing } = await supabase.auth.admin.listUsers();
-  const existingUser = existing?.users?.find(u => u.email === email);
+  // Look up existing users (paginated, but for our scale this is fine)
+  const { data: list } = await supabase.auth.admin.listUsers({ perPage: 1000 });
+  const existing = list?.users?.find(u => u.email === email);
 
-  if (existingUser) {
-    // Update name in metadata if needed
-    if (name && !existingUser.user_metadata?.full_name) {
-      await supabase.auth.admin.updateUserById(existingUser.id, {
-        user_metadata: { full_name: name }
+  if (existing) {
+    if (name && !existing.user_metadata?.full_name) {
+      await supabase.auth.admin.updateUserById(existing.id, {
+        user_metadata: { full_name: name },
       });
     }
-    return existingUser.id;
+    return existing.id;
   }
 
-  // Create new user
   const { data, error } = await supabase.auth.admin.createUser({
     email,
     email_confirm: true,
@@ -258,27 +323,14 @@ async function upsertUser(supabase, email, name) {
   return data.user.id;
 }
 
-async function grantAccess(supabase, userId, productSlug, extra = {}) {
-  // Upsert to avoid duplicate on retry
-  const { error } = await supabase
-    .from('user_products')
-    .upsert(
-      {
-        user_id: userId,
-        product_slug: productSlug,
-        ...extra,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id,product_slug', ignoreDuplicates: false }
-    );
-
-  if (error) console.error('Grant access error:', error);
-  else console.log(`Access granted: ${userId} → ${productSlug}`);
-}
-
-async function sendMagicLink(supabase, email, productSlug) {
+/**
+ * Send magic link email so user can access their dashboard
+ */
+async function sendMagicLink(supabase, email, context, type) {
   const siteUrl = process.env.SITE_URL || 'https://theprompt.studio';
-  const redirectTo = `${siteUrl}/dashboard?welcome=${productSlug}`;
+  const redirectTo = type === 'subscription'
+    ? `${siteUrl}/dashboard?welcome=${context}`
+    : `${siteUrl}/dashboard?welcome=pdf&slug=${context}`;
 
   const { error } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
@@ -286,9 +338,6 @@ async function sendMagicLink(supabase, email, productSlug) {
     options: { redirectTo },
   });
 
-  if (error) {
-    console.error('Magic link error:', error);
-  } else {
-    console.log(`Magic link sent to ${email} → /dashboard?welcome=${productSlug}`);
-  }
+  if (error) console.error('Magic link error:', error);
+  else console.log(`Magic link sent: ${email} → ${redirectTo}`);
 }

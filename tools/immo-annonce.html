@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Générateur d'annonces – The Prompt Studio</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/ps-auth.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #222538;
+      --border:   #2a2d3e;
+      --text:     #e8eaf0;
+      --muted:    #7c8098;
+      --accent:   #6c63ff;
+      --accent2:  #a78bfa;
+      --success:  #22c55e;
+      --danger:   #ef4444;
+      --warning:  #f59e0b;
+      --sidebar-w: 240px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 50;
+    }
+    .sidebar-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo a {
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .sidebar-logo span { color: var(--accent2); }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .9rem;
+      transition: background .15s, color .15s;
+    }
+    .nav-item:hover { background: rgba(108,99,255,.08); color: var(--text); }
+    .nav-item.active { background: rgba(108,99,255,.15); color: var(--accent2); }
+    .nav-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .user-email {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .9rem;
+      padding: 6px 0;
+      transition: color .15s;
+    }
+    .logout-btn:hover { color: var(--danger); }
+
+    /* ── Main ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: calc(100vw - var(--sidebar-w));
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text); }
+    .breadcrumb .sep { opacity: .4; }
+    .breadcrumb .current { color: var(--text); }
+
+    /* Tool header */
+    .tool-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tool-header-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .tool-icon {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    .tool-meta h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .tool-meta p {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .tool-badges {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .badge {
+      font-size: .75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .badge-tier { background: rgba(205,127,50,.15); color: #cd7f32; border: 1px solid rgba(205,127,50,.3); }
+    .badge-vertical { background: rgba(108,99,255,.15); color: var(--accent2); border: 1px solid rgba(108,99,255,.3); }
+
+    /* Tool body */
+    .tool-body {
+      flex: 1;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media(max-width: 900px) {
+      .tool-body { grid-template-columns: 1fr; }
+    }
+
+    /* ── Form panel ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .panel-title {
+      font-size: .95rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .form-group label .req { color: var(--danger); margin-left: 2px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: .9rem;
+      transition: border-color .2s;
+      outline: none;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .char-count {
+      font-size: .75rem;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    /* Tone selector */
+    .tone-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .tone-opt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      user-select: none;
+    }
+    .tone-opt:hover { border-color: var(--accent2); background: rgba(108,99,255,.06); }
+    .tone-opt.selected { border-color: var(--accent); background: rgba(108,99,255,.12); }
+    .tone-opt input { display: none; }
+    .tone-icon { font-size: 1.2rem; }
+    .tone-label { font-size: .75rem; color: var(--muted); }
+    .tone-opt.selected .tone-label { color: var(--accent2); }
+
+    /* ── Generate button ── */
+    .generate-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .generate-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,.35); }
+    .generate-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* Quota bar mini */
+    .quota-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .78rem;
+      color: var(--muted);
+      padding: 10px 0 0;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+    .quota-bar-mini {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .quota-fill-mini {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+    }
+    .quota-fill-mini.danger { background: linear-gradient(90deg, var(--danger), #f87171); }
+
+    /* ── Result panel ── */
+    .result-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .result-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .result-toolbar .panel-title { margin-bottom: 0; }
+
+    .result-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 7px;
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      transition: all .2s;
+    }
+    .btn-icon:hover { border-color: var(--accent2); color: var(--accent2); }
+    .btn-icon:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* Empty state */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+    .empty-state .big-icon { font-size: 3rem; margin-bottom: 16px; opacity: .5; }
+    .empty-state h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .empty-state p { font-size: .875rem; line-height: 1.5; }
+
+    /* Loading state */
+    .loading-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+    @keyframes dots {
+      0%  { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+    }
+
+    /* Result content */
+    .result-content {
+      flex: 1;
+      overflow: auto;
+    }
+    .result-text {
+      white-space: pre-wrap;
+      font-size: .9rem;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 200px;
+      font-family: inherit;
+      resize: vertical;
+      width: 100%;
+      outline: none;
+    }
+    .result-text:focus { border-color: var(--accent); }
+
+    /* Result meta */
+    .result-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      font-size: .75rem;
+      color: var(--muted);
+    }
+    .result-meta span { display: flex; align-items: center; gap: 4px; }
+
+    /* History */
+    .history-section {
+      grid-column: 1 / -1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .history-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .history-item:hover { border-color: var(--accent2); }
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .history-item-preview {
+      font-size: .875rem;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: .875rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s;
+      z-index: 1000;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 3px solid var(--success); }
+    .toast.error   { border-left: 3px solid var(--danger); }
+
+    /* Mobile */
+    @media(max-width: 700px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .tool-header, .breadcrumb { padding-left: 16px; padding-right: 16px; }
+      .tool-body { padding: 16px; gap: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+      .tone-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="/index.html">The <span>Prompt</span> Studio</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/dashboard.html" class="nav-item active">
+      <span class="icon">🧰</span> Mes outils
+    </a>
+    <a href="/account.html" class="nav-item">
+      <span class="icon">👤</span> Mon compte
+    </a>
+    <a href="/tarifs.html" class="nav-item">
+      <span class="icon">💎</span> Offres & Tarifs
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-email" id="user-email"></div>
+    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+  </div>
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="main">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="/dashboard.html">🧰 Tableau de bord</a>
+    <span class="sep">›</span>
+    <span>🏠 Immobilier</span>
+    <span class="sep">›</span>
+    <span class="current">📝 Générateur d'annonces</span>
+  </div>
+
+  <!-- Tool header -->
+  <div class="tool-header">
+    <div class="tool-header-inner">
+      <div class="tool-icon">📝</div>
+      <div class="tool-meta">
+        <h1>Générateur d'annonces immobilières</h1>
+        <p>Rédigez une annonce professionnelle et percutante en 30 secondes.</p>
+        <div class="tool-badges">
+          <span class="badge badge-tier">🥉 Bronze +</span>
+          <span class="badge badge-vertical">🏠 Immobilier</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool body -->
+  <div class="tool-body">
+
+    <!-- Left: Form -->
+    <div class="panel">
+      <div class="panel-title">✍️ Informations du bien</div>
+
+      <form id="tool-form" autocomplete="off">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Type de bien <span class="req">*</span></label>
+            <select id="type_bien" required>
+              <option value="">— Choisir —</option>
+              <option value="appartement">Appartement</option>
+              <option value="maison">Maison</option>
+              <option value="studio">Studio</option>
+              <option value="loft">Loft</option>
+              <option value="villa">Villa</option>
+              <option value="terrain">Terrain</option>
+              <option value="local commercial">Local commercial</option>
+              <option value="bureau">Bureau</option>
+              <option value="immeuble">Immeuble</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Transaction <span class="req">*</span></label>
+            <select id="transaction" required>
+              <option value="vente">Vente</option>
+              <option value="location">Location</option>
+              <option value="location meublée">Location meublée</option>
+              <option value="viager">Viager</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Surface (m²) <span class="req">*</span></label>
+            <input type="number" id="surface" placeholder="Ex: 75" min="1" max="99999" required/>
+          </div>
+          <div class="form-group">
+            <label>Nombre de pièces</label>
+            <input type="number" id="pieces" placeholder="Ex: 4" min="1" max="99"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prix (€) <span class="req">*</span></label>
+            <input type="number" id="prix" placeholder="Ex: 295000" min="1" required/>
+          </div>
+          <div class="form-group">
+            <label>Localisation <span class="req">*</span></label>
+            <input type="text" id="localisation" placeholder="Ex: Lyon 6ème, 69006" required/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Points forts du bien</label>
+          <textarea id="points_forts" placeholder="Ex: Lumineux, vue dégagée, double vitrage, parquet ancien, cave, parking..." rows="3"></textarea>
+          <div class="char-count" id="pf-count">0 / 400</div>
+        </div>
+
+        <div class="form-group">
+          <label>Informations complémentaires</label>
+          <textarea id="infos_comp" placeholder="Ex: Proche école, commerces à 200m, quartier calme, refait à neuf en 2022..." rows="2"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Ton souhaité</label>
+          <div class="tone-grid">
+            <label class="tone-opt selected" data-t="professionnel">
+              <input type="radio" name="ton" value="professionnel" checked/>
+              <span class="tone-icon">💼</span>
+              <span class="tone-label">Professionnel</span>
+            </label>
+            <label class="tone-opt" data-t="enthousiaste">
+              <input type="radio" name="ton" value="enthousiaste"/>
+              <span class="tone-icon">🌟</span>
+              <span class="tone-label">Enthousiaste</span>
+            </label>
+            <label class="tone-opt" data-t="luxe">
+              <input type="radio" name="ton" value="luxe"/>
+              <span class="tone-icon">✨</span>
+              <span class="tone-label">Prestige</span>
+            </label>
+            <label class="tone-opt" data-t="minimaliste">
+              <input type="radio" name="ton" value="minimaliste"/>
+              <span class="tone-icon">📋</span>
+              <span class="tone-label">Épuré</span>
+            </label>
+            <label class="tone-opt" data-t="investisseur">
+              <input type="radio" name="ton" value="investisseur"/>
+              <span class="tone-icon">📈</span>
+              <span class="tone-label">Investissement</span>
+            </label>
+            <label class="tone-opt" data-t="chaleureux">
+              <input type="radio" name="ton" value="chaleureux"/>
+              <span class="tone-icon">🏡</span>
+              <span class="tone-label">Chaleureux</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="generate-btn" id="generate-btn">
+          <span id="btn-icon">✨</span>
+          <span id="btn-text">Générer l'annonce</span>
+        </button>
+
+        <div class="quota-mini" id="quota-mini">
+          <span id="quota-label">Chargement…</span>
+          <div class="quota-bar-mini">
+            <div class="quota-fill-mini" id="quota-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Right: Result -->
+    <div class="result-panel">
+      <div class="result-toolbar">
+        <div class="panel-title">💬 Annonce générée</div>
+        <div class="result-actions">
+          <button class="btn-icon" id="copy-btn" onclick="copyResult()" disabled>
+            📋 Copier
+          </button>
+          <button class="btn-icon" id="regen-btn" onclick="regenerate()" disabled>
+            🔄 Régénérer
+          </button>
+        </div>
+      </div>
+
+      <div class="result-content" id="result-content">
+        <div class="empty-state">
+          <div class="big-icon">📝</div>
+          <h3>Votre annonce apparaîtra ici</h3>
+          <p>Remplissez le formulaire à gauche et cliquez sur<br><strong>Générer l'annonce</strong> pour commencer.</p>
+        </div>
+      </div>
+
+      <div class="result-meta" id="result-meta" style="display:none;">
+        <span>⏱ <span id="meta-duration">—</span></span>
+        <span>🔤 <span id="meta-tokens">—</span> tokens</span>
+        <span>📅 <span id="meta-date">—</span></span>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section" id="history-section">
+      <div class="history-header">
+        <div class="panel-title" style="margin-bottom:0;">🕐 Historique récent</div>
+        <span style="font-size:.8rem;color:var(--muted);" id="history-count"></span>
+      </div>
+      <div class="history-list" id="history-list">
+        <div style="color:var(--muted);font-size:.875rem;">Chargement de l'historique…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Constants ─────────────────────────────────────────
+  const TOOL_SLUG = 'immo-annonce';
+  const QUOTA_LIMITS = { bronze: 50, silver: 150, gold: Infinity };
+
+  let lastInputs = null;
+
+  // ── Toast ─────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── Tone selector ─────────────────────────────────────
+  document.querySelectorAll('.tone-opt').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.tone-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input').checked = true;
+    });
+  });
+
+  // ── Char counter ──────────────────────────────────────
+  document.getElementById('points_forts').addEventListener('input', function() {
+    document.getElementById('pf-count').textContent = `${this.value.length} / 400`;
+  });
+
+  // ── Update quota display ──────────────────────────────
+  async function updateQuotaDisplay() {
+    if (!PS.sub) return;
+    const count  = await PS.getMonthlyUsage();
+    const limit  = QUOTA_LIMITS[PS.sub.tier] ?? 50;
+    const label  = document.getElementById('quota-label');
+    const fill   = document.getElementById('quota-fill');
+    const pct    = limit === Infinity ? 5 : Math.min(100, Math.round((count / limit) * 100));
+    const isDanger = pct > 80;
+
+    label.textContent = limit === Infinity
+      ? `${count} générés ce mois (illimité)`
+      : `${count} / ${limit} générations ce mois`;
+
+    fill.style.width = pct + '%';
+    if (isDanger) fill.classList.add('danger');
+  }
+
+  // ── Show loading state ────────────────────────────────
+  function setLoading(loading) {
+    const btn     = document.getElementById('generate-btn');
+    const btnIcon = document.getElementById('btn-icon');
+    const btnText = document.getElementById('btn-text');
+    const content = document.getElementById('result-content');
+
+    if (loading) {
+      btn.disabled = true;
+      btnIcon.textContent = '⏳';
+      btnText.textContent = 'Génération en cours…';
+      content.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <div class="loading-text">L'IA rédige votre annonce<span class="loading-dots"></span></div>
+        </div>`;
+    } else {
+      btn.disabled = false;
+      btnIcon.textContent = '✨';
+      btnText.textContent = 'Générer l\'annonce';
+    }
+  }
+
+  // ── Display result ────────────────────────────────────
+  function displayResult(output, meta) {
+    const content = document.getElementById('result-content');
+    content.innerHTML = `
+      <textarea class="result-text" id="result-textarea" spellcheck="false">${escapeHtml(output)}</textarea>
+    `;
+
+    // Meta
+    const metaEl = document.getElementById('result-meta');
+    metaEl.style.display = 'flex';
+    document.getElementById('meta-duration').textContent = meta.durationMs ? `${(meta.durationMs/1000).toFixed(1)}s` : '—';
+    document.getElementById('meta-tokens').textContent   = meta.tokensUsed || '—';
+    document.getElementById('meta-date').textContent     = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+    // Unlock buttons
+    document.getElementById('copy-btn').disabled  = false;
+    document.getElementById('regen-btn').disabled = false;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Copy result ───────────────────────────────────────
+  function copyResult() {
+    const ta = document.getElementById('result-textarea');
+    if (!ta) return;
+    navigator.clipboard.writeText(ta.value).then(() => {
+      showToast('Annonce copiée dans le presse-papiers !');
+    });
+  }
+
+  // ── Regenerate ────────────────────────────────────────
+  function regenerate() {
+    if (!lastInputs) return;
+    generate(lastInputs);
+  }
+
+  // ── Main generate function ────────────────────────────
+  async function generate(inputs) {
+    setLoading(true);
+
+    // Get token
+    const { data: { session } } = await PS.supabase.auth.getSession();
+    if (!session?.access_token) {
+      setLoading(false);
+      return showToast('Session expirée. Veuillez vous reconnecter.', 'error');
+    }
+
+    try {
+      const res = await fetch('/api/ai-tool', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ toolSlug: TOOL_SLUG, inputs }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        let msg = 'Une erreur est survenue.';
+        try {
+          const e = JSON.parse(data.error || '{}');
+          if (e.reason === 'quota_exceeded') msg = `Quota atteint (${e.used}/${e.limit} générations ce mois).`;
+          else if (e.reason === 'upgrade_required') msg = `Votre offre ne donne pas accès à cet outil (requis : ${e.required}).`;
+          else if (e.reason === 'wrong_vertical') msg = `Cet outil n'est pas dans votre verticale (${e.yours}).`;
+          else if (e.reason === 'no_subscription') msg = 'Aucun abonnement actif.';
+          else msg = data.error || msg;
+        } catch { msg = data.error || msg; }
+        setLoading(false);
+        return showToast(msg, 'error');
+      }
+
+      displayResult(data.output, { durationMs: data.durationMs, tokensUsed: data.tokensUsed });
+      await updateQuotaDisplay();
+      loadHistory();
+
+    } catch (e) {
+      console.error(e);
+      showToast('Erreur de connexion. Vérifiez votre réseau.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ── Form submit ───────────────────────────────────────
+  document.getElementById('tool-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const access = PS.canUseTool(TOOL_SLUG, 'bronze', 'immo');
+    if (!access.allowed) {
+      if (access.reason === 'upgrade_required') return showToast(`Upgrade requis (${access.required}).`, 'error');
+      if (access.reason === 'wrong_vertical')   return showToast(`Cet outil est réservé à la verticale Immobilier.`, 'error');
+      if (access.reason === 'no_subscription')  return window.location.href = '/tarifs.html';
+      return showToast('Accès non autorisé.', 'error');
+    }
+
+    const inputs = {
+      type_bien:   document.getElementById('type_bien').value,
+      transaction: document.getElementById('transaction').value,
+      surface:     document.getElementById('surface').value,
+      pieces:      document.getElementById('pieces').value,
+      prix:        document.getElementById('prix').value,
+      localisation:document.getElementById('localisation').value,
+      points_forts:document.getElementById('points_forts').value,
+      infos_comp:  document.getElementById('infos_comp').value,
+      ton:         document.querySelector('input[name=ton]:checked')?.value || 'professionnel',
+    };
+
+    lastInputs = inputs;
+    generate(inputs);
+  });
+
+  // ── Load history ──────────────────────────────────────
+  async function loadHistory() {
+    if (!PS.session) return;
+    const { data } = await PS.supabase
+      .from('tool_usage')
+      .select('id, created_at, output_text, input_data')
+      .eq('user_id', PS.session.user.id)
+      .eq('tool_slug', TOOL_SLUG)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    const list = document.getElementById('history-list');
+    const count = document.getElementById('history-count');
+
+    if (!data?.length) {
+      list.innerHTML = `<div style="color:var(--muted);font-size:.875rem;">Aucune génération pour cet outil.</div>`;
+      count.textContent = '';
+      return;
+    }
+
+    count.textContent = `${data.length} dernière(s)`;
+    list.innerHTML = data.map(item => {
+      const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
+        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+      });
+      const preview = (item.output_text || '').slice(0, 120);
+      const info    = item.input_data ? `${item.input_data.type_bien || ''} · ${item.input_data.localisation || ''}` : '';
+      return `
+        <div class="history-item" onclick="loadFromHistory(${JSON.stringify(item.output_text || '').replace(/'/g, '&#39;')})">
+          <div class="history-item-header">
+            <span>${info}</span>
+            <span>${date}</span>
+          </div>
+          <div class="history-item-preview">${preview}…</div>
+        </div>`;
+    }).join('');
+  }
+
+  function loadFromHistory(text) {
+    displayResult(text, {});
+    document.getElementById('result-content').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Init ──────────────────────────────────────────────
+  async function init() {
+    const ok = await PS.requireAuth('/tools/immo-annonce.html');
+    if (!ok) return;
+
+    document.getElementById('user-email').textContent = PS.session.user.email;
+
+    // Check access upfront
+    const access = PS.canUseTool(TOOL_SLUG, 'bronze', 'immo');
+    if (!access.allowed) {
+      document.getElementById('generate-btn').disabled = true;
+      if (access.reason === 'no_subscription' || access.reason === 'not_logged_in') {
+        window.location.href = '/tarifs.html';
+        return;
+      }
+      showToast(
+        access.reason === 'wrong_vertical'
+          ? `Verticale incorrecte (la vôtre : ${access.yours}).`
+          : `Upgrade requis pour cet outil.`,
+        'error'
+      );
+    }
+
+    await updateQuotaDisplay();
+    await loadHistory();
+  }
+
+  init();
+</script>
+</body>
+</html>
