@@ -60,6 +60,31 @@ const PS = (() => {
       _subs.forEach(s => { _subsMap[s.vertical] = s; });
     }
 
+    console.log('[PS] init complete — user:', _session?.user?.id, '| subs:', _subs, '| subsMap:', _subsMap);
+
+    _ready = true;
+    return { session: _session, subs: _subs };
+  }
+
+  // Re-fetches session + subscriptions from the DB without a page reload.
+  // Bypasses the _ready guard so stale cached state is always overwritten.
+  async function refresh() {
+    const sb = getClient();
+    const { data: { session } } = await sb.auth.getSession();
+    _session = session;
+    _subs    = [];
+    _subsMap = {};
+
+    if (session) {
+      const { data } = await sb
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .eq('status', 'active');
+      _subs = (data || []).filter(s => !s.current_period_end || new Date(s.current_period_end) > new Date());
+      _subs.forEach(s => { _subsMap[s.vertical] = s; });
+    }
+
     _ready = true;
     return { session: _session, subs: _subs };
   }
@@ -110,7 +135,7 @@ const PS = (() => {
     get session()   { return _session; },
     get subs()      { return _subs; },
     get subsMap()   { return _subsMap; },
-    init, requireAuth, subForVertical,
+    init, refresh, requireAuth, subForVertical,
     hasAnySubscription, subscribedVerticals,
     canUseTool, getMonthlyUsage, getQuota, logout,
     VERTICALS, TIER_ORDER,

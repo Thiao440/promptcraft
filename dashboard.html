@@ -127,6 +127,50 @@
     .skel { background: linear-gradient(90deg,var(--border) 25%,rgba(255,255,255,.04) 50%,var(--border) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
+    /* ── Tier sections ── */
+    .tier-section { margin-bottom: 28px; }
+    .tier-section-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tier-section-label { font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .tier-section-count { font-size: .75rem; color: var(--muted); }
+
+    /* ── Tool card badges ── */
+    .tc-badge {
+      position: absolute; top: 10px; left: 10px;
+      font-size: .6rem; font-weight: 700; padding: 2px 6px;
+      border-radius: 4px; line-height: 1.4; pointer-events: none;
+    }
+    .tc-badge.featured { background: rgba(201,168,76,.14); color: #c9a84c; border: 1px solid rgba(201,168,76,.28); }
+    .tc-badge.new-tool { background: rgba(34,197,94,.12);  color: #22c55e; border: 1px solid rgba(34,197,94,.28); }
+    /* Push icon down when badge is present so they don't overlap */
+    .tool-card.has-badge .tc-icon { margin-top: 18px; }
+
+    /* ── Locked card redesign (no full-card opacity fade) ── */
+    .tool-card.locked { opacity: 1; border-style: dashed; cursor: default; }
+    .tool-card.locked:hover { transform: none; box-shadow: none; }
+    .tool-card.locked .tc-icon,
+    .tool-card.locked .tc-name,
+    .tool-card.locked .tc-desc { opacity: .42; }
+    .tc-upgrade {
+      margin-top: auto; display: flex; align-items: center;
+      justify-content: space-between; padding-top: 8px;
+      border-top: 1px solid var(--border); font-size: .74rem; color: var(--muted);
+    }
+    .tc-upgrade-link {
+      font-weight: 700; font-size: .74rem; text-decoration: none;
+      white-space: nowrap; padding: 3px 8px; border-radius: 5px;
+      border: 1px solid currentColor; transition: opacity .15s;
+    }
+    .tc-upgrade-link:hover { opacity: .75; }
+
+    /* ── Filter buttons (functional) ── */
+    .filter-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: .78rem; cursor: pointer; transition: all .15s; }
+    .filter-btn.active { font-weight: 600; }
+    .filter-btn:not(.active):hover { color: var(--text); border-color: var(--text); }
+
     @media(max-width:700px) { .sidebar{display:none;} .main{margin-left:0;} .vtab-bar,.topbar,.content{padding-left:16px;padding-right:16px;} }
   </style>
 </head>
@@ -182,18 +226,22 @@ const QUOTA_MAX   = { bronze:50, silver:150, gold:Infinity };
 
 const ALL_TOOLS = {
   immo: [
-    {slug:'immo-annonce',        icon:'📝',name:"Générateur d'annonces",       desc:'Annonces percutantes en 30s',         tier:'bronze'},
-    {slug:'immo-email-suivi',    icon:'📧',name:'Email de suivi acquéreur',     desc:'Relancez vos prospects',              tier:'bronze'},
-    {slug:'immo-rapport-visite', icon:'📋',name:'Rapport de visite',            desc:'Compte-rendu professionnel',          tier:'silver'},
-    {slug:'immo-analyse-prix',   icon:'📊',name:'Analyse comparative de prix',  desc:'Analyse de marché argumentée',        tier:'silver'},
-    {slug:'immo-script-prosp',   icon:'📞',name:'Script de prospection',        desc:'Appels & SMS nouveaux mandats',       tier:'silver'},
-    {slug:'immo-mandat-exclusif',icon:'🏆',name:'Argumentaire mandat exclusif', desc:'Décrochez le mandat exclusif',        tier:'gold'  },
-    {slug:'immo-posts-sociaux',  icon:'📱',name:'Posts réseaux sociaux',        desc:'LinkedIn/Instagram pour vos biens',  tier:'gold'  },
-    {slug:'immo-email-vendeur',  icon:'💌',name:'Email présentation vendeur',   desc:'Présentez une offre au vendeur',      tier:'gold'  },
+    {slug:'immo-annonce',         icon:'📝',name:"Générateur d'annonces",        desc:'Annonces percutantes en 30s',          tier:'bronze', featured:true },
+    {slug:'immo-email-suivi',     icon:'📧',name:'Email de suivi acquéreur',      desc:'Relancez vos prospects',               tier:'bronze'},
+    {slug:'rent-estimator',       icon:'💰',name:'Estimateur de loyer',           desc:'Fourchette de loyer argumentée',       tier:'bronze', featured:true,  isNew:true},
+    {slug:'client-email-generator',icon:'✉️',name:"Générateur d'emails client",  desc:'Relance, négociation, estimation',     tier:'bronze', featured:true,  isNew:true},
+    {slug:'immo-rapport-visite',  icon:'📋',name:'Rapport de visite',             desc:'Compte-rendu professionnel',           tier:'silver'},
+    {slug:'immo-analyse-prix',    icon:'📊',name:'Analyse comparative de prix',   desc:'Analyse de marché argumentée',         tier:'silver'},
+    {slug:'immo-script-prosp',    icon:'📞',name:'Script de prospection',         desc:'Appels & SMS nouveaux mandats',        tier:'silver'},
+    {slug:'investment-analyzer',  icon:'📈',name:"Analyseur d'investissement",    desc:'Rendement brut, net & recommandation', tier:'silver', featured:true,  isNew:true},
+    {slug:'airbnb-profitability', icon:'🏡',name:'Rentabilité loc. courte durée', desc:'Potentiel Airbnb / Booking analysé',   tier:'silver', isNew:true},
+    {slug:'immo-mandat-exclusif', icon:'🏆',name:'Argumentaire mandat exclusif',  desc:'Décrochez le mandat exclusif',         tier:'gold'  },
+    {slug:'immo-posts-sociaux',   icon:'📱',name:'Posts réseaux sociaux',         desc:'LinkedIn/Instagram pour vos biens',   tier:'gold'  },
+    {slug:'immo-email-vendeur',   icon:'💌',name:'Email présentation vendeur',    desc:'Présentez une offre au vendeur',       tier:'gold'  },
   ],
   commerce: [
-    {slug:'commerce-fiche-produit',   icon:'🛒',name:'Fiches produits SEO',          desc:'Fiches optimisées en masse',          tier:'bronze'},
-    {slug:'commerce-email-promo',     icon:'📧',name:'Email promotionnel',           desc:'Emails marketing qui convertissent',  tier:'bronze'},
+    {slug:'commerce-fiche-produit',   icon:'🛒',name:'Fiches produits SEO',          desc:'Fiches optimisées en masse',          tier:'bronze', featured:true},
+    {slug:'commerce-email-promo',     icon:'📧',name:'Email promotionnel',           desc:'Emails marketing qui convertissent',  tier:'bronze', featured:true},
     {slug:'commerce-seo-description', icon:'🔍',name:'Description SEO',              desc:'Optimisez pour le référencement',     tier:'silver'},
     {slug:'commerce-posts-sociaux',   icon:'📱',name:'Contenu réseaux sociaux',      desc:'Posts Instagram, Facebook, TikTok',   tier:'silver'},
     {slug:'commerce-relance-panier',  icon:'🛍️',name:'Relance panier abandonné',     desc:'Récupérez les paniers',               tier:'silver'},
@@ -202,8 +250,8 @@ const ALL_TOOLS = {
     {slug:'commerce-analyse-concur',  icon:'📊',name:'Analyse concurrentielle',      desc:'Positionnement vs concurrence',       tier:'gold'  },
   ],
   legal: [
-    {slug:'legal-courrier',         icon:'✉️',name:'Rédacteur de courriers',      desc:'Courriers juridiques professionnels',  tier:'bronze'},
-    {slug:'legal-resume-contrat',   icon:'📋',name:'Résumé de contrat',           desc:"Points clés en moins d'1 minute",     tier:'bronze'},
+    {slug:'legal-courrier',         icon:'✉️',name:'Rédacteur de courriers',      desc:'Courriers juridiques professionnels',  tier:'bronze', featured:true},
+    {slug:'legal-resume-contrat',   icon:'📋',name:'Résumé de contrat',           desc:"Points clés en moins d'1 minute",     tier:'bronze', featured:true},
     {slug:'legal-note-juridique',   icon:'⚖️',name:'Note juridique',              desc:'Note de synthèse structurée',          tier:'silver'},
     {slug:'legal-analyse-clause',   icon:'🔎',name:'Analyse de clause',           desc:'Identifiez les risques contractuels',  tier:'silver'},
     {slug:'legal-mise-en-demeure',  icon:'📜',name:'Mise en demeure',             desc:'Rédaction légalement solide',          tier:'silver'},
@@ -212,9 +260,9 @@ const ALL_TOOLS = {
     {slug:'legal-plaidoirie',       icon:'🎤',name:'Arguments de plaidoirie',     desc:'Structurez vos arguments',             tier:'gold'  },
   ],
   finance: [
-    {slug:'finance-synthese',        icon:'📊',name:'Synthèse de rapport',           desc:'Résumez un rapport financier',         tier:'bronze'},
+    {slug:'finance-synthese',        icon:'📊',name:'Synthèse de rapport',           desc:'Résumez un rapport financier',         tier:'bronze', featured:true},
     {slug:'finance-email-pro',       icon:'📧',name:'Email professionnel finance',   desc:'Emails formels pour DAF/investisseurs', tier:'bronze'},
-    {slug:'finance-analyse-kpi',     icon:'📈',name:'Analyse de KPIs',              desc:'Interprétez vos indicateurs',          tier:'silver'},
+    {slug:'finance-analyse-kpi',     icon:'📈',name:'Analyse de KPIs',              desc:'Interprétez vos indicateurs',          tier:'silver', featured:true},
     {slug:'finance-rapport-invest',  icon:'💰',name:"Rapport d'investissement",     desc:"Analyse d'investissement",             tier:'silver'},
     {slug:'finance-budget-prevision',icon:'📅',name:'Budget prévisionnel',          desc:'Commentaire de votre budget',          tier:'silver'},
     {slug:'finance-deck-invest',     icon:'🚀',name:'Deck investisseur',            desc:'Pitch deck pour levée de fonds',       tier:'gold'  },
@@ -223,8 +271,15 @@ const ALL_TOOLS = {
   ],
 };
 
-let activeV = null;
-let usageCount = 0;
+let activeV      = null;
+let usageCount   = 0;
+let activeFilter = 'all'; // 'all' | 'accessible' | 'locked'
+
+const TIER_META = {
+  bronze: { label: '🥉 Bronze', color: '#cd7f32' },
+  silver: { label: '🥈 Silver', color: '#a8a9ad' },
+  gold:   { label: '🥇 Gold',   color: '#c9a84c' },
+};
 
 // ── Render sidebar verticals ───────────────────────────────────────────────
 function renderSidebar() {
@@ -256,23 +311,25 @@ function renderTabBar() {
 
 // ── Switch vertical ────────────────────────────────────────────────────────
 async function switchVertical(v) {
-  activeV = v;
+  activeV      = v;
+  activeFilter = 'all'; // reset filter on vertical switch
   const sub = PS.subForVertical(v);
   const m   = VMETA[v] || {};
 
-  // Update tabs
   document.querySelectorAll('.vtab-btn').forEach(b => b.classList.toggle('active', b.dataset.v === v));
   document.querySelectorAll('.nav-item[data-v]').forEach(b => b.classList.toggle('active', b.dataset.v === v));
 
-  // Update topbar
   document.getElementById('topbar-title').textContent = `${m.icon || ''} ${m.label || v}`;
   document.getElementById('topbar-sub').textContent   = sub ? `${TIER_LABELS[sub.tier]} · accès aux outils ${m.label}` : '';
 
-  // Update quota pill
   await updateQuota(v, sub);
+  renderTools(v, sub, 'all');
+}
 
-  // Render tools
-  renderTools(v, sub);
+// ── Set filter and re-render ───────────────────────────────────────────────
+function setFilter(f) {
+  activeFilter = f;
+  renderTools(activeV, PS.subForVertical(activeV), f);
 }
 
 // ── Update quota display ───────────────────────────────────────────────────
@@ -291,17 +348,75 @@ async function updateQuota(v, sub) {
   fill.style.background = pct > 80 ? '#ef4444' : color;
 }
 
+// ── Build accessible tool card HTML ───────────────────────────────────────
+function accessibleCard(t, color, v) {
+  const hasBadge = t.featured || t.isNew;
+  const badge    = t.featured
+    ? '<span class="tc-badge featured">⭐ Populaire</span>'
+    : t.isNew ? '<span class="tc-badge new-tool">Nouveau</span>' : '';
+  return `
+    <div class="tool-card accessible${hasBadge?' has-badge':''}"
+         style="border-color:transparent"
+         onmouseover="this.style.borderColor='${color}'"
+         onmouseout="this.style.borderColor='transparent'"
+         onclick="window.location.href='/tools/${t.slug}.html'">
+      ${badge}
+      <span class="tc-icon">${t.icon}</span>
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-desc">${t.desc}</div>
+      <a href="/tools/${t.slug}.html" class="tc-action" style="color:${color}">Utiliser →</a>
+    </div>`;
+}
+
+// ── Build locked tool card HTML ────────────────────────────────────────────
+function lockedCard(t, color, v) {
+  const hasBadge  = t.featured || t.isNew;
+  const badge     = t.featured
+    ? '<span class="tc-badge featured">⭐ Populaire</span>'
+    : t.isNew ? '<span class="tc-badge new-tool">Nouveau</span>' : '';
+  const reason = t._access?.reason === 'upgrade_required'
+    ? `Disponible en ${TIER_LABELS[t._access.required]}`
+    : 'Abonnement requis';
+  return `
+    <div class="tool-card locked${hasBadge?' has-badge':''}">
+      <span class="lock-overlay">🔒</span>
+      ${badge}
+      <span class="tc-icon">${t.icon}</span>
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-desc">${t.desc}</div>
+      <div class="tc-upgrade">
+        <span>${reason}</span>
+        <a href="/tarifs.html?v=${v}" class="tc-upgrade-link" style="color:${color}">Upgrade →</a>
+      </div>
+    </div>`;
+}
+
 // ── Render tools for a vertical ────────────────────────────────────────────
-function renderTools(v, sub) {
+function renderTools(v, sub, filter = 'all') {
   const content = document.getElementById('content');
   const tools   = ALL_TOOLS[v] || [];
   const m       = VMETA[v] || {};
+  const color   = m.color || '#6c63ff';
   const max     = sub ? (QUOTA_MAX[sub.tier] ?? 50) : 0;
   const pct     = max === Infinity ? 5 : Math.min(100, Math.round(usageCount/max*100));
 
-  // Banner
-  const bannerStyle = `background:${m.bg||'rgba(108,99,255,.1)'};border-color:${m.border||'rgba(108,99,255,.3)'};color:${m.color||'#6c63ff'}`;
+  // Annotate each tool with its access result
+  const annotated = tools.map(t => ({ ...t, _access: PS.canUseTool(t.slug, t.tier, v) }));
+  const accessible = annotated.filter(t => t._access.allowed);
+  const locked     = annotated.filter(t => !t._access.allowed);
 
+  // Apply filter
+  const visible = filter === 'accessible' ? accessible
+                : filter === 'locked'     ? locked
+                : annotated;
+
+  // Group visible tools by tier; within each tier: featured first, then alphabetical
+  const byTier = { bronze: [], silver: [], gold: [] };
+  visible.forEach(t => { (byTier[t.tier] = byTier[t.tier] || []).push(t); });
+  Object.values(byTier).forEach(g => g.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)));
+
+  // Banner
+  const bannerStyle = `background:${m.bg||'rgba(108,99,255,.1)'};border-color:${m.border||'rgba(108,99,255,.3)'};color:${color}`;
   let html = `
     <div class="v-banner" style="${bannerStyle}">
       <div class="v-banner-left">
@@ -312,44 +427,63 @@ function renderTools(v, sub) {
         </div>
       </div>
       <div class="v-banner-right">
-        <div class="v-banner-quota">${max===Infinity?usageCount+' utilisées':'Quota: '+usageCount+' / '+max}</div>
+        <div class="v-banner-quota">${max===Infinity ? usageCount+' utilisées' : 'Quota: '+usageCount+' / '+max}</div>
         <div class="v-banner-bar"><div class="v-banner-fill" style="width:${pct}%"></div></div>
       </div>
     </div>`;
 
+  // Header: accessible count + filter buttons
+  const filters = [
+    { key:'all',        label:`Tous (${tools.length})` },
+    { key:'accessible', label:`Accessibles (${accessible.length})` },
+    { key:'locked',     label:`Verrouillés (${locked.length})` },
+  ];
   html += `<div class="tools-header">
-    <h2>${tools.length} outils disponibles</h2>
+    <h2>
+      <span style="color:${color}">${accessible.length}</span>
+      <span style="color:var(--muted);font-weight:400"> / ${tools.length} accessibles</span>
+    </h2>
+    <div class="filter-row">
+      ${filters.map(f => `
+        <button class="filter-btn${filter===f.key?' active':''}"
+                style="${filter===f.key?'color:'+color+';border-color:'+color:''}"
+                onclick="setFilter('${f.key}')">${f.label}</button>`).join('')}
+    </div>
   </div>`;
 
-  html += `<div class="tools-grid">`;
-  tools.forEach(t => {
-    const access = PS.canUseTool(t.slug, t.tier, v);
-    const color  = m.color || '#6c63ff';
-    if (access.allowed) {
-      html += `
-        <div class="tool-card accessible" style="border-color:transparent" onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='transparent'" onclick="window.location.href='/tools/${t.slug}.html'">
-          <span class="tc-icon">${t.icon}</span>
-          <div class="tc-name">${t.name}</div>
-          <div class="tc-desc">${t.desc}</div>
-          <span class="tc-tier ${t.tier}">${TIER_LABELS[t.tier]}</span>
-          <a href="/tools/${t.slug}.html" class="tc-action" style="color:${color}">Utiliser l'outil →</a>
-        </div>`;
-    } else {
-      const reason = access.reason === 'upgrade_required'
-        ? `Requiert ${TIER_LABELS[access.required]}`
-        : 'Abonnement requis';
-      html += `
-        <div class="tool-card locked">
-          <span class="lock-overlay">🔒</span>
-          <span class="tc-icon">${t.icon}</span>
-          <div class="tc-name">${t.name}</div>
-          <div class="tc-desc">${t.desc}</div>
-          <span class="tc-tier ${t.tier}">${TIER_LABELS[t.tier]}</span>
-          <div class="upgrade-hint">${reason} · <a href="/tarifs.html?v=${v}" style="color:${color};text-decoration:none;font-size:.75rem;">Upgrade →</a></div>
-        </div>`;
-    }
+  // Tier sections
+  let hasContent = false;
+  ['bronze','silver','gold'].forEach(tier => {
+    const group = byTier[tier];
+    if (!group || !group.length) return;
+    hasContent = true;
+    const tc           = TIER_META[tier];
+    const tierAccCount = group.filter(t => t._access.allowed).length;
+    const countLabel   = filter === 'all'
+      ? `${tierAccCount} / ${group.length} accessibles`
+      : `${group.length} outil${group.length > 1 ? 's' : ''}`;
+
+    html += `<div class="tier-section">
+      <div class="tier-section-header">
+        <span class="tier-section-label" style="color:${tc.color}">${tc.label}</span>
+        <span class="tier-section-count">${countLabel}</span>
+      </div>
+      <div class="tools-grid">`;
+
+    group.forEach(t => {
+      html += t._access.allowed ? accessibleCard(t, color, v) : lockedCard(t, color, v);
+    });
+
+    html += `</div></div>`;
   });
-  html += '</div>';
+
+  // Empty state for filter with no results
+  if (!hasContent) {
+    html += `<div style="text-align:center;padding:48px 20px;color:var(--muted);font-size:.9rem;">
+      Aucun outil dans cette catégorie.
+      <button onclick="setFilter('all')" style="margin-left:8px;background:none;border:none;color:${color};cursor:pointer;font-weight:600;font-size:.9rem;">Voir tous →</button>
+    </div>`;
+  }
 
   content.innerHTML = html;
 }

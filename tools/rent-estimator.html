@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Générateur d'annonces – The Prompt Studio</title>
+  <title>Estimateur de loyer – The Prompt Studio</title>
   <meta name="robots" content="noindex"/>
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -162,7 +162,7 @@
       border-radius: 20px;
       font-weight: 600;
     }
-    .badge-tier { background: rgba(205,127,50,.15); color: #cd7f32; border: 1px solid rgba(205,127,50,.3); }
+    .badge-tier     { background: rgba(205,127,50,.15); color: #cd7f32; border: 1px solid rgba(205,127,50,.3); }
     .badge-vertical { background: rgba(108,99,255,.15); color: var(--accent2); border: 1px solid rgba(108,99,255,.3); }
 
     /* Tool body */
@@ -222,7 +222,6 @@
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus { border-color: var(--accent); }
-    .form-group textarea { resize: vertical; min-height: 80px; }
 
     .form-row {
       display: grid;
@@ -230,37 +229,46 @@
       gap: 12px;
     }
 
-    .char-count {
-      font-size: .75rem;
-      color: var(--muted);
-      text-align: right;
-      margin-top: 4px;
-    }
-
-    /* Tone selector */
-    .tone-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .tone-opt {
+    /* Furnished toggle */
+    .toggle-row {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 4px;
-      padding: 10px 6px;
+      justify-content: space-between;
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 8px;
+      padding: 10px 14px;
       cursor: pointer;
-      transition: border-color .2s, background .2s;
+      transition: border-color .2s;
       user-select: none;
     }
-    .tone-opt:hover { border-color: var(--accent2); background: rgba(108,99,255,.06); }
-    .tone-opt.selected { border-color: var(--accent); background: rgba(108,99,255,.12); }
-    .tone-opt input { display: none; }
-    .tone-icon { font-size: 1.2rem; }
-    .tone-label { font-size: .75rem; color: var(--muted); }
-    .tone-opt.selected .tone-label { color: var(--accent2); }
+    .toggle-row:has(input:checked) { border-color: var(--accent); }
+    .toggle-label { font-size: .9rem; color: var(--text); }
+    .toggle-sub   { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input { display: none; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 11px;
+      transition: background .2s;
+    }
+    .toggle-switch input:checked ~ .toggle-track { background: var(--accent); }
+    .toggle-knob {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 16px; height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .2s;
+    }
+    .toggle-switch input:checked ~ .toggle-knob { transform: translateX(18px); }
 
     /* ── Generate button ── */
     .generate-btn {
@@ -379,10 +387,7 @@
       animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text {
-      color: var(--muted);
-      font-size: .9rem;
-    }
+    .loading-text { color: var(--muted); font-size: .9rem; }
     .loading-dots::after {
       content: '';
       animation: dots 1.5s steps(4, end) infinite;
@@ -395,10 +400,7 @@
     }
 
     /* Result content */
-    .result-content {
-      flex: 1;
-      overflow: auto;
-    }
+    .result-content { flex: 1; overflow: auto; }
     .result-text {
       white-space: pre-wrap;
       font-size: .9rem;
@@ -500,7 +502,6 @@
       .tool-header, .breadcrumb { padding-left: 16px; padding-right: 16px; }
       .tool-body { padding: 16px; gap: 16px; }
       .form-row { grid-template-columns: 1fr; }
-      .tone-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -537,16 +538,16 @@
     <span class="sep">›</span>
     <span>🏠 Immobilier</span>
     <span class="sep">›</span>
-    <span class="current">📝 Générateur d'annonces</span>
+    <span class="current">💰 Estimateur de loyer</span>
   </div>
 
   <!-- Tool header -->
   <div class="tool-header">
     <div class="tool-header-inner">
-      <div class="tool-icon">📝</div>
+      <div class="tool-icon">💰</div>
       <div class="tool-meta">
-        <h1>Générateur d'annonces immobilières</h1>
-        <p>Rédigez une annonce professionnelle et percutante en 30 secondes.</p>
+        <h1>Estimateur de loyer</h1>
+        <p>Obtenez une estimation de loyer argumentée pour n'importe quel bien en France.</p>
         <div class="tool-badges">
           <span class="badge badge-tier">🥉 Bronze +</span>
           <span class="badge badge-vertical">🏠 Immobilier</span>
@@ -560,109 +561,74 @@
 
     <!-- Left: Form -->
     <div class="panel">
-      <div class="panel-title">✍️ Informations du bien</div>
+      <div class="panel-title">🏘️ Caractéristiques du bien</div>
 
       <form id="tool-form" autocomplete="off">
 
         <div class="form-row">
           <div class="form-group">
             <label>Type de bien <span class="req">*</span></label>
-            <select id="type_bien" required>
+            <select id="property_type" required>
               <option value="">— Choisir —</option>
-              <option value="appartement">Appartement</option>
-              <option value="maison">Maison</option>
               <option value="studio">Studio</option>
-              <option value="loft">Loft</option>
+              <option value="appartement T1">Appartement T1</option>
+              <option value="appartement T2">Appartement T2</option>
+              <option value="appartement T3">Appartement T3</option>
+              <option value="appartement T4+">Appartement T4+</option>
+              <option value="maison">Maison</option>
               <option value="villa">Villa</option>
-              <option value="terrain">Terrain</option>
+              <option value="loft">Loft</option>
+              <option value="chambre">Chambre</option>
               <option value="local commercial">Local commercial</option>
               <option value="bureau">Bureau</option>
-              <option value="immeuble">Immeuble</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Transaction <span class="req">*</span></label>
-            <select id="transaction" required>
-              <option value="vente">Vente</option>
-              <option value="location">Location</option>
-              <option value="location meublée">Location meublée</option>
-              <option value="viager">Viager</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
           <div class="form-group">
             <label>Surface (m²) <span class="req">*</span></label>
-            <input type="number" id="surface" placeholder="Ex: 75" min="1" max="99999" required/>
-          </div>
-          <div class="form-group">
-            <label>Nombre de pièces</label>
-            <input type="number" id="pieces" placeholder="Ex: 4" min="1" max="99"/>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Prix (€) <span class="req">*</span></label>
-            <input type="number" id="prix" placeholder="Ex: 295000" min="1" required/>
-          </div>
-          <div class="form-group">
-            <label>Localisation <span class="req">*</span></label>
-            <input type="text" id="localisation" placeholder="Ex: Lyon 6ème, 69006" required/>
+            <input type="number" id="surface_m2" placeholder="Ex: 42" min="5" max="9999" required/>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Points forts du bien</label>
-          <textarea id="points_forts" placeholder="Ex: Lumineux, vue dégagée, double vitrage, parquet ancien, cave, parking..." rows="3"></textarea>
-          <div class="char-count" id="pf-count">0 / 400</div>
+          <label>Ville ou quartier <span class="req">*</span></label>
+          <input type="text" id="city" placeholder="Ex: Paris 11ème, Lyon Part-Dieu, Bordeaux Chartrons…" required/>
         </div>
 
         <div class="form-group">
-          <label>Informations complémentaires</label>
-          <textarea id="infos_comp" placeholder="Ex: Proche école, commerces à 200m, quartier calme, refait à neuf en 2022..." rows="2"></textarea>
+          <label>État général du bien <span class="req">*</span></label>
+          <select id="condition" required>
+            <option value="">— Choisir —</option>
+            <option value="neuf / récent (moins de 5 ans)">Neuf / récent (moins de 5 ans)</option>
+            <option value="bon état, rénové">Bon état, rénové</option>
+            <option value="état correct, entretenu">État correct, entretenu</option>
+            <option value="à rafraîchir">À rafraîchir</option>
+            <option value="travaux importants nécessaires">Travaux importants nécessaires</option>
+          </select>
         </div>
 
         <div class="form-group">
-          <label>Ton souhaité</label>
-          <div class="tone-grid">
-            <label class="tone-opt selected" data-t="professionnel">
-              <input type="radio" name="ton" value="professionnel" checked/>
-              <span class="tone-icon">💼</span>
-              <span class="tone-label">Professionnel</span>
-            </label>
-            <label class="tone-opt" data-t="enthousiaste">
-              <input type="radio" name="ton" value="enthousiaste"/>
-              <span class="tone-icon">🌟</span>
-              <span class="tone-label">Enthousiaste</span>
-            </label>
-            <label class="tone-opt" data-t="luxe">
-              <input type="radio" name="ton" value="luxe"/>
-              <span class="tone-icon">✨</span>
-              <span class="tone-label">Prestige</span>
-            </label>
-            <label class="tone-opt" data-t="minimaliste">
-              <input type="radio" name="ton" value="minimaliste"/>
-              <span class="tone-icon">📋</span>
-              <span class="tone-label">Épuré</span>
-            </label>
-            <label class="tone-opt" data-t="investisseur">
-              <input type="radio" name="ton" value="investisseur"/>
-              <span class="tone-icon">📈</span>
-              <span class="tone-label">Investissement</span>
-            </label>
-            <label class="tone-opt" data-t="chaleureux">
-              <input type="radio" name="ton" value="chaleureux"/>
-              <span class="tone-icon">🏡</span>
-              <span class="tone-label">Chaleureux</span>
-            </label>
-          </div>
+          <label>Atouts supplémentaires</label>
+          <input type="text" id="features" placeholder="Ex: balcon, parking, gardien, ascenseur, cave, vue dégagée…"/>
+        </div>
+
+        <div class="form-group">
+          <label>Location meublée ou vide <span class="req">*</span></label>
+          <label class="toggle-row" for="furnished">
+            <div>
+              <div class="toggle-label">Location meublée</div>
+              <div class="toggle-sub">Inclut les meubles et équipements essentiels</div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="furnished"/>
+              <div class="toggle-track"></div>
+              <div class="toggle-knob"></div>
+            </div>
+          </label>
         </div>
 
         <button type="submit" class="generate-btn" id="generate-btn">
           <span id="btn-icon">✨</span>
-          <span id="btn-text">Générer l'annonce</span>
+          <span id="btn-text">Estimer le loyer</span>
         </button>
 
         <div class="quota-mini" id="quota-mini">
@@ -678,12 +644,12 @@
     <!-- Right: Result -->
     <div class="result-panel">
       <div class="result-toolbar">
-        <div class="panel-title">💬 Annonce générée</div>
+        <div class="panel-title">📊 Estimation générée</div>
         <div class="result-actions">
-          <button class="btn-icon" id="copy-btn" onclick="copyResult()" disabled>
+          <button class="btn-icon" id="copy-btn" disabled>
             📋 Copier
           </button>
-          <button class="btn-icon" id="regen-btn" onclick="regenerate()" disabled>
+          <button class="btn-icon" id="regen-btn" disabled>
             🔄 Régénérer
           </button>
         </div>
@@ -691,9 +657,9 @@
 
       <div class="result-content" id="result-content">
         <div class="empty-state">
-          <div class="big-icon">📝</div>
-          <h3>Votre annonce apparaîtra ici</h3>
-          <p>Remplissez le formulaire à gauche et cliquez sur<br><strong>Générer l'annonce</strong> pour commencer.</p>
+          <div class="big-icon">💰</div>
+          <h3>L'estimation apparaîtra ici</h3>
+          <p>Remplissez les informations du bien à gauche<br>et cliquez sur <strong>Estimer le loyer</strong>.</p>
         </div>
       </div>
 
@@ -721,43 +687,26 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ── Tone selector (UI only — tool-specific interaction) ───────────────────
-  document.querySelectorAll('.tone-opt').forEach(el => {
-    el.addEventListener('click', () => {
-      document.querySelectorAll('.tone-opt').forEach(o => o.classList.remove('selected'));
-      el.classList.add('selected');
-      el.querySelector('input').checked = true;
-    });
-  });
-
-  // ── Char counter (tool-specific) ──────────────────────────────────────────
-  document.getElementById('points_forts').addEventListener('input', function () {
-    document.getElementById('pf-count').textContent = `${this.value.length} / 400`;
-  });
-
   // ── PSTool init ───────────────────────────────────────────────────────────
   PSTool.init({
-    toolSlug:     'immo-annonce',
+    toolSlug:     'rent-estimator',
     toolVertical: 'immo',
     toolMinTier:  'bronze',
-    generateLabel: "Générer l'annonce",
-    loadingText:   "L'IA rédige votre annonce",
+    generateLabel: 'Estimer le loyer',
+    loadingText:   "L'IA analyse le marché locatif",
 
     collectInputs: () => ({
-      type_bien:    document.getElementById('type_bien').value,
-      transaction:  document.getElementById('transaction').value,
-      surface:      document.getElementById('surface').value,
-      pieces:       document.getElementById('pieces').value,
-      prix:         document.getElementById('prix').value,
-      localisation: document.getElementById('localisation').value,
-      points_forts: document.getElementById('points_forts').value,
-      infos_comp:   document.getElementById('infos_comp').value,
-      ton:          document.querySelector('input[name=ton]:checked')?.value || 'professionnel',
+      city:          document.getElementById('city').value,
+      surface_m2:    document.getElementById('surface_m2').value,
+      property_type: document.getElementById('property_type').value,
+      condition:     document.getElementById('condition').value,
+      furnished:     document.getElementById('furnished').checked ? 'meublé' : 'vide',
+      features:      document.getElementById('features').value,
     }),
 
     renderHistoryInfo: (item) =>
       item.input_data
-        ? `${item.input_data.type_bien || ''} · ${item.input_data.localisation || ''}`
+        ? `${item.input_data.property_type || ''} · ${item.input_data.surface_m2 || ''}m² · ${item.input_data.city || ''}`
         : '',
   });
 </script>

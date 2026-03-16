@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analyseur d'investissement – The Prompt Studio</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/ps-auth.js"></script>
+  <script src="/js/ps-tool.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --border:   #2a2d3e;
+      --text:     #e8eaf0;
+      --muted:    #7c8098;
+      --accent:   #6c63ff;
+      --accent2:  #a78bfa;
+      --success:  #22c55e;
+      --danger:   #ef4444;
+      --sidebar-w: 240px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+    /* ── Sidebar ── */
+    .sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top:0; left:0; bottom:0; z-index:50; }
+    .sidebar-logo { padding: 24px 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo a { text-decoration: none; font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .sidebar-logo span { color: var(--accent2); }
+    .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: var(--muted); text-decoration: none; font-size: .9rem; transition: background .15s, color .15s; }
+    .nav-item:hover { background: rgba(108,99,255,.08); color: var(--text); }
+    .nav-item.active { background: rgba(108,99,255,.15); color: var(--accent2); }
+    .nav-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+    .user-email { font-size: .75rem; color: var(--muted); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: .9rem; padding: 6px 0; transition: color .15s; }
+    .logout-btn:hover { color: var(--danger); }
+
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; max-width: calc(100vw - var(--sidebar-w)); }
+    .breadcrumb { padding: 16px 32px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--muted); }
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text); }
+    .breadcrumb .sep { opacity: .4; }
+    .breadcrumb .current { color: var(--text); }
+
+    /* Tool header */
+    .tool-header { padding: 24px 32px; border-bottom: 1px solid var(--border); }
+    .tool-header-inner { display: flex; align-items: flex-start; gap: 16px; }
+    .tool-icon { font-size: 2.5rem; line-height: 1; }
+    .tool-meta h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+    .tool-meta p { color: var(--muted); font-size: .9rem; }
+    .tool-badges { display: flex; gap: 8px; margin-top: 8px; }
+    .badge { font-size: .75rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+    .badge-tier     { background: rgba(168,169,173,.15); color: #a8a9ad; border: 1px solid rgba(168,169,173,.3); }
+    .badge-vertical { background: rgba(108,99,255,.15); color: var(--accent2); border: 1px solid rgba(108,99,255,.3); }
+
+    /* Tool body */
+    .tool-body { flex: 1; padding: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media(max-width: 900px) { .tool-body { grid-template-columns: 1fr; } }
+
+    /* Panels */
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; }
+    .panel-title { font-size: .95rem; font-weight: 600; margin-bottom: 20px; color: var(--text); }
+
+    /* Form */
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+    .form-group label .req { color: var(--danger); margin-left: 2px; }
+    .form-group input,
+    .form-group select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: .9rem; transition: border-color .2s; outline: none; font-family: inherit; }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Input hint */
+    .input-hint { font-size: .73rem; color: var(--muted); margin-top: 4px; }
+
+    /* Yield preview strip */
+    .yield-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .yield-cell { text-align: center; }
+    .yield-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+    .yield-value { font-size: 1.3rem; font-weight: 700; color: var(--accent2); font-variant-numeric: tabular-nums; }
+    .yield-value.dim { color: var(--muted); font-size: 1rem; font-weight: 400; }
+
+    /* Generate button */
+    .generate-btn { width: 100%; padding: 14px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto; }
+    .generate-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,.35); }
+    .generate-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* Quota bar */
+    .quota-mini { display: flex; align-items: center; gap: 10px; font-size: .78rem; color: var(--muted); padding: 10px 0 0; border-top: 1px solid var(--border); margin-top: 16px; }
+    .quota-bar-mini { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .quota-fill-mini { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; }
+    .quota-fill-mini.danger { background: linear-gradient(90deg, var(--danger), #f87171); }
+
+    /* Result panel */
+    .result-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; }
+    .result-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .result-toolbar .panel-title { margin-bottom: 0; }
+    .result-actions { display: flex; gap: 8px; }
+    .btn-icon { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 7px; font-size: .8rem; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text); transition: all .2s; }
+    .btn-icon:hover { border-color: var(--accent2); color: var(--accent2); }
+    .btn-icon:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* States */
+    .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty-state .big-icon { font-size: 3rem; margin-bottom: 16px; opacity: .5; }
+    .empty-state h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .empty-state p { font-size: .875rem; line-height: 1.5; }
+    .loading-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+    .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: var(--muted); font-size: .9rem; }
+    .loading-dots::after { content: ''; animation: dots 1.5s steps(4,end) infinite; }
+    @keyframes dots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} }
+
+    .result-content { flex: 1; overflow: auto; }
+    .result-text { white-space: pre-wrap; font-size: .9rem; line-height: 1.7; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; min-height: 200px; font-family: inherit; resize: vertical; width: 100%; outline: none; }
+    .result-text:focus { border-color: var(--accent); }
+    .result-meta { display: flex; gap: 16px; margin-top: 12px; font-size: .75rem; color: var(--muted); }
+    .result-meta span { display: flex; align-items: center; gap: 4px; }
+
+    /* History */
+    .history-section { grid-column: 1 / -1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .history-list { display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; }
+    .history-item { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: border-color .2s; }
+    .history-item:hover { border-color: var(--accent2); }
+    .history-item-header { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+    .history-item-preview { font-size: .875rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: .875rem; display: flex; align-items: center; gap: 8px; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 1000; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 3px solid var(--success); }
+    .toast.error   { border-left: 3px solid var(--danger); }
+
+    @media(max-width: 700px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .tool-header, .breadcrumb { padding-left: 16px; padding-right: 16px; }
+      .tool-body { padding: 16px; gap: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="/index.html">The <span>Prompt</span> Studio</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/dashboard.html" class="nav-item active">
+      <span class="icon">🧰</span> Mes outils
+    </a>
+    <a href="/account.html" class="nav-item">
+      <span class="icon">👤</span> Mon compte
+    </a>
+    <a href="/tarifs.html" class="nav-item">
+      <span class="icon">💎</span> Offres & Tarifs
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-email" id="user-email"></div>
+    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+  </div>
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="main">
+
+  <div class="breadcrumb">
+    <a href="/dashboard.html">🧰 Tableau de bord</a>
+    <span class="sep">›</span>
+    <span>🏠 Immobilier</span>
+    <span class="sep">›</span>
+    <span class="current">📈 Analyseur d'investissement</span>
+  </div>
+
+  <div class="tool-header">
+    <div class="tool-header-inner">
+      <div class="tool-icon">📈</div>
+      <div class="tool-meta">
+        <h1>Analyseur d'investissement locatif</h1>
+        <p>Rentabilité brute, nette et recommandation IA sur n'importe quel projet locatif en France.</p>
+        <div class="tool-badges">
+          <span class="badge badge-tier">🥈 Silver +</span>
+          <span class="badge badge-vertical">🏠 Immobilier</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-body">
+
+    <!-- Left: Form -->
+    <div class="panel">
+      <div class="panel-title">🔢 Paramètres du projet</div>
+
+      <!-- Live yield preview (computed in JS before calling Claude) -->
+      <div class="yield-strip" id="yield-strip">
+        <div class="yield-cell">
+          <div class="yield-label">Rendement brut</div>
+          <div class="yield-value dim" id="preview-gross">—</div>
+        </div>
+        <div class="yield-cell">
+          <div class="yield-label">Rendement net estimé</div>
+          <div class="yield-value dim" id="preview-net">—</div>
+        </div>
+      </div>
+
+      <form id="tool-form" autocomplete="off">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prix d'acquisition (€) <span class="req">*</span></label>
+            <input type="number" id="purchase_price" placeholder="Ex : 180 000" min="1" required/>
+          </div>
+          <div class="form-group">
+            <label>Loyer mensuel HC (€) <span class="req">*</span></label>
+            <input type="number" id="monthly_rent" placeholder="Ex : 750" min="1" required/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Charges mensuelles (€)</label>
+            <input type="number" id="charges" placeholder="Ex : 120" min="0"/>
+            <div class="input-hint">Copropriété, taxe foncière/12, assurance…</div>
+          </div>
+          <div class="form-group">
+            <label>Taux de financement (%)</label>
+            <input type="number" id="financing_rate" placeholder="Ex : 3.8" min="0" max="20" step="0.01"/>
+            <div class="input-hint">Laisser vide si achat comptant</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Ville <span class="req">*</span></label>
+          <input type="text" id="city" placeholder="Ex : Nantes, Paris 19ème, Bordeaux Bastide…" required/>
+        </div>
+
+        <button type="submit" class="generate-btn" id="generate-btn">
+          <span id="btn-icon">✨</span>
+          <span id="btn-text">Analyser l'investissement</span>
+        </button>
+
+        <div class="quota-mini" id="quota-mini">
+          <span id="quota-label">Chargement…</span>
+          <div class="quota-bar-mini">
+            <div class="quota-fill-mini" id="quota-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Right: Result -->
+    <div class="result-panel">
+      <div class="result-toolbar">
+        <div class="panel-title">💡 Analyse générée</div>
+        <div class="result-actions">
+          <button class="btn-icon" id="copy-btn" disabled>📋 Copier</button>
+          <button class="btn-icon" id="regen-btn" disabled>🔄 Régénérer</button>
+        </div>
+      </div>
+
+      <div class="result-content" id="result-content">
+        <div class="empty-state">
+          <div class="big-icon">📈</div>
+          <h3>L'analyse apparaîtra ici</h3>
+          <p>Renseignez les paramètres du bien à gauche<br>et cliquez sur <strong>Analyser l'investissement</strong>.</p>
+        </div>
+      </div>
+
+      <div class="result-meta" id="result-meta" style="display:none;">
+        <span>⏱ <span id="meta-duration">—</span></span>
+        <span>🔤 <span id="meta-tokens">—</span> tokens</span>
+        <span>📅 <span id="meta-date">—</span></span>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section" id="history-section">
+      <div class="history-header">
+        <div class="panel-title" style="margin-bottom:0;">🕐 Historique récent</div>
+        <span style="font-size:.8rem;color:var(--muted);" id="history-count"></span>
+      </div>
+      <div class="history-list" id="history-list">
+        <div style="color:var(--muted);font-size:.875rem;">Chargement de l'historique…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Live yield preview (client-side, before calling Claude) ────────────────
+  // Gross yield = (rent × 12) / purchase_price × 100
+  // Net yield   = ((rent - charges) × 12) / purchase_price × 100
+  function updateYieldPreview() {
+    const price   = parseFloat(document.getElementById('purchase_price').value) || 0;
+    const rent    = parseFloat(document.getElementById('monthly_rent').value)   || 0;
+    const charges = parseFloat(document.getElementById('charges').value)        || 0;
+
+    const gEl = document.getElementById('preview-gross');
+    const nEl = document.getElementById('preview-net');
+
+    if (price > 0 && rent > 0) {
+      const gross = (rent * 12 / price * 100).toFixed(2);
+      const net   = ((rent - charges) * 12 / price * 100).toFixed(2);
+      gEl.textContent = gross + ' %';
+      nEl.textContent = net   + ' %';
+      gEl.classList.remove('dim');
+      nEl.classList.remove('dim');
+    } else {
+      gEl.textContent = '—'; gEl.classList.add('dim');
+      nEl.textContent = '—'; nEl.classList.add('dim');
+    }
+  }
+
+  ['purchase_price', 'monthly_rent', 'charges'].forEach(id =>
+    document.getElementById(id).addEventListener('input', updateYieldPreview)
+  );
+
+  // ── PSTool init ─────────────────────────────────────────────────────────────
+  PSTool.init({
+    toolSlug:     'investment-analyzer',
+    toolVertical: 'immo',
+    toolMinTier:  'silver',
+    generateLabel: "Analyser l'investissement",
+    loadingText:   "L'IA analyse la rentabilité",
+
+    collectInputs: () => ({
+      purchase_price:  document.getElementById('purchase_price').value,
+      monthly_rent:    document.getElementById('monthly_rent').value,
+      charges:         document.getElementById('charges').value,
+      financing_rate:  document.getElementById('financing_rate').value,
+      city:            document.getElementById('city').value,
+    }),
+
+    renderHistoryInfo: (item) =>
+      item.input_data
+        ? `${item.input_data.city || ''} · ${item.input_data.purchase_price || ''}€ · ${item.input_data.monthly_rent || ''}€/mois`
+        : '',
+  });
+</script>
+</body>
+</html>
