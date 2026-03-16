@@ -101,6 +101,7 @@
     .plan-cta.solid:hover { opacity: .88; transform: translateY(-1px); }
     .plan-cta.outline { background: transparent; border: 2px solid var(--v-color); color: var(--v-color); }
     .plan-cta.outline:hover { background: var(--v-bg); }
+    .plan-cta.disabled { opacity: .5; cursor: not-allowed; }
 
     .tools-preview { max-width: 1060px; margin: 0 auto 72px; padding: 0 20px; }
     .tools-preview h3 { text-align: center; font-size: 1.05rem; font-weight: 700; margin-bottom: 18px; }
@@ -220,11 +221,25 @@ const VMETA = {
   finance:  { label:'Finance',    icon:'📈', color:'#22c55e', bg:'rgba(34,197,94,.12)',   border:'rgba(34,197,94,.3)'   },
 };
 const CHECKOUT = 'https://your-store.lemonsqueezy.com/checkout';
+// VIDS[vertical][monthly|yearly][bronze|silver|gold] = variant_id
+// Remplacer les placeholders XX_... au fur et à mesure des créations sur Lemon Squeezy
 const VIDS = {
-  immo:     { bronze:'IMMO_BRONZE',     silver:'IMMO_SILVER',     gold:'IMMO_GOLD'     },
-  commerce: { bronze:'COMMERCE_BRONZE', silver:'COMMERCE_SILVER', gold:'COMMERCE_GOLD' },
-  legal:    { bronze:'LEGAL_BRONZE',    silver:'LEGAL_SILVER',    gold:'LEGAL_GOLD'    },
-  finance:  { bronze:'FINANCE_BRONZE',  silver:'FINANCE_SILVER',  gold:'FINANCE_GOLD'  },
+  immo: {
+    monthly: { bronze:'IMMO_BRONZE_M',  silver:'IMMO_SILVER_M',  gold:'IMMO_GOLD_M'  },
+    yearly:  { bronze:'IMMO_BRONZE_Y',  silver:'IMMO_SILVER_Y',  gold:'IMMO_GOLD_Y'  },
+  },
+  commerce: {
+    monthly: { bronze:'COM_BRONZE_M',   silver:'COM_SILVER_M',   gold:'COM_GOLD_M'   },
+    yearly:  { bronze:'COM_BRONZE_Y',   silver:'COM_SILVER_Y',   gold:'COM_GOLD_Y'   },
+  },
+  legal: {
+    monthly: { bronze:'1408992',        silver:'1408993',        gold:'1408994'      },
+    yearly:  { bronze:'1408995',        silver:'1408996',        gold:'1408997'      },
+  },
+  finance: {
+    monthly: { bronze:'FIN_BRONZE_M',   silver:'FIN_SILVER_M',   gold:'FIN_GOLD_M'   },
+    yearly:  { bronze:'FIN_BRONZE_Y',   silver:'FIN_SILVER_Y',   gold:'FIN_GOLD_Y'   },
+  },
 };
 const TOOLS = {
   immo:     [
@@ -306,8 +321,12 @@ function renderPlans() {
   document.getElementById('plans-grid').innerHTML = PLANS_DEF.map(p => {
     const price   = yearly ? Math.round(p.price * .8) : p.price;
     const annuel  = Math.round(p.price * 12 * .8);
-    const vid     = VIDS[activeV]?.[p.tier] || '';
-    const url     = `${CHECKOUT}?variant=${vid}&checkout[custom][tier]=${p.tier}&checkout[custom][vertical]=${activeV}`;
+    const period  = yearly ? 'yearly' : 'monthly';
+    const vid     = VIDS[activeV]?.[period]?.[p.tier] || '';
+    const isReady = vid && !vid.includes('_M') && !vid.includes('_Y') && !vid.includes('_BRONZE') && !vid.includes('_SILVER') && !vid.includes('_GOLD');
+    const url     = isReady
+      ? `${CHECKOUT}?variant=${vid}&checkout[custom][tier]=${p.tier}&checkout[custom][vertical]=${activeV}&checkout[custom][period]=${period}`
+      : '#coming-soon';
     return `<div class="plan-card ${p.popular?'popular':''}">
       ${p.popular?`<div class="pop-tag" style="background:${m.color}">⭐ Le plus populaire</div>`:''}
       <div class="plan-tier ${p.tier}">${p.label}</div>
@@ -318,8 +337,10 @@ function renderPlans() {
         ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
         ${p.locked.map(f=>`<li><span class="lk">✕</span><span class="lt">${f}</span></li>`).join('')}
       </ul>
-      <a href="${url}" class="plan-cta ${p.popular?'solid':'outline'}" style="${p.popular?`background:${m.color}`:`border-color:${m.color};color:${m.color}`}" target="_blank" rel="noopener">
-        ${p.tier==='bronze'?'Commencer →':p.tier==='silver'?'Commencer en Silver →':'Tout accéder →'}
+      <a href="${url}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady?'':'disabled'}"
+         style="${p.popular?`background:${isReady?m.color:'#555'}`:`border-color:${isReady?m.color:'#555'};color:${isReady?m.color:'#888'}`}"
+         ${isReady?`target="_blank" rel="noopener"`:'onclick="return false" title="Bientôt disponible"'}>
+        ${isReady ? (p.tier==='bronze'?'Commencer →':p.tier==='silver'?'Commencer en Silver →':'Tout accéder →') : '🔜 Bientôt disponible'}
       </a>
     </div>`;
   }).join('');

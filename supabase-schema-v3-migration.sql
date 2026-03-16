@@ -6,13 +6,23 @@
 -- Exécuter dans Supabase → SQL Editor → New query → Run
 -- ═══════════════════════════════════════════════════════════════════════════
 
+-- ─── 0. Supprimer les vues dépendantes avant d'altérer la table ──────────
+-- PostgreSQL interdit de modifier les colonnes d'une table référencée par une vue
+
+DROP VIEW IF EXISTS public.admin_users_view;
+
 -- ─── 1. Modifier la table subscriptions ──────────────────────────────────
 
 -- Supprimer l'ancienne contrainte UNIQUE (user_id seul)
 ALTER TABLE public.subscriptions
   DROP CONSTRAINT IF EXISTS subscriptions_user_id_key;
 
--- Rendre vertical obligatoire
+-- IMPORTANT : remplir les lignes NULL avant d'imposer NOT NULL
+UPDATE public.subscriptions
+SET vertical = 'immo', updated_at = now()
+WHERE vertical IS NULL OR vertical = '';
+
+-- Rendre vertical obligatoire (maintenant que toutes les lignes ont une valeur)
 ALTER TABLE public.subscriptions
   ALTER COLUMN vertical SET NOT NULL,
   ALTER COLUMN vertical SET DEFAULT 'immo';
@@ -115,14 +125,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- ─── 4. Mettre à jour l'abonnement test de l'admin ───────────────────────
--- (Si vous aviez un abonnement Gold sans vertical, le mettre à jour)
-
-UPDATE public.subscriptions
-SET vertical = 'immo', updated_at = now()
-WHERE vertical IS NULL OR vertical = '';
-
--- Ajouter les 3 autres verticales pour votre compte admin (test complet)
+-- ─── 4. Abonnements Gold admin pour toutes les verticales ────────────────
+-- Ajouter les 4 verticales pour votre compte admin (test complet)
 INSERT INTO public.subscriptions (user_id, tier, status, vertical, current_period_end)
 VALUES
   ('3332e009-379e-45df-b136-28f8388be022', 'gold', 'active', 'immo',     '2099-01-01T00:00:00Z'),
