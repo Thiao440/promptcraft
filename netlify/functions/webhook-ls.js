@@ -178,7 +178,7 @@ async function handleSubscriptionCreated(payload, supabase) {
   const userId = await upsertUser(supabase, email, name);
   if (!userId) return;
 
-  // Upsert into subscriptions table (v2 schema)
+  // Upsert into subscriptions table (v3 schema — unique per user+vertical)
   const { error } = await supabase.from('subscriptions').upsert({
     user_id:                userId,
     tier,
@@ -189,7 +189,7 @@ async function handleSubscriptionCreated(payload, supabase) {
     current_period_start:   attrs.created_at || new Date().toISOString(),
     current_period_end:     periodEnd,
     updated_at:             new Date().toISOString(),
-  }, { onConflict: 'user_id' });
+  }, { onConflict: 'user_id,vertical' });
 
   if (error) console.error('Subscription upsert error:', error);
 
