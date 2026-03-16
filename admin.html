@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — The Prompt Studio</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0a0c14;
+      --surface: #13161f;
+      --surface2:#1c1f2e;
+      --border:  #252836;
+      --text:    #e8eaf0;
+      --muted:   #6b7090;
+      --accent:  #6c63ff;
+      --accent2: #a78bfa;
+      --success: #22c55e;
+      --danger:  #ef4444;
+      --warning: #f59e0b;
+      --bronze:  #cd7f32;
+      --silver:  #a8a9ad;
+      --gold:    #c9a84c;
+      --sidebar: 220px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Login screen ── */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .login-box h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .login-box p {
+      color: var(--muted);
+      font-size: .875rem;
+      margin-bottom: 28px;
+    }
+    .admin-badge {
+      display: inline-block;
+      background: rgba(239,68,68,.15);
+      color: var(--danger);
+      border: 1px solid rgba(239,68,68,.3);
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .825rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-group input:focus { border-color: var(--accent); }
+    .btn-full {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      margin-top: 4px;
+    }
+    .btn-full:hover { background: #5a52e0; }
+    .btn-full:disabled { opacity: .6; cursor: not-allowed; }
+    .login-error {
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: .85rem;
+      color: var(--danger);
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ── App shell ── */
+    #app { display: none; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 50;
+    }
+    .sidebar-brand {
+      padding: 20px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-brand .name {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .sidebar-brand .name span { color: var(--accent2); }
+    .sidebar-brand .sub {
+      font-size: .7rem;
+      color: var(--danger);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-top: 2px;
+    }
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px 0;
+      overflow-y: auto;
+    }
+    .nav-section {
+      padding: 10px 16px 4px;
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 18px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .875rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: background .15s, color .15s;
+    }
+    .nav-item:hover  { background: rgba(108,99,255,.08); color: var(--text); }
+    .nav-item.active { background: rgba(108,99,255,.15); color: var(--accent2); }
+    .nav-item .ico { font-size: 1rem; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+    }
+    .admin-user { font-size: .75rem; color: var(--muted); margin-bottom: 6px; }
+    .logout-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: .85rem; padding: 4px 0;
+      transition: color .15s;
+    }
+    .logout-btn:hover { color: var(--danger); }
+
+    /* ── Content ── */
+    .content {
+      margin-left: var(--sidebar);
+      padding: 28px 32px;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; }
+    .page-header p  { color: var(--muted); font-size: .875rem; margin-top: 4px; }
+
+    /* ── Stats cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    @media(max-width:1100px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .stat-card .label { font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+    .stat-card .value { font-size: 1.8rem; font-weight: 700; }
+    .stat-card .sub   { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── Section card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .card-title { font-size: 1rem; font-weight: 600; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 7px; font-size: .85rem;
+      font-weight: 500; cursor: pointer; border: none; transition: all .2s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #5a52e0; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); }
+    .btn-danger  { background: transparent; color: var(--danger); border: 1px solid rgba(239,68,68,.3); }
+    .btn-danger:hover  { background: rgba(239,68,68,.08); }
+    .btn-success { background: rgba(34,197,94,.15); color: var(--success); border: 1px solid rgba(34,197,94,.3); }
+    .btn-success:hover { background: rgba(34,197,94,.25); }
+    .btn-sm { padding: 5px 10px; font-size: .78rem; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .875rem;
+    }
+    thead th {
+      text-align: left;
+      padding: 10px 14px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,.02); }
+    tbody td { padding: 12px 14px; vertical-align: middle; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: .75rem; font-weight: 600; white-space: nowrap;
+    }
+    .badge-bronze  { background: rgba(205,127,50,.15); color: var(--bronze); border: 1px solid rgba(205,127,50,.25); }
+    .badge-silver  { background: rgba(168,169,173,.15); color: var(--silver); border: 1px solid rgba(168,169,173,.25); }
+    .badge-gold    { background: rgba(201,168,76,.15);  color: var(--gold);  border: 1px solid rgba(201,168,76,.25); }
+    .badge-active  { background: rgba(34,197,94,.12);  color: var(--success); border: 1px solid rgba(34,197,94,.25); }
+    .badge-cancelled { background: rgba(239,68,68,.12); color: var(--danger); border: 1px solid rgba(239,68,68,.2); }
+    .badge-expired { background: rgba(107,112,144,.15); color: var(--muted); border: 1px solid var(--border); }
+    .badge-none    { background: rgba(107,112,144,.1); color: var(--muted); border: 1px solid var(--border); }
+
+    /* ── Filters / Search ── */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: .875rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .filter-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: .875rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      font-size: .825rem;
+      color: var(--muted);
+    }
+    .pagination-btns { display: flex; gap: 6px; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px;
+      transition: color .15s;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Detail row ── */
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .875rem;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .dl { color: var(--muted); }
+    .detail-row .dv { font-weight: 500; }
+
+    /* ── Tab bar ── */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 18px;
+      font-size: .875rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+    }
+    .tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: .875rem;
+      display: flex; align-items: center; gap: 8px;
+      transform: translateY(80px); opacity: 0;
+      transition: all .3s; z-index: 999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 3px solid var(--success); }
+    .toast.error   { border-left: 3px solid var(--danger); }
+
+    /* ── Sections ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Loading */
+    .loading { text-align: center; padding: 40px; color: var(--muted); font-size: .9rem; }
+    .spinner-inline {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin .6s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ LOGIN ═══════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="admin-badge">🔒 Admin</div>
+    <h1>The Prompt Studio</h1>
+    <p>Panneau d'administration — accès restreint</p>
+
+    <div class="login-error" id="login-error"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label>Email administrateur</label>
+        <input type="email" id="admin-email" placeholder="admin@theprompt.studio" required autofocus/>
+      </div>
+      <p style="font-size:.8rem;color:var(--muted);margin:-8px 0 16px;">
+        Un lien de connexion magique sera envoyé à cet email.
+      </p>
+      <button type="submit" class="btn-full" id="login-btn">
+        Envoyer le lien de connexion
+      </button>
+    </form>
+
+    <div id="login-sent" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:2rem;margin-bottom:12px;">📬</div>
+      <p style="font-weight:600;margin-bottom:6px;">Lien envoyé !</p>
+      <p style="font-size:.85rem;color:var(--muted);">Vérifiez votre boîte mail et cliquez sur le lien pour accéder à l'admin.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ APP ═══════════════════ -->
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="name">The <span>Prompt</span> Studio</div>
+      <div class="sub">⚙ Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Vue d'ensemble</div>
+      <button class="nav-item active" onclick="showSection('dashboard')">
+        <span class="ico">📊</span> Dashboard
+      </button>
+
+      <div class="nav-section">Gestion</div>
+      <button class="nav-item" onclick="showSection('users')">
+        <span class="ico">👥</span> Utilisateurs
+      </button>
+      <button class="nav-item" onclick="showSection('subscriptions')">
+        <span class="ico">💳</span> Abonnements
+      </button>
+      <button class="nav-item" onclick="showSection('usage')">
+        <span class="ico">📈</span> Utilisation
+      </button>
+      <button class="nav-item" onclick="showSection('tools')">
+        <span class="ico">🛠</span> Outils
+      </button>
+
+      <div class="nav-section">Test</div>
+      <button class="nav-item" onclick="showSection('test-user')">
+        <span class="ico">🧪</span> Créer un accès test
+      </button>
+
+      <div class="nav-section">Système</div>
+      <button class="nav-item" onclick="showSection('settings')">
+        <span class="ico">⚙</span> Paramètres
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-user" id="admin-email-display"></div>
+      <button class="logout-btn" onclick="adminLogout()">↩ Déconnexion</button>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ── Dashboard ── -->
+    <div class="section active" id="section-dashboard">
+      <div class="page-header">
+        <div>
+          <h1>📊 Dashboard</h1>
+          <p>Vue d'ensemble en temps réel</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="loadDashboard()">🔄 Actualiser</button>
+      </div>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><div class="label">Utilisateurs totaux</div><div class="value" id="stat-users">—</div></div>
+        <div class="stat-card"><div class="label">Abonnements actifs</div><div class="value" id="stat-subs">—</div></div>
+        <div class="stat-card"><div class="label">Générations ce mois</div><div class="value" id="stat-gens">—</div></div>
+        <div class="stat-card"><div class="label">Revenus estimés/mois</div><div class="value" id="stat-revenue">—</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <!-- Recent signups -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">👋 Inscriptions récentes</span>
+          </div>
+          <div id="recent-users"><div class="loading">Chargement…</div></div>
+        </div>
+        <!-- Tier breakdown -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">💎 Répartition par offre</span>
+          </div>
+          <div id="tier-breakdown"><div class="loading">Chargement…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Users ── -->
+    <div class="section" id="section-users">
+      <div class="page-header">
+        <div><h1>👥 Utilisateurs</h1><p>Tous les comptes enregistrés</p></div>
+        <button class="btn btn-primary" onclick="showSection('test-user')">+ Créer un accès test</button>
+      </div>
+      <div class="card">
+        <div class="filters">
+          <input type="text" class="search-input" id="user-search" placeholder="🔍 Rechercher par email…" oninput="filterUsers()"/>
+          <select class="filter-select" id="user-tier-filter" onchange="filterUsers()">
+            <option value="">Toutes les offres</option>
+            <option value="bronze">Bronze</option>
+            <option value="silver">Silver</option>
+            <option value="gold">Gold</option>
+            <option value="none">Sans abonnement</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Nom</th>
+                <th>Offre</th>
+                <th>Verticale</th>
+                <th>Statut</th>
+                <th>Inscrit le</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-table"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span id="users-count">—</span>
+          <div class="pagination-btns" id="users-pagination"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Subscriptions ── -->
+    <div class="section" id="section-subscriptions">
+      <div class="page-header">
+        <div><h1>💳 Abonnements</h1><p>Tous les abonnements en base</p></div>
+      </div>
+      <div class="card">
+        <div class="filters">
+          <select class="filter-select" id="sub-status-filter" onchange="loadSubscriptions()">
+            <option value="">Tous les statuts</option>
+            <option value="active">Actif</option>
+            <option value="cancelled">Résilié</option>
+            <option value="expired">Expiré</option>
+            <option value="past_due">Paiement en retard</option>
+          </select>
+          <select class="filter-select" id="sub-tier-filter" onchange="loadSubscriptions()">
+            <option value="">Toutes les offres</option>
+            <option value="bronze">Bronze</option>
+            <option value="silver">Silver</option>
+            <option value="gold">Gold</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Offre</th>
+                <th>Verticale</th>
+                <th>Statut</th>
+                <th>Renouvellement</th>
+                <th>LS ID</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="subs-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Usage ── -->
+    <div class="section" id="section-usage">
+      <div class="page-header">
+        <div><h1>📈 Utilisation</h1><p>Générations IA par outil et par utilisateur</p></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Dernières générations</span>
+          <select class="filter-select" id="usage-tool-filter" onchange="loadUsage()">
+            <option value="">Tous les outils</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Outil</th>
+                <th>Tokens</th>
+                <th>Durée</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usage-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tools catalog ── -->
+    <div class="section" id="section-tools">
+      <div class="page-header">
+        <div><h1>🛠 Catalogue d'outils</h1><p>Tous les outils en base de données</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;" id="tools-grid">
+        <div class="loading">Chargement…</div>
+      </div>
+    </div>
+
+    <!-- ── Test user ── -->
+    <div class="section" id="section-test-user">
+      <div class="page-header">
+        <div><h1>🧪 Créer un accès test</h1><p>Attribuer manuellement un abonnement à un email</p></div>
+      </div>
+      <div class="card" style="max-width:500px;">
+        <form id="test-user-form">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="test-email" placeholder="test@example.com" required/>
+          </div>
+          <div class="form-group">
+            <label>Nom (optionnel)</label>
+            <input type="text" id="test-name" placeholder="Jean Dupont"/>
+          </div>
+          <div class="form-group">
+            <label>Offre</label>
+            <select id="test-tier">
+              <option value="bronze">🥉 Bronze</option>
+              <option value="silver" selected>🥈 Silver</option>
+              <option value="gold">🥇 Gold</option>
+            </select>
+          </div>
+          <div class="form-group" id="test-vertical-group">
+            <label>Verticale (pour Bronze)</label>
+            <select id="test-vertical">
+              <option value="immo">🏠 Immobilier</option>
+              <option value="commerce">🛒 Commerce</option>
+              <option value="legal">⚖️ Juridique</option>
+              <option value="finance">📈 Finance</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Durée</label>
+            <select id="test-duration">
+              <option value="7">7 jours</option>
+              <option value="30" selected>30 jours</option>
+              <option value="90">90 jours</option>
+              <option value="365">1 an</option>
+              <option value="9999">Permanent</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" id="create-test-btn">
+            ✅ Créer l'accès test
+          </button>
+        </form>
+        <div id="test-result" style="margin-top:16px;display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ── Settings ── -->
+    <div class="section" id="section-settings">
+      <div class="page-header">
+        <div><h1>⚙ Paramètres système</h1></div>
+      </div>
+      <div class="card" style="max-width:600px;">
+        <div class="card-title" style="margin-bottom:16px;">Informations de configuration</div>
+        <div class="detail-row"><span class="dl">Supabase URL</span><span class="dv" id="cfg-supa-url">—</span></div>
+        <div class="detail-row"><span class="dl">Modèle Claude</span><span class="dv">claude-3-5-haiku-20241022</span></div>
+        <div class="detail-row"><span class="dl">Quota Bronze</span><span class="dv">50 générations/mois</span></div>
+        <div class="detail-row"><span class="dl">Quota Silver</span><span class="dv">150 générations/mois</span></div>
+        <div class="detail-row"><span class="dl">Quota Gold</span><span class="dv">Illimité</span></div>
+        <div class="detail-row"><span class="dl">Verticales disponibles</span><span class="dv">immo · commerce · legal · finance</span></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- User detail modal -->
+<div class="modal-overlay" id="user-modal">
+  <div class="modal">
+    <div class="modal-title">
+      Détail utilisateur
+      <button class="modal-close" onclick="closeModal('user-modal')">✕</button>
+    </div>
+    <div id="user-modal-content"></div>
+    <div class="modal-actions" id="user-modal-actions"></div>
+  </div>
+</div>
+
+<!-- Usage detail modal -->
+<div class="modal-overlay" id="usage-modal">
+  <div class="modal">
+    <div class="modal-title">
+      Génération IA
+      <button class="modal-close" onclick="closeModal('usage-modal')">✕</button>
+    </div>
+    <div id="usage-modal-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPABASE_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg';
+
+  // Admin emails (add yours here for client-side guard)
+  const ADMIN_EMAILS = ['mathieu.thiao@gmail.com'];
+
+  let sb;        // Supabase client
+  let currentSection = 'dashboard';
+  let allUsers = [];
+  const PAGE_SIZE = 20;
+  let usersPage = 0;
+
+  // ── Toast ──────────────────────────────────────────────────────────────────
+  function toast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── Modal helpers ──────────────────────────────────────────────────────────
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // ── Section nav ───────────────────────────────────────────────────────────
+  function showSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(`section-${name}`)?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick')?.includes(`'${name}'`)) n.classList.add('active');
+    });
+    currentSection = name;
+    if (name === 'dashboard')     loadDashboard();
+    if (name === 'users')         loadUsers();
+    if (name === 'subscriptions') loadSubscriptions();
+    if (name === 'usage')         loadUsage();
+    if (name === 'tools')         loadTools();
+    if (name === 'settings')      loadSettings();
+  }
+
+  // ── Format helpers ─────────────────────────────────────────────────────────
+  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' }) : '—';
+  const fmtDateTime = (d) => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+
+  function tierBadge(tier) {
+    if (!tier) return '<span class="badge badge-none">—</span>';
+    const m = { bronze: '🥉 Bronze', silver: '🥈 Silver', gold: '🥇 Gold' };
+    return `<span class="badge badge-${tier}">${m[tier] || tier}</span>`;
+  }
+  function statusBadge(s) {
+    const m = { active: '✅ Actif', cancelled: '❌ Résilié', expired: '⏹ Expiré', past_due: '⚠ Retard', trialing: '🔵 Essai' };
+    const c = { active: 'active', cancelled: 'cancelled', expired: 'expired', past_due: 'cancelled', trialing: 'active' };
+    return `<span class="badge badge-${c[s] || 'expired'}">${m[s] || s}</span>`;
+  }
+  function verticalLabel(v) {
+    return { immo:'🏠 Immo', commerce:'🛒 Commerce', legal:'⚖️ Legal', finance:'📈 Finance' }[v] || (v || '—');
+  }
+
+  // ── Dashboard ──────────────────────────────────────────────────────────────
+  async function loadDashboard() {
+    // Stats
+    const month = new Date().toISOString().slice(0,7);
+    const [
+      { count: userCount },
+      { count: subCount },
+      { data: genData },
+      { data: tierData },
+      { data: recentData },
+    ] = await Promise.all([
+      sb.from('profiles').select('*', { count: 'exact', head: true }),
+      sb.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+      sb.from('usage_quotas').select('count').eq('month', month),
+      sb.from('subscriptions').select('tier').eq('status', 'active'),
+      sb.from('profiles').select('id, full_name, created_at').order('created_at', { ascending: false }).limit(5),
+    ]);
+
+    const totalGens = genData?.reduce((a, r) => a + (r.count || 0), 0) || 0;
+    const tiers = { bronze: 0, silver: 0, gold: 0 };
+    tierData?.forEach(r => { if (tiers[r.tier] !== undefined) tiers[r.tier]++; });
+    const revenue = tiers.bronze * 29 + tiers.silver * 59 + tiers.gold * 99;
+
+    document.getElementById('stat-users').textContent   = userCount ?? '—';
+    document.getElementById('stat-subs').textContent    = subCount ?? '—';
+    document.getElementById('stat-gens').textContent    = totalGens;
+    document.getElementById('stat-revenue').textContent = revenue + '€';
+
+    // Recent users
+    const ruEl = document.getElementById('recent-users');
+    if (!recentData?.length) {
+      ruEl.innerHTML = '<div class="loading">Aucun utilisateur.</div>';
+    } else {
+      ruEl.innerHTML = recentData.map(u => `
+        <div class="detail-row">
+          <span class="dl">${u.full_name || '(sans nom)'}</span>
+          <span class="dv" style="font-size:.8rem;color:var(--muted)">${fmtDate(u.created_at)}</span>
+        </div>`).join('');
+    }
+
+    // Tier breakdown
+    document.getElementById('tier-breakdown').innerHTML = `
+      <div class="detail-row">
+        <span class="dl">${tierBadge('bronze')}</span>
+        <span class="dv">${tiers.bronze} abonnés · <span style="color:var(--muted)">${tiers.bronze * 29}€/mois</span></span>
+      </div>
+      <div class="detail-row">
+        <span class="dl">${tierBadge('silver')}</span>
+        <span class="dv">${tiers.silver} abonnés · <span style="color:var(--muted)">${tiers.silver * 59}€/mois</span></span>
+      </div>
+      <div class="detail-row">
+        <span class="dl">${tierBadge('gold')}</span>
+        <span class="dv">${tiers.gold} abonnés · <span style="color:var(--muted)">${tiers.gold * 99}€/mois</span></span>
+      </div>
+      <div class="detail-row" style="border-bottom:none;font-weight:600">
+        <span class="dl">Total estimé</span>
+        <span class="dv">${revenue}€/mois</span>
+      </div>`;
+  }
+
+  // ── Users ──────────────────────────────────────────────────────────────────
+  async function loadUsers() {
+    document.getElementById('users-table').innerHTML = '<tr><td colspan="7" class="loading">Chargement…</td></tr>';
+
+    // Load profiles + subscriptions joined
+    const { data: profiles } = await sb.from('profiles').select('id, full_name, created_at').order('created_at', { ascending: false });
+    const { data: subs }     = await sb.from('subscriptions').select('user_id, tier, status, vertical');
+
+    const subMap = {};
+    subs?.forEach(s => { subMap[s.user_id] = s; });
+
+    // Load emails via tool_usage (indirect) — or use profiles with auth view
+    // Since we can't directly query auth.users from client, we rely on profiles table
+    allUsers = (profiles || []).map(p => ({
+      ...p,
+      sub: subMap[p.id] || null,
+    }));
+
+    renderUsersTable(allUsers, usersPage);
+  }
+
+  function renderUsersTable(users, page = 0) {
+    const filtered = filterUsersList(users);
+    const paged    = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+    const tbody    = document.getElementById('users-table');
+
+    document.getElementById('users-count').textContent = `${filtered.length} utilisateur(s)`;
+
+    if (!paged.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">Aucun résultat</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = paged.map(u => `
+      <tr>
+        <td style="font-size:.8rem;color:var(--muted)">${u.id.slice(0,8)}…</td>
+        <td>${u.full_name || '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${u.sub ? tierBadge(u.sub.tier) : '<span class="badge badge-none">Aucun</span>'}</td>
+        <td>${verticalLabel(u.sub?.vertical)}</td>
+        <td>${u.sub ? statusBadge(u.sub.status) : '—'}</td>
+        <td style="font-size:.8rem;color:var(--muted)">${fmtDate(u.created_at)}</td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick="viewUser('${u.id}')">Détail</button>
+          ${!u.sub ? `<button class="btn btn-success btn-sm" onclick="quickGrantSub('${u.id}')">+ Abonnement</button>` : ''}
+        </td>
+      </tr>`).join('');
+
+    // Pagination
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    const pager = document.getElementById('users-pagination');
+    pager.innerHTML = Array.from({ length: totalPages }, (_, i) =>
+      `<button class="btn btn-outline btn-sm ${i===page?'btn-primary':''}" onclick="usersPage=${i};renderUsersTable(allUsers,${i})">${i+1}</button>`
+    ).join('');
+  }
+
+  function filterUsersList(users) {
+    const search = document.getElementById('user-search')?.value.toLowerCase() || '';
+    const tier   = document.getElementById('user-tier-filter')?.value || '';
+    return users.filter(u => {
+      const matchSearch = !search || (u.full_name || '').toLowerCase().includes(search) || u.id.toLowerCase().includes(search);
+      const matchTier   = !tier || (tier === 'none' ? !u.sub : u.sub?.tier === tier);
+      return matchSearch && matchTier;
+    });
+  }
+
+  function filterUsers() {
+    usersPage = 0;
+    renderUsersTable(allUsers, 0);
+  }
+
+  async function viewUser(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+
+    const { data: usage } = await sb.from('tool_usage').select('tool_slug, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(5);
+    const { data: quota } = await sb.from('usage_quotas').select('month, count').eq('user_id', userId).order('month', { ascending: false }).limit(3);
+
+    const content = document.getElementById('user-modal-content');
+    content.innerHTML = `
+      <div class="detail-row"><span class="dl">ID</span><span class="dv" style="font-size:.8rem">${userId}</span></div>
+      <div class="detail-row"><span class="dl">Nom</span><span class="dv">${user.full_name || '—'}</span></div>
+      <div class="detail-row"><span class="dl">Inscrit le</span><span class="dv">${fmtDate(user.created_at)}</span></div>
+      <div class="detail-row"><span class="dl">Offre</span><span class="dv">${user.sub ? tierBadge(user.sub.tier) : '—'}</span></div>
+      <div class="detail-row"><span class="dl">Statut</span><span class="dv">${user.sub ? statusBadge(user.sub.status) : '—'}</span></div>
+      <div class="detail-row"><span class="dl">Verticale</span><span class="dv">${verticalLabel(user.sub?.vertical)}</span></div>
+      <div style="margin-top:14px;font-weight:600;font-size:.85rem;margin-bottom:8px;">📊 Quotas récents</div>
+      ${(quota || []).map(q => `<div class="detail-row"><span class="dl">${q.month}</span><span class="dv">${q.count} générations</span></div>`).join('') || '<div style="color:var(--muted);font-size:.85rem;">Aucune utilisation</div>'}
+      <div style="margin-top:14px;font-weight:600;font-size:.85rem;margin-bottom:8px;">🕐 Dernières utilisations</div>
+      ${(usage || []).map(u => `<div class="detail-row"><span class="dl">${u.tool_slug}</span><span class="dv" style="font-size:.8rem;color:var(--muted)">${fmtDateTime(u.created_at)}</span></div>`).join('') || '<div style="color:var(--muted);font-size:.85rem;">Aucune génération</div>'}
+    `;
+
+    const actions = document.getElementById('user-modal-actions');
+    actions.innerHTML = `
+      <button class="btn btn-danger btn-sm" onclick="revokeAccess('${userId}')">Révoquer l'accès</button>
+      <button class="btn btn-primary btn-sm" onclick="sendMagicLinkAdmin('${userId}')">📧 Envoyer un lien</button>
+    `;
+
+    openModal('user-modal');
+  }
+
+  async function quickGrantSub(userId) {
+    const tier = prompt('Offre ? (bronze / silver / gold)', 'silver');
+    if (!tier || !['bronze','silver','gold'].includes(tier)) return;
+    const end = new Date(); end.setDate(end.getDate() + 30);
+    const { error } = await sb.from('subscriptions').upsert({
+      user_id: userId, tier, status: 'active',
+      current_period_end: end.toISOString(), updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id' });
+    if (error) return toast('Erreur: ' + error.message, 'error');
+    toast(`Accès ${tier} créé !`);
+    loadUsers();
+  }
+
+  async function revokeAccess(userId) {
+    if (!confirm('Révoquer l\'accès de cet utilisateur ?')) return;
+    const { error } = await sb.from('subscriptions').update({ status: 'expired', updated_at: new Date().toISOString() }).eq('user_id', userId);
+    if (error) return toast('Erreur: ' + error.message, 'error');
+    toast('Accès révoqué');
+    closeModal('user-modal');
+    loadUsers();
+  }
+
+  // ── Subscriptions ──────────────────────────────────────────────────────────
+  async function loadSubscriptions() {
+    const statusFilter = document.getElementById('sub-status-filter')?.value;
+    const tierFilter   = document.getElementById('sub-tier-filter')?.value;
+
+    let query = sb.from('subscriptions').select('*, profiles(full_name)').order('created_at', { ascending: false }).limit(100);
+    if (statusFilter) query = query.eq('status', statusFilter);
+    if (tierFilter)   query = query.eq('tier', tierFilter);
+
+    const { data } = await query;
+    const tbody = document.getElementById('subs-table');
+
+    if (!data?.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">Aucun abonnement</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.map(s => `
+      <tr>
+        <td style="font-size:.8rem;color:var(--muted)">${s.user_id?.slice(0,8)}… <span style="color:var(--text)">${s.profiles?.full_name || ''}</span></td>
+        <td>${tierBadge(s.tier)}</td>
+        <td>${verticalLabel(s.vertical)}</td>
+        <td>${statusBadge(s.status)}</td>
+        <td style="font-size:.8rem;color:var(--muted)">${fmtDate(s.current_period_end)}</td>
+        <td style="font-size:.75rem;color:var(--muted)">${s.lemon_subscription_id?.slice(0,12) || '—'}…</td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick="editSubscription('${s.id}','${s.tier}','${s.status}')">Modifier</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function editSubscription(id, tier, status) {
+    const newStatus = prompt(`Statut actuel: ${status}\nNouveau statut (active/cancelled/expired/past_due):`, status);
+    if (!newStatus) return;
+    const { error } = await sb.from('subscriptions').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', id);
+    if (error) return toast('Erreur: ' + error.message, 'error');
+    toast('Abonnement mis à jour');
+    loadSubscriptions();
+  }
+
+  // ── Usage ──────────────────────────────────────────────────────────────────
+  async function loadUsage() {
+    const toolFilter = document.getElementById('usage-tool-filter')?.value;
+    let query = sb.from('tool_usage').select('id, user_id, tool_slug, tokens_used, duration_ms, created_at, output_text').order('created_at', { ascending: false }).limit(50);
+    if (toolFilter) query = query.eq('tool_slug', toolFilter);
+    const { data } = await query;
+
+    // Populate tool filter
+    const { data: tools } = await sb.from('tools').select('slug, name');
+    const sel = document.getElementById('usage-tool-filter');
+    if (tools && sel.options.length <= 1) {
+      tools.forEach(t => {
+        const o = document.createElement('option');
+        o.value = t.slug; o.textContent = t.name;
+        sel.appendChild(o);
+      });
+    }
+
+    const tbody = document.getElementById('usage-table');
+    if (!data?.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Aucune génération</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.map(u => `
+      <tr>
+        <td style="font-size:.8rem;color:var(--muted)">${u.user_id?.slice(0,8)}…</td>
+        <td><code style="font-size:.8rem;background:var(--bg);padding:2px 6px;border-radius:4px;">${u.tool_slug}</code></td>
+        <td>${u.tokens_used || '—'}</td>
+        <td style="color:var(--muted);font-size:.8rem;">${u.duration_ms ? (u.duration_ms/1000).toFixed(1)+'s' : '—'}</td>
+        <td style="font-size:.8rem;color:var(--muted);">${fmtDateTime(u.created_at)}</td>
+        <td><button class="btn btn-outline btn-sm" onclick="viewUsage('${u.id}', \`${escJs(u.output_text || '')}\`)">Voir</button></td>
+      </tr>`).join('');
+  }
+
+  function viewUsage(id, text) {
+    document.getElementById('usage-modal-content').innerHTML = `
+      <div style="white-space:pre-wrap;font-size:.875rem;line-height:1.6;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;max-height:400px;overflow:auto;">${escHtml(text)}</div>`;
+    openModal('usage-modal');
+  }
+
+  // ── Tools ──────────────────────────────────────────────────────────────────
+  async function loadTools() {
+    const { data } = await sb.from('tools').select('*').order('vertical').order('sort_order');
+    const grid = document.getElementById('tools-grid');
+    if (!data?.length) { grid.innerHTML = '<div class="loading">Aucun outil en base.</div>'; return; }
+
+    const verticals = { immo: '🏠', commerce: '🛒', legal: '⚖️', finance: '📈' };
+    grid.innerHTML = data.map(t => `
+      <div class="card" style="padding:14px;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">${t.icon || '🔧'}</div>
+        <div style="font-size:.85rem;font-weight:600;margin-bottom:4px;">${t.name}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:8px;">${t.description || ''}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${tierBadge(t.min_tier)}
+          <span style="font-size:.75rem;color:var(--muted)">${verticals[t.vertical] || ''} ${t.vertical}</span>
+        </div>
+        <div style="margin-top:8px;">
+          <span class="badge ${t.is_active ? 'badge-active' : 'badge-expired'}" style="font-size:.7rem;">
+            ${t.is_active ? 'Actif' : 'Inactif'}
+          </span>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Settings ───────────────────────────────────────────────────────────────
+  function loadSettings() {
+    document.getElementById('cfg-supa-url').textContent = SUPABASE_URL;
+  }
+
+  // ── Test user creation ─────────────────────────────────────────────────────
+  document.getElementById('test-tier')?.addEventListener('change', function() {
+    document.getElementById('test-vertical-group').style.display = this.value === 'bronze' ? 'block' : 'none';
+  });
+
+  document.getElementById('test-user-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('create-test-btn');
+    btn.disabled = true;
+    btn.textContent = 'Création en cours…';
+
+    const email    = document.getElementById('test-email').value.trim();
+    const name     = document.getElementById('test-name').value.trim();
+    const tier     = document.getElementById('test-tier').value;
+    const vertical = tier === 'bronze' ? document.getElementById('test-vertical').value : null;
+    const days     = parseInt(document.getElementById('test-duration').value) || 30;
+
+    const end = new Date();
+    end.setDate(end.getDate() + days);
+
+    // Create or find user via insert into profiles
+    // We use the anon key so we can't call auth.admin — we upsert into subscriptions by email lookup
+    // Use a service-key edge function or just insert the subscription by checking profiles
+
+    // Since we're admin, call the /api/admin-grant endpoint if it exists, or do direct upsert
+    // For now, we'll check if a profile exists, then upsert subscription
+    const resultEl = document.getElementById('test-result');
+
+    try {
+      // Note: this requires the "admin_grant" Supabase Function or service key
+      // We'll do a direct upsert to subscriptions (requires RLS insert policy for admin)
+      // First, try to get user_id from profiles table using a known filter
+      // Limitation: profiles table only has UUID, not email — we can do fuzzy search by name
+      // Best approach: add admin service RPC — for now we show a manual fallback
+
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:14px;">
+          <div style="font-weight:600;margin-bottom:8px;">✅ Informations pour l'accès test :</div>
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:6px;">
+            1. Aller dans Supabase → Authentication → Users<br>
+            2. Créer l'utilisateur : <strong style="color:var(--text)">${email}</strong><br>
+            3. Copier l'UUID de l'utilisateur créé<br>
+            4. Exécuter ce SQL dans Supabase → SQL Editor :
+          </div>
+          <pre style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:.75rem;overflow-x:auto;white-space:pre-wrap;">INSERT INTO public.subscriptions (user_id, tier, status, vertical, current_period_end)
+VALUES (
+  'REMPLACER-PAR-UUID',
+  '${tier}',
+  'active',
+  ${vertical ? `'${vertical}'` : 'NULL'},
+  '${end.toISOString()}'
+) ON CONFLICT (user_id) DO UPDATE SET
+  tier = EXCLUDED.tier,
+  status = 'active',
+  vertical = EXCLUDED.vertical,
+  current_period_end = EXCLUDED.current_period_end,
+  updated_at = now();</pre>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:8px;">
+            💡 <strong>Alternative rapide :</strong> Section "Utilisateurs" ci-contre → bouton "+ Abonnement" si l'utilisateur existe déjà.
+          </div>
+        </div>`;
+    } catch (err) {
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `<div style="color:var(--danger);">Erreur : ${err.message}</div>`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = '✅ Créer l\'accès test';
+  });
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escJs(s)   { return String(s).replace(/`/g,'\\`').replace(/\$/g,'\\$'); }
+
+  async function sendMagicLinkAdmin(userId) {
+    toast('Cette action nécessite le service role key (backend). Utilisez Supabase Auth → Users → Send magic link.');
+    closeModal('user-modal');
+  }
+
+  async function adminLogout() {
+    await sb.auth.signOut();
+    window.location.reload();
+  }
+
+  // ── Auth flow ──────────────────────────────────────────────────────────────
+  async function init() {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // Handle PKCE code from magic link
+    const params = new URLSearchParams(window.location.search);
+    const code   = params.get('code');
+    if (code) {
+      await sb.auth.exchangeCodeForSession(window.location.href);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    const { data: { session } } = await sb.auth.getSession();
+
+    if (session) {
+      // Check if this is an admin email
+      if (ADMIN_EMAILS.length && !ADMIN_EMAILS.includes(session.user.email)) {
+        document.getElementById('login-screen').innerHTML = `
+          <div class="login-box" style="text-align:center;">
+            <div style="font-size:2rem;margin-bottom:12px;">🚫</div>
+            <h2>Accès refusé</h2>
+            <p style="margin-top:8px;color:var(--muted)">Cet email n'est pas autorisé à accéder à l'administration.</p>
+            <button class="btn-full" style="margin-top:20px;" onclick="sb.auth.signOut().then(()=>location.reload())">Se déconnecter</button>
+          </div>`;
+        return;
+      }
+
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display          = 'block';
+      document.getElementById('admin-email-display').textContent = session.user.email;
+      loadDashboard();
+    }
+  }
+
+  // Login form
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn   = document.getElementById('login-btn');
+    const email = document.getElementById('admin-email').value.trim();
+    const errEl = document.getElementById('login-error');
+
+    errEl.style.display = 'none';
+
+    if (ADMIN_EMAILS.length && !ADMIN_EMAILS.includes(email)) {
+      errEl.textContent = 'Email non autorisé.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi…';
+
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: window.location.href,
+      },
+    });
+
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le lien de connexion';
+
+    if (error) {
+      errEl.textContent = error.message.includes('not exist')
+        ? 'Aucun compte trouvé pour cet email. Créez d\'abord un compte dans Supabase Auth.'
+        : error.message;
+      errEl.style.display = 'block';
+      return;
+    }
+
+    document.getElementById('login-form').style.display   = 'none';
+    document.getElementById('login-sent').style.display   = 'block';
+  });
+
+  // Auth state change (fires after magic link click)
+  sb?.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display          = 'block';
+      document.getElementById('admin-email-display').textContent = session.user.email;
+      loadDashboard();
+    }
+  });
+
+  init();
+</script>
+</body>
+</html>
