@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conseil IA sur mesure — The Prompt Studio</title>
+<meta name="description" content="Accompagnement IA sur mesure pour tout projet, tout secteur. Audit, déploiement d'outils IA, formation équipes. Diagnostic gratuit en 2h.">
+<meta name="keywords" content="conseil IA sur mesure, accompagnement IA, automatisation IA entreprise, IA PME, transformation IA, consultant IA">
+<link rel="canonical" href="https://theprompt.studio/conseil-sur-mesure.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://theprompt.studio/conseil-sur-mesure.html">
+<meta property="og:title" content="Conseil IA sur mesure — The Prompt Studio">
+<meta property="og:description" content="Nous déployons l'IA dans votre organisation, quel que soit votre secteur. Diagnostic gratuit, premier livrable en 2 semaines.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Conseil IA sur mesure — The Prompt Studio","provider":{"@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio"},"description":"Accompagnement IA sur mesure pour tout projet et tout secteur : audit, déploiement, formation","areaServed":"FR","serviceType":"AI Consulting"}</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0c0b09;--surface:#0f110e;--card:#141a17;--border:#1e2b27;
+  --em:#7c3aed;--em-l:#a78bfa;--em-d:#5b21b6;
+  --gold:#c9a84c;--cream:#f0ead8;--muted:#7a8f8b;--white:#faf9f7;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+/* ===== NAV ===== */
+.ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(12,11,9,0.96);backdrop-filter:blur(18px);
+  border-bottom:1px solid #2e2a24;padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;height:58px;}
+.ps-nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;
+  color:#f0ead8;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
+.ps-nav-logo em{color:#c9a84c;font-style:italic;}
+.ps-nav-center{display:flex;align-items:center;gap:0;}
+.ps-nav-item{position:relative;}
+.ps-nav-btn{background:none;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;
+  letter-spacing:0.04em;padding:0 14px;height:58px;
+  display:flex;align-items:center;gap:5px;transition:color 0.2s;}
+.ps-nav-btn:hover{color:#f0ead8;}
+.ps-nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;
+  letter-spacing:0.04em;padding:0 14px;height:58px;text-decoration:none;
+  display:flex;align-items:center;transition:color 0.2s;}
+.ps-nav-a:hover,.ps-nav-a.ps-active{color:#c9a84c;}
+.ps-nav-gold{color:#c9a84c !important;font-weight:600;}
+.ps-nav-ai{color:#a78bfa !important;}.ps-nav-ai:hover{color:#c4b5fd !important;}
+.ps-dd{position:absolute;top:100%;left:-8px;background:#1a1814;
+  border:1px solid #2e2a24;min-width:248px;
+  opacity:0;pointer-events:none;transform:translateY(-6px);
+  transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);}
+.ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-dd-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px;text-decoration:none;color:#f0ead8;
+  font-family:'Outfit',sans-serif;font-size:13px;
+  border-bottom:1px solid #2e2a24;transition:background 0.15s;}
+.ps-dd-row:last-child{border-bottom:none;}
+.ps-dd-row:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(0,137,123,0.18);
+  border:1px solid rgba(0,137,123,0.4);color:#00897b;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-service{font-size:8px;padding:2px 7px;background:rgba(124,58,237,0.15);
+  border:1px solid rgba(124,58,237,0.35);color:#a78bfa;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-nav-right{display:flex;align-items:center;gap:10px;}
+.ps-nav-cta{background:#c9a84c;color:#000;font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:0.06em;padding:9px 18px;
+  border:none;cursor:pointer;text-decoration:none;display:inline-block;
+  transition:background 0.2s;white-space:nowrap;}
+.ps-nav-cta:hover{background:#e8c97a;}
+/* ── LANG SWITCHER ── */
+.ps-lang-drop{position:relative;}
+.ps-lang-drop-btn{background:none;border:none;cursor:pointer;font-size:13px;color:#8a8070;padding:0 8px;height:58px;display:flex;align-items:center;gap:3px;transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.ps-lang-drop-btn:hover{color:#f0ead8;}
+.ps-lang-menu{position:absolute;top:58px;right:0;background:#1a1814;border:1px solid #2e2a24;border-radius:10px;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);min-width:148px;}
+.ps-lang-drop:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-lang-opt{display:block;width:100%;background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:#f0ead8;padding:10px 16px;text-align:left;transition:background 0.15s;border-bottom:1px solid #2e2a24;}
+.ps-lang-opt:last-child{border-bottom:none;}
+.ps-lang-opt:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-lang-opt[aria-current="true"]{color:#c9a84c;}
+@media(max-width:768px){.ps-nav-center{display:none;}.ps-nav{padding:0 20px;}}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 48px 100px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;right:0;width:60%;height:100%;background:radial-gradient(ellipse at right top,rgba(124,58,237,0.1) 0%,transparent 60%);pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 100% 0%,black 20%,transparent 70%);}
+.hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hero-label{font-family:'Outfit',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--em-l);margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.hero-label::after{content:'';flex:1;max-width:36px;height:1px;background:var(--em);opacity:0.5;}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,80px);font-weight:300;line-height:0.95;letter-spacing:-0.02em;margin-bottom:28px;}
+h1 em{color:var(--em-l);font-style:italic;display:block;}
+.hero-p{font-size:17px;color:var(--muted);line-height:1.75;font-weight:300;margin-bottom:40px;max-width:480px;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-em{background:var(--em);color:#fff;padding:15px 36px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
+.btn-em:hover{background:var(--em-l);transform:translateY(-2px);box-shadow:0 12px 36px rgba(124,58,237,0.3);}
+.btn-out{background:none;border:1px solid rgba(124,58,237,0.35);color:var(--cream);padding:15px 36px;font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
+.btn-out:hover{border-color:var(--em-l);color:var(--em-l);}
+
+/* ===== STATS BOX ===== */
+.stats-box{background:var(--card);border:1px solid var(--border);padding:40px 36px;}
+.stats-box-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--em-l);margin-bottom:28px;opacity:0.8;}
+.stat-row{display:flex;flex-direction:column;gap:20px;}
+.stat-item{display:flex;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.stat-item:last-child{border-bottom:none;padding-bottom:0;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--em-l);line-height:1;flex-shrink:0;width:90px;}
+.stat-text{font-size:13px;color:var(--muted);line-height:1.5;}
+.stat-text strong{display:block;color:var(--cream);font-size:14px;margin-bottom:2px;}
+
+/* ===== SECTIONS ===== */
+section{padding:100px 48px;position:relative;z-index:1;}
+.container{max-width:1100px;margin:0 auto;}
+.sec-label{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--em-l);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;max-width:36px;height:1px;background:var(--em);opacity:0.35;}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,54px);font-weight:300;line-height:1.05;letter-spacing:-0.015em;margin-bottom:14px;}
+h2 em{color:var(--em-l);font-style:italic;}
+.sec-sub{font-size:16px;color:var(--muted);max-width:520px;line-height:1.7;font-weight:300;margin-bottom:56px;}
+
+/* ===== PROBLEM ===== */
+.problem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.prob-card{background:var(--card);border:1px solid var(--border);padding:28px 24px;}
+.prob-icon{font-size:24px;margin-bottom:14px;display:block;opacity:0.7;}
+.prob-title{font-size:14px;font-weight:500;margin-bottom:8px;color:var(--cream);}
+.prob-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ===== SERVICES ===== */
+.services-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;}
+.svc-card{background:var(--card);border:1px solid var(--border);padding:40px 32px;position:relative;overflow:hidden;transition:all 0.3s;}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:0;transition:opacity 0.3s;}
+.svc-card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-4px);box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+.svc-card:hover::before{opacity:1;}
+.svc-num{font-family:'Outfit',monospace;font-size:10px;letter-spacing:0.15em;color:var(--em-l);margin-bottom:20px;opacity:0.7;}
+.svc-icon{font-size:36px;margin-bottom:20px;display:block;}
+.svc-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:12px;line-height:1.2;}
+.svc-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;}
+.svc-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.svc-list li{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:10px;line-height:1.5;}
+.svc-list li::before{content:'→';color:var(--em-l);flex-shrink:0;font-size:11px;margin-top:1px;}
+
+/* ===== SECTEURS ===== */
+.sectors-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.sector-card{background:var(--card);border:1px solid var(--border);padding:28px 22px;text-align:center;}
+.sector-icon{font-size:28px;margin-bottom:12px;display:block;}
+.sector-title{font-size:14px;font-weight:500;color:var(--cream);margin-bottom:6px;}
+.sector-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ===== PROCESS ===== */
+.process-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;}
+.step{position:relative;padding:36px 32px;background:var(--card);border:1px solid var(--border);}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:var(--em);opacity:0.12;position:absolute;top:16px;right:24px;line-height:1;}
+.step-label{font-family:'Outfit',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--em-l);margin-bottom:12px;}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:10px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.65;}
+.step-detail{margin-top:14px;font-size:12px;color:var(--em-l);opacity:0.8;}
+
+/* ===== CTA BLOCK ===== */
+.cta-block{background:linear-gradient(135deg,#0d0c1a 0%,#100f1d 100%);border:1px solid rgba(124,58,237,0.3);padding:72px 64px;text-align:center;position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(124,58,237,0.12) 0%,transparent 60%);pointer-events:none;}
+.cta-block h2{margin-bottom:12px;}
+.cta-block .sec-sub{margin:0 auto 40px;text-align:center;}
+
+/* ===== TRUST STRIP ===== */
+.trust-strip{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:32px 48px;}
+.trust-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
+.trust-item{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;letter-spacing:0.04em;}
+.trust-item span{color:var(--em-l);font-size:16px;}
+
+.div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,0.3),transparent);}
+
+/* ===== REVEAL ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr;gap:48px;}
+  .services-grid{grid-template-columns:1fr;}
+  .process-grid{grid-template-columns:1fr;}
+  .problem-grid{grid-template-columns:1fr 1fr;}
+  .sectors-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  .hero{padding:120px 24px 80px;}
+  .problem-grid{grid-template-columns:1fr;}
+  .sectors-grid{grid-template-columns:1fr 1fr;}
+  .cta-block{padding:48px 24px;}
+  section{padding:72px 24px;}
+}
+
+/* ===== COOKIE BANNER ===== */
+#ps-cookie{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1814;border-top:1px solid #2e2a24;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 -8px 32px rgba(0,0,0,0.4);transform:translateY(100%);transition:transform 0.4s ease;flex-wrap:wrap;}
+#ps-cookie.show{transform:translateY(0);}
+#ps-cookie p{font-size:12px;color:#8a8070;line-height:1.6;max-width:680px;flex:1;}
+#ps-cookie a{color:#c9a84c;text-decoration:underline;}
+.ps-cookie-btns{display:flex;gap:10px;flex-shrink:0;}
+.ps-cookie-accept{background:#c9a84c;color:#000;border:none;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;cursor:pointer;}
+.ps-cookie-refuse{background:none;border:1px solid #2e2a24;color:#8a8070;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:0.06em;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="ps-nav">
+  <a href="index.html" class="ps-nav-logo">The Prompt<em>Studio</em></a>
+  <div class="ps-nav-center">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn">Outils IA ▾</button>
+      <div class="ps-dd">
+        <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>📈 Finance</span><span class="ps-badge-live">Live</span></a>
+        <span class="ps-dd-row ps-soon"><span>🛒 Commerce</span><span class="ps-badge-soon">Bientôt</span></span>
+        <span class="ps-dd-row ps-soon"><span>⚖️ Juridique</span><span class="ps-badge-soon">Bientôt</span></span>
+      </div>
+    </div>
+    <a href="/finance.html" class="ps-nav-a ps-nav-gold">Finance IA</a>
+    <a href="/conseil-sur-mesure.html" class="ps-nav-a ps-active">Conseil sur mesure</a>
+    <a href="/assistant.html" class="ps-nav-a ps-nav-ai">✦ Assistant IA</a>
+    <a href="/contact.html" class="ps-nav-a">Contact</a>
+  </div>
+  <div class="ps-nav-right">
+    <div class="ps-lang-drop">
+      <button id="lang-current" class="ps-lang-drop-btn">🇫🇷 ▾</button>
+      <div class="ps-lang-menu">
+        <button class="ps-lang-opt" onclick="setLang('fr')" aria-current="true">🇫🇷 Français</button>
+        <button class="ps-lang-opt" onclick="setLang('en')" aria-current="false">🇬🇧 English</button>
+        <button class="ps-lang-opt" onclick="setLang('es')" aria-current="false">🇪🇸 Español</button>
+        <button class="ps-lang-opt" onclick="setLang('pt')" aria-current="false">🇧🇷 Português</button>
+        <button class="ps-lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
+      </div>
+    </div>
+    <a href="/login.html" class="ps-nav-a" id="nav-account-link">Mon compte</a>
+    <a href="/tarifs.html" class="ps-nav-cta">Voir les offres</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label">The Prompt Studio — Conseil sur mesure</div>
+      <h1>Votre projet IA.<br><em>Réalisé.</em></h1>
+      <p class="hero-p">Vous avez un projet, un besoin métier, une idée d'automatisation. Peu importe votre secteur — immobilier, commerce, RH, logistique, santé, juridique — nous concevons et déployons les outils IA qui correspondent exactement à votre contexte.</p>
+      <div class="hero-cta">
+        <a href="contact.html" class="btn-em">Diagnostic gratuit (2h) →</a>
+        <a href="#prestations" class="btn-out">Nos prestations</a>
+      </div>
+    </div>
+    <div class="stats-box reveal">
+      <div class="stats-box-title">Ce que vous pouvez attendre</div>
+      <div class="stat-row">
+        <div class="stat-item">
+          <div class="stat-num">60%</div>
+          <div class="stat-text"><strong>Gain de temps moyen</strong>Sur les tâches répétitives identifiées lors de l'audit initial.</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">J+14</div>
+          <div class="stat-text"><strong>Premier outil en production</strong>De l'idée au déploiement, sans transformer votre SI existant.</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-text"><strong>Adapté à votre contexte</strong>Pas de solution générique — chaque outil est pensé pour vos données et vos équipes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- PROBLÈME -->
+<section>
+  <div class="container">
+    <div class="sec-label">Le constat</div>
+    <h2>L'IA est puissante.<br>Mais <em>mal déployée</em>,<br>elle ne sert à rien.</h2>
+    <p class="sec-sub">La plupart des projets IA échouent non pas par manque de technologie, mais par manque d'ancrage métier. On déploie des outils génériques là où il faut des solutions adaptées.</p>
+    <div class="problem-grid reveal">
+      <div class="prob-card">
+        <span class="prob-icon">🎯</span>
+        <div class="prob-title">Cas d'usage mal définis</div>
+        <div class="prob-desc">On commence par "faire de l'IA" sans identifier les tâches à fort ROI. Résultat : des outils que personne n'utilise.</div>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">🔧</span>
+        <div class="prob-title">Outils trop génériques</div>
+        <div class="prob-desc">ChatGPT, Copilot, Gemini : puissants, mais pas calibrés pour vos données, vos process, votre vocabulaire métier.</div>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">👥</span>
+        <div class="prob-title">Adoption en échec</div>
+        <div class="prob-desc">Sans formation adaptée et sans accompagnement au changement, même les meilleurs outils restent inutilisés.</div>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">📉</span>
+        <div class="prob-title">ROI difficile à mesurer</div>
+        <div class="prob-desc">On investit sans avoir défini les indicateurs de succès. Six mois plus tard, impossible de justifier l'investissement.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESTATIONS -->
+<section id="prestations" style="background:var(--surface);">
+  <div class="container">
+    <div class="sec-label">Nos prestations</div>
+    <h2>Trois modes<br>d'<em>intervention.</em></h2>
+    <p class="sec-sub">Du diagnostic express au déploiement complet — nous intervenons au niveau qui correspond à votre maturité et à vos ressources.</p>
+    <div class="services-grid reveal">
+
+      <div class="svc-card">
+        <div class="svc-num">01 — DIAGNOSTIC</div>
+        <span class="svc-icon">🔬</span>
+        <div class="svc-title">Audit & Stratégie IA</div>
+        <p class="svc-desc">Une immersion dans votre organisation pour cartographier les opportunités IA, prioriser les cas d'usage et définir une roadmap actionnable.</p>
+        <ul class="svc-list">
+          <li>Atelier de 2h avec vos équipes métier</li>
+          <li>Cartographie des process automatisables</li>
+          <li>Identification des quick wins (ROI rapide)</li>
+          <li>Roadmap IA priorisée avec estimations</li>
+          <li>Recommandation d'outils et d'architectures</li>
+        </ul>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-num">02 — BUILD</div>
+        <span class="svc-icon">⚙️</span>
+        <div class="svc-title">Développement sur mesure</div>
+        <p class="svc-desc">Nous concevons et déployons des outils IA calibrés pour vos données et vos équipes — interfaces web, agents IA, automatisations, intégrations.</p>
+        <ul class="svc-list">
+          <li>Outils IA métier (interface web ou API)</li>
+          <li>Agents IA sur vos données propriétaires</li>
+          <li>Automatisations (n8n, Make, Zapier, custom)</li>
+          <li>Intégrations à vos logiciels existants</li>
+          <li>Documentation et tests utilisateurs inclus</li>
+        </ul>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-num">03 — TRAIN</div>
+        <span class="svc-icon">🎓</span>
+        <div class="svc-title">Formation & Accompagnement</div>
+        <p class="svc-desc">L'IA n'est utile que si vos équipes savent l'utiliser. Nous formons vos collaborateurs et construisons une culture IA durable dans votre organisation.</p>
+        <ul class="svc-list">
+          <li>Ateliers de formation sur mesure (1/2 journée à 2 jours)</li>
+          <li>Création de prompts métier pour vos équipes</li>
+          <li>Guide d'utilisation et bibliothèque de cas d'usage</li>
+          <li>Accompagnement au changement</li>
+          <li>Suivi mensuel et optimisation continue</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section>
+  <div class="container">
+    <div class="sec-label">Notre méthode</div>
+    <h2>Du diagnostic au<br><em>déploiement</em><br>en 3 étapes.</h2>
+    <p class="sec-sub">Pas de mois de conseil sans livrable. On identifie vite, on déploie vite, on mesure et on itère.</p>
+    <div class="process-grid reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-label">Semaine 1</div>
+        <div class="step-title">Diagnostic</div>
+        <p class="step-desc">2h de travail avec vous et vos équipes pour cartographier les process, identifier les données disponibles et prioriser les cas d'usage à fort ROI.</p>
+        <div class="step-detail">→ Livrable : Roadmap IA priorisée</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-label">Semaines 2–6</div>
+        <div class="step-title">Déploiement</div>
+        <p class="step-desc">Développement et mise en production des outils identifiés. Formation de vos équipes. Premier outil opérationnel en moins de 2 semaines.</p>
+        <div class="step-detail">→ Livrable : Outils IA en production + documentation</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-label">Ongoing</div>
+        <div class="step-title">Optimisation</div>
+        <p class="step-desc">Suivi des métriques d'impact, ajustements des modèles, nouvelles fonctionnalités au fil des besoins. Vos outils s'améliorent avec votre activité.</p>
+        <div class="step-detail">→ Livrable : Rapport mensuel d'impact</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTEURS -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="sec-label">Pour qui</div>
+    <h2>Tous secteurs,<br>toutes <em>tailles.</em></h2>
+    <p class="sec-sub">Dirigeants de PME, responsables métier, fondateurs en croissance — notre accompagnement s'adapte à votre contexte et à votre budget.</p>
+    <div class="sectors-grid reveal">
+      <div class="sector-card">
+        <span class="sector-icon">🏠</span>
+        <div class="sector-title">Immobilier</div>
+        <div class="sector-desc">Agents, promoteurs, syndics, property managers — automatisation des tâches admin et commerciales.</div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🛒</span>
+        <div class="sector-title">Commerce & E-commerce</div>
+        <div class="sector-desc">Fiches produits, SAV, emails marketing, gestion des retours — IA intégrée à vos outils ecom.</div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">⚖️</span>
+        <div class="sector-title">Juridique</div>
+        <div class="sector-desc">Cabinets d'avocats, notaires, juristes d'entreprise — rédaction, résumés, recherche assistée.</div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🏥</span>
+        <div class="sector-title">Santé & Médical</div>
+        <div class="sector-desc">Cliniques, cabinets, laboratoires — aide à la documentation, triage, reporting administratif.</div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">📦</span>
+        <div class="sector-title">Logistique & Industrie</div>
+        <div class="sector-desc">Suivi de flux, prévision de stocks, maintenance prédictive, reporting opérationnel automatisé.</div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">👥</span>
+        <div class="sector-title">RH & Recrutement</div>
+        <div class="sector-desc">Scoring de candidatures, rédaction d'offres, onboarding automatisé, support RH IA.</div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🎓</span>
+        <div class="sector-title">Formation & Éducation</div>
+        <div class="sector-desc">Création de contenus pédagogiques, support apprenant, correction automatisée, reporting LMS.</div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🎯</span>
+        <div class="sector-title">Votre secteur</div>
+        <div class="sector-desc">Votre métier n'est pas listé ? Contactez-nous — chaque projet est unique et nous adorons les défis inédits.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="trust-item"><span>✓</span> Diagnostic 100% gratuit et sans engagement</div>
+    <div class="trust-item"><span>✓</span> Premier livrable en moins de 2 semaines</div>
+    <div class="trust-item"><span>✓</span> Adapté à vos outils et données existants</div>
+    <div class="trust-item"><span>✓</span> Formation des équipes incluse</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section>
+  <div class="container">
+    <div class="cta-block reveal">
+      <div class="sec-label" style="justify-content:center;">Passez à l'action</div>
+      <h2>Commencez par un<br>diagnostic <em>gratuit.</em></h2>
+      <p class="sec-sub" style="text-align:center;margin:0 auto 40px;">2 heures avec vos équipes pour cartographier vos opportunités IA et définir une roadmap priorisée — sans engagement, sans frais, sans jargon.</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <a href="contact.html" class="btn-em">Réserver mon diagnostic gratuit →</a>
+        <a href="mailto:contact@theprompt.studio" class="btn-out">Envoyer un email</a>
+      </div>
+      <p style="margin-top:24px;font-size:12px;color:var(--muted);">Réponse sous 24h · France, Belgique, Suisse · Remote ou présentiel</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:var(--surface);border-top:1px solid #2e2a24;padding:48px 40px 32px;position:relative;z-index:1;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;margin-bottom:12px;">The Prompt<em style="color:#c9a84c;font-style:italic;">Studio</em></div>
+        <p style="font-size:12px;color:#8a8070;line-height:1.7;max-width:240px;">SaaS IA et conseil sur mesure pour professionnels. Immo · Finance · Conseil.</p>
+        <a href="mailto:contact@theprompt.studio" style="font-size:12px;color:#8a8070;text-decoration:none;display:block;margin-top:12px;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#8a8070'">contact@theprompt.studio</a>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Outils & Services</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="tarifs.html?v=immo" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Outils Immobilier</a>
+          <a href="tarifs.html?v=finance" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Outils Finance</a>
+          <a href="finance.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Finance IA (service)</a>
+          <a href="conseil-sur-mesure.html" style="font-size:13px;color:#a78bfa;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#a78bfa'">Conseil IA sur mesure</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Légal</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="contact.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Contact</a>
+          <a href="mentions-legales.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Mentions légales</a>
+          <a href="cgv.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">CGV</a>
+          <a href="politique-confidentialite.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Confidentialité</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #2e2a24;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <p style="font-size:11px;color:#5a5040;">© 2026 The Prompt Studio — theprompt.studio — Tous droits réservés</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+<!-- COOKIE BANNER -->
+<div id="ps-cookie" role="dialog" aria-label="Gestion des cookies">
+  <p>Nous utilisons des cookies techniques nécessaires au fonctionnement du site. <a href="politique-confidentialite.html">Politique de confidentialité</a></p>
+  <div class="ps-cookie-btns">
+    <button class="ps-cookie-accept" onclick="psCookieAccept()">Accepter</button>
+    <button class="ps-cookie-refuse" onclick="psCookieRefuse()">Continuer sans accepter</button>
+  </div>
+</div>
+<script>
+(function(){
+  if(!localStorage.getItem('ps_cookie_consent')){
+    setTimeout(function(){ var b=document.getElementById('ps-cookie'); if(b) b.classList.add('show'); },800);
+  }
+})();
+function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
+function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
+function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
+</script>
+<script>
+// ── LANG SWITCHER ──
+var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
+function setLang(lang) {
+  document.documentElement.setAttribute('data-lang', lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  var btn = document.getElementById('lang-current');
+  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
+  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
+    var fn = o.getAttribute('onclick') || '';
+    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
+  });
+  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
+}
+(function() {
+  try {
+    var saved = localStorage.getItem('ps_lang');
+    if (saved && ['fr','en','es','pt','ar'].indexOf(saved) !== -1) setLang(saved);
+  } catch(e) {}
+})();
+</script>
+<script src="/js/ps-auth.js"></script>
+<script src="/js/ps-chat-widget.js"></script>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="robots" content="index, follow">
@@ -126,16 +126,22 @@ footer p{font-size:11px;color:var(--muted);}
 .ps-badge-soon{font-size:8px;padding:2px 7px;background:rgba(201,168,76,0.06);
   border:1px solid rgba(201,168,76,0.15);color:#5a5040;letter-spacing:0.1em;text-transform:uppercase;}
 .ps-nav-right{display:flex;align-items:center;gap:10px;}
-.ps-lang-btns{display:flex;gap:6px;}
-.ps-lang-btn{background:none;border:1px solid #2e2a24;color:#8a8070;
-  padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif;
-  font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s;}
-.ps-lang-btn.active,.ps-lang-btn:hover{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,0.08);}
+/* ── LANG SWITCHER ── */
+.ps-lang-drop{position:relative;}
+.ps-lang-drop-btn{background:none;border:none;cursor:pointer;font-size:13px;color:#8a8070;padding:0 8px;height:60px;display:flex;align-items:center;gap:3px;transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.ps-lang-drop-btn:hover{color:#f0ead8;}
+.ps-lang-menu{position:absolute;top:60px;right:0;background:#1a1814;border:1px solid #2e2a24;border-radius:10px;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);min-width:148px;}
+.ps-lang-drop:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-lang-opt{display:block;width:100%;background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:#f0ead8;padding:10px 16px;text-align:left;transition:background 0.15s;border-bottom:1px solid #2e2a24;}
+.ps-lang-opt:last-child{border-bottom:none;}
+.ps-lang-opt:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-lang-opt[aria-current="true"]{color:#c9a84c;}
 .ps-nav-cta{background:#c9a84c;color:#000;font-family:'Outfit',sans-serif;
   font-size:12px;font-weight:600;letter-spacing:0.06em;padding:9px 18px;
   border:none;cursor:pointer;text-decoration:none;display:inline-block;
   transition:background 0.2s;white-space:nowrap;}
 .ps-nav-cta:hover{background:#e8c97a;}
+.ps-nav-ai{color:#a78bfa !important;}.ps-nav-ai:hover{color:#c4b5fd !important;}
 @media(max-width:768px){
   .ps-nav-center{display:none;}
   .ps-nav{padding:0 20px;}
@@ -166,26 +172,35 @@ footer p{font-size:11px;color:var(--muted);}
 <body>
 
 <nav class="ps-nav">
-  <a href="index.html" class="ps-nav-logo">The Prompt<em>Studio</em></a>
+  <a href="/index.html" class="ps-nav-logo">The Prompt<em>Studio</em></a>
   <div class="ps-nav-center">
     <div class="ps-nav-item">
-      <button class="ps-nav-btn">Produits ▾</button>
+      <button class="ps-nav-btn">Outils IA ▾</button>
       <div class="ps-dd">
-        <a href="promptcraft-immo.html" class="ps-dd-row"><span>Immo Pro</span><span class="ps-badge-live">Live</span></a>
-        <a href="promptcraft-commerce.html" class="ps-dd-row"><span>Commerce Pro</span><span class="ps-badge-live">Live</span></a>
-        <a href="promptcraft-legal.html" class="ps-dd-row"><span>Legal Pro</span><span class="ps-badge-live">Live</span></a>
-        <a href="finance.html" class="ps-dd-row"><span>Finance IA</span><span class="ps-badge-service">Service</span></a>
-        <span class="ps-dd-row ps-soon"><span>Coach Pro</span><span class="ps-badge-soon">Bientôt</span></span>
-        <span class="ps-dd-row ps-soon"><span>Recruit Pro</span><span class="ps-badge-soon">Bientôt</span></span>
+        <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>📈 Finance</span><span class="ps-badge-live">Live</span></a>
+        <span class="ps-dd-row ps-soon"><span>🛒 Commerce</span><span class="ps-badge-soon">Bientôt</span></span>
+        <span class="ps-dd-row ps-soon"><span>⚖️ Juridique</span><span class="ps-badge-soon">Bientôt</span></span>
       </div>
     </div>
-    <a href="finance.html" class="ps-nav-a">Finance IA</a>
-    <a href="index.html#pro" class="ps-nav-a">Pro Membership</a>
-    <a href="contact.html" class="ps-nav-a ps-active">Contact</a>
+    <a href="/finance.html" class="ps-nav-a ps-nav-gold">Finance IA</a>
+    <a href="/conseil-sur-mesure.html" class="ps-nav-a">Conseil sur mesure</a>
+    <a href="/assistant.html" class="ps-nav-a ps-nav-ai">✦ Assistant IA</a>
+    <a href="/contact.html" class="ps-nav-a ps-active">Contact</a>
   </div>
   <div class="ps-nav-right">
-    <a href="/login" class="ps-nav-a" id="nav-account-link" onclick="checkNavSession(event)">Mon compte</a>
-    <a href="https://shop.theprompt.studio/checkout/buy/61739466-c94c-4f49-a6ee-c8b188204f3c" class="ps-nav-cta">Pro — 19€/mois</a>
+    <div class="ps-lang-drop">
+      <button id="lang-current" class="ps-lang-drop-btn">🇫🇷 ▾</button>
+      <div class="ps-lang-menu">
+        <button class="ps-lang-opt" onclick="setLang('fr')" aria-current="true">🇫🇷 Français</button>
+        <button class="ps-lang-opt" onclick="setLang('en')" aria-current="false">🇬🇧 English</button>
+        <button class="ps-lang-opt" onclick="setLang('es')" aria-current="false">🇪🇸 Español</button>
+        <button class="ps-lang-opt" onclick="setLang('pt')" aria-current="false">🇧🇷 Português</button>
+        <button class="ps-lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
+      </div>
+    </div>
+    <a href="/login.html" class="ps-nav-a" id="nav-account-link">Mon compte</a>
+    <a href="/tarifs.html" class="ps-nav-cta">Voir les offres</a>
   </div>
 </nav>
 
@@ -379,5 +394,29 @@ function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b
   document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
 })();
 </script>
+<script>
+// ── LANG SWITCHER ──
+var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
+function setLang(lang) {
+  document.documentElement.setAttribute('data-lang', lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  var btn = document.getElementById('lang-current');
+  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
+  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
+    var fn = o.getAttribute('onclick') || '';
+    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
+  });
+  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
+}
+(function() {
+  try {
+    var saved = localStorage.getItem('ps_lang');
+    if (saved && ['fr','en','es','pt','ar'].indexOf(saved) !== -1) setLang(saved);
+  } catch(e) {}
+})();
+</script>
+<script src="/js/ps-auth.js"></script>
+<script src="/js/ps-chat-widget.js"></script>
 </body>
 </html>

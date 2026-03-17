@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -21,18 +21,41 @@
     }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    nav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 40px; border-bottom: 1px solid var(--border);
-      background: var(--surface); position: sticky; top: 0; z-index: 50;
-    }
-    .nav-logo { font-size: 1.1rem; font-weight: 700; text-decoration: none; color: var(--text); }
-    .nav-logo span { color: #a78bfa; }
-    .nav-links { display: flex; align-items: center; gap: 20px; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
-    .nav-links a:hover { color: var(--text); }
-    .btn-nav { padding: 8px 18px; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-size: .875rem; font-weight: 600; cursor: pointer; text-decoration: none; }
-    .btn-nav:hover { background: #5a52e0; }
+    /* ── PS-NAV UNIFIED ── */
+    .ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,17,23,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:58px;}
+    .ps-nav-logo{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:.01em;}
+    .ps-nav-logo em{color:#a78bfa;font-style:italic;}
+    .ps-nav-center{display:flex;align-items:center;}
+    .ps-nav-item{position:relative;}
+    .ps-nav-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:.84rem;color:var(--muted);letter-spacing:.03em;padding:0 14px;height:58px;display:flex;align-items:center;gap:5px;transition:color .2s;}
+    .ps-nav-btn:hover{color:var(--text);}
+    .ps-nav-a{font-family:inherit;font-size:.84rem;color:var(--muted);letter-spacing:.03em;padding:0 14px;height:58px;text-decoration:none;display:flex;align-items:center;transition:color .2s;}
+    .ps-nav-a:hover,.ps-nav-a.ps-active{color:var(--text);}
+    .ps-nav-gold{color:#a78bfa !important;font-weight:700;}
+    .ps-nav-ai{color:#c4b5fd !important;}.ps-nav-ai:hover{color:#ddd6fe !important;}
+    .ps-dd{position:absolute;top:100%;left:-8px;background:var(--surface);border:1px solid var(--border);min-width:240px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all .18s;box-shadow:0 20px 56px rgba(0,0,0,.5);border-radius:10px;overflow:hidden;}
+    .ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+    .ps-dd-row{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;text-decoration:none;color:var(--text);font-size:.84rem;border-bottom:1px solid var(--border);transition:background .15s;}
+    .ps-dd-row:last-child{border-bottom:none;}
+    .ps-dd-row:hover{background:rgba(108,99,255,.08);color:#a78bfa;}
+    .ps-dd-row.ps-soon{color:var(--muted);cursor:default;pointer-events:none;opacity:.5;}
+    .ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#22c55e;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;}
+    .ps-badge-soon{font-size:8px;padding:2px 7px;background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.15);color:var(--muted);letter-spacing:.1em;text-transform:uppercase;border-radius:4px;}
+    .ps-nav-right{display:flex;align-items:center;gap:8px;}
+    .ps-nav-cta{background:var(--accent);color:#fff;font-family:inherit;font-size:.8rem;font-weight:700;letter-spacing:.04em;padding:8px 18px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background .2s;border-radius:7px;}
+    .ps-nav-cta:hover{background:#5a52e0;}
+    /* ── LANG SWITCHER ── */
+    .ps-lang-drop{position:relative;}
+    .ps-lang-drop-btn{background:none;border:none;cursor:pointer;font-size:.84rem;color:var(--muted);padding:0 8px;height:58px;display:flex;align-items:center;gap:3px;transition:color .2s;font-family:inherit;}
+    .ps-lang-drop-btn:hover{color:var(--text);}
+    .ps-lang-menu{position:absolute;top:58px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all .18s;box-shadow:0 20px 56px rgba(0,0,0,.5);min-width:148px;}
+    .ps-lang-drop:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+    .ps-lang-opt{display:block;width:100%;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.84rem;color:var(--text);padding:10px 16px;text-align:left;transition:background .15s;border-bottom:1px solid var(--border);}
+    .ps-lang-opt:last-child{border-bottom:none;}
+    .ps-lang-opt:hover{background:rgba(108,99,255,.08);color:#a78bfa;}
+    .ps-lang-opt[aria-current="true"]{color:#a78bfa;}
+    @media(max-width:768px){.ps-nav-center{display:none;}.ps-nav{padding:0 20px;}}
+    body{padding-top:58px;}
 
     .hero { text-align: center; padding: 64px 20px 36px; max-width: 680px; margin: 0 auto; }
     .hero-tag { display: inline-block; background: rgba(108,99,255,.15); color: #a78bfa; border: 1px solid rgba(108,99,255,.3); font-size: .78rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .06em; }
@@ -62,6 +85,8 @@
     .vtab[data-v="commerce"].active .v-name { color: #f97316; }
     .vtab[data-v="legal"].active    .v-name { color: #ef4444; }
     .vtab[data-v="finance"].active  .v-name { color: #22c55e; }
+    .vtab.disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
+    .vtab.disabled .v-name::after { content: ' — Bientôt'; font-size: .65rem; color: var(--muted); font-weight: 400; }
 
     .plans-section { max-width: 1060px; margin: 0 auto; padding: 0 20px 72px; }
     .plans-header { text-align: center; margin-bottom: 32px; }
@@ -130,13 +155,36 @@
 </head>
 <body>
 
-<nav>
-  <a class="nav-logo" href="/index.html">The <span>Prompt</span> Studio</a>
-  <div class="nav-links">
-    <a href="/index.html">Accueil</a>
-    <a href="/tarifs.html">Tarifs</a>
-    <a href="/dashboard.html" id="nav-dash" style="display:none">Mon espace</a>
-    <a href="/login.html" class="btn-nav" id="nav-cta">Commencer</a>
+<nav class="ps-nav">
+  <a href="/index.html" class="ps-nav-logo">The Prompt<em>Studio</em></a>
+  <div class="ps-nav-center">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn">Outils IA ▾</button>
+      <div class="ps-dd">
+        <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>📈 Finance</span><span class="ps-badge-live">Live</span></a>
+        <span class="ps-dd-row ps-soon"><span>🛒 Commerce</span><span class="ps-badge-soon">Bientôt</span></span>
+        <span class="ps-dd-row ps-soon"><span>⚖️ Juridique</span><span class="ps-badge-soon">Bientôt</span></span>
+      </div>
+    </div>
+    <a href="/finance.html" class="ps-nav-a ps-nav-gold">Finance IA</a>
+    <a href="/conseil-sur-mesure.html" class="ps-nav-a">Conseil sur mesure</a>
+    <a href="/assistant.html" class="ps-nav-a ps-nav-ai">✦ Assistant IA</a>
+    <a href="/contact.html" class="ps-nav-a">Contact</a>
+  </div>
+  <div class="ps-nav-right">
+    <div class="ps-lang-drop">
+      <button id="lang-current" class="ps-lang-drop-btn">🇫🇷 ▾</button>
+      <div class="ps-lang-menu">
+        <button class="ps-lang-opt" onclick="setLang('fr')" aria-current="true">🇫🇷 Français</button>
+        <button class="ps-lang-opt" onclick="setLang('en')" aria-current="false">🇬🇧 English</button>
+        <button class="ps-lang-opt" onclick="setLang('es')" aria-current="false">🇪🇸 Español</button>
+        <button class="ps-lang-opt" onclick="setLang('pt')" aria-current="false">🇧🇷 Português</button>
+        <button class="ps-lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
+      </div>
+    </div>
+    <a href="/login.html" class="ps-nav-a" id="nav-account-link">Mon compte</a>
+    <a href="/tarifs.html" class="ps-nav-cta">Voir les offres</a>
   </div>
 </nav>
 
@@ -158,10 +206,10 @@
   <div class="vtab active" data-v="immo" onclick="selectV('immo')">
     <span class="v-icon">🏠</span><span class="v-name">Immobilier</span><span class="v-desc">Agents, promoteurs, syndics</span>
   </div>
-  <div class="vtab" data-v="commerce" onclick="selectV('commerce')">
+  <div class="vtab disabled" data-v="commerce">
     <span class="v-icon">🛒</span><span class="v-name">Commerce</span><span class="v-desc">E-commerce, retail, marques</span>
   </div>
-  <div class="vtab" data-v="legal" onclick="selectV('legal')">
+  <div class="vtab disabled" data-v="legal">
     <span class="v-icon">⚖️</span><span class="v-name">Juridique</span><span class="v-desc">Avocats, juristes, notaires</span>
   </div>
   <div class="vtab" data-v="finance" onclick="selectV('finance')">
@@ -387,6 +435,29 @@ async function checkAuth() {
 const urlV = new URLSearchParams(window.location.search).get('v');
 selectV(VMETA[urlV] ? urlV : 'immo');
 checkAuth();
+
+// ── LANG SWITCHER ──
+var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
+function setLang(lang) {
+  document.documentElement.setAttribute('data-lang', lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  var btn = document.getElementById('lang-current');
+  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
+  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
+    var fn = o.getAttribute('onclick') || '';
+    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
+  });
+  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
+}
+(function() {
+  try {
+    var saved = localStorage.getItem('ps_lang');
+    if (saved && ['fr','en','es','pt','ar'].indexOf(saved) !== -1) setLang(saved);
+  } catch(e) {}
+})();
 </script>
+<script src="/js/ps-auth.js"></script>
+<script src="/js/ps-chat-widget.js"></script>
 </body>
 </html>

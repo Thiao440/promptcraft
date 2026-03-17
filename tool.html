@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chargement… – The Prompt Studio</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/tool.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/ps-auth.js"></script>
+  <script src="/js/ps-tool.js"></script>
+  <script src="/js/tool-renderer.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="/index.html">The <span>Prompt</span> Studio</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/dashboard.html" class="nav-item active">
+      <span class="icon">🧰</span> Mes outils
+    </a>
+    <a href="/account.html" class="nav-item">
+      <span class="icon">👤</span> Mon compte
+    </a>
+    <a href="/tarifs.html" class="nav-item">
+      <span class="icon">💎</span> Offres & Tarifs
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-email" id="user-email"></div>
+    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+  </div>
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="main">
+
+  <!-- Breadcrumb (populated dynamically) -->
+  <div class="breadcrumb" id="breadcrumb">
+    <a href="/dashboard.html">🧰 Tableau de bord</a>
+    <span class="sep">›</span>
+    <span id="breadcrumb-vertical">Chargement…</span>
+    <span class="sep">›</span>
+    <span class="current" id="breadcrumb-tool">…</span>
+  </div>
+
+  <!-- Tool header (populated dynamically) -->
+  <div class="tool-header" id="tool-header">
+    <div class="tool-header-inner">
+      <div class="tool-icon" id="tool-icon">🔧</div>
+      <div class="tool-meta">
+        <h1 id="tool-title">Chargement de l'outil…</h1>
+        <p id="tool-description"></p>
+        <div class="tool-badges" id="tool-badges"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool body -->
+  <div class="tool-body">
+
+    <!-- Left: Form -->
+    <div class="panel">
+      <div class="panel-title" id="form-panel-title">
+        <!-- Skeleton while loading -->
+        <div class="skeleton skeleton-title"></div>
+      </div>
+
+      <form id="tool-form" autocomplete="off">
+
+        <!-- Dynamic form fields rendered here -->
+        <div id="form-fields">
+          <div class="skeleton skeleton-input"></div>
+          <div class="skeleton skeleton-input"></div>
+          <div class="skeleton skeleton-input"></div>
+        </div>
+
+        <button type="submit" class="generate-btn" id="generate-btn" disabled>
+          <span id="btn-icon">✨</span>
+          <span id="btn-text">Générer</span>
+        </button>
+
+        <div class="quota-mini" id="quota-mini">
+          <span id="quota-label">Chargement…</span>
+          <div class="quota-bar-mini">
+            <div class="quota-fill-mini" id="quota-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Right: Result -->
+    <div class="result-panel">
+      <div class="result-toolbar">
+        <div class="panel-title" id="result-panel-title">💬 Résultat</div>
+        <div class="result-actions">
+          <button class="btn-icon" id="copy-btn" disabled>
+            📋 Copier
+          </button>
+          <button class="btn-icon" id="regen-btn" disabled>
+            🔄 Régénérer
+          </button>
+        </div>
+      </div>
+
+      <div class="result-content" id="result-content">
+        <div class="empty-state" id="empty-state">
+          <div class="big-icon" id="empty-icon">✨</div>
+          <h3 id="empty-title">Le résultat apparaîtra ici</h3>
+          <p id="empty-text">Remplissez le formulaire à gauche et cliquez sur <strong>Générer</strong> pour commencer.</p>
+        </div>
+      </div>
+
+      <div class="result-meta" id="result-meta" style="display:none;">
+        <span>⏱ <span id="meta-duration">—</span></span>
+        <span>🔤 <span id="meta-tokens">—</span> tokens</span>
+        <span>📅 <span id="meta-date">—</span></span>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section" id="history-section">
+      <div class="history-header">
+        <div class="panel-title" style="margin-bottom:0;">🕐 Historique récent</div>
+        <span style="font-size:.8rem;color:var(--muted);" id="history-count"></span>
+      </div>
+      <div class="history-list" id="history-list">
+        <div style="color:var(--muted);font-size:.875rem;">Chargement de l'historique…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/**
+ * Generic Tool Page — Dynamic tool loader
+ *
+ * Flow:
+ * 1. Read slug from URL query params
+ * 2. Auth check via PS.requireAuth()
+ * 3. Fetch tool config from Supabase (including input_schema)
+ * 4. Render tool header, breadcrumb, badges
+ * 5. Render form dynamically via ToolRenderer
+ * 6. Initialize PSTool with dynamic collectInputs
+ * 7. PSTool handles: submit, API call, result, history, quota
+ */
+
+(async function initDynamicTool() {
+
+  // ── 1. Read slug ──────────────────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const slug   = params.get('slug');
+
+  if (!slug) {
+    document.getElementById('tool-title').textContent = 'Outil non spécifié';
+    document.getElementById('tool-description').textContent = 'Ajoutez ?slug=nom-outil dans l\'URL.';
+    return;
+  }
+
+  // ── 2. Auth check ─────────────────────────────────────────────────────────
+  const ok = await PS.requireAuth(window.location.pathname + window.location.search);
+  if (!ok) return;
+
+  // ── 3. Fetch tool config from Supabase ────────────────────────────────────
+  const { data: tool, error } = await PS.supabase
+    .from('tools')
+    .select('slug, name, label, description, icon, vertical, min_tier, input_schema, is_featured, is_new, generate_label, loading_text, empty_state_icon, empty_state_title, empty_state_text, form_panel_title')
+    .eq('slug', slug)
+    .eq('is_active', true)
+    .single();
+
+  if (error || !tool) {
+    document.getElementById('tool-title').textContent = 'Outil introuvable';
+    document.getElementById('tool-description').textContent = `Aucun outil actif avec le slug "${slug}".`;
+    document.getElementById('form-fields').innerHTML = '';
+    return;
+  }
+
+  // Guard: this tool needs input_schema to render dynamically
+  if (!tool.input_schema || !tool.input_schema.fields || !tool.input_schema.fields.length) {
+    // Fallback: redirect to static page if it exists
+    window.location.href = `/tools/${slug}.html`;
+    return;
+  }
+
+  // ── 4. Render tool header ─────────────────────────────────────────────────
+  const toolLabel = tool.label || tool.name || slug;
+  const vertical  = PS.VERTICALS[tool.vertical] || { label: tool.vertical, icon: '📁' };
+
+  document.title = `${toolLabel} – The Prompt Studio`;
+
+  document.getElementById('tool-icon').textContent        = tool.icon || '🔧';
+  document.getElementById('tool-title').textContent       = toolLabel;
+  document.getElementById('tool-description').textContent = tool.description || '';
+
+  // Breadcrumb
+  document.getElementById('breadcrumb-vertical').innerHTML =
+    `${vertical.icon} ${vertical.label}`;
+  document.getElementById('breadcrumb-tool').innerHTML =
+    `${tool.icon || ''} ${toolLabel}`;
+
+  // Badges
+  const tierLabels = { bronze: '🥉 Bronze +', silver: '🥈 Silver +', gold: '🥇 Gold' };
+  const badges     = document.getElementById('tool-badges');
+  badges.innerHTML = `
+    <span class="badge badge-tier${tool.min_tier === 'silver' ? ' silver' : tool.min_tier === 'gold' ? ' gold' : ''}">${tierLabels[tool.min_tier] || tool.min_tier}</span>
+    <span class="badge badge-vertical">${vertical.icon} ${vertical.label}</span>
+    ${tool.is_new ? '<span class="badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);">Nouveau</span>' : ''}
+  `;
+
+  // Form panel title
+  document.getElementById('form-panel-title').textContent =
+    tool.form_panel_title || `✍️ Paramètres`;
+
+  // Empty state customization
+  if (tool.empty_state_icon)  document.getElementById('empty-icon').textContent  = tool.empty_state_icon;
+  if (tool.empty_state_title) document.getElementById('empty-title').textContent = tool.empty_state_title;
+  if (tool.empty_state_text)  document.getElementById('empty-text').innerHTML    = tool.empty_state_text;
+
+  // Result panel title
+  const resultTitle = document.getElementById('result-panel-title');
+  if (resultTitle) resultTitle.textContent = `💬 ${toolLabel.includes('Estimation') || toolLabel.includes('Analyse') ? 'Résultat' : 'Contenu généré'}`;
+
+  // ── 5. Render dynamic form ────────────────────────────────────────────────
+  const renderer  = ToolRenderer.create(tool.input_schema);
+  const formEl    = document.getElementById('form-fields');
+  renderer.renderInto(formEl);
+
+  // ── 6. Initialize PSTool ──────────────────────────────────────────────────
+  // PSTool handles: form submit, API call, result display, history, quota, copy, regen
+  PSTool.init({
+    toolSlug:     tool.slug,
+    toolVertical: tool.vertical,
+    toolMinTier:  tool.min_tier,
+    generateLabel: tool.generate_label || 'Générer',
+    loadingText:   tool.loading_text   || "L'IA génère votre contenu",
+
+    // Dynamic collectInputs — reads all fields from the rendered form
+    collectInputs: () => {
+      // Validate first
+      if (!renderer.validate(formEl)) {
+        PSTool.showToast('Veuillez remplir les champs obligatoires.', 'error');
+        return null;
+      }
+      return renderer.collectInputs(formEl);
+    },
+
+    // History info: show first 2-3 field values as summary
+    renderHistoryInfo: (item) => {
+      if (!item.input_data) return '';
+      const vals = Object.values(item.input_data).filter(v => v && String(v).trim());
+      return vals.slice(0, 3).join(' · ');
+    },
+  });
+
+  // Enable the generate button (was disabled during skeleton loading)
+  document.getElementById('generate-btn').disabled = false;
+  document.getElementById('btn-text').textContent = tool.generate_label || 'Générer';
+
+})();
+</script>
+</body>
+</html>

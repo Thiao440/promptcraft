@@ -229,7 +229,17 @@ const PSTool = (() => {
         body: JSON.stringify({ toolSlug: _cfg.toolSlug, inputs }),
       });
 
-      const data = await res.json();
+      // Parse response defensively: Netlify can return plain-text errors
+      // (cold start crash, missing env var, unhandled exception) that aren't JSON.
+      const rawText = await res.text();
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        console.error('[PSTool] non-JSON response from server:', rawText.slice(0, 300));
+        setLoading(false);
+        return showToast('Erreur serveur inattendue. Réessayez dans un instant.', 'error');
+      }
 
       if (!res.ok) {
         setLoading(false);
@@ -264,6 +274,7 @@ const PSTool = (() => {
       }
 
       const inputs = _cfg.collectInputs();
+      if (!inputs) return;  // validation failed (dynamic tool renderer returns null)
       _lastInputs  = inputs;
       generate(inputs);
     });

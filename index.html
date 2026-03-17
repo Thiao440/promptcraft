@@ -71,54 +71,40 @@ span[data-fr],span[data-en],span[data-es],span[data-pt],span[data-ar]{display:no
 .a5{animation:fadeUp 0.8s ease both 0.48s;}
 @media (prefers-reduced-motion:reduce){.a1,.a2,.a3,.a4,.a5{animation:none;}}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);
-  backdrop-filter:blur(18px);border-bottom:1px solid var(--border);
-  padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:60px;}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;
-  color:var(--cream);text-decoration:none;letter-spacing:0.02em;}
-.nav-logo em{color:var(--gold);font-style:italic;}
-.nav-center{display:flex;align-items:center;}
-.nav-item{position:relative;}
-.nav-btn{background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;
-  font-size:13px;color:var(--muted);letter-spacing:0.04em;padding:0 14px;
-  height:60px;display:flex;align-items:center;gap:5px;transition:color 0.2s;}
-.nav-btn:hover{color:var(--cream);}
-.nav-btn svg{transition:transform 0.2s;}
-.nav-item:hover .nav-btn svg{transform:rotate(180deg);}
-.nav-dropdown{position:absolute;top:60px;left:0;min-width:220px;
-  background:#1a1814;border:1px solid var(--border);border-radius:10px;
-  padding:8px 0;opacity:0;pointer-events:none;transform:translateY(-6px);
-  transition:all 0.2s;z-index:100;}
-.nav-item:hover .nav-dropdown{opacity:1;pointer-events:auto;transform:translateY(0);}
-.nav-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 18px;
-  color:var(--muted);text-decoration:none;font-size:13px;transition:all 0.15s;}
-.nav-dropdown a:hover{color:var(--cream);background:rgba(201,168,76,0.06);}
-.nav-dropdown a .tag{font-size:10px;background:var(--em);color:#fff;
-  border-radius:4px;padding:1px 6px;margin-left:auto;}
-.nav-dropdown a .tag.soon{background:#444;}
-.nav-right{display:flex;align-items:center;gap:16px;}
-.nav-cta{background:var(--gold);color:#0c0b09;border:none;border-radius:7px;
-  padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;
-  font-family:'Outfit',sans-serif;text-decoration:none;transition:opacity 0.2s;}
-.nav-cta:hover{opacity:0.85;}
-
-/* Lang switcher */
-.lang-drop{position:relative;}
-#lang-current{background:none;border:1px solid var(--border);border-radius:7px;
-  color:var(--cream);font-family:'Outfit',sans-serif;font-size:13px;
-  padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:4px;}
-#lang-current:hover{border-color:var(--gold);}
-.lang-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:150px;
-  background:#1a1814;border:1px solid var(--border);border-radius:10px;
-  padding:6px 0;opacity:0;pointer-events:none;transform:translateY(-4px);
-  transition:all 0.2s;z-index:200;}
-.lang-drop:hover .lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
-.lang-opt{display:block;width:100%;padding:9px 16px;background:none;border:none;
-  color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;
-  cursor:pointer;text-align:left;transition:all 0.15s;}
-.lang-opt:hover{color:var(--cream);background:rgba(201,168,76,0.06);}
-.lang-opt[aria-current="true"]{color:var(--gold);}
+/* ── PS-NAV UNIFIED ── */
+.ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.ps-nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);text-decoration:none;letter-spacing:0.02em;}
+.ps-nav-logo em{color:var(--gold);font-style:italic;}
+.ps-nav-center{display:flex;align-items:center;}
+.ps-nav-item{position:relative;}
+.ps-nav-btn{background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);letter-spacing:0.04em;padding:0 14px;height:60px;display:flex;align-items:center;gap:5px;transition:color 0.2s;}
+.ps-nav-btn:hover{color:var(--cream);}
+.ps-nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);letter-spacing:0.04em;padding:0 14px;height:60px;text-decoration:none;display:flex;align-items:center;transition:color 0.2s;}
+.ps-nav-a:hover,.ps-nav-a.ps-active{color:var(--cream);}
+.ps-nav-gold{color:var(--gold) !important;font-weight:600;}
+.ps-nav-ai{color:#a78bfa !important;}.ps-nav-ai:hover{color:#c4b5fd !important;}
+.ps-dd{position:absolute;top:60px;left:-8px;background:#1a1814;border:1px solid var(--border);min-width:240px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);border-radius:10px;overflow:hidden;}
+.ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-dd-row{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;text-decoration:none;color:var(--cream);font-family:'Outfit',sans-serif;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.15s;}
+.ps-dd-row:last-child{border-bottom:none;}
+.ps-dd-row:hover{background:rgba(201,168,76,0.07);color:var(--gold);}
+.ps-dd-row.ps-soon{color:var(--muted);cursor:default;pointer-events:none;opacity:.5;}
+.ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#22c55e;letter-spacing:0.1em;text-transform:uppercase;border-radius:4px;}
+.ps-badge-soon{font-size:8px;padding:2px 7px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;border-radius:4px;}
+.ps-nav-right{display:flex;align-items:center;gap:10px;}
+.ps-nav-cta{background:var(--gold);color:#0c0b09;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.04em;padding:8px 18px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:opacity 0.2s;border-radius:7px;}
+.ps-nav-cta:hover{opacity:0.85;}
+/* ── LANG SWITCHER ── */
+.ps-lang-drop{position:relative;}
+.ps-lang-drop-btn{background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:0 8px;height:60px;display:flex;align-items:center;gap:3px;transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.ps-lang-drop-btn:hover{color:var(--cream);}
+.ps-lang-menu{position:absolute;top:60px;right:0;background:#1a1814;border:1px solid var(--border);border-radius:10px;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);min-width:148px;}
+.ps-lang-drop:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-lang-opt{display:block;width:100%;background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:var(--cream);padding:10px 16px;text-align:left;transition:background 0.15s;border-bottom:1px solid var(--border);}
+.ps-lang-opt:last-child{border-bottom:none;}
+.ps-lang-opt:hover{background:rgba(201,168,76,0.07);color:var(--gold);}
+.ps-lang-opt[aria-current="true"]{color:var(--gold);}
+@media(max-width:768px){.ps-nav-center{display:none;}.ps-nav{padding:0 20px;}}
 
 /* ── HERO ── */
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;
@@ -246,50 +232,36 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
 <body>
 
 <!-- ── NAV ── -->
-<nav>
-  <a href="/" class="nav-logo">The Prompt <em>Studio</em></a>
-  <div class="nav-center">
-    <div class="nav-item">
-      <button class="nav-btn">
-        <span data-fr>Produits</span><span data-en>Products</span><span data-es>Productos</span><span data-pt>Produtos</span><span data-ar>المنتجات</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-      <div class="nav-dropdown">
-        <a href="promptcraft-immo.html">🏠 <span data-fr>Immo Pro</span><span data-en>Real Estate Pro</span><span data-es>Inmobiliaria Pro</span><span data-pt>Imobiliária Pro</span><span data-ar>عقارات برو</span> <span class="tag">€47</span></a>
-        <a href="promptcraft-commerce.html">🛒 <span data-fr>Commerce Pro</span><span data-en>Commerce Pro</span><span data-es>Comercio Pro</span><span data-pt>Comércio Pro</span><span data-ar>تجارة برو</span> <span class="tag">€57</span></a>
-        <a href="promptcraft-legal.html">⚖️ <span data-fr>Juridique Pro</span><span data-en>Legal Pro</span><span data-es>Jurídico Pro</span><span data-pt>Jurídico Pro</span><span data-ar>قانوني برو</span> <span class="tag">€97</span></a>
-        <a href="finance.html">💼 <span data-fr>Finance & Conseil</span><span data-en>Finance & Advisory</span><span data-es>Finanzas & Consultoría</span><span data-pt>Finanças & Consultoria</span><span data-ar>مالية واستشارات</span> <span class="tag soon"><span data-fr>Sur devis</span><span data-en>Custom</span><span data-es>A medida</span><span data-pt>Sob consulta</span><span data-ar>حسب الطلب</span></span></a>
+<nav class="ps-nav">
+  <a href="/" class="ps-nav-logo">The Prompt <em>Studio</em></a>
+  <div class="ps-nav-center">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn">Outils IA ▾</button>
+      <div class="ps-dd">
+        <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>📈 Finance</span><span class="ps-badge-live">Live</span></a>
+        <span class="ps-dd-row ps-soon"><span>🛒 Commerce</span><span class="ps-badge-soon">Bientôt</span></span>
+        <span class="ps-dd-row ps-soon"><span>⚖️ Juridique</span><span class="ps-badge-soon">Bientôt</span></span>
       </div>
     </div>
-    <div class="nav-item">
-      <button class="nav-btn">
-        <span data-fr>Services</span><span data-en>Services</span><span data-es>Servicios</span><span data-pt>Serviços</span><span data-ar>الخدمات</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-      <div class="nav-dropdown">
-        <a href="finance.html">💼 <span data-fr>Conseil IA sur mesure</span><span data-en>Custom AI Advisory</span><span data-es>Asesoría IA a medida</span><span data-pt>Consultoria IA personalizada</span><span data-ar>استشارة ذكاء اصطناعي مخصصة</span></a>
-        <a href="contact.html">✉️ <span data-fr>Nous contacter</span><span data-en>Contact us</span><span data-es>Contáctenos</span><span data-pt>Contate-nos</span><span data-ar>اتصل بنا</span></a>
-      </div>
-    </div>
-    <a href="contact.html" class="nav-btn" style="text-decoration:none;">
-      <span data-fr>Contact</span><span data-en>Contact</span><span data-es>Contacto</span><span data-pt>Contato</span><span data-ar>تواصل</span>
-    </a>
+    <a href="/finance.html" class="ps-nav-a ps-nav-gold">Finance IA</a>
+    <a href="/conseil-sur-mesure.html" class="ps-nav-a">Conseil sur mesure</a>
+    <a href="/assistant.html" class="ps-nav-a ps-nav-ai">✦ Assistant IA</a>
+    <a href="/contact.html" class="ps-nav-a">Contact</a>
   </div>
-  <div class="nav-right">
-        <a href="/login" class="nav-btn" style="text-decoration:none;font-size:13px;" id="nav-account-link" onclick="checkSession(event)">Mon compte</a>
-    <div class="lang-drop">
-      <button id="lang-current">🇫🇷 ▾</button>
-      <div class="lang-menu">
-        <button class="lang-opt" onclick="setLang('fr')" aria-current="true">🇫🇷 Français</button>
-        <button class="lang-opt" onclick="setLang('en')" aria-current="false">🇬🇧 English</button>
-        <button class="lang-opt" onclick="setLang('es')" aria-current="false">🇪🇸 Español</button>
-        <button class="lang-opt" onclick="setLang('pt')" aria-current="false">🇧🇷 Português</button>
-        <button class="lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
+  <div class="ps-nav-right">
+    <div class="ps-lang-drop">
+      <button id="lang-current" class="ps-lang-drop-btn">🇫🇷 ▾</button>
+      <div class="ps-lang-menu">
+        <button class="ps-lang-opt" onclick="setLang('fr')" aria-current="true">🇫🇷 Français</button>
+        <button class="ps-lang-opt" onclick="setLang('en')" aria-current="false">🇬🇧 English</button>
+        <button class="ps-lang-opt" onclick="setLang('es')" aria-current="false">🇪🇸 Español</button>
+        <button class="ps-lang-opt" onclick="setLang('pt')" aria-current="false">🇧🇷 Português</button>
+        <button class="ps-lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
       </div>
     </div>
-    <a href="promptcraft-immo.html" class="nav-cta">
-      <span data-fr>Voir les toolkits</span><span data-en>Browse toolkits</span><span data-es>Ver toolkits</span><span data-pt>Ver toolkits</span><span data-ar>استعرض الأدوات</span>
-    </a>
+    <a href="/login.html" class="ps-nav-a" id="nav-account-link" onclick="checkSession(event)">Mon compte</a>
+    <a href="/tarifs.html" class="ps-nav-cta">Voir les offres</a>
   </div>
 </nav>
 
@@ -311,19 +283,19 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
       <span data-ar>الذكاء الاصطناعي الذي <em>يحوّل</em><br>إنتاجيتك</span>
     </h1>
     <p class="hero-sub a3">
-      <span data-fr>Des toolkits IA premium, pensés pour les professionnels exigeants. Agents immobiliers, commerçants, juristes — gagnez des heures chaque semaine.</span>
-      <span data-en>Premium AI toolkits built for demanding professionals. Real estate agents, merchants, lawyers — save hours every week.</span>
-      <span data-es>Toolkits IA premium diseñados para profesionales exigentes. Agentes inmobiliarios, comerciantes, juristas — ahorra horas cada semana.</span>
-      <span data-pt>Toolkits IA premium pensados para profissionais exigentes. Agentes imobiliários, comerciantes, juristas — ganhe horas por semana.</span>
-      <span data-ar>أدوات ذكاء اصطناعي متميزة مصممة للمحترفين المطّلعين. وكلاء العقارات، التجار، المحامون — وفّر ساعات كل أسبوع.</span>
+      <span data-fr>Un SaaS IA conçu pour les professionnels exigeants. Accédez à des outils puissants par métier — agents immobiliers, commerçants, juristes — et gagnez des heures chaque semaine.</span>
+      <span data-en>An AI SaaS built for demanding professionals. Powerful tools by profession — real estate agents, merchants, lawyers — save hours every week.</span>
+      <span data-es>Un SaaS IA diseñado para profesionales exigentes. Herramientas potentes por sector — agentes inmobiliarios, comerciantes, juristas — ahorra horas cada semana.</span>
+      <span data-pt>Um SaaS IA criado para profissionais exigentes. Ferramentas poderosas por setor — agentes imobiliários, comerciantes, juristas — ganhe horas por semana.</span>
+      <span data-ar>SaaS ذكاء اصطناعي مصمم للمحترفين المطّلعين. أدوات قوية حسب المهنة — وكلاء عقارات، تجار، محامون — وفّر ساعات كل أسبوع.</span>
     </p>
     <div class="hero-btns a4">
-      <a href="#products" class="btn-primary">
-        <span data-fr>Découvrir les toolkits</span>
-        <span data-en>Explore toolkits</span>
-        <span data-es>Descubrir toolkits</span>
-        <span data-pt>Descobrir toolkits</span>
-        <span data-ar>استكشف الأدوات</span>
+      <a href="tarifs.html" class="btn-primary">
+        <span data-fr>Découvrir nos outils</span>
+        <span data-en>Explore our tools</span>
+        <span data-es>Descubrir nuestras herramientas</span>
+        <span data-pt>Descobrir nossas ferramentas</span>
+        <span data-ar>استكشف أدواتنا</span>
       </a>
       <a href="contact.html" class="btn-outline">
         <span data-fr>Nous contacter</span>
@@ -349,81 +321,81 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
 <section id="products">
   <div class="container">
     <p class="section-label a1">
-      <span data-fr>Nos Toolkits</span><span data-en>Our Toolkits</span><span data-es>Nuestros Toolkits</span><span data-pt>Nossos Toolkits</span><span data-ar>أدواتنا</span>
+      <span data-fr>Nos outils IA</span><span data-en>Our AI Tools</span><span data-es>Nuestras herramientas IA</span><span data-pt>Nossas ferramentas IA</span><span data-ar>أدواتنا الذكية</span>
     </p>
     <h2 class="section-title a2">
-      <span data-fr>Un toolkit complet pour chaque métier</span>
-      <span data-en>A complete toolkit for every profession</span>
-      <span data-es>Un toolkit completo para cada profesión</span>
-      <span data-pt>Um toolkit completo para cada profissão</span>
-      <span data-ar>أداة متكاملة لكل مهنة</span>
+      <span data-fr>Des outils IA puissants pour chaque métier</span>
+      <span data-en>Powerful AI tools for every profession</span>
+      <span data-es>Herramientas IA potentes para cada profesión</span>
+      <span data-pt>Ferramentas IA poderosas para cada profissão</span>
+      <span data-ar>أدوات ذكاء اصطناعي قوية لكل مهنة</span>
     </h2>
     <p class="section-sub a3">
-      <span data-fr>Pas de prompts génériques. Chaque toolkit est conçu pour votre métier, testé en conditions réelles, livré avec formation et workflows clés-en-main.</span>
-      <span data-en>No generic prompts. Each toolkit is built for your profession, tested in real conditions, delivered with training and ready-to-use workflows.</span>
-      <span data-es>Sin prompts genéricos. Cada toolkit está diseñado para tu profesión, probado en condiciones reales, entregado con formación y workflows listos para usar.</span>
-      <span data-pt>Sem prompts genéricos. Cada toolkit é criado para a sua profissão, testado em condições reais, entregue com formação e workflows prontos.</span>
-      <span data-ar>لا أدوات عامة. كل toolkit مصمم لمهنتك، مُختبر في ظروف حقيقية، يُسلَّم مع تدريب وسير عمل جاهزة للاستخدام.</span>
+      <span data-fr>Un abonnement par verticale métier. Accès immédiat à tous les outils IA de votre secteur — annonces, emails, analyses, estimations — sans installation.</span>
+      <span data-en>One subscription per professional vertical. Instant access to all AI tools in your sector — listings, emails, analyses, estimates — no setup.</span>
+      <span data-es>Una suscripción por vertical profesional. Acceso inmediato a todas las herramientas IA de tu sector — sin instalación.</span>
+      <span data-pt>Uma assinatura por vertical profissional. Acesso imediato a todas as ferramentas IA do seu setor — sem instalação.</span>
+      <span data-ar>اشتراك واحد لكل قطاع مهني. وصول فوري لجميع أدوات الذكاء الاصطناعي في قطاعك — دون إعداد.</span>
     </p>
     <div class="prod-grid">
-      <!-- Immo -->
-      <a href="promptcraft-immo.html" class="prod-card a1">
+      <!-- Immo — LIVE -->
+      <a href="tarifs.html?v=immo" class="prod-card a1">
         <div class="prod-icon">🏠</div>
         <div class="prod-title">
-          <span data-fr>ImmoPrompts Pro</span>
-          <span data-en>Real Estate Pro</span>
-          <span data-es>Inmobiliaria Pro</span>
-          <span data-pt>Imobiliária Pro</span>
-          <span data-ar>عقارات برو</span>
+          <span data-fr>Outils Immobilier</span>
+          <span data-en>Real Estate Tools</span>
+          <span data-es>Herramientas Inmobiliarias</span>
+          <span data-pt>Ferramentas Imobiliárias</span>
+          <span data-ar>أدوات العقارات</span>
         </div>
         <div class="prod-desc">
-          <span data-fr>50 prompts + workflows IA pour agents immobiliers. Annonces, mandats, relances CRM automatisées.</span>
-          <span data-en>50 prompts + AI workflows for real estate agents. Listings, mandates, automated CRM follow-ups.</span>
-          <span data-es>50 prompts + workflows IA para agentes inmobiliarios. Anuncios, mandatos, seguimiento CRM automatizado.</span>
-          <span data-pt>50 prompts + workflows IA para agentes imobiliários. Anúncios, mandatos, seguimentos CRM automatizados.</span>
-          <span data-ar>50 موجّه + سير عمل ذكاء اصطناعي لوكلاء العقارات. إعلانات، عقود، متابعة CRM آلية.</span>
+          <span data-fr>7 outils IA pour agents, promoteurs et syndics. Annonces, emails, estimations, rentabilité locative — en quelques secondes.</span>
+          <span data-en>7 AI tools for agents, developers and property managers. Listings, emails, estimates, rental yield — in seconds.</span>
+          <span data-es>7 herramientas IA para agentes y promotores. Anuncios, emails, estimaciones, rentabilidad — en segundos.</span>
+          <span data-pt>7 ferramentas IA para agentes e promotores. Anúncios, emails, estimativas, rendimento — em segundos.</span>
+          <span data-ar>7 أدوات ذكاء اصطناعي للوكلاء والمطورين. إعلانات، بريد، تقديرات، عوائد — في ثوانٍ.</span>
         </div>
-        <div class="prod-price">€47 — <span data-fr>Accès à vie</span><span data-en>Lifetime access</span><span data-es>Acceso de por vida</span><span data-pt>Acesso vitalício</span><span data-ar>وصول مدى الحياة</span></div>
+        <div class="prod-price" style="color:#22c55e">✦ <span data-fr>Disponible · dès 29€/mois</span><span data-en>Live · from €29/month</span><span data-es>Disponible · desde 29€/mes</span><span data-pt>Disponível · a partir de 29€/mês</span><span data-ar>متاح · من 29€/شهر</span></div>
       </a>
-      <!-- Commerce -->
-      <a href="promptcraft-commerce.html" class="prod-card a2">
+      <!-- Commerce — coming soon -->
+      <div class="prod-card a2" style="opacity:.38;cursor:not-allowed;pointer-events:none;">
         <div class="prod-icon">🛒</div>
         <div class="prod-title">
-          <span data-fr>Commerce Pro</span>
-          <span data-en>Commerce Pro</span>
-          <span data-es>Comercio Pro</span>
-          <span data-pt>Comércio Pro</span>
-          <span data-ar>تجارة برو</span>
+          <span data-fr>Outils Commerce</span>
+          <span data-en>Commerce Tools</span>
+          <span data-es>Herramientas Comercio</span>
+          <span data-pt>Ferramentas Comércio</span>
+          <span data-ar>أدوات التجارة</span>
         </div>
         <div class="prod-desc">
-          <span data-fr>Fiches produits, campagnes email, chatbots — l'IA au service de votre croissance e-commerce.</span>
-          <span data-en>Product descriptions, email campaigns, chatbots — AI powering your e-commerce growth.</span>
-          <span data-es>Fichas de producto, campañas email, chatbots — IA al servicio de tu crecimiento e-commerce.</span>
-          <span data-pt>Fichas de produto, campanhas email, chatbots — IA ao serviço do seu crescimento e-commerce.</span>
-          <span data-ar>أوصاف المنتجات، حملات البريد الإلكتروني، الدردشة الآلية — الذكاء الاصطناعي في خدمة نموك.</span>
+          <span data-fr>Fiches produits, emails marketing, posts réseaux sociaux, stratégie de contenu — pour e-commerçants et retailers.</span>
+          <span data-en>Product descriptions, marketing emails, social posts, content strategy — for e-commerce and retail.</span>
+          <span data-es>Fichas de producto, emails de marketing, posts en redes sociales — para e-commerce y retail.</span>
+          <span data-pt>Fichas de produto, emails de marketing, posts — para e-commerce e retalho.</span>
+          <span data-ar>أوصاف المنتجات، بريد التسويق، منشورات — للتجارة الإلكترونية.</span>
         </div>
-        <div class="prod-price">€57 — <span data-fr>Accès à vie</span><span data-en>Lifetime access</span><span data-es>Acceso de por vida</span><span data-pt>Acesso vitalício</span><span data-ar>وصول مدى الحياة</span></div>
-      </a>
-      <!-- Legal -->
-      <a href="promptcraft-legal.html" class="prod-card a3">
+        <div class="prod-price"><span class="tag soon"><span data-fr>Bientôt disponible</span><span data-en>Coming soon</span><span data-es>Próximamente</span><span data-pt>Em breve</span><span data-ar>قريباً</span></span></div>
+      </div>
+      <!-- Juridique — coming soon -->
+      <div class="prod-card a3" style="opacity:.38;cursor:not-allowed;pointer-events:none;">
         <div class="prod-icon">⚖️</div>
         <div class="prod-title">
-          <span data-fr>Juridique Pro</span>
-          <span data-en>Legal Pro</span>
-          <span data-es>Jurídico Pro</span>
-          <span data-pt>Jurídico Pro</span>
-          <span data-ar>قانوني برو</span>
+          <span data-fr>Outils Juridique</span>
+          <span data-en>Legal Tools</span>
+          <span data-es>Herramientas Jurídicas</span>
+          <span data-pt>Ferramentas Jurídicas</span>
+          <span data-ar>أدوات قانونية</span>
         </div>
         <div class="prod-desc">
-          <span data-fr>Rédaction de contrats, notes juridiques, recherches — l'IA pour les professionnels du droit.</span>
-          <span data-en>Contract drafting, legal notes, research — AI for legal professionals.</span>
-          <span data-es>Redacción de contratos, notas jurídicas, investigaciones — IA para profesionales del derecho.</span>
-          <span data-pt>Redação de contratos, notas jurídicas, pesquisas — IA para profissionais do direito.</span>
-          <span data-ar>صياغة العقود، الملاحظات القانونية، البحوث — الذكاء الاصطناعي للمحترفين القانونيين.</span>
+          <span data-fr>Courriers, résumés de contrats, notes juridiques, mises en demeure — pour avocats, juristes et notaires.</span>
+          <span data-en>Letters, contract summaries, legal notes, formal notices — for lawyers, legal professionals and notaries.</span>
+          <span data-es>Cartas, resúmenes de contratos, notas jurídicas — para abogados y notarios.</span>
+          <span data-pt>Cartas, resumos de contratos, notas jurídicas — para advogados e notários.</span>
+          <span data-ar>رسائل، ملخصات عقود، ملاحظات قانونية — للمحامين والموثقين.</span>
         </div>
-        <div class="prod-price">€97 — <span data-fr>Accès à vie</span><span data-en>Lifetime access</span><span data-es>Acceso de por vida</span><span data-pt>Acesso vitalício</span><span data-ar>وصول مدى الحياة</span></div>
-      </a>
-      <!-- Finance -->
+        <div class="prod-price"><span class="tag soon"><span data-fr>Bientôt disponible</span><span data-en>Coming soon</span><span data-es>Próximamente</span><span data-pt>Em breve</span><span data-ar>قريباً</span></span></div>
+      </div>
+      <!-- Finance — offre sur mesure (inchangée) -->
       <a href="finance.html" class="prod-card a4">
         <div class="prod-icon">💼</div>
         <div class="prod-title">
@@ -557,8 +529,8 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
         <span data-ar>انضم إلى مئات المحترفين الذين يستخدمون بالفعل The Prompt Studio.</span>
       </p>
       <div class="hero-btns">
-        <a href="promptcraft-immo.html" class="btn-primary">
-          <span data-fr>Voir les toolkits</span><span data-en>Browse toolkits</span><span data-es>Ver toolkits</span><span data-pt>Ver toolkits</span><span data-ar>استعرض الأدوات</span>
+        <a href="tarifs.html" class="btn-primary">
+          <span data-fr>Accéder aux outils</span><span data-en>Access the tools</span><span data-es>Acceder a las herramientas</span><span data-pt>Aceder às ferramentas</span><span data-ar>الوصول إلى الأدوات</span>
         </a>
         <a href="contact.html" class="btn-outline">
           <span data-fr>Parler à l'équipe</span><span data-en>Talk to the team</span><span data-es>Hablar con el equipo</span><span data-pt>Falar com a equipe</span><span data-ar>تحدث مع الفريق</span>
@@ -582,10 +554,10 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
       </p>
     </div>
     <div class="footer-col">
-      <h4><span data-fr>Produits</span><span data-en>Products</span><span data-es>Productos</span><span data-pt>Produtos</span><span data-ar>المنتجات</span></h4>
-      <a href="promptcraft-immo.html"><span data-fr>Immo Pro</span><span data-en>Real Estate Pro</span><span data-es>Inmobiliaria Pro</span><span data-pt>Imobiliária Pro</span><span data-ar>عقارات برو</span></a>
-      <a href="promptcraft-commerce.html"><span data-fr>Commerce Pro</span><span data-en>Commerce Pro</span><span data-es>Comercio Pro</span><span data-pt>Comércio Pro</span><span data-ar>تجارة برو</span></a>
-      <a href="promptcraft-legal.html"><span data-fr>Juridique Pro</span><span data-en>Legal Pro</span><span data-es>Jurídico Pro</span><span data-pt>Jurídico Pro</span><span data-ar>قانوني برو</span></a>
+      <h4><span data-fr>Outils IA</span><span data-en>AI Tools</span><span data-es>Herramientas IA</span><span data-pt>Ferramentas IA</span><span data-ar>الأدوات الذكية</span></h4>
+      <a href="tarifs.html?v=immo"><span data-fr>Immobilier</span><span data-en>Real Estate</span><span data-es>Inmobiliaria</span><span data-pt>Imobiliária</span><span data-ar>عقارات</span></a>
+      <a style="opacity:.4;pointer-events:none;"><span data-fr>Commerce (bientôt)</span><span data-en>Commerce (soon)</span><span data-es>Comercio (próximo)</span><span data-pt>Comércio (em breve)</span><span data-ar>تجارة (قريباً)</span></a>
+      <a style="opacity:.4;pointer-events:none;"><span data-fr>Juridique (bientôt)</span><span data-en>Legal (soon)</span><span data-es>Jurídico (próximo)</span><span data-pt>Jurídico (em breve)</span><span data-ar>قانوني (قريباً)</span></a>
       <a href="finance.html"><span data-fr>Finance &amp; Conseil</span><span data-en>Finance &amp; Advisory</span><span data-es>Finanzas</span><span data-pt>Finanças</span><span data-ar>مالية واستشارات</span></a>
     </div>
     <div class="footer-col">
@@ -643,7 +615,7 @@ function setLang(lang) {
   var btn = document.getElementById('lang-current');
   if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
   // Update aria-current on options
-  document.querySelectorAll('.lang-opt').forEach(function(o) {
+  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
     var fn = o.getAttribute('onclick') || '';
     o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
   });
@@ -714,5 +686,7 @@ function checkSession(e) {
   // Replaced by the async check above when Supabase is configured
 }
 </script>
+<script src="/js/ps-auth.js"></script>
+<script src="/js/ps-chat-widget.js"></script>
 </body>
 </html>

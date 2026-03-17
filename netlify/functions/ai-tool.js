@@ -181,6 +181,16 @@ exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST')    return err(405, 'Method not allowed');
 
+  // Guard: fail fast with a JSON error if required env vars are missing.
+  // Without this, the function crashes mid-execution and Netlify may return
+  // a plain-text error page that breaks res.json() on the client side.
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !ANTHROPIC_API_KEY) {
+    const missing = ['SUPABASE_URL','SUPABASE_SERVICE_KEY','ANTHROPIC_API_KEY']
+      .filter(k => !process.env[k]).join(', ');
+    console.error('[ai-tool] Missing env vars:', missing);
+    return err(500, 'Server misconfiguration. Contact support.');
+  }
+
   // ── 1. Parse body ──────────────────────────────────────────────────────────
   let toolSlug, inputs;
   try {
