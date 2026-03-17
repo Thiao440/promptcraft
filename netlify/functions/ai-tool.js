@@ -7,13 +7,25 @@
  *
  * Flow:
  *   1. Verify JWT → get user
- *   2. Load tool config from Supabase (min_tier, vertical, system_prompt, prompt_template, max_output_tokens)
- *   3. Check subscription tier + vertical access (filtered by tool.vertical)
- *   4. Check monthly quota (Bronze: 50, Silver: 150, Gold: unlimited)
- *   5. Build system prompt + structured user message
- *   6. Call Anthropic Claude API (with prompt caching on system turn)
- *   7. Log to tool_usage + atomically increment usage_quotas
- *   8. Return generated text
+ *   2. Per-user rate limiting (10 req/min)
+ *   3. Load tool config from Supabase (min_tier, vertical, system_prompt, prompt_template, max_output_tokens)
+ *   4. Check subscription tier + vertical access (filtered by tool.vertical)
+ *   5. Check monthly quota (Bronze: 50, Silver: 150, Gold: unlimited)
+ *   6. Validate + sanitize inputs against field constraints
+ *   7. Build system prompt + structured user message
+ *   8. Call Anthropic Claude API (with prompt caching on system turn + retry on 429/529)
+ *   9. Log to tool_usage + atomically increment usage_quotas (structured logging)
+ *  10. Return generated text
+ *
+ * Hardened for 1M users:
+ *   - Per-user rate limiting via in-memory sliding window
+ *   - CLAUDE_MODEL from env var with fallback
+ *   - Per-tool max_tokens from DB
+ *   - Input length validation per field type
+ *   - Claude API error classification + auto-retry (429, 529)
+ *   - Structured JSON logging for all events
+ *   - Standardized error response format
+ *   - Request timeout on Claude API calls
  */
 
 const { createClient } = require('@supabase/supabase-js');
@@ -24,10 +36,60 @@ const SUPABASE_URL         = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const ANTHROPIC_API_KEY    = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_API_URL    = 'https://api.anthropic.com/v1/messages';
-const CLAUDE_MODEL         = 'claude-3-5-haiku-20241022';
-const DEFAULT_MAX_TOKENS   = 800;
+const CLAUDE_MODEL         = process.env.CLAUDE_MODEL || 'claude-3-5-haiku-20241022';
+const DEFAULT_MAX_TOKENS   = parseInt(process.env.DEFAULT_MAX_TOKENS, 10) || 800;
 const TIER_QUOTA           = { bronze: 50, silver: 150, gold: Infinity };
 const TIER_ORDER           = { bronze: 1, silver: 2, gold: 3 };
+
+// ── Rate limiting (in-memory sliding window, per function instance) ──────────
+const RATE_LIMIT_WINDOW_MS = 60_000;  // 1 minute
+const RATE_LIMIT_MAX       = 10;       // 10 requests per minute per user
+const _rateLimitMap = new Map();       // userId → [timestamps]
+
+function isRateLimited(userId) {
+  const now = Date.now();
+  let timestamps = _rateLimitMap.get(userId);
+  if (!timestamps) { timestamps = []; _rateLimitMap.set(userId, timestamps); }
+  // Evict old entries
+  while (timestamps.length && timestamps[0] < now - RATE_LIMIT_WINDOW_MS) timestamps.shift();
+  if (timestamps.length >= RATE_LIMIT_MAX) return true;
+  timestamps.push(now);
+  return false;
+}
+
+// Periodic cleanup to prevent memory leak (every 5 min)
+setInterval(() => {
+  const cutoff = Date.now() - RATE_LIMIT_WINDOW_MS * 2;
+  for (const [uid, ts] of _rateLimitMap) {
+    if (!ts.length || ts[ts.length - 1] < cutoff) _rateLimitMap.delete(uid);
+  }
+}, 300_000);
+
+// ── Input constraints per field type ─────────────────────────────────────────
+const FIELD_MAX_CHARS = {
+  text:     500,
+  number:   20,
+  select:   200,
+  radio:    200,
+  toggle:   10,
+  tone_grid:200,
+  textarea: 4000,
+  hidden:   500,
+};
+
+function sanitizeInputs(inputs, inputSchema) {
+  const clean = {};
+  for (const [key, value] of Object.entries(inputs)) {
+    if (value === undefined || value === null) continue;
+    const str = String(value);
+    // Find field definition to get type
+    const fieldDef = inputSchema?.fields?.find(f => f.name === key);
+    const fieldType = fieldDef?.type || 'text';
+    const maxLen = FIELD_MAX_CHARS[fieldType] || 500;
+    clean[key] = str.slice(0, maxLen);
+  }
+  return clean;
+}
 
 // ── CORS headers ──────────────────────────────────────────────────────────────
 const CORS = {
@@ -37,45 +99,50 @@ const CORS = {
   'Content-Type': 'application/json',
 };
 
-// ── Helpers: HTTP responses ───────────────────────────────────────────────────
+// ── Standardized responses ────────────────────────────────────────────────────
 const ok  = (body) => ({ statusCode: 200, headers: CORS, body: JSON.stringify(body) });
-const err = (code, msg) => ({ statusCode: code, headers: CORS, body: JSON.stringify({ error: msg }) });
+const fail = (code, errorCode, message, details = {}) => ({
+  statusCode: code, headers: CORS,
+  body: JSON.stringify({ error: { code: errorCode, message, ...details } }),
+});
+
+// ── Structured logging ────────────────────────────────────────────────────────
+function log(event, data = {}) {
+  console.log(JSON.stringify({ fn: 'ai-tool', event, ts: new Date().toISOString(), ...data }));
+}
 
 // ── Helper: structured XML user message ───────────────────────────────────────
-// Sends inputs once, clearly labeled, in the user turn only.
-// Template ({{key}}) is used if present to control field ordering/labeling;
-// otherwise inputs are serialized as XML for Claude to parse efficiently.
 function buildUserMessage(tool, inputs) {
   if (tool.prompt_template) {
-    // Template controls the user message shape
     return tool.prompt_template.replace(/\{\{(\w+)\}\}/g, (_, key) =>
       inputs[key] !== undefined ? String(inputs[key]) : `[${key} non fourni]`
     );
   }
-
-  // Default: structured XML block — cheaper and clearer than markdown bullets
   const fields = Object.entries(inputs)
     .filter(([, v]) => v !== undefined && v !== null && String(v).trim() !== '')
     .map(([k, v]) => `  <${k}>${String(v).trim()}</${k}>`)
     .join('\n');
-
   return `<demande>\n${fields}\n</demande>`;
 }
 
 // ── Helper: resolve system prompt ─────────────────────────────────────────────
-// Priority: tool.system_prompt (DB) > vertical default
 function buildSystemPrompt(tool) {
   if (tool.system_prompt) return tool.system_prompt;
   return getDefaultSystemPrompt(tool);
 }
 
-// ── Helper: vertical defaults (fallback when DB has no system_prompt) ─────────
 function getDefaultSystemPrompt(tool) {
   const verticalCtx = {
-    immo:     "de l'immobilier",
-    commerce: 'du commerce et e-commerce',
-    legal:    'du droit et du juridique',
-    finance:  'de la finance et de l\'investissement',
+    immo:         "de l'immobilier",
+    commerce:     'du commerce et e-commerce',
+    legal:        'du droit et du juridique',
+    finance:      "de la finance et de l'investissement",
+    marketing:    'du marketing et de la communication',
+    rh:           'des ressources humaines et du recrutement',
+    sante:        'de la santé et du bien-être',
+    education:    "de l'éducation et de la formation",
+    restauration: 'de la restauration et de l\'hôtellerie',
+    freelance:    'du consulting et du freelancing',
   }[tool.vertical] || '';
 
   const base = `Tu es un assistant IA expert pour les professionnels ${verticalCtx}. \
@@ -89,26 +156,23 @@ Réponds uniquement avec le contenu demandé, sans introduction ni commentaire.`
     commerce: '\n\nMaîtrise : marketing digital, copywriting de conversion, SEO, meilleures pratiques e-commerce.',
     legal:    '\n\nMaîtrise : rédaction juridique professionnelle. Ajoute systématiquement : "Ce contenu est fourni à titre indicatif. Consultez un professionnel du droit pour validation."',
     finance:  '\n\nMaîtrise : analyses financières structurées. Ajoute systématiquement : "Ce contenu est informatif et ne constitue pas un conseil en investissement."',
+    sante:    '\n\nMaîtrise : communication santé professionnelle. Ajoute systématiquement : "Ce contenu est informatif et ne remplace pas un avis médical professionnel."',
   };
 
   return base + (extras[tool.vertical] || '');
 }
 
-// ── Helper: call Anthropic API with prompt caching on system turn ─────────────
-function callClaude(systemPrompt, userMessage, maxTokens) {
+// ── Helper: call Claude API with retry on 429/529 ────────────────────────────
+function callClaude(systemPrompt, userMessage, maxTokens, retries = 2) {
   return new Promise((resolve, reject) => {
     const payload = JSON.stringify({
       model:      CLAUDE_MODEL,
       max_tokens: maxTokens,
-      system: [
-        {
-          type: 'text',
-          text: systemPrompt,
-          // Cache the system prompt — saves ~80% of system turn tokens
-          // on repeated calls to the same tool (TTL: 5 min, min 1024 tokens)
-          cache_control: { type: 'ephemeral' },
-        },
-      ],
+      system: [{
+        type: 'text',
+        text: systemPrompt,
+        cache_control: { type: 'ephemeral' },
+      }],
       messages: [{ role: 'user', content: userMessage }],
     });
 
@@ -121,6 +185,7 @@ function callClaude(systemPrompt, userMessage, maxTokens) {
         'anthropic-beta':    'prompt-caching-2024-07-31',
         'Content-Length':    Buffer.byteLength(payload),
       },
+      timeout: 15_000, // 15s timeout
     };
 
     const req = https.request(ANTHROPIC_API_URL, options, (res) => {
@@ -129,6 +194,30 @@ function callClaude(systemPrompt, userMessage, maxTokens) {
       res.on('end', () => {
         try {
           const parsed = JSON.parse(data);
+
+          // Retryable errors: 429 (rate limit) and 529 (overloaded)
+          if ((res.statusCode === 429 || res.statusCode === 529) && retries > 0) {
+            const delay = res.statusCode === 429 ? 2000 : 5000;
+            log('claude_retry', { statusCode: res.statusCode, retries, delay });
+            return setTimeout(() => {
+              callClaude(systemPrompt, userMessage, maxTokens, retries - 1)
+                .then(resolve).catch(reject);
+            }, delay);
+          }
+
+          // Auth error — alert ops
+          if (res.statusCode === 401) {
+            log('claude_auth_error', { statusCode: 401 });
+            return reject(new Error('CLAUDE_AUTH_ERROR'));
+          }
+
+          // Content filter / bad request
+          if (res.statusCode === 400) {
+            const msg = parsed?.error?.message || 'Bad request to AI';
+            log('claude_bad_request', { message: msg });
+            return reject(new Error(`CLAUDE_BAD_REQUEST: ${msg}`));
+          }
+
           if (parsed.error) return reject(new Error(parsed.error.message));
           resolve(parsed);
         } catch (e) {
@@ -137,6 +226,7 @@ function callClaude(systemPrompt, userMessage, maxTokens) {
       });
     });
 
+    req.on('timeout', () => { req.destroy(); reject(new Error('CLAUDE_TIMEOUT')); });
     req.on('error', reject);
     req.write(payload);
     req.end();
@@ -144,34 +234,21 @@ function callClaude(systemPrompt, userMessage, maxTokens) {
 }
 
 // ── Helper: atomic quota increment via RPC ────────────────────────────────────
-// Replaces read-modify-write pattern with a single atomic upsert.
 async function incrementQuota(supabase, userId) {
-  const month = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
-
+  const month = new Date().toISOString().slice(0, 7);
   const { error } = await supabase.rpc('increment_usage_quota', {
     p_user_id: userId,
     p_month:   month,
   });
-
   if (error) {
-    // Fallback: non-atomic upsert (safe if RPC not yet deployed)
-    console.warn('increment_usage_quota RPC unavailable, using fallback:', error.message);
+    log('rpc_fallback', { reason: error.message });
     const { data: existing } = await supabase
-      .from('usage_quotas')
-      .select('id, count')
-      .eq('user_id', userId)
-      .eq('month', month)
-      .single();
-
+      .from('usage_quotas').select('id, count')
+      .eq('user_id', userId).eq('month', month).single();
     if (existing) {
-      await supabase
-        .from('usage_quotas')
-        .update({ count: existing.count + 1 })
-        .eq('id', existing.id);
+      await supabase.from('usage_quotas').update({ count: existing.count + 1 }).eq('id', existing.id);
     } else {
-      await supabase
-        .from('usage_quotas')
-        .insert({ user_id: userId, month, count: 1 });
+      await supabase.from('usage_quotas').insert({ user_id: userId, month, count: 1 });
     }
   }
 }
@@ -179,16 +256,14 @@ async function incrementQuota(supabase, userId) {
 // ── Main handler ──────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
-  if (event.httpMethod !== 'POST')    return err(405, 'Method not allowed');
+  if (event.httpMethod !== 'POST')    return fail(405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
 
-  // Guard: fail fast with a JSON error if required env vars are missing.
-  // Without this, the function crashes mid-execution and Netlify may return
-  // a plain-text error page that breaks res.json() on the client side.
+  // Guard: fail fast if required env vars are missing
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !ANTHROPIC_API_KEY) {
     const missing = ['SUPABASE_URL','SUPABASE_SERVICE_KEY','ANTHROPIC_API_KEY']
       .filter(k => !process.env[k]).join(', ');
-    console.error('[ai-tool] Missing env vars:', missing);
-    return err(500, 'Server misconfiguration. Contact support.');
+    log('missing_env', { missing });
+    return fail(500, 'SERVER_ERROR', 'Server misconfiguration. Contact support.');
   }
 
   // ── 1. Parse body ──────────────────────────────────────────────────────────
@@ -196,36 +271,41 @@ exports.handler = async (event) => {
   try {
     ({ toolSlug, inputs } = JSON.parse(event.body || '{}'));
   } catch {
-    return err(400, 'Invalid JSON body');
+    return fail(400, 'INVALID_JSON', 'Invalid JSON body');
   }
-
   if (!toolSlug || !inputs || typeof inputs !== 'object') {
-    return err(400, 'Missing toolSlug or inputs');
+    return fail(400, 'MISSING_PARAMS', 'Missing toolSlug or inputs');
   }
 
   // ── 2. Verify JWT ──────────────────────────────────────────────────────────
   const authHeader = event.headers.authorization || event.headers.Authorization || '';
   const token = authHeader.replace('Bearer ', '').trim();
-  if (!token) return err(401, 'Missing authorization token');
+  if (!token) return fail(401, 'AUTH_REQUIRED', 'Missing authorization token');
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-  if (authError || !user) return err(401, 'Invalid or expired token');
+  if (authError || !user) return fail(401, 'AUTH_REQUIRED', 'Invalid or expired token');
 
-  // ── 3. Load tool config ────────────────────────────────────────────────────
+  // ── 3. Rate limiting ───────────────────────────────────────────────────────
+  if (isRateLimited(user.id)) {
+    log('rate_limited', { userId: user.id, toolSlug });
+    return fail(429, 'RATE_LIMITED', 'Trop de requêtes. Veuillez patienter 1 minute.', { retryAfter: 60 });
+  }
+
+  // ── 4. Load tool config ────────────────────────────────────────────────────
   const { data: tool, error: toolError } = await supabase
     .from('tools')
-    .select('slug, name, vertical, min_tier, system_prompt, prompt_template, max_output_tokens, is_active')
+    .select('slug, name, vertical, min_tier, system_prompt, prompt_template, max_output_tokens, input_schema, is_active')
     .eq('slug', toolSlug)
     .single();
 
-  if (toolError || !tool) return err(404, 'Tool not found');
-  if (!tool.is_active)    return err(403, 'Tool is currently unavailable');
+  if (toolError || !tool) return fail(404, 'TOOL_NOT_FOUND', 'Tool not found');
+  if (!tool.is_active)    return fail(403, 'TOOL_UNAVAILABLE', 'Tool is currently unavailable');
 
-  // ── 4. Load subscription — filtered by tool vertical ──────────────────────
-  // Critical: a user can have multiple subscriptions (one per vertical).
-  // Must query by vertical to get the relevant one.
+  // ── 5. Validate & sanitize inputs against schema ───────────────────────────
+  inputs = sanitizeInputs(inputs, tool.input_schema);
+
+  // ── 6. Load subscription — filtered by tool vertical ──────────────────────
   const { data: sub } = await supabase
     .from('subscriptions')
     .select('tier, vertical, current_period_end')
@@ -234,85 +314,95 @@ exports.handler = async (event) => {
     .eq('status', 'active')
     .single();
 
-  if (!sub) return err(403, JSON.stringify({ reason: 'no_subscription', vertical: tool.vertical }));
-
+  if (!sub) {
+    return fail(403, 'NO_SUBSCRIPTION', 'Aucun abonnement actif pour cette verticale.', { vertical: tool.vertical });
+  }
   if (sub.current_period_end && new Date(sub.current_period_end) < new Date()) {
-    return err(403, JSON.stringify({ reason: 'expired', vertical: tool.vertical }));
+    return fail(403, 'SUBSCRIPTION_EXPIRED', 'Abonnement expiré.', { vertical: tool.vertical });
   }
 
   const userTierOrder = TIER_ORDER[sub.tier]      || 0;
   const toolTierOrder = TIER_ORDER[tool.min_tier] || 1;
   if (userTierOrder < toolTierOrder) {
-    return err(403, JSON.stringify({
-      reason:   'upgrade_required',
-      required: tool.min_tier,
-      yours:    sub.tier,
-    }));
+    return fail(403, 'UPGRADE_REQUIRED', `Upgrade requis (${tool.min_tier}).`, {
+      required: tool.min_tier, yours: sub.tier,
+    });
   }
 
-  // ── 5. Check monthly quota ─────────────────────────────────────────────────
+  // ── 7. Check monthly quota ─────────────────────────────────────────────────
   const quota = TIER_QUOTA[sub.tier] ?? 50;
-
   if (quota !== Infinity) {
     const month = new Date().toISOString().slice(0, 7);
     const { data: usageRow } = await supabase
-      .from('usage_quotas')
-      .select('count')
-      .eq('user_id', user.id)
-      .eq('month', month)
-      .single();
+      .from('usage_quotas').select('count')
+      .eq('user_id', user.id).eq('month', month).single();
 
     const currentCount = usageRow?.count || 0;
     if (currentCount >= quota) {
-      return err(429, JSON.stringify({
-        reason: 'quota_exceeded',
-        used:   currentCount,
-        limit:  quota,
-      }));
+      return fail(429, 'QUOTA_EXCEEDED', `Quota atteint (${currentCount}/${quota}).`, {
+        used: currentCount, limit: quota,
+      });
     }
   }
 
-  // ── 6. Build prompt ────────────────────────────────────────────────────────
+  // ── 8. Build prompt ────────────────────────────────────────────────────────
   const systemPrompt = buildSystemPrompt(tool);
   const userMessage  = buildUserMessage(tool, inputs);
   const maxTokens    = tool.max_output_tokens || DEFAULT_MAX_TOKENS;
 
-  // ── 7. Call Claude ─────────────────────────────────────────────────────────
+  // ── 9. Call Claude with retry ──────────────────────────────────────────────
   const startMs = Date.now();
   let claudeResponse;
   try {
     claudeResponse = await callClaude(systemPrompt, userMessage, maxTokens);
   } catch (e) {
-    console.error('Claude API error:', e.message);
-    return err(502, 'AI generation failed. Please try again.');
+    const durationMs = Date.now() - startMs;
+    log('generation_error', { userId: user.id, toolSlug, error: e.message, durationMs });
+
+    if (e.message === 'CLAUDE_TIMEOUT') {
+      return fail(504, 'GENERATION_TIMEOUT', "La génération a pris trop de temps. Réessayez.");
+    }
+    if (e.message === 'CLAUDE_AUTH_ERROR') {
+      return fail(502, 'GENERATION_FAILED', "Erreur d'authentification IA. Contactez le support.");
+    }
+    if (e.message.startsWith('CLAUDE_BAD_REQUEST')) {
+      return fail(400, 'GENERATION_FAILED', "Le contenu n'a pas pu être généré. Modifiez vos entrées.");
+    }
+    return fail(502, 'GENERATION_FAILED', 'Génération IA échouée. Réessayez dans un instant.');
   }
 
-  const durationMs = Date.now() - startMs;
-  const outputText = claudeResponse.content?.[0]?.text || '';
-  const usage      = claudeResponse.usage || {};
-  const tokensUsed = (usage.input_tokens || 0) + (usage.output_tokens || 0);
-  // Log cache savings for monitoring (cache_read_input_tokens = tokens saved)
-  const tokensSaved = usage.cache_read_input_tokens || 0;
+  const durationMs   = Date.now() - startMs;
+  const outputText   = claudeResponse.content?.[0]?.text || '';
+  const usage        = claudeResponse.usage || {};
+  const tokensUsed   = (usage.input_tokens || 0) + (usage.output_tokens || 0);
+  const tokensSaved  = usage.cache_read_input_tokens || 0;
+  const cacheHit     = tokensSaved > 0;
 
-  // ── 8. Log usage ───────────────────────────────────────────────────────────
+  // ── 10. Log usage (structured) ──────────────────────────────────────────────
+  log('generation_success', {
+    userId: user.id, toolSlug, vertical: tool.vertical, tier: sub.tier,
+    durationMs, tokensUsed, tokensSaved, cacheHit, maxTokens,
+    inputTokens: usage.input_tokens, outputTokens: usage.output_tokens,
+  });
+
   await Promise.all([
     supabase.from('tool_usage').insert({
-      user_id:      user.id,
-      tool_slug:    toolSlug,
-      input_data:   inputs,
-      output_text:  outputText,
-      tokens_used:  tokensUsed,
-      duration_ms:  durationMs,
+      user_id:     user.id,
+      tool_slug:   toolSlug,
+      input_data:  inputs,
+      output_text: outputText,
+      tokens_used: tokensUsed,
+      duration_ms: durationMs,
     }),
     incrementQuota(supabase, user.id),
   ]);
 
-  // ── 9. Return ──────────────────────────────────────────────────────────────
+  // ── 11. Return ──────────────────────────────────────────────────────────────
   return ok({
-    output:      outputText,
+    output:     outputText,
     tokensUsed,
     tokensSaved,
     durationMs,
-    tool:        { slug: toolSlug, name: tool.name },
+    tool:       { slug: toolSlug, name: tool.name },
   });
 };

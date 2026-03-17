@@ -9,6 +9,10 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+function log(event, data = {}) {
+  console.log(JSON.stringify({ fn: 'user-products', event, ts: new Date().toISOString(), ...data }));
+}
+
 // Product metadata for frontend display
 const PRODUCT_META = {
   immo: {

@@ -187,23 +187,41 @@ const PSTool = (() => {
     }
   }
 
-  // ── Error message resolver ──────────────────────────────────────────────────
+  // ── Error message resolver (v3 standardized + v2 legacy compat) ─────────────
   function resolveErrorMsg(data) {
-    // Resolve structured error: either already an object, or a JSON-encoded string.
-    // Plain strings (e.g. "Tool not found") are returned as-is — no JSON.parse attempted.
     let e = null;
+
+    // v3 standardized: { error: { code, message, ... } }
+    if (data.error && typeof data.error === 'object' && data.error.code) {
+      e = data.error;
+      const codeMap = {
+        'QUOTA_EXCEEDED':       `Quota atteint (${e.used||'?'}/${e.limit||'?'} ce mois).`,
+        'UPGRADE_REQUIRED':     `Upgrade requis (${e.required || 'silver'}).`,
+        'NO_SUBSCRIPTION':      'Aucun abonnement actif. Veuillez vous abonner.',
+        'SUBSCRIPTION_EXPIRED': 'Abonnement expiré. Veuillez renouveler.',
+        'RATE_LIMITED':         'Trop de requêtes. Patientez 1 minute.',
+        'GENERATION_TIMEOUT':   'La génération a pris trop de temps. Réessayez.',
+        'GENERATION_FAILED':    'Erreur de génération IA. Réessayez.',
+        'AUTH_REQUIRED':        'Session expirée. Veuillez vous reconnecter.',
+        'TOOL_NOT_FOUND':       'Outil introuvable.',
+        'TOOL_UNAVAILABLE':     'Outil temporairement indisponible.',
+      };
+      return codeMap[e.code] || e.message || 'Une erreur est survenue.';
+    }
+
+    // v2 legacy: { error: '{"reason":"..."}' } or { error: "string" }
     if (data.error && typeof data.error === 'object') {
       e = data.error;
     } else if (typeof data.error === 'string' && data.error.trimStart().startsWith('{')) {
-      try { e = JSON.parse(data.error); } catch { /* not valid JSON — fall through to plain string */ }
+      try { e = JSON.parse(data.error); } catch { /* not JSON */ }
     }
 
     if (e) {
-      if (e.reason === 'quota_exceeded')   return `Quota atteint (${e.used}/${e.limit} générations ce mois).`;
-      if (e.reason === 'upgrade_required') return `Upgrade requis pour cet outil (requis : ${e.required}).`;
+      if (e.reason === 'quota_exceeded')   return `Quota atteint (${e.used}/${e.limit} ce mois).`;
+      if (e.reason === 'upgrade_required') return `Upgrade requis (${e.required}).`;
       if (e.reason === 'wrong_vertical')   return `Cet outil n'est pas dans votre verticale.`;
-      if (e.reason === 'no_subscription')  return 'Aucun abonnement actif. Veuillez vous abonner.';
-      if (e.reason === 'expired')          return 'Abonnement expiré. Veuillez renouveler.';
+      if (e.reason === 'no_subscription')  return 'Aucun abonnement actif.';
+      if (e.reason === 'expired')          return 'Abonnement expiré.';
     }
 
     return (typeof data.error === 'string' ? data.error : null) || 'Une erreur est survenue.';
@@ -211,6 +229,11 @@ const PSTool = (() => {
 
   // ── Core generate ───────────────────────────────────────────────────────────
   async function generate(inputs) {
+    // Offline detection
+    if (!navigator.onLine) {
+      return showToast('Pas de connexion internet. Vérifiez votre réseau.', 'error');
+    }
+
     setLoading(true);
 
     const { data: { session } } = await PS.supabase.auth.getSession();

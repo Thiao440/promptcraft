@@ -13,6 +13,10 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+function log(event, data = {}) {
+  console.log(JSON.stringify({ fn: 'download', event, ts: new Date().toISOString(), ...data }));
+}
+
 // Which file belongs to which product
 const FILE_PRODUCT_MAP = {
   'ImmoPrompts_Pack_AgentImmo_Pro.pdf': ['immo', 'pro'],
@@ -99,6 +103,7 @@ exports.handler = async (event) => {
   }
 
   // Log the download
+  log('download_success', { userId: user.id, filename });
   await supabase
     .from('download_logs')
     .insert({ user_id: user.id, filename, downloaded_at: now.toISOString() })

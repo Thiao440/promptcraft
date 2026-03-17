@@ -23,12 +23,79 @@ const ToolCatalog = (() => {
   // Set of slugs that have input_schema (can use dynamic page)
   let _dynamicSlugs = new Set();
 
+  const CACHE_KEY = 'ps_tool_catalog';
+  const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  /**
+   * Load and parse localStorage cache if valid
+   * Returns { tools, dynamicSlugs, cachedAt } or null
+   */
+  function _loadFromStorage() {
+    try {
+      const stored = localStorage.getItem(CACHE_KEY);
+      if (!stored) return null;
+
+      const parsed = JSON.parse(stored);
+      const age = Date.now() - parsed.cachedAt;
+
+      if (age < CACHE_TTL) {
+        console.log(`[ToolCatalog] Using valid localStorage cache (${Math.round(age / 1000)}s old)`);
+        return parsed;
+      }
+
+      console.log(`[ToolCatalog] localStorage cache expired (${Math.round(age / 1000)}s old)`);
+      return null;
+    } catch (e) {
+      console.warn('[ToolCatalog] Failed to parse localStorage cache:', e);
+      return null;
+    }
+  }
+
+  /**
+   * Save cache to localStorage with timestamp
+   */
+  function _saveToStorage(tools, dynamicSlugs) {
+    try {
+      const toStore = {
+        tools,
+        dynamicSlugs: Array.from(dynamicSlugs),
+        cachedAt: Date.now(),
+      };
+      localStorage.setItem(CACHE_KEY, JSON.stringify(toStore));
+    } catch (e) {
+      console.warn('[ToolCatalog] Failed to save to localStorage:', e);
+    }
+  }
+
   /**
    * Load tools from Supabase, grouped by vertical.
-   * Returns { tools: { vertical: [...] }, source: 'db' | 'fallback' }
+   * Returns { tools: { vertical: [...] }, source: 'db' | 'cache' | 'fallback' }
+   *
+   * Strategy:
+   *   1. If in-memory cache exists, return it
+   *   2. Check localStorage cache validity
+   *      - If valid and online, use it (avoid DB hit)
+   *      - If valid but offline, use it
+   *      - If expired but offline, use it anyway (better than nothing)
+   *   3. If online and cache invalid/missing, fetch from DB
+   *   4. If offline and no cache, fallback
    */
   async function load() {
     if (_cache) return _cache;
+
+    // Try localStorage cache first
+    const storedCache = _loadFromStorage();
+    if (storedCache) {
+      _dynamicSlugs = new Set(storedCache.dynamicSlugs);
+      _cache = { tools: storedCache.tools, source: 'cache' };
+      return _cache;
+    }
+
+    // Check if online before attempting DB fetch
+    if (!navigator.onLine) {
+      console.warn('[ToolCatalog] Offline and no valid cache available, using fallback');
+      return _fallback();
+    }
 
     try {
       const { data, error } = await PS.supabase
@@ -62,6 +129,9 @@ const ToolCatalog = (() => {
           isNew:    row.is_new || false,
         });
       });
+
+      // Save to localStorage
+      _saveToStorage(tools, _dynamicSlugs);
 
       _cache = { tools, source: 'db' };
       console.log(`[ToolCatalog] Loaded ${data.length} tools from DB`);
@@ -102,10 +172,17 @@ const ToolCatalog = (() => {
 
   /**
    * Clear cache (e.g., after admin edits tools)
+   * Clears both in-memory and localStorage caches
    */
   function clearCache() {
     _cache = null;
     _dynamicSlugs.clear();
+    try {
+      localStorage.removeItem(CACHE_KEY);
+      console.log('[ToolCatalog] Cleared all caches (memory and localStorage)');
+    } catch (e) {
+      console.warn('[ToolCatalog] Failed to clear localStorage:', e);
+    }
   }
 
   return { load, toolUrl, isDynamic, clearCache };
