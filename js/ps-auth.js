@@ -11,10 +11,16 @@ const SUPABASE_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg';
 const TIER_ORDER = { bronze: 1, silver: 2, gold: 3 };
 
 const VERTICALS = {
-  immo:     { label: 'Immobilier', icon: '🏠', color: '#3b82f6', bg: 'rgba(59,130,246,.12)',  border: 'rgba(59,130,246,.3)'  },
-  commerce: { label: 'Commerce',   icon: '🛒', color: '#f97316', bg: 'rgba(249,115,22,.12)',  border: 'rgba(249,115,22,.3)'  },
-  legal:    { label: 'Juridique',  icon: '⚖️', color: '#ef4444', bg: 'rgba(239,68,68,.12)',   border: 'rgba(239,68,68,.3)'   },
-  finance:  { label: 'Finance',    icon: '📈', color: '#22c55e', bg: 'rgba(34,197,94,.12)',   border: 'rgba(34,197,94,.3)'   },
+  immo:         { label: 'Immobilier',            icon: '🏠', color: '#f59e0b', bg: 'rgba(245,158,11,.12)',  border: 'rgba(245,158,11,.3)'  },
+  commerce:     { label: 'E-Commerce & Retail',   icon: '🛒', color: '#3b82f6', bg: 'rgba(59,130,246,.12)',  border: 'rgba(59,130,246,.3)'  },
+  legal:        { label: 'Juridique',             icon: '⚖️', color: '#8b5cf6', bg: 'rgba(139,92,246,.12)',  border: 'rgba(139,92,246,.3)'  },
+  finance:      { label: 'Finance & Comptabilité',icon: '💰', color: '#10b981', bg: 'rgba(16,185,129,.12)', border: 'rgba(16,185,129,.3)' },
+  marketing:    { label: 'Marketing & Com.',      icon: '📣', color: '#ec4899', bg: 'rgba(236,72,153,.12)', border: 'rgba(236,72,153,.3)' },
+  rh:           { label: 'Ressources Humaines',   icon: '👥', color: '#f97316', bg: 'rgba(249,115,22,.12)', border: 'rgba(249,115,22,.3)' },
+  sante:        { label: 'Santé & Bien-être',     icon: '🏥', color: '#06b6d4', bg: 'rgba(6,182,212,.12)',  border: 'rgba(6,182,212,.3)'  },
+  education:    { label: 'Éducation & Formation', icon: '🎓', color: '#6366f1', bg: 'rgba(99,102,241,.12)', border: 'rgba(99,102,241,.3)' },
+  restauration: { label: 'Restauration',          icon: '🍽️', color: '#ef4444', bg: 'rgba(239,68,68,.12)',  border: 'rgba(239,68,68,.3)'  },
+  freelance:    { label: 'Freelances & Consultants',icon:'💼', color: '#84cc16', bg: 'rgba(132,204,22,.12)', border: 'rgba(132,204,22,.3)' },
 };
 
 const PS = (() => {

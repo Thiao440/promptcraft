@@ -8,6 +8,7 @@
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/ps-auth.js"></script>
+  <script src="/js/tool-catalog.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -34,11 +35,8 @@
     .nav-item.active { background: rgba(108,99,255,.14); color: var(--accent2); }
     .nav-item .ico { font-size: 1rem; width: 20px; text-align: center; }
 
-    /* Vertical nav items — color per vertical */
-    .nav-item[data-v="immo"].active    { background: rgba(59,130,246,.12); color: #3b82f6; }
-    .nav-item[data-v="commerce"].active{ background: rgba(249,115,22,.12); color: #f97316; }
-    .nav-item[data-v="legal"].active   { background: rgba(239,68,68,.12);  color: #ef4444; }
-    .nav-item[data-v="finance"].active { background: rgba(34,197,94,.12);  color: #22c55e; }
+    /* Vertical nav items — dynamic color from VERTICALS constant */
+    .nav-item[data-v].active { font-weight: 600; }
 
     .sb-footer { padding: 14px 18px; border-top: 1px solid var(--border); }
     .sb-email { font-size: .73rem; color: var(--muted); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -64,10 +62,7 @@
     .vtab-btn { display: flex; align-items: center; gap: 7px; padding: 13px 20px; font-size: .875rem; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--muted); border-bottom: 2px solid transparent; transition: all .18s; white-space: nowrap; }
     .vtab-btn:hover { color: var(--text); }
     .vtab-btn.active { font-weight: 600; }
-    .vtab-btn[data-v="immo"].active    { color: #3b82f6; border-bottom-color: #3b82f6; }
-    .vtab-btn[data-v="commerce"].active{ color: #f97316; border-bottom-color: #f97316; }
-    .vtab-btn[data-v="legal"].active   { color: #ef4444; border-bottom-color: #ef4444; }
-    .vtab-btn[data-v="finance"].active { color: #22c55e; border-bottom-color: #22c55e; }
+    .vtab-btn[data-v].active { font-weight: 600; }
     .vtab-btn .tier-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .tier-dot.bronze { background: #cd7f32; }
     .tier-dot.silver { background: #a8a9ad; }
@@ -224,52 +219,8 @@ const VMETA = PS.VERTICALS;
 const TIER_LABELS = { bronze:'🥉 Bronze', silver:'🥈 Silver', gold:'🥇 Gold' };
 const QUOTA_MAX   = { bronze:50, silver:150, gold:Infinity };
 
-const ALL_TOOLS = {
-  immo: [
-    {slug:'immo-annonce',         icon:'📝',name:"Générateur d'annonces",        desc:'Annonces percutantes en 30s',          tier:'bronze', featured:true },
-    {slug:'immo-email-suivi',     icon:'📧',name:'Email de suivi acquéreur',      desc:'Relancez vos prospects',               tier:'bronze'},
-    {slug:'rent-estimator',       icon:'💰',name:'Estimateur de loyer',           desc:'Fourchette de loyer argumentée',       tier:'bronze', featured:true,  isNew:true},
-    {slug:'client-email-generator',icon:'✉️',name:"Générateur d'emails client",  desc:'Relance, négociation, estimation',     tier:'bronze', featured:true,  isNew:true},
-    {slug:'immo-rapport-visite',  icon:'📋',name:'Rapport de visite',             desc:'Compte-rendu professionnel',           tier:'silver'},
-    {slug:'immo-analyse-prix',    icon:'📊',name:'Analyse comparative de prix',   desc:'Analyse de marché argumentée',         tier:'silver'},
-    {slug:'immo-script-prosp',    icon:'📞',name:'Script de prospection',         desc:'Appels & SMS nouveaux mandats',        tier:'silver'},
-    {slug:'investment-analyzer',  icon:'📈',name:"Analyseur d'investissement",    desc:'Rendement brut, net & recommandation', tier:'silver', featured:true,  isNew:true},
-    {slug:'airbnb-profitability', icon:'🏡',name:'Rentabilité loc. courte durée', desc:'Potentiel Airbnb / Booking analysé',   tier:'silver', isNew:true},
-    {slug:'immo-mandat-exclusif', icon:'🏆',name:'Argumentaire mandat exclusif',  desc:'Décrochez le mandat exclusif',         tier:'gold'  },
-    {slug:'immo-posts-sociaux',   icon:'📱',name:'Posts réseaux sociaux',         desc:'LinkedIn/Instagram pour vos biens',   tier:'gold'  },
-    {slug:'immo-email-vendeur',   icon:'💌',name:'Email présentation vendeur',    desc:'Présentez une offre au vendeur',       tier:'gold'  },
-  ],
-  commerce: [
-    {slug:'commerce-fiche-produit',   icon:'🛒',name:'Fiches produits SEO',          desc:'Fiches optimisées en masse',          tier:'bronze', featured:true},
-    {slug:'commerce-email-promo',     icon:'📧',name:'Email promotionnel',           desc:'Emails marketing qui convertissent',  tier:'bronze', featured:true},
-    {slug:'commerce-seo-description', icon:'🔍',name:'Description SEO',              desc:'Optimisez pour le référencement',     tier:'silver'},
-    {slug:'commerce-posts-sociaux',   icon:'📱',name:'Contenu réseaux sociaux',      desc:'Posts Instagram, Facebook, TikTok',   tier:'silver'},
-    {slug:'commerce-relance-panier',  icon:'🛍️',name:'Relance panier abandonné',     desc:'Récupérez les paniers',               tier:'silver'},
-    {slug:'commerce-chatbot-sav',     icon:'💬',name:'Script chatbot SAV',           desc:'Script service client complet',       tier:'gold'  },
-    {slug:'commerce-strategie',       icon:'🎯',name:'Stratégie de contenu',         desc:'Plan marketing mensuel complet',      tier:'gold'  },
-    {slug:'commerce-analyse-concur',  icon:'📊',name:'Analyse concurrentielle',      desc:'Positionnement vs concurrence',       tier:'gold'  },
-  ],
-  legal: [
-    {slug:'legal-courrier',         icon:'✉️',name:'Rédacteur de courriers',      desc:'Courriers juridiques professionnels',  tier:'bronze', featured:true},
-    {slug:'legal-resume-contrat',   icon:'📋',name:'Résumé de contrat',           desc:"Points clés en moins d'1 minute",     tier:'bronze', featured:true},
-    {slug:'legal-note-juridique',   icon:'⚖️',name:'Note juridique',              desc:'Note de synthèse structurée',          tier:'silver'},
-    {slug:'legal-analyse-clause',   icon:'🔎',name:'Analyse de clause',           desc:'Identifiez les risques contractuels',  tier:'silver'},
-    {slug:'legal-mise-en-demeure',  icon:'📜',name:'Mise en demeure',             desc:'Rédaction légalement solide',          tier:'silver'},
-    {slug:'legal-contrat-standard', icon:'📄',name:'Contrat type',                desc:'Contrat adapté à votre situation',     tier:'gold'  },
-    {slug:'legal-jurisprudence',    icon:'🏛️',name:'Recherche jurisprudentielle', desc:'Synthèse sur une question de droit',   tier:'gold'  },
-    {slug:'legal-plaidoirie',       icon:'🎤',name:'Arguments de plaidoirie',     desc:'Structurez vos arguments',             tier:'gold'  },
-  ],
-  finance: [
-    {slug:'finance-synthese',        icon:'📊',name:'Synthèse de rapport',           desc:'Résumez un rapport financier',         tier:'bronze', featured:true},
-    {slug:'finance-email-pro',       icon:'📧',name:'Email professionnel finance',   desc:'Emails formels pour DAF/investisseurs', tier:'bronze'},
-    {slug:'finance-analyse-kpi',     icon:'📈',name:'Analyse de KPIs',              desc:'Interprétez vos indicateurs',          tier:'silver', featured:true},
-    {slug:'finance-rapport-invest',  icon:'💰',name:"Rapport d'investissement",     desc:"Analyse d'investissement",             tier:'silver'},
-    {slug:'finance-budget-prevision',icon:'📅',name:'Budget prévisionnel',          desc:'Commentaire de votre budget',          tier:'silver'},
-    {slug:'finance-deck-invest',     icon:'🚀',name:'Deck investisseur',            desc:'Pitch deck pour levée de fonds',       tier:'gold'  },
-    {slug:'finance-strategie',       icon:'🎯',name:'Stratégie financière',         desc:'Optimisez votre stratégie',            tier:'gold'  },
-    {slug:'finance-due-diligence',   icon:'🔬',name:'Due diligence',                desc:'Analyse IA pour une acquisition',      tier:'gold'  },
-  ],
-};
+// Tools loaded from DB via ToolCatalog (replaces old hardcoded ALL_TOOLS)
+let ALL_TOOLS = {};
 
 let activeV      = null;
 let usageCount   = 0;
@@ -288,7 +239,8 @@ function renderSidebar() {
   if (!subs.length) { el.innerHTML = ''; return; }
   el.innerHTML = subs.map(s => {
     const m = VMETA[s.vertical] || {};
-    return `<button class="nav-item" data-v="${s.vertical}" onclick="switchVertical('${s.vertical}')">
+    return `<button class="nav-item" data-v="${s.vertical}" onclick="switchVertical('${s.vertical}')"
+              style="--vc:${m.color||'#6c63ff'}">
       <span class="ico">${m.icon||'📁'}</span>
       <span>${m.label||s.vertical}</span>
       <span style="margin-left:auto;font-size:.68rem;opacity:.6">${TIER_LABELS[s.tier]?.replace(/[^a-zA-Z]/g,'')||s.tier}</span>
@@ -312,12 +264,24 @@ function renderTabBar() {
 // ── Switch vertical ────────────────────────────────────────────────────────
 async function switchVertical(v) {
   activeV      = v;
-  activeFilter = 'all'; // reset filter on vertical switch
+  activeFilter = 'all';
   const sub = PS.subForVertical(v);
   const m   = VMETA[v] || {};
+  const vc  = m.color || '#6c63ff';
 
-  document.querySelectorAll('.vtab-btn').forEach(b => b.classList.toggle('active', b.dataset.v === v));
-  document.querySelectorAll('.nav-item[data-v]').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+  // Active states with dynamic color
+  document.querySelectorAll('.vtab-btn').forEach(b => {
+    const isActive = b.dataset.v === v;
+    b.classList.toggle('active', isActive);
+    b.style.color = isActive ? vc : '';
+    b.style.borderBottomColor = isActive ? vc : 'transparent';
+  });
+  document.querySelectorAll('.nav-item[data-v]').forEach(b => {
+    const isActive = b.dataset.v === v;
+    b.classList.toggle('active', isActive);
+    if (isActive) { b.style.background = m.bg || ''; b.style.color = vc; }
+    else          { b.style.background = ''; b.style.color = ''; }
+  });
 
   document.getElementById('topbar-title').textContent = `${m.icon || ''} ${m.label || v}`;
   document.getElementById('topbar-sub').textContent   = sub ? `${TIER_LABELS[sub.tier]} · accès aux outils ${m.label}` : '';
@@ -359,12 +323,12 @@ function accessibleCard(t, color, v) {
          style="border-color:transparent"
          onmouseover="this.style.borderColor='${color}'"
          onmouseout="this.style.borderColor='transparent'"
-         onclick="window.location.href='/tools/${t.slug}.html'">
+         onclick="window.location.href='${ToolCatalog.toolUrl(t.slug)}'">
       ${badge}
       <span class="tc-icon">${t.icon}</span>
       <div class="tc-name">${t.name}</div>
       <div class="tc-desc">${t.desc}</div>
-      <a href="/tools/${t.slug}.html" class="tc-action" style="color:${color}">Utiliser →</a>
+      <a href="${ToolCatalog.toolUrl(t.slug)}" class="tc-action" style="color:${color}">Utiliser →</a>
     </div>`;
 }
 
@@ -526,6 +490,13 @@ async function init() {
   if (!PS.hasAnySubscription()) {
     renderNoSub();
     return;
+  }
+
+  // Load tools from database (replaces hardcoded ALL_TOOLS)
+  const catalog = await ToolCatalog.load();
+  if (catalog.source === 'db' && catalog.tools) {
+    ALL_TOOLS = catalog.tools;
+    console.log('[Dashboard] Tools loaded from DB:', Object.keys(ALL_TOOLS).map(k => `${k}:${ALL_TOOLS[k].length}`).join(', '));
   }
 
   renderSidebar();

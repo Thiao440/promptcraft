@@ -77,16 +77,8 @@
     .vtab .v-icon { font-size: 1.8rem; }
     .vtab .v-name { font-size: .875rem; font-weight: 600; }
     .vtab .v-desc { font-size: .72rem; color: var(--muted); }
-    .vtab[data-v="immo"].active    { border-color: #3b82f6; background: rgba(59,130,246,.1); }
-    .vtab[data-v="commerce"].active{ border-color: #f97316; background: rgba(249,115,22,.1); }
-    .vtab[data-v="legal"].active   { border-color: #ef4444; background: rgba(239,68,68,.1);  }
-    .vtab[data-v="finance"].active { border-color: #22c55e; background: rgba(34,197,94,.1);  }
-    .vtab[data-v="immo"].active     .v-name { color: #3b82f6; }
-    .vtab[data-v="commerce"].active .v-name { color: #f97316; }
-    .vtab[data-v="legal"].active    .v-name { color: #ef4444; }
-    .vtab[data-v="finance"].active  .v-name { color: #22c55e; }
-    .vtab.disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
-    .vtab.disabled .v-name::after { content: ' — Bientôt'; font-size: .65rem; color: var(--muted); font-weight: 400; }
+    /* Active state applied dynamically via JS inline styles */
+    .vtab[data-v].active { font-weight: 600; }
 
     .plans-section { max-width: 1060px; margin: 0 auto; padding: 0 20px 72px; }
     .plans-header { text-align: center; margin-bottom: 32px; }
@@ -162,9 +154,15 @@
       <button class="ps-nav-btn">Outils IA ▾</button>
       <div class="ps-dd">
         <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span><span class="ps-badge-live">Live</span></a>
-        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>📈 Finance</span><span class="ps-badge-live">Live</span></a>
-        <span class="ps-dd-row ps-soon"><span>🛒 Commerce</span><span class="ps-badge-soon">Bientôt</span></span>
-        <span class="ps-dd-row ps-soon"><span>⚖️ Juridique</span><span class="ps-badge-soon">Bientôt</span></span>
+        <a href="/tarifs.html?v=commerce" class="ps-dd-row"><span>🛒 E-Commerce & Retail</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=legal" class="ps-dd-row"><span>⚖️ Juridique</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>💰 Finance & Comptabilité</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=marketing" class="ps-dd-row"><span>📣 Marketing & Com.</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=rh" class="ps-dd-row"><span>👥 Ressources Humaines</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=sante" class="ps-dd-row"><span>🏥 Santé & Bien-être</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=education" class="ps-dd-row"><span>🎓 Éducation & Formation</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=restauration" class="ps-dd-row"><span>🍽️ Restauration</span><span class="ps-badge-live">Live</span></a>
+        <a href="/tarifs.html?v=freelance" class="ps-dd-row"><span>💼 Freelances & Consultants</span><span class="ps-badge-live">Live</span></a>
       </div>
     </div>
     <a href="/finance.html" class="ps-nav-a ps-nav-gold">Finance IA</a>
@@ -190,7 +188,7 @@
 
 <div class="hero">
   <div class="hero-tag">Sans engagement · Accès immédiat</div>
-  <h1>L'IA conçue pour<br><span id="hero-label" style="color:#3b82f6">votre métier</span></h1>
+  <h1>L'IA conçue pour<br><span id="hero-label" style="color:#f59e0b">votre métier</span></h1>
   <p>Choisissez votre domaine, sélectionnez votre offre.<br>Vos outils IA sont disponibles immédiatement après paiement.</p>
   <div class="steps">
     <div class="step active"><span class="num">1</span> Choisir une verticale</div>
@@ -202,24 +200,11 @@
 </div>
 
 <div class="section-title">Pour quel secteur travaillez-vous ? <span>Étape 1/2</span></div>
-<div class="vertical-tabs">
-  <div class="vtab active" data-v="immo" onclick="selectV('immo')">
-    <span class="v-icon">🏠</span><span class="v-name">Immobilier</span><span class="v-desc">Agents, promoteurs, syndics</span>
-  </div>
-  <div class="vtab disabled" data-v="commerce">
-    <span class="v-icon">🛒</span><span class="v-name">Commerce</span><span class="v-desc">E-commerce, retail, marques</span>
-  </div>
-  <div class="vtab disabled" data-v="legal">
-    <span class="v-icon">⚖️</span><span class="v-name">Juridique</span><span class="v-desc">Avocats, juristes, notaires</span>
-  </div>
-  <div class="vtab" data-v="finance" onclick="selectV('finance')">
-    <span class="v-icon">📈</span><span class="v-name">Finance</span><span class="v-desc">CGP, analystes, DAF</span>
-  </div>
-</div>
+<div class="vertical-tabs" id="vertical-tabs"></div>
 
 <div class="plans-section">
   <div class="plans-header">
-    <h2>Offres <span id="plans-vname" style="color:#3b82f6">Immobilier</span> <span style="color:var(--muted);font-size:1rem" id="plans-vicon">🏠</span></h2>
+    <h2>Offres <span id="plans-vname" style="color:#f59e0b">Immobilier</span> <span style="color:var(--muted);font-size:1rem" id="plans-vicon">🏠</span></h2>
     <p>Bronze pour démarrer · Silver pour les actifs · Gold pour tout exploiter</p>
     <div class="billing-toggle" onclick="toggleBilling()">
       <span style="color:var(--muted)">Mensuel</span>
@@ -232,7 +217,7 @@
 </div>
 
 <div class="tools-preview">
-  <h3 id="tools-title">🔧 Les 8 outils <span id="tools-vname" style="color:#3b82f6">Immobilier</span></h3>
+  <h3 id="tools-title">🔧 Les 10 outils <span id="tools-vname" style="color:#f59e0b">Immobilier</span></h3>
   <div class="tools-mini-grid" id="tools-grid"></div>
 </div>
 
@@ -261,16 +246,27 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/ps-auth.js"></script>
+<script src="/js/tool-catalog.js"></script>
 <script>
-const VMETA = {
-  immo:     { label:'Immobilier', icon:'🏠', color:'#3b82f6', bg:'rgba(59,130,246,.12)',  border:'rgba(59,130,246,.3)'  },
-  commerce: { label:'Commerce',   icon:'🛒', color:'#f97316', bg:'rgba(249,115,22,.12)',  border:'rgba(249,115,22,.3)'  },
-  legal:    { label:'Juridique',  icon:'⚖️', color:'#ef4444', bg:'rgba(239,68,68,.12)',   border:'rgba(239,68,68,.3)'   },
-  finance:  { label:'Finance',    icon:'📈', color:'#22c55e', bg:'rgba(34,197,94,.12)',   border:'rgba(34,197,94,.3)'   },
+/* ── Use PS.VERTICALS as single source of truth ── */
+const VMETA = PS.VERTICALS;
+const VDESCS = {
+  immo:         'Agents, promoteurs, syndics',
+  commerce:     'E-commerce, retail, marques',
+  legal:        'Avocats, juristes, notaires',
+  finance:      'CGP, analystes, DAF',
+  marketing:    'Agences, CMO, growth',
+  rh:           'DRH, recruteurs, managers',
+  sante:        'Praticiens, cliniques, coachs',
+  education:    'Formateurs, écoles, EdTech',
+  restauration: 'Restaurants, traiteurs, franchises',
+  freelance:    'Indépendants, consultants, coachs',
 };
+
 const BASE = 'https://shop.theprompt.studio/checkout/buy';
-// VIDS[vertical][monthly|yearly][tier] = 'UUID?enabled=VARIANT_ID'
-// Chaque variant a son propre UUID produit sur Lemon Squeezy
+/* VIDS[vertical][monthly|yearly][tier] = 'UUID?enabled=VARIANT_ID'
+   Replace _UUID placeholders with real Lemon Squeezy product UUIDs */
 const VIDS = {
   immo: {
     monthly: { bronze:'IMMO_UUID_BM?enabled=1408953', silver:'IMMO_UUID_SM?enabled=1408957', gold:'IMMO_UUID_GM?enabled=1408958' },
@@ -288,68 +284,75 @@ const VIDS = {
     monthly: { bronze:'FIN_UUID_BM', silver:'FIN_UUID_SM', gold:'FIN_UUID_GM' },
     yearly:  { bronze:'FIN_UUID_BY', silver:'FIN_UUID_SY', gold:'FIN_UUID_GY' },
   },
+  marketing: {
+    monthly: { bronze:'MKT_UUID_BM', silver:'MKT_UUID_SM', gold:'MKT_UUID_GM' },
+    yearly:  { bronze:'MKT_UUID_BY', silver:'MKT_UUID_SY', gold:'MKT_UUID_GY' },
+  },
+  rh: {
+    monthly: { bronze:'RH_UUID_BM', silver:'RH_UUID_SM', gold:'RH_UUID_GM' },
+    yearly:  { bronze:'RH_UUID_BY', silver:'RH_UUID_SY', gold:'RH_UUID_GY' },
+  },
+  sante: {
+    monthly: { bronze:'SAN_UUID_BM', silver:'SAN_UUID_SM', gold:'SAN_UUID_GM' },
+    yearly:  { bronze:'SAN_UUID_BY', silver:'SAN_UUID_SY', gold:'SAN_UUID_GY' },
+  },
+  education: {
+    monthly: { bronze:'EDU_UUID_BM', silver:'EDU_UUID_SM', gold:'EDU_UUID_GM' },
+    yearly:  { bronze:'EDU_UUID_BY', silver:'EDU_UUID_SY', gold:'EDU_UUID_GY' },
+  },
+  restauration: {
+    monthly: { bronze:'REST_UUID_BM', silver:'REST_UUID_SM', gold:'REST_UUID_GM' },
+    yearly:  { bronze:'REST_UUID_BY', silver:'REST_UUID_SY', gold:'REST_UUID_GY' },
+  },
+  freelance: {
+    monthly: { bronze:'FREE_UUID_BM', silver:'FREE_UUID_SM', gold:'FREE_UUID_GM' },
+    yearly:  { bronze:'FREE_UUID_BY', silver:'FREE_UUID_SY', gold:'FREE_UUID_GY' },
+  },
 };
-const TOOLS = {
-  immo:     [
-    {slug:'immo-annonce',        icon:'📝',name:"Générateur d'annonces",      desc:'Annonces percutantes en 30s',         tier:'bronze'},
-    {slug:'immo-email-suivi',    icon:'📧',name:'Email de suivi acquéreur',    desc:'Relancez vos prospects',              tier:'bronze'},
-    {slug:'immo-rapport-visite', icon:'📋',name:'Rapport de visite',           desc:'Compte-rendu professionnel',          tier:'silver'},
-    {slug:'immo-analyse-prix',   icon:'📊',name:'Analyse comparative de prix', desc:'Analyse de marché argumentée',        tier:'silver'},
-    {slug:'immo-script-prosp',   icon:'📞',name:'Script de prospection',       desc:'Appels & SMS nouveaux mandats',       tier:'silver'},
-    {slug:'immo-mandat-exclusif',icon:'🏆',name:'Argumentaire mandat exclusif',desc:'Décrochez le mandat exclusif',        tier:'gold'  },
-    {slug:'immo-posts-sociaux',  icon:'📱',name:'Posts réseaux sociaux',       desc:'LinkedIn/Instagram pour vos biens',  tier:'gold'  },
-    {slug:'immo-email-vendeur',  icon:'💌',name:'Email présentation vendeur',  desc:'Présentez une offre au vendeur',      tier:'gold'  },
-  ],
-  commerce: [
-    {slug:'commerce-fiche-produit',   icon:'🛒',name:'Fiches produits SEO',         desc:'Fiches optimisées en masse',          tier:'bronze'},
-    {slug:'commerce-email-promo',     icon:'📧',name:'Email promotionnel',          desc:'Emails marketing qui convertissent',  tier:'bronze'},
-    {slug:'commerce-seo-description', icon:'🔍',name:'Description SEO',             desc:'Optimisez pour le référencement',     tier:'silver'},
-    {slug:'commerce-posts-sociaux',   icon:'📱',name:'Contenu réseaux sociaux',     desc:'Posts Instagram, Facebook, TikTok',   tier:'silver'},
-    {slug:'commerce-relance-panier',  icon:'🛍️',name:'Relance panier abandonné',    desc:'Récupérez les paniers',               tier:'silver'},
-    {slug:'commerce-chatbot-sav',     icon:'💬',name:'Script chatbot SAV',          desc:'Script service client complet',       tier:'gold'  },
-    {slug:'commerce-strategie',       icon:'🎯',name:'Stratégie de contenu',        desc:'Plan marketing mensuel complet',      tier:'gold'  },
-    {slug:'commerce-analyse-concur',  icon:'📊',name:'Analyse concurrentielle',     desc:'Positionnement vs concurrence',       tier:'gold'  },
-  ],
-  legal: [
-    {slug:'legal-courrier',         icon:'✉️',name:'Rédacteur de courriers',     desc:'Courriers juridiques professionnels', tier:'bronze'},
-    {slug:'legal-resume-contrat',   icon:'📋',name:'Résumé de contrat',          desc:"Points clés en moins d'1 minute",    tier:'bronze'},
-    {slug:'legal-note-juridique',   icon:'⚖️',name:'Note juridique',             desc:'Note de synthèse structurée',         tier:'silver'},
-    {slug:'legal-analyse-clause',   icon:'🔎',name:'Analyse de clause',          desc:'Identifiez les risques contractuels', tier:'silver'},
-    {slug:'legal-mise-en-demeure',  icon:'📜',name:'Mise en demeure',            desc:'Rédaction légalement solide',         tier:'silver'},
-    {slug:'legal-contrat-standard', icon:'📄',name:'Contrat type',               desc:'Contrat adapté à votre situation',    tier:'gold'  },
-    {slug:'legal-jurisprudence',    icon:'🏛️',name:'Recherche jurisprudentielle',desc:'Synthèse sur une question de droit',  tier:'gold'  },
-    {slug:'legal-plaidoirie',       icon:'🎤',name:'Arguments de plaidoirie',    desc:'Structurez vos arguments',            tier:'gold'  },
-  ],
-  finance: [
-    {slug:'finance-synthese',        icon:'📊',name:'Synthèse de rapport',          desc:'Résumez un rapport financier',        tier:'bronze'},
-    {slug:'finance-email-pro',       icon:'📧',name:'Email professionnel finance',  desc:'Emails formels pour DAF/investisseurs',tier:'bronze'},
-    {slug:'finance-analyse-kpi',     icon:'📈',name:'Analyse de KPIs',             desc:'Interprétez vos indicateurs',         tier:'silver'},
-    {slug:'finance-rapport-invest',  icon:'💰',name:"Rapport d'investissement",    desc:"Analyse d'investissement",            tier:'silver'},
-    {slug:'finance-budget-prevision',icon:'📅',name:'Budget prévisionnel',         desc:'Commentaire de votre budget',         tier:'silver'},
-    {slug:'finance-deck-invest',     icon:'🚀',name:'Deck investisseur',           desc:'Pitch deck pour levée de fonds',      tier:'gold'  },
-    {slug:'finance-strategie',       icon:'🎯',name:'Stratégie financière',        desc:'Optimisez votre stratégie',           tier:'gold'  },
-    {slug:'finance-due-diligence',   icon:'🔬',name:'Due diligence',               desc:'Analyse IA pour une acquisition',     tier:'gold'  },
-  ],
-};
+
+/* Tools loaded from DB via ToolCatalog, with static fallback */
+let TOOLS = {};
+
 const PLANS_DEF = [
-  { tier:'bronze', label:'🥉 Bronze', price:29, desc:"Démarrez avec les outils essentiels.",
-    features:['2 outils essentiels','50 générations / mois','Accès immédiat','Support email'],
+  { tier:'bronze', label:'Bronze', price:19, desc:"Démarrez avec les outils essentiels.",
+    features:['3 outils essentiels','50 générations / mois','Accès immédiat','Support email'],
     locked:['Outils avancés (Silver)','Outils premium (Gold)'] },
-  { tier:'silver', label:'🥈 Silver', price:59, popular:true, desc:"Les outils avancés pour les professionnels actifs.",
-    features:['5 outils essentiels & avancés','150 générations / mois','Accès immédiat','Support prioritaire'],
+  { tier:'silver', label:'Silver', price:49, popular:true, desc:"Les outils avancés pour les professionnels actifs.",
+    features:['7 outils essentiels & avancés','150 générations / mois','Accès immédiat','Support prioritaire'],
     locked:['Outils premium (Gold)'] },
-  { tier:'gold',   label:'🥇 Gold',   price:99, desc:"Accès complet à tous les outils.",
-    features:['8 outils complets','Générations illimitées','Accès immédiat','Support dédié','Nouveaux outils en avant-première'],
+  { tier:'gold',   label:'Gold',   price:99, desc:"Accès complet aux 10 outils.",
+    features:['10 outils complets','Générations illimitées','Accès immédiat','Support dédié','Nouveaux outils en avant-première'],
     locked:[] },
 ];
 
 let activeV = 'immo';
 let yearly  = false;
 
+/* ── Build vertical tabs dynamically ── */
+function buildVerticalTabs() {
+  const container = document.getElementById('vertical-tabs');
+  container.innerHTML = Object.entries(VMETA).map(([key, m]) =>
+    `<div class="vtab" data-v="${key}" onclick="selectV('${key}')">
+      <span class="v-icon">${m.icon}</span>
+      <span class="v-name">${m.label}</span>
+      <span class="v-desc">${VDESCS[key] || ''}</span>
+    </div>`
+  ).join('');
+}
+
 function selectV(v) {
   activeV = v;
   const m = VMETA[v];
-  document.querySelectorAll('.vtab').forEach(t => t.classList.toggle('active', t.dataset.v === v));
+  if (!m) return;
+  /* Update tab active states with dynamic colors */
+  document.querySelectorAll('.vtab').forEach(t => {
+    const isActive = t.dataset.v === v;
+    t.classList.toggle('active', isActive);
+    t.style.borderColor = isActive ? m.color : '';
+    t.style.background  = isActive ? m.bg : '';
+    const nameEl = t.querySelector('.v-name');
+    if (nameEl) nameEl.style.color = isActive ? m.color : '';
+  });
   document.getElementById('hero-label').textContent  = m.label;
   document.getElementById('hero-label').style.color  = m.color;
   document.getElementById('plans-vname').textContent = m.label;
@@ -376,11 +379,12 @@ function renderPlans() {
     const url     = isReady
       ? `${BASE}/${path}${sep}checkout[custom][tier]=${p.tier}&checkout[custom][vertical]=${activeV}&checkout[custom][period]=${period}`
       : '#coming-soon';
+    const tierIcon = {bronze:'🥉',silver:'🥈',gold:'🥇'}[p.tier]||'';
     return `<div class="plan-card ${p.popular?'popular':''}">
-      ${p.popular?`<div class="pop-tag" style="background:${m.color}">⭐ Le plus populaire</div>`:''}
-      <div class="plan-tier ${p.tier}">${p.label}</div>
+      ${p.popular?`<div class="pop-tag" style="background:${m.color}">Le plus populaire</div>`:''}
+      <div class="plan-tier ${p.tier}">${tierIcon} ${p.label}</div>
       <div class="plan-price">${price}<span class="per">€/mois</span></div>
-      <div class="plan-yearly ${yearly?'ok':''}">${yearly?`✅ ${annuel}€/an — économie ${p.price*12-annuel}€`:`soit ${annuel}€/an en annuel`}</div>
+      <div class="plan-yearly ${yearly?'ok':''}">${yearly?`${annuel}€/an — économie ${p.price*12-annuel}€`:`soit ${annuel}€/an en annuel`}</div>
       <p class="plan-desc">${p.desc}</p>
       <ul class="plan-feats">
         ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
@@ -389,7 +393,7 @@ function renderPlans() {
       <a href="${url}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady?'':'disabled'}"
          style="${p.popular?`background:${isReady?m.color:'#555'}`:`border-color:${isReady?m.color:'#555'};color:${isReady?m.color:'#888'}`}"
          ${isReady?`target="_blank" rel="noopener"`:'onclick="return false" title="Bientôt disponible"'}>
-        ${isReady ? (p.tier==='bronze'?'Commencer →':p.tier==='silver'?'Commencer en Silver →':'Tout accéder →') : '🔜 Bientôt disponible'}
+        ${isReady ? (p.tier==='bronze'?'Commencer →':p.tier==='silver'?'Commencer en Silver →':'Tout accéder →') : 'Bientôt disponible'}
       </a>
     </div>`;
   }).join('');
@@ -398,14 +402,17 @@ function renderPlans() {
 function renderTools() {
   const m = VMETA[activeV];
   const tiers = {bronze:'🥉 Bronze',silver:'🥈 Silver',gold:'🥇 Gold'};
-  document.getElementById('tools-grid').innerHTML = (TOOLS[activeV]||[]).map(t =>
+  const vTools = TOOLS[activeV] || [];
+  const count = vTools.length || 10;
+  document.getElementById('tools-title').innerHTML = `🔧 Les ${count} outils <span id="tools-vname" style="color:${m.color}">${m.label}</span>`;
+  document.getElementById('tools-grid').innerHTML = vTools.map(t =>
     `<div class="tool-mini">
-      <div class="tm-icon">${t.icon}</div>
+      <div class="tm-icon">${t.icon || m.icon}</div>
       <div class="tm-name">${t.name}</div>
-      <div class="tm-desc">${t.desc}</div>
-      <span class="tm-tier ${t.tier}">${tiers[t.tier]}</span>
+      <div class="tm-desc">${t.desc || t.description || ''}</div>
+      <span class="tm-tier ${t.tier || t.min_tier || 'bronze'}">${tiers[t.tier || t.min_tier] || '🥉 Bronze'}</span>
     </div>`
-  ).join('');
+  ).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">Outils en cours de chargement…</p>`;
 }
 
 function toggleBilling() {
@@ -422,19 +429,35 @@ function faq(el) {
 
 async function checkAuth() {
   try {
-    const sb = window.supabase.createClient('https://jbrloxoqtfeqvghkzupj.supabase.co','sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg');
-    const { data:{session} } = await sb.auth.getSession();
-    if (session) {
-      document.getElementById('nav-dash').style.display = 'inline';
-      document.getElementById('nav-cta').textContent = 'Mon espace →';
-      document.getElementById('nav-cta').href = '/dashboard.html';
+    await PS.init();
+    if (PS.session) {
+      const link = document.getElementById('nav-account-link');
+      if (link) { link.textContent = 'Mon espace →'; link.href = '/dashboard.html'; }
     }
   } catch(e) {}
 }
 
-const urlV = new URLSearchParams(window.location.search).get('v');
-selectV(VMETA[urlV] ? urlV : 'immo');
-checkAuth();
+/* ── Init ── */
+(async function() {
+  buildVerticalTabs();
+  /* Load tools from DB */
+  try {
+    const catalog = await ToolCatalog.load();
+    if (catalog.source === 'db' && catalog.tools) {
+      /* Convert to the simplified format needed here */
+      Object.entries(catalog.tools).forEach(([v, arr]) => {
+        TOOLS[v] = arr.map(t => ({
+          slug: t.slug, icon: t.icon, name: t.name,
+          desc: t.description || t.desc || '', tier: t.min_tier || 'bronze'
+        }));
+      });
+    }
+  } catch(e) { console.warn('[tarifs] ToolCatalog load failed, tools section may be empty', e); }
+  /* Select vertical from URL or default */
+  const urlV = new URLSearchParams(window.location.search).get('v');
+  selectV(VMETA[urlV] ? urlV : 'immo');
+  checkAuth();
+})();
 
 // ── LANG SWITCHER ──
 var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
@@ -457,7 +480,6 @@ function setLang(lang) {
   } catch(e) {}
 })();
 </script>
-<script src="/js/ps-auth.js"></script>
 <script src="/js/ps-chat-widget.js"></script>
 </body>
 </html>
