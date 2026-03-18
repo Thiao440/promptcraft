@@ -4,52 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Connexion — The Prompt Studio</title>
-<meta name="description" content="Connectez-vous à votre espace The Prompt Studio pour accéder à vos toolkits IA.">
+<meta name="description" content="Connectez-vous à votre espace The Prompt Studio pour accéder à vos outils IA.">
 <meta name="robots" content="noindex, follow">
-<link rel="canonical" href="https://theprompt.studio/login">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Supabase JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#0c0b09;--card:#1a1814;--border:#2e2a24;--gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;--em:#00897b;}
+:root{--bg:#0c0b09;--card:#1a1814;--border:#2e2a24;--gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;--em:#00897b;--err:#ff8080;}
 body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;
   min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .box{animation:fadeUp 0.6s ease both;width:100%;max-width:420px;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;
   color:var(--cream);text-decoration:none;display:block;text-align:center;margin-bottom:40px;}
 .logo em{color:var(--gold);font-style:italic;}
 .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 36px;}
-h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;
-  text-align:center;margin-bottom:8px;}
-.sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:32px;line-height:1.5;}
-label{display:block;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:8px;}
-input[type="email"]{width:100%;background:#111009;border:1px solid var(--border);
-  border-radius:9px;padding:13px 16px;color:var(--cream);font-family:'Outfit',sans-serif;
-  font-size:15px;outline:none;transition:border-color 0.2s;}
-input[type="email"]:focus{border-color:var(--gold);}
-input[type="email"]::placeholder{color:var(--muted);}
+h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;text-align:center;margin-bottom:8px;}
+.sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:28px;line-height:1.5;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.field input{width:100%;background:#111009;border:1px solid var(--border);border-radius:9px;
+  padding:13px 16px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s;}
+.field input:focus{border-color:var(--gold);}
+.field input::placeholder{color:var(--muted);}
+.field-row{display:flex;gap:12px;margin-bottom:16px;}
+.field-row .field{flex:1;margin-bottom:0;}
 .btn{width:100%;background:var(--gold);color:#0c0b09;border:none;border-radius:9px;
   padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;
-  margin-top:20px;transition:opacity 0.2s;}
+  margin-top:8px;transition:opacity 0.2s;}
 .btn:hover{opacity:0.85;}
 .btn:disabled{opacity:0.5;cursor:not-allowed;}
-.divider{text-align:center;margin:24px 0;position:relative;}
-.divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border);}
-.divider span{background:var(--card);padding:0 12px;position:relative;font-size:12px;color:var(--muted);}
-.msg{padding:14px 16px;border-radius:9px;font-size:14px;margin-top:20px;display:none;}
+.btn-outline{background:transparent;border:2px solid var(--border);color:var(--cream);margin-top:12px;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.link{color:var(--gold);text-decoration:none;cursor:pointer;font-weight:500;}
+.link:hover{text-decoration:underline;}
+.toggle-mode{text-align:center;margin-top:20px;font-size:14px;color:var(--muted);}
+.msg{padding:14px 16px;border-radius:9px;font-size:14px;margin-top:16px;display:none;line-height:1.5;}
 .msg.success{background:rgba(0,137,123,0.15);border:1px solid var(--em);color:#4ecdc4;}
-.msg.error{background:rgba(200,50,50,0.12);border:1px solid rgba(200,50,50,0.3);color:#ff8080;}
+.msg.error{background:rgba(200,50,50,0.12);border:1px solid rgba(200,50,50,0.3);color:var(--err);}
+.msg.info{background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);color:#a78bfa;}
 .footer-note{text-align:center;font-size:13px;color:var(--muted);margin-top:24px;}
 .footer-note a{color:var(--gold);text-decoration:none;}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(12,11,9,0.3);
   border-top-color:#0c0b09;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
+.pw-strength{height:3px;border-radius:2px;margin-top:6px;transition:all .3s;}
+.hidden{display:none !important;}
+.slide-in{animation:slideIn 0.3s ease both;}
+@media(max-width:480px){
+  body{padding:16px;}
+  .card{padding:28px 20px;border-radius:16px;}
+  h1{font-size:24px;}
+  .sub{font-size:13px;}
+  .field-row{flex-direction:column;gap:0;}
+  .btn{padding:12px;font-size:14px;}
+  .logo{font-size:20px;margin-bottom:28px;}
+}
 </style>
 </head>
 <body>
@@ -58,124 +72,410 @@ input[type="email"]::placeholder{color:var(--muted);}
   <a href="/" class="logo">The Prompt <em>Studio</em></a>
 
   <div class="card">
-    <h1>Accéder à mon espace</h1>
-    <p class="sub">Entrez votre email — nous vous envoyons un lien magique pour vous connecter instantanément, sans mot de passe.</p>
+    <h1 id="form-title">Se connecter</h1>
+    <p class="sub" id="form-sub">Entrez vos identifiants pour accéder à vos outils IA.</p>
 
-    <form id="login-form">
-      <label for="email">Adresse email</label>
-      <input type="email" id="email" name="email"
-        placeholder="vous@exemple.com" required autocomplete="email">
+    <form id="auth-form">
+      <!-- Signup-only: name fields -->
+      <div class="field-row hidden" id="name-fields">
+        <div class="field">
+          <label for="first-name">Prénom</label>
+          <input type="text" id="first-name" placeholder="Jean" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="last-name">Nom</label>
+          <input type="text" id="last-name" placeholder="Dupont" autocomplete="family-name">
+        </div>
+      </div>
 
-      <button type="submit" class="btn" id="submit-btn">
-        Recevoir mon lien de connexion →
-      </button>
+      <div class="field">
+        <label for="email">Adresse email</label>
+        <input type="email" id="email" placeholder="vous@exemple.com" required autocomplete="email">
+      </div>
+
+      <div class="field" id="password-field">
+        <label for="password" id="password-label">Mot de passe</label>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" minlength="6">
+        <div class="pw-strength hidden" id="pw-strength"></div>
+      </div>
+
+      <!-- Signup-only: confirm password -->
+      <div class="field hidden" id="confirm-field">
+        <label for="password-confirm">Confirmer le mot de passe</label>
+        <input type="password" id="password-confirm" placeholder="••••••••" autocomplete="new-password">
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn">Se connecter</button>
     </form>
 
-    <div class="msg success" id="msg-success">
-      ✉️ <strong>Vérifiez votre boîte mail !</strong><br>
-      Un lien de connexion vous a été envoyé. Cliquez dessus pour accéder à votre espace.
-      <br><small style="opacity:0.7;margin-top:6px;display:block;">Pensez à vérifier vos spams.</small>
+    <div class="toggle-mode" id="toggle-mode">
+      Pas encore de compte ? <a class="link" id="toggle-link">Créer un compte</a>
     </div>
-    <div class="msg error" id="msg-error">
-      ⚠️ <span id="error-text">Une erreur est survenue. Réessayez.</span>
-    </div>
+
+    <div class="msg success" id="msg-success"></div>
+    <div class="msg error" id="msg-error"></div>
+    <div class="msg info" id="msg-info"></div>
   </div>
 
   <p class="footer-note">
-    Pas encore client ?
-    <a href="/#products">Découvrir les toolkits</a>
+    <a href="/">Retour à l'accueil</a>
     &nbsp;·&nbsp;
     <a href="/contact.html">Besoin d'aide ?</a>
   </p>
 </div>
 
 <script>
-// ── Supabase config (public keys — safe to expose) ────────────────────────
-// TODO: Replace with your actual Supabase project values
-const SUPABASE_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';      // ex: https://xxxxx.supabase.co
-const SUPABASE_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg'; // safe public key
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-// ── Redirect if already logged in ─────────────────────────────────────────
-supabase.auth.getSession().then(({ data: { session } }) => {
-  if (session) window.location.href = '/dashboard';
+// ── Supabase ──────────────────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+  auth: { autoRefreshToken: true, persistSession: true }
 });
 
-// ── Handle magic link (Supabase v2 PKCE flow) ─────────────────────────────
-// Si l'utilisateur arrive depuis un magic link avec ?code=xxx
-(async function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
-  const errorParam = urlParams.get('error');
+// ── Redirect destination ──────────────────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const redirectTo = params.get('redirect') || '/dashboard';
 
-  // Afficher un message si lien expiré
-  if (errorParam === 'lien_expire') {
-    const errEl = document.getElementById('msg-error');
-    const errTxt = document.getElementById('error-text');
-    errTxt.textContent = 'Votre lien a expiré. Entrez votre email pour en recevoir un nouveau.';
-    errEl.style.display = 'block';
+// ── Show session replaced message if applicable ──────────────────────────────
+if (params.get('reason') === 'session_replaced') {
+  document.getElementById('msg-info').innerHTML = '🔒 Votre session a été remplacée par une connexion depuis un autre appareil. Reconnectez-vous.';
+  document.getElementById('msg-info').style.display = 'block';
+}
+
+// ── Already logged in? → redirect ─────────────────────────────────────────────
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = redirectTo;
+});
+
+// ── DOM refs ──────────────────────────────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+const form         = $('auth-form');
+const emailInput   = $('email');
+const pwInput      = $('password');
+const pwConfirm    = $('password-confirm');
+const firstName    = $('first-name');
+const lastName     = $('last-name');
+const submitBtn    = $('submit-btn');
+const nameFields   = $('name-fields');
+const confirmField = $('confirm-field');
+const pwStrength   = $('pw-strength');
+const msgSuccess   = $('msg-success');
+const msgError     = $('msg-error');
+const msgInfo      = $('msg-info');
+
+// ── State: 'login' | 'signup' | 'reset' ──────────────────────────────────────
+let mode = 'login';
+
+function hideAllMsgs() {
+  msgSuccess.style.display = 'none';
+  msgError.style.display = 'none';
+  msgInfo.style.display = 'none';
+}
+
+function showError(html) {
+  hideAllMsgs();
+  msgError.innerHTML = html;
+  msgError.style.display = 'block';
+}
+
+function showSuccess(html) {
+  hideAllMsgs();
+  msgSuccess.innerHTML = html;
+  msgSuccess.style.display = 'block';
+}
+
+function showInfo(html) {
+  hideAllMsgs();
+  msgInfo.innerHTML = html;
+  msgInfo.style.display = 'block';
+}
+
+function setLoading(on, text) {
+  submitBtn.disabled = on;
+  if (on) {
+    submitBtn.innerHTML = '<span class="spinner"></span>' + (text || 'Chargement…');
+  }
+}
+
+// ── Switch between modes ──────────────────────────────────────────────────────
+function switchMode(newMode, opts = {}) {
+  mode = newMode;
+  hideAllMsgs();
+
+  if (mode === 'signup') {
+    $('form-title').textContent = 'Créer un compte';
+    $('form-sub').textContent = 'Remplissez le formulaire pour créer votre espace.';
+    submitBtn.textContent = 'Créer mon compte';
+    $('toggle-mode').innerHTML = 'Déjà un compte ? <a class="link" id="toggle-link">Se connecter</a>';
+    nameFields.classList.remove('hidden');
+    nameFields.classList.add('slide-in');
+    confirmField.classList.remove('hidden');
+    confirmField.classList.add('slide-in');
+    pwStrength.classList.remove('hidden');
+    $('password-field').classList.remove('hidden');
+    pwInput.autocomplete = 'new-password';
+    pwInput.minLength = 8;
+    $('password-label').textContent = 'Choisir un mot de passe';
+    pwInput.placeholder = 'Min. 8 caractères';
+    // Pre-fill email if provided
+    if (opts.email) emailInput.value = opts.email;
+
+  } else if (mode === 'reset') {
+    $('form-title').textContent = 'Définir un mot de passe';
+    $('form-sub').textContent = 'Votre compte existe mais n\'a pas encore de mot de passe. Nous allons vous envoyer un lien pour en créer un.';
+    submitBtn.textContent = 'Envoyer le lien';
+    $('toggle-mode').innerHTML = '<a class="link" id="toggle-link">Retour à la connexion</a>';
+    nameFields.classList.add('hidden');
+    confirmField.classList.add('hidden');
+    pwStrength.classList.add('hidden');
+    $('password-field').classList.add('hidden');
+    pwInput.required = false;
+
+  } else {
+    // login
+    $('form-title').textContent = 'Se connecter';
+    $('form-sub').textContent = 'Entrez vos identifiants pour accéder à vos outils IA.';
+    submitBtn.textContent = 'Se connecter';
+    $('toggle-mode').innerHTML = 'Pas encore de compte ? <a class="link" id="toggle-link">Créer un compte</a>';
+    nameFields.classList.add('hidden');
+    confirmField.classList.add('hidden');
+    pwStrength.classList.add('hidden');
+    $('password-field').classList.remove('hidden');
+    pwInput.autocomplete = 'current-password';
+    pwInput.minLength = 6;
+    pwInput.required = true;
+    $('password-label').textContent = 'Mot de passe';
+    pwInput.placeholder = '••••••••';
   }
 
-  if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
-    if (!error) {
-      window.location.href = '/dashboard';
+  // Re-bind toggle link
+  $('toggle-link')?.addEventListener('click', () => {
+    if (mode === 'signup' || mode === 'reset') switchMode('login');
+    else switchMode('signup');
+  });
+}
+
+// Initial toggle binding
+$('toggle-link').addEventListener('click', () => switchMode('signup'));
+
+// ── Password strength ─────────────────────────────────────────────────────────
+pwInput.addEventListener('input', () => {
+  if (mode !== 'signup') return;
+  const pw = pwInput.value;
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
+  const widths = ['25%', '50%', '75%', '100%'];
+  pwStrength.style.width = widths[score - 1] || '0%';
+  pwStrength.style.background = colors[score - 1] || 'transparent';
+});
+
+// ── Form submit ───────────────────────────────────────────────────────────────
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideAllMsgs();
+
+  const email = emailInput.value.trim();
+  if (!email) return showError('Veuillez entrer votre adresse email.');
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // MODE: RESET — send password reset link
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  if (mode === 'reset') {
+    setLoading(true, 'Envoi…');
+    const siteBase = window.location.origin;
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: siteBase + '/login.html?reset=1',
+    });
+    submitBtn.disabled = false;
+    if (error) {
+      submitBtn.textContent = 'Envoyer le lien';
+      return showError(error.message);
+    }
+    submitBtn.textContent = 'Envoyer le lien';
+    return showSuccess(
+      '<strong>Email envoyé !</strong><br>' +
+      'Vérifiez votre boîte mail pour définir votre mot de passe.<br>' +
+      '<small style="opacity:0.7">Pensez à vérifier les spams.</small>'
+    );
+  }
+
+  const password = pwInput.value;
+  if (!password) return showError('Veuillez entrer votre mot de passe.');
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // MODE: SIGNUP
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  if (mode === 'signup') {
+    if (password.length < 8) return showError('Le mot de passe doit contenir au moins 8 caractères.');
+    if (password !== pwConfirm.value) return showError('Les mots de passe ne correspondent pas.');
+    const fName = firstName.value.trim();
+    if (!fName) return showError('Veuillez entrer votre prénom.');
+
+    setLoading(true, 'Création du compte…');
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: (fName + ' ' + lastName.value.trim()).trim(),
+          first_name: fName,
+          last_name: lastName.value.trim(),
+        }
+      }
+    });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Créer mon compte';
+
+    if (error) {
+      // Account already exists → switch to login
+      if (error.message.includes('already registered') || error.message.includes('already been registered')) {
+        switchMode('login');
+        emailInput.value = email;
+        return showInfo(
+          'Un compte existe déjà avec cet email.<br>' +
+          'Connectez-vous avec votre mot de passe.'
+        );
+      }
+      return showError(error.message);
+    }
+
+    // Supabase signUp can return a fake user with identities=[] if the email is taken
+    // (when "Confirm email" is enabled). Detect this case.
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      switchMode('login');
+      emailInput.value = email;
+      return showInfo(
+        'Un compte existe déjà avec cet email.<br>' +
+        'Connectez-vous avec votre mot de passe.'
+      );
+    }
+
+    if (data.session) {
+      // Auto-confirmed → go to dashboard
+      window.location.href = redirectTo;
+    } else {
+      showSuccess(
+        '<strong>Compte créé !</strong><br>' +
+        'Un email de confirmation a été envoyé à <strong>' + email + '</strong>.<br>' +
+        '<small style="opacity:0.7">Cliquez sur le lien dans l\'email, puis revenez vous connecter.</small>'
+      );
+      form.reset();
+    }
+    return;
+  }
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // MODE: LOGIN
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  setLoading(true, 'Connexion…');
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Se connecter';
+
+  if (error) {
+    const msg = error.message || '';
+
+    // Case 1: Wrong credentials — could be wrong password OR email doesn't exist
+    if (msg.includes('Invalid login credentials')) {
+      // Try to sign up with a dummy to check if user exists
+      // (signUp returns identities:[] if email is taken with confirm enabled)
+      const { data: probe } = await sb.auth.signUp({
+        email,
+        password: 'probe_check_' + Date.now(),  // dummy password, won't actually create
+      });
+
+      const emailExists = probe?.user?.identities?.length === 0;
+
+      if (!emailExists) {
+        // Email does NOT exist → switch to signup mode automatically
+        switchMode('signup', { email });
+        return showInfo(
+          'Aucun compte trouvé pour <strong>' + email + '</strong>.<br>' +
+          'Créez votre compte ci-dessous.'
+        );
+      }
+
+      // Email exists but password is wrong
+      // Could be a magic-link-only account (no password set)
+      return showError(
+        'Mot de passe incorrect.<br>' +
+        '<a class="link" id="reset-link">Mot de passe oublié ou jamais défini ?</a>'
+      );
+    }
+
+    if (msg.includes('Email not confirmed')) {
+      return showError(
+        'Votre email n\'est pas encore confirmé.<br>' +
+        'Vérifiez votre boîte mail (et les spams).'
+      );
+    }
+
+    return showError(msg);
+  }
+
+  // Success → redirect
+  window.location.href = redirectTo;
+});
+
+// ── Delegate click on dynamically created reset link ──────────────────────────
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'reset-link') {
+    e.preventDefault();
+    switchMode('reset');
+    emailInput.value = emailInput.value; // keep email
+  }
+});
+
+// ── Handle password reset callback (?reset=1) ────────────────────────────────
+// When user clicks the reset link in their email, Supabase redirects back with
+// access_token in the URL hash. The session is auto-established.
+(async function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('reset') === '1') {
+    // Check if Supabase set a session from the URL hash
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      // User is now logged in via reset link — show password update form
+      $('form-title').textContent = 'Nouveau mot de passe';
+      $('form-sub').textContent = 'Choisissez votre nouveau mot de passe.';
+      nameFields.classList.add('hidden');
+      emailInput.closest('.field').classList.add('hidden');
+      $('password-label').textContent = 'Nouveau mot de passe';
+      pwInput.placeholder = 'Min. 6 caractères';
+      pwInput.value = '';
+      confirmField.classList.remove('hidden');
+      submitBtn.textContent = 'Enregistrer';
+      $('toggle-mode').classList.add('hidden');
+      mode = 'update-password';
+
+      // Override submit for password update
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        hideAllMsgs();
+        const pw = pwInput.value;
+        if (pw.length < 6) return showError('Le mot de passe doit contenir au moins 6 caractères.');
+        if (pw !== pwConfirm.value) return showError('Les mots de passe ne correspondent pas.');
+        setLoading(true, 'Enregistrement…');
+        const { error } = await sb.auth.updateUser({ password: pw });
+        submitBtn.disabled = false;
+        if (error) {
+          submitBtn.textContent = 'Enregistrer';
+          return showError(error.message);
+        }
+        showSuccess('<strong>Mot de passe enregistré !</strong><br>Redirection…');
+        setTimeout(() => { window.location.href = redirectTo; }, 1500);
+      };
     }
   }
 })();
-
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_IN' && session) {
-    window.location.href = '/dashboard';
-  }
-});
-
-// ── Login form ─────────────────────────────────────────────────────────────
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById('email').value.trim();
-  const btn   = document.getElementById('submit-btn');
-  const msgOk  = document.getElementById('msg-success');
-  const msgErr = document.getElementById('msg-error');
-  const errTxt = document.getElementById('error-text');
-
-  // Reset
-  msgOk.style.display = 'none';
-  msgErr.style.display = 'none';
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Envoi en cours…';
-
-  const siteBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? `${window.location.protocol}//${window.location.host}`
-    : 'https://theprompt.studio';
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${siteBase}/dashboard`,
-      shouldCreateUser: false, // Only allow existing users to log in
-                               // New accounts are created by the webhook
-    },
-  });
-
-  btn.disabled = false;
-  btn.textContent = 'Recevoir mon lien de connexion →';
-
-  if (error) {
-    // "User not found" → redirect to shop
-    if (error.message.includes('not found') || error.status === 422) {
-      errTxt.innerHTML = 'Aucun compte trouvé pour cet email. <a href="/#products" style="color:var(--gold)">Acheter un toolkit</a> pour créer votre accès.';
-    } else {
-      errTxt.textContent = error.message || 'Une erreur est survenue. Réessayez.';
-    }
-    msgErr.style.display = 'block';
-  } else {
-    msgOk.style.display = 'block';
-    document.getElementById('email').value = '';
-  }
-});
 </script>
 </body>
 </html>

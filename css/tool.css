@@ -202,7 +202,12 @@ body {
   font-weight: 500;
 }
 .form-group label .req { color: var(--danger); margin-left: 2px; }
-.form-group input,
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="url"],
+.form-group input[type="password"],
 .form-group select,
 .form-group textarea {
   width: 100%;
@@ -216,10 +221,50 @@ body {
   outline: none;
   font-family: inherit;
 }
-.form-group input:focus,
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
 .form-group select:focus,
 .form-group textarea:focus { border-color: var(--accent); }
 .form-group textarea { resize: vertical; min-height: 80px; }
+
+/* Radio buttons */
+.form-group input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+}
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: .9rem;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color .2s, background .2s;
+}
+.radio-option:hover {
+  border-color: var(--accent2);
+  background: rgba(108,99,255,.04);
+}
+.radio-option:has(input:checked) {
+  border-color: var(--accent);
+  background: rgba(108,99,255,.1);
+}
+
+/* Checkbox / toggle inputs should not be full-width */
+.form-group input[type="checkbox"] {
+  width: auto;
+}
 
 /* Error state for validation */
 .form-group.error input,
@@ -545,12 +590,48 @@ body {
 .skeleton-title { height: 24px; width: 60%; margin-bottom: 20px; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* Mobile */
+/* ── Tablet (< 900px) ── */
+@media(max-width: 900px) {
+  .tool-body { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* ── Mobile (< 700px) ── */
 @media(max-width: 700px) {
+  :root { --sidebar-w: 0px; }
+
   .sidebar { display: none; }
   .main { margin-left: 0; max-width: 100vw; }
-  .tool-header, .breadcrumb { padding-left: 16px; padding-right: 16px; }
-  .tool-body { padding: 16px; gap: 16px; }
+
+  .breadcrumb { padding: 12px 16px; font-size: .8rem; gap: 6px; flex-wrap: wrap; }
+  .tool-header { padding: 16px; }
+  .tool-header-inner { flex-direction: column; gap: 10px; }
+  .tool-icon { font-size: 2rem; }
+  .tool-meta h1 { font-size: 1.15rem; }
+  .tool-badges { flex-wrap: wrap; gap: 6px; }
+
+  .tool-body { padding: 12px; gap: 12px; }
+  .panel { padding: 16px; }
+  .result-panel { padding: 16px; }
+
   .form-row { grid-template-columns: 1fr; }
   .tone-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .result-toolbar { flex-direction: column; gap: 10px; align-items: flex-start; }
+  .result-actions { width: 100%; }
+  .result-actions .btn-icon { flex: 1; justify-content: center; }
+
+  .history-section { padding: 16px; }
+
+  .generate-btn { padding: 14px; font-size: .95rem; }
+
+  .toast { left: 12px; right: 12px; bottom: 12px; }
+}
+
+/* ── Small mobile (< 400px) ── */
+@media(max-width: 400px) {
+  .tool-body { padding: 8px; }
+  .panel, .result-panel { padding: 12px; border-radius: 10px; }
+  .tone-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .badge { font-size: .7rem; padding: 2px 8px; }
 }

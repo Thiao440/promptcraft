@@ -145,12 +145,12 @@ const ToolCatalog = (() => {
 
   /**
    * Get the URL for a tool page.
-   * Tools with input_schema → /t/slug (dynamic page)
+   * Tools with input_schema → /tool.html?slug=xxx (dynamic page)
    * Tools without           → /tools/slug.html (static page)
    */
   function toolUrl(slug) {
     if (_dynamicSlugs.has(slug)) {
-      return `/t/${slug}`;
+      return `/tool.html?slug=${slug}`;
     }
     return `/tools/${slug}.html`;
   }

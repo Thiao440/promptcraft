@@ -125,15 +125,15 @@ const ToolRenderer = (() => {
           const val   = typeof o === 'string' ? o : o.value;
           const label = typeof o === 'string' ? o : (o.label || o.value);
           return `
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <label class="radio-option">
               <input type="radio" name="${field.name}" value="${esc(val)}" ${val === defaultVal ? 'checked' : ''}/>
-              ${esc(label)}
+              <span>${esc(label)}</span>
             </label>`;
         }).join('');
         return `
           <div class="form-group" data-field="${field.name}">
             <label>${esc(field.label)} ${req}</label>
-            <div style="display:flex;flex-direction:column;gap:8px;">${items}</div>
+            <div class="radio-group">${items}</div>
           </div>`;
       }
 

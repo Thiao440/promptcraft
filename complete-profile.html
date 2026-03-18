@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compléter mon profil — The Prompt Studio</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0c0b09;--card:#1a1814;--border:#2e2a24;--gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;--em:#00897b;--err:#ff8080;--accent:#6c63ff;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;min-height:100vh;padding:24px 24px 80px;}
+.container{max-width:560px;margin:0 auto;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;
+  color:var(--cream);text-decoration:none;display:block;text-align:center;margin-bottom:20px;}
+.logo em{color:var(--gold);font-style:italic;}
+
+/* Progress */
+.progress-bar{display:flex;align-items:center;gap:4px;margin-bottom:32px;}
+.progress-step{flex:1;height:4px;border-radius:2px;background:var(--border);transition:background .3s;}
+.progress-step.done{background:var(--gold);}
+.progress-step.active{background:var(--accent);}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;}
+h1{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:4px;}
+.sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
+.step-label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;font-weight:600;}
+
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.field input,.field select{width:100%;background:#111009;border:1px solid var(--border);border-radius:9px;
+  padding:12px 14px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.field input::placeholder{color:var(--muted);}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a8070' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;}
+.field select option{background:var(--card);color:var(--cream);}
+
+.field-row{display:flex;gap:12px;}
+.field-row .field{flex:1;}
+.field-optional{font-size:11px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;}
+
+.buttons{display:flex;gap:12px;margin-top:24px;}
+.btn{flex:1;padding:14px;border-radius:9px;border:none;font-size:15px;font-weight:600;cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:opacity .2s;}
+.btn-primary{background:var(--gold);color:#0c0b09;}
+.btn-primary:hover{opacity:.85;}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-secondary{background:transparent;border:2px solid var(--border);color:var(--cream);}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.btn-skip{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;margin-top:16px;text-align:center;display:block;width:100%;}
+.btn-skip:hover{color:var(--cream);}
+
+.msg{padding:14px 16px;border-radius:9px;font-size:14px;margin-top:16px;display:none;line-height:1.5;}
+.msg.error{background:rgba(200,50,50,.12);border:1px solid rgba(200,50,50,.3);color:var(--err);}
+.msg.success{background:rgba(0,137,123,.15);border:1px solid var(--em);color:#4ecdc4;}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(12,11,9,.3);
+  border-top-color:#0c0b09;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.hidden{display:none !important;}
+.welcome-emoji{font-size:40px;display:block;text-align:center;margin-bottom:12px;}
+@media(max-width:480px){
+  body{padding:16px 12px;}
+  .card{padding:24px 18px;border-radius:16px;}
+  h1{font-size:22px;}
+  .sub{font-size:13px;}
+  .field-row{flex-direction:column;gap:0;}
+  .btn{padding:12px;font-size:14px;}
+  .buttons{flex-direction:column;gap:8px;}
+  .step-label{font-size:11px;}
+  .welcome-emoji{font-size:32px;}
+  .logo{font-size:18px;margin-bottom:16px;}
+  .progress-bar{margin-bottom:20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="/" class="logo">The Prompt <em>Studio</em></a>
+
+  <!-- Progress bar: 3 steps -->
+  <div class="progress-bar">
+    <div class="progress-step active" id="prog-1"></div>
+    <div class="progress-step" id="prog-2"></div>
+    <div class="progress-step" id="prog-3"></div>
+  </div>
+
+  <div class="card" id="card">
+
+    <!-- ════════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 1: Personal info -->
+    <!-- ════════════════════════════════════════════════════════════════════════ -->
+    <div id="step-1">
+      <span class="welcome-emoji">👋</span>
+      <h1>Bienvenue sur The Prompt Studio</h1>
+      <p class="sub">Complétez votre profil pour personnaliser votre expérience.</p>
+      <div class="step-label">Étape 1/3 — Informations personnelles</div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="first_name">Prénom *</label>
+          <input type="text" id="first_name" placeholder="Jean" required>
+        </div>
+        <div class="field">
+          <label for="last_name">Nom *</label>
+          <input type="text" id="last_name" placeholder="Dupont" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="phone">Téléphone *</label>
+        <input type="tel" id="phone" placeholder="+33 6 12 34 56 78">
+      </div>
+
+      <div class="field">
+        <label for="job_title">Votre métier / poste *</label>
+        <input type="text" id="job_title" placeholder="Agent immobilier, Avocat, CMO, Consultant...">
+      </div>
+
+      <div class="buttons">
+        <button class="btn btn-primary" id="next-1">Continuer</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 2: Company + professional -->
+    <!-- ════════════════════════════════════════════════════════════════════════ -->
+    <div id="step-2" class="hidden">
+      <div class="step-label">Étape 2/3 — Votre activité</div>
+
+      <div class="field">
+        <label for="company_name">Nom de l'entreprise / cabinet *</label>
+        <input type="text" id="company_name" placeholder="Agence Dupont, Cabinet Martin...">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="company_size">Taille de l'équipe</label>
+          <select id="company_size">
+            <option value="">Sélectionner</option>
+            <option value="solo">Indépendant / Solo</option>
+            <option value="2-10">2 à 10 personnes</option>
+            <option value="11-50">11 à 50 personnes</option>
+            <option value="51-200">51 à 200 personnes</option>
+            <option value="200+">Plus de 200</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="industry">Secteur d'activité</label>
+          <select id="industry">
+            <option value="">Sélectionner</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="website">Site web <span class="field-optional">(optionnel)</span></label>
+        <input type="url" id="website" placeholder="https://www.exemple.com">
+      </div>
+
+      <div class="buttons">
+        <button class="btn btn-secondary" id="back-2">Retour</button>
+        <button class="btn btn-primary" id="next-2">Continuer</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 3: Billing address -->
+    <!-- ════════════════════════════════════════════════════════════════════════ -->
+    <div id="step-3" class="hidden">
+      <div class="step-label">Étape 3/3 — Adresse de facturation</div>
+
+      <div class="field">
+        <label for="billing_address_line1">Adresse *</label>
+        <input type="text" id="billing_address_line1" placeholder="12 rue de la Paix">
+      </div>
+
+      <div class="field">
+        <label for="billing_address_line2">Complément <span class="field-optional">(optionnel)</span></label>
+        <input type="text" id="billing_address_line2" placeholder="Bâtiment B, Étage 3...">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="billing_postal_code">Code postal *</label>
+          <input type="text" id="billing_postal_code" placeholder="75001">
+        </div>
+        <div class="field">
+          <label for="billing_city">Ville *</label>
+          <input type="text" id="billing_city" placeholder="Paris">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="billing_country">Pays</label>
+          <select id="billing_country">
+            <option value="FR" selected>France</option>
+            <option value="BE">Belgique</option>
+            <option value="CH">Suisse</option>
+            <option value="LU">Luxembourg</option>
+            <option value="CA">Canada</option>
+            <option value="MA">Maroc</option>
+            <option value="TN">Tunisie</option>
+            <option value="SN">Sénégal</option>
+            <option value="CI">Côte d'Ivoire</option>
+            <option value="OTHER">Autre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="billing_vat_number">N° TVA <span class="field-optional">(optionnel)</span></label>
+          <input type="text" id="billing_vat_number" placeholder="FR12345678901">
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn btn-secondary" id="back-3">Retour</button>
+        <button class="btn btn-primary" id="save-btn">Enregistrer mon profil</button>
+      </div>
+
+      <button class="btn-skip" id="skip-btn">Compléter plus tard</button>
+    </div>
+
+    <div class="msg error" id="msg-error"></div>
+    <div class="msg success" id="msg-success"></div>
+  </div>
+</div>
+
+<script src="/js/ps-auth.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/dashboard';
+
+function showError(html) {
+  $('msg-success').style.display = 'none';
+  $('msg-error').innerHTML = html;
+  $('msg-error').style.display = 'block';
+}
+
+// ── Populate industry dropdown from VERTICALS ─────────────────────────────────
+function populateIndustry() {
+  const sel = $('industry');
+  Object.entries(PS.VERTICALS).forEach(([key, v]) => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = v.icon + ' ' + v.label;
+    sel.appendChild(opt);
+  });
+  // Add "Autre"
+  const other = document.createElement('option');
+  other.value = 'autre';
+  other.textContent = 'Autre';
+  sel.appendChild(other);
+}
+
+// ── Step navigation ───────────────────────────────────────────────────────────
+let currentStep = 1;
+
+function showStep(n) {
+  currentStep = n;
+  for (let i = 1; i <= 3; i++) {
+    $('step-' + i).classList.toggle('hidden', i !== n);
+    $('prog-' + i).className = 'progress-step' + (i < n ? ' done' : (i === n ? ' active' : ''));
+  }
+  $('msg-error').style.display = 'none';
+}
+
+$('next-1').addEventListener('click', () => {
+  const fn = $('first_name').value.trim();
+  const ln = $('last_name').value.trim();
+  const jt = $('job_title').value.trim();
+  const ph = $('phone').value.trim();
+  if (!fn) return showError('Le prénom est requis.');
+  if (!ln) return showError('Le nom est requis.');
+  if (!jt) return showError('Votre métier / poste est requis.');
+  if (!ph) return showError('Le téléphone est requis.');
+  showStep(2);
+});
+
+$('next-2').addEventListener('click', () => {
+  const cn = $('company_name').value.trim();
+  if (!cn) return showError('Le nom de l\'entreprise est requis.');
+  showStep(3);
+});
+
+$('back-2').addEventListener('click', () => showStep(1));
+$('back-3').addEventListener('click', () => showStep(2));
+
+// ── Save profile ──────────────────────────────────────────────────────────────
+$('save-btn').addEventListener('click', async () => {
+  const addr = $('billing_address_line1').value.trim();
+  const cp   = $('billing_postal_code').value.trim();
+  const city = $('billing_city').value.trim();
+
+  if (!addr) return showError('L\'adresse de facturation est requise.');
+  if (!cp)   return showError('Le code postal est requis.');
+  if (!city) return showError('La ville est requise.');
+
+  await saveProfile(false);
+});
+
+$('skip-btn')?.addEventListener('click', async () => {
+  await saveProfile(true);
+});
+
+async function saveProfile(isSkip) {
+  const btn = $('save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Enregistrement…';
+
+  const fields = {
+    first_name:             $('first_name').value.trim(),
+    last_name:              $('last_name').value.trim(),
+    full_name:              ($('first_name').value.trim() + ' ' + $('last_name').value.trim()).trim(),
+    phone:                  $('phone').value.trim(),
+    job_title:              $('job_title').value.trim(),
+    company_name:           $('company_name').value.trim(),
+    company_size:           $('company_size').value || null,
+    industry:               $('industry').value || null,
+    website:                $('website').value.trim() || null,
+    billing_address_line1:  $('billing_address_line1').value.trim() || null,
+    billing_address_line2:  $('billing_address_line2').value.trim() || null,
+    billing_postal_code:    $('billing_postal_code').value.trim() || null,
+    billing_city:           $('billing_city').value.trim() || null,
+    billing_country:        $('billing_country').value || 'FR',
+    billing_vat_number:     $('billing_vat_number').value.trim() || null,
+  };
+
+  // Only mark as fully completed if all required fields are filled
+  if (!isSkip && fields.first_name && fields.last_name && fields.phone &&
+      fields.job_title && fields.company_name && fields.billing_address_line1 &&
+      fields.billing_postal_code && fields.billing_city) {
+    fields.profile_completed_at = new Date().toISOString();
+    fields.onboarding_step = 3;
+  } else {
+    // Partial save — track how far they got
+    fields.onboarding_step = currentStep;
+  }
+
+  const { error } = await PS.updateProfile(fields);
+
+  btn.disabled = false;
+  btn.textContent = 'Enregistrer mon profil';
+
+  if (error) {
+    return showError('Erreur lors de l\'enregistrement : ' + (error.message || error));
+  }
+
+  // Redirect to dashboard
+  window.location.href = redirectTo;
+}
+
+// ── Init: load existing profile data into form ────────────────────────────────
+(async function() {
+  const authed = await PS.requireAuth('/complete-profile.html');
+  if (!authed) return;
+
+  populateIndustry();
+
+  // If profile is already complete, redirect to dashboard
+  if (PS.isProfileComplete()) {
+    window.location.href = redirectTo;
+    return;
+  }
+
+  // Pre-fill from existing profile data
+  const p = PS.profile;
+  if (p) {
+    if (p.first_name)             $('first_name').value = p.first_name;
+    if (p.last_name)              $('last_name').value = p.last_name;
+    if (p.phone)                  $('phone').value = p.phone;
+    if (p.job_title)              $('job_title').value = p.job_title;
+    if (p.company_name)           $('company_name').value = p.company_name;
+    if (p.company_size)           $('company_size').value = p.company_size;
+    if (p.industry)               $('industry').value = p.industry;
+    if (p.website)                $('website').value = p.website;
+    if (p.billing_address_line1)  $('billing_address_line1').value = p.billing_address_line1;
+    if (p.billing_address_line2)  $('billing_address_line2').value = p.billing_address_line2;
+    if (p.billing_postal_code)    $('billing_postal_code').value = p.billing_postal_code;
+    if (p.billing_city)           $('billing_city').value = p.billing_city;
+    if (p.billing_country)        $('billing_country').value = p.billing_country;
+    if (p.billing_vat_number)     $('billing_vat_number').value = p.billing_vat_number;
+
+    // Jump to the step where they left off
+    if (p.onboarding_step && p.onboarding_step > 1) {
+      showStep(Math.min(p.onboarding_step, 3));
+    }
+  }
+})();
+</script>
+</body>
+</html>

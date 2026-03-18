@@ -1,396 +1,365 @@
 /**
- * ps-chat-widget.js — Floating AI assistant widget for The Prompt Studio
+ * ps-chat-widget.js — Floating AI chat widget (v3)
  *
- * Self-contained: injects its own DOM + CSS.
- * Depends on PS singleton (ps-auth.js) being loaded before this script.
- * Only renders for authenticated users with at least one active subscription.
+ * Features:
+ *   - FREE mode (Studio AI): no credits, short answers, available to all
+ *   - EXPERT mode (vertical bot): 1 credit/msg, detailed answers, requires subscription
+ *   - Auto-opens on dashboard first visit
+ *   - When closed: shows mini-bar with bot logo + input teaser
+ *   - Personalized greeting ("Bonjour Mathieu")
+ *   - Generic robot logo for free/unsubscribed users
  */
 (function () {
   'use strict';
 
-  // ── Config ──────────────────────────────────────────────────────────────────
-  var API_ENDPOINT = '/api/ai-chat';
-  var MAX_TURNS    = 24;
+  var API = '/api/ai-chat';
+  var MAX_TURNS = 24;
+  var BOT_LOGO_URL = '/assets/images/bot-avatar.svg';
 
   var BOT_META = {
-    immo:     { name: 'ImmoBot',     emoji: '🏠', color: '#00897b' },
-    finance:  { name: 'FinBot',      emoji: '📈', color: '#c9a84c' },
-    commerce: { name: 'CommerceBot', emoji: '🛒', color: '#3b82f6' },
-    legal:    { name: 'JuriBot',     emoji: '⚖️', color: '#7c3aed' },
+    free:         { name: 'Studio AI',     emoji: '✦', color: '#6c63ff', desc: 'Gratuit' },
+    immo:         { name: 'ImmoBot',       emoji: '🏠', color: '#f59e0b', desc: 'Expert Immobilier' },
+    commerce:     { name: 'CommerceBot',   emoji: '🛒', color: '#3b82f6', desc: 'Expert E-Commerce' },
+    legal:        { name: 'JuriBot',       emoji: '⚖️', color: '#8b5cf6', desc: 'Expert Juridique' },
+    finance:      { name: 'FinBot',        emoji: '💰', color: '#10b981', desc: 'Expert Finance' },
+    marketing:    { name: 'MarketBot',     emoji: '📣', color: '#ec4899', desc: 'Expert Marketing' },
+    rh:           { name: 'RHBot',         emoji: '👥', color: '#f97316', desc: 'Expert RH' },
+    sante:        { name: 'SantéBot',      emoji: '🏥', color: '#06b6d4', desc: 'Expert Santé' },
+    education:    { name: 'EduBot',        emoji: '🎓', color: '#6366f1', desc: 'Expert Éducation' },
+    restauration: { name: 'RestoBot',      emoji: '🍽️', color: '#ef4444', desc: 'Expert Restauration' },
+    freelance:    { name: 'FreelanceBot',  emoji: '💼', color: '#84cc16', desc: 'Expert Freelance' },
   };
 
-  // ── State ───────────────────────────────────────────────────────────────────
-  var _open      = false;
-  var _sending   = false;
-  var _vertical  = null;
-  var _messages  = [];
-  var _subs      = {};
+  var _open = false, _sending = false, _vertical = 'free', _messages = [], _userName = '';
 
-  // ── CSS injection ────────────────────────────────────────────────────────────
+  // ── CSS ──────────────────────────────────────────────────────────────────────
   var css = `
-    #ps-widget-btn{
-      position:fixed;bottom:24px;right:24px;z-index:9800;
-      width:52px;height:52px;border-radius:50%;border:none;
-      background:#7c3aed;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 4px 24px rgba(124,58,237,0.45);
-      transition:transform 0.2s,box-shadow 0.2s;
-      font-size:22px;
-    }
-    #ps-widget-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(124,58,237,0.6);}
-    #ps-widget-btn .ps-w-close{display:none;font-size:20px;color:#fff;font-style:normal;}
-    #ps-widget-btn.is-open .ps-w-emoji{display:none;}
-    #ps-widget-btn.is-open .ps-w-close{display:block;}
+/* Mini-bar (when closed) */
+#ps-w-minibar{
+  position:fixed;bottom:24px;right:24px;z-index:9800;
+  display:flex;align-items:center;gap:10px;
+  background:#1a1d27;border:1px solid #2a2d3e;border-radius:28px;
+  padding:6px 8px 6px 6px;cursor:pointer;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  transition:transform .2s,box-shadow .2s;
+  max-width:320px;
+}
+#ps-w-minibar:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.6);}
+#ps-w-minibar-logo{width:36px;height:36px;border-radius:50%;flex-shrink:0;object-fit:contain;background:#6c63ff22;padding:4px;}
+#ps-w-minibar-text{font-size:13px;color:#7c8098;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;}
+#ps-w-minibar-text strong{color:#e8eaf0;font-weight:600;}
 
-    #ps-widget-panel{
-      position:fixed;bottom:88px;right:24px;z-index:9800;
-      width:360px;height:520px;
-      background:#111009;border:1px solid #2e2a24;border-radius:16px;
-      box-shadow:0 24px 64px rgba(0,0,0,0.7);
-      display:none;flex-direction:column;overflow:hidden;
-      font-family:'Outfit',sans-serif;
-    }
-    #ps-widget-panel.is-open{display:flex;}
+/* Panel */
+#ps-widget-panel{
+  position:fixed;bottom:24px;right:24px;z-index:9800;
+  width:380px;height:560px;
+  background:#0f1117;border:1px solid #2a2d3e;border-radius:16px;
+  box-shadow:0 24px 64px rgba(0,0,0,.7);
+  display:none;flex-direction:column;overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#e8eaf0;font-size:13px;
+}
+#ps-widget-panel.is-open{display:flex;}
 
-    /* Header */
-    #ps-w-header{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:13px 16px;border-bottom:1px solid #2e2a24;
-      background:#1a1814;flex-shrink:0;
-    }
-    #ps-w-bot-info{display:flex;align-items:center;gap:10px;}
-    #ps-w-avatar{
-      width:32px;height:32px;border-radius:8px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:16px;background:rgba(124,58,237,0.15);
-      border:1px solid rgba(124,58,237,0.3);
-    }
-    #ps-w-name{font-size:14px;font-weight:600;color:#f0ead8;}
-    #ps-w-sub{font-size:11px;color:#8a8070;margin-top:1px;}
-    #ps-w-actions{display:flex;align-items:center;gap:8px;}
-    #ps-w-full-btn{
-      background:none;border:1px solid #2e2a24;color:#8a8070;
-      font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;
-      font-family:inherit;transition:all 0.15s;text-decoration:none;
-      display:inline-flex;align-items:center;
-    }
-    #ps-w-full-btn:hover{color:#f0ead8;border-color:#8a8070;}
-    #ps-w-new-btn{
-      background:none;border:none;color:#8a8070;font-size:16px;
-      cursor:pointer;padding:2px 4px;line-height:1;transition:color 0.15s;
-    }
-    #ps-w-new-btn:hover{color:#f0ead8;}
+#ps-w-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #2a2d3e;background:#1a1d27;flex-shrink:0;}
+#ps-w-bot-info{display:flex;align-items:center;gap:10px;}
+#ps-w-avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden;}
+#ps-w-avatar img{width:100%;height:100%;object-fit:contain;}
+#ps-w-name{font-size:14px;font-weight:600;}
+#ps-w-sub{font-size:11px;color:#7c8098;margin-top:1px;}
+#ps-w-header-btns{display:flex;align-items:center;gap:6px;}
+.ps-w-hbtn{background:none;border:1px solid #2a2d3e;color:#7c8098;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.ps-w-hbtn:hover{color:#e8eaf0;border-color:#7c8098;}
 
-    /* Tabs (only shown if multiple verticals) */
-    #ps-w-tabs{
-      display:none;padding:8px 12px 0;gap:5px;flex-wrap:wrap;
-      background:#1a1814;border-bottom:1px solid #2e2a24;flex-shrink:0;
-    }
-    #ps-w-tabs.has-tabs{display:flex;}
-    .ps-w-tab{
-      background:none;border:1px solid #2e2a24;color:#8a8070;
-      font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;
-      font-family:inherit;transition:all 0.15s;margin-bottom:8px;
-    }
-    .ps-w-tab:hover{border-color:#a78bfa;color:#a78bfa;}
-    .ps-w-tab.active{background:rgba(124,58,237,0.15);border-color:#7c3aed;color:#a78bfa;font-weight:600;}
+/* Mode tabs */
+#ps-w-mode-tabs{display:flex;border-bottom:1px solid #2a2d3e;background:#1a1d27;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.ps-w-mtab{flex:0 0 auto;background:none;border:none;border-bottom:2px solid transparent;color:#7c8098;font-size:11px;padding:8px 12px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.ps-w-mtab:hover{color:#e8eaf0;}
+.ps-w-mtab.active{color:#e8eaf0;border-bottom-color:var(--tab-color,#6c63ff);font-weight:600;}
+.ps-w-badge{font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.ps-w-badge.free{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.2);}
+.ps-w-badge.paid{background:rgba(108,99,255,.12);color:#a78bfa;border:1px solid rgba(108,99,255,.2);}
 
-    /* Messages */
-    #ps-w-messages{
-      flex:1;overflow-y:auto;padding:14px 12px;
-      display:flex;flex-direction:column;gap:12px;
-    }
-    #ps-w-messages::-webkit-scrollbar{width:3px;}
-    #ps-w-messages::-webkit-scrollbar-thumb{background:#2e2a24;border-radius:2px;}
-    .ps-w-msg{display:flex;align-items:flex-start;gap:8px;}
-    .ps-w-msg.ps-w-user{flex-direction:row-reverse;}
-    .ps-w-avatar{
-      width:24px;height:24px;border-radius:6px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:13px;flex-shrink:0;margin-top:2px;
-      background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);
-    }
-    .ps-w-user .ps-w-avatar{
-      background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.2);
-      font-size:11px;color:#c9a84c;font-weight:600;font-family:'Cormorant Garamond',serif;
-    }
-    .ps-w-bubble{
-      background:#1a1814;border:1px solid #2e2a24;
-      border-radius:4px 12px 12px 12px;
-      padding:10px 13px;font-size:13px;line-height:1.6;
-      color:#f0ead8;max-width:250px;word-break:break-word;
-    }
-    .ps-w-user .ps-w-bubble{
-      background:#1e1a13;border-color:rgba(201,168,76,0.15);
-      border-radius:12px 4px 12px 12px;
-    }
-    .ps-w-bubble strong{color:#f0ead8;}
-    .ps-w-bubble em{color:#8a8070;}
-    .ps-w-bubble code{background:#0c0b09;border:1px solid #2e2a24;padding:1px 4px;border-radius:3px;font-size:11px;}
-    .ps-w-typing{display:flex;gap:4px;padding:10px 13px;background:#1a1814;border:1px solid #2e2a24;border-radius:4px 12px 12px 12px;width:fit-content;}
-    .ps-w-typing span{width:6px;height:6px;background:#8a8070;border-radius:50%;animation:psWTyping 1.2s infinite;}
-    .ps-w-typing span:nth-child(2){animation-delay:.2s;}
-    .ps-w-typing span:nth-child(3){animation-delay:.4s;}
-    @keyframes psWTyping{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-5px);}}
+/* Quota bar */
+#ps-w-quota{display:none;padding:5px 14px;background:#1a1d27;border-bottom:1px solid #2a2d3e;font-size:11px;color:#7c8098;flex-shrink:0;}
+#ps-w-quota.show{display:flex;align-items:center;gap:8px;}
+#ps-w-quota-bar{flex:1;height:3px;background:#2a2d3e;border-radius:2px;overflow:hidden;}
+#ps-w-quota-fill{height:100%;background:#6c63ff;border-radius:2px;transition:width .3s;}
 
-    /* Input */
-    #ps-w-input-area{
-      border-top:1px solid #2e2a24;padding:10px 12px;
-      display:flex;align-items:flex-end;gap:8px;flex-shrink:0;
-      background:#111009;
-    }
-    #ps-w-input{
-      flex:1;background:#1a1814;border:1px solid #2e2a24;
-      border-radius:10px;padding:9px 12px;color:#f0ead8;
-      font-family:'Outfit',sans-serif;font-size:13px;line-height:1.4;
-      resize:none;min-height:38px;max-height:100px;outline:none;
-      transition:border-color 0.15s;overflow-y:auto;
-    }
-    #ps-w-input:focus{border-color:rgba(124,58,237,0.5);}
-    #ps-w-input::placeholder{color:#8a8070;}
-    #ps-w-send{
-      background:#7c3aed;border:none;border-radius:8px;
-      width:36px;height:36px;cursor:pointer;flex-shrink:0;
-      display:flex;align-items:center;justify-content:center;
-      transition:opacity 0.15s;
-    }
-    #ps-w-send:hover{opacity:0.85;}
-    #ps-w-send:disabled{opacity:0.3;cursor:not-allowed;}
-    #ps-w-send svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+#ps-w-messages{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:12px;}
+#ps-w-messages::-webkit-scrollbar{width:3px;}
+#ps-w-messages::-webkit-scrollbar-thumb{background:#2a2d3e;border-radius:2px;}
+.ps-w-msg{display:flex;align-items:flex-start;gap:8px;}
+.ps-w-msg.ps-w-user{flex-direction:row-reverse;}
+.ps-w-av{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px;overflow:hidden;}
+.ps-w-av img{width:100%;height:100%;object-fit:contain;}
+.ps-w-user .ps-w-av{background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.15);font-size:11px;color:#a78bfa;font-weight:600;}
+.ps-w-bubble{background:#1a1d27;border:1px solid #2a2d3e;border-radius:4px 12px 12px 12px;padding:10px 13px;font-size:13px;line-height:1.6;max-width:260px;word-break:break-word;}
+.ps-w-user .ps-w-bubble{background:rgba(108,99,255,.08);border-color:rgba(108,99,255,.2);border-radius:12px 4px 12px 12px;}
+.ps-w-bubble strong{color:#e8eaf0;}.ps-w-bubble code{background:#0f1117;border:1px solid #2a2d3e;padding:1px 4px;border-radius:3px;font-size:11px;}
+.ps-w-typing{display:flex;gap:4px;padding:10px 13px;background:#1a1d27;border:1px solid #2a2d3e;border-radius:4px 12px 12px 12px;width:fit-content;}
+.ps-w-typing span{width:6px;height:6px;background:#7c8098;border-radius:50%;animation:psWTyping 1.2s infinite;}
+.ps-w-typing span:nth-child(2){animation-delay:.2s;}.ps-w-typing span:nth-child(3){animation-delay:.4s;}
+@keyframes psWTyping{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-5px);}}
 
-    /* Welcome */
-    .ps-w-welcome{
-      background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.18);
-      border-radius:12px;padding:14px 15px;font-size:12px;color:#8a8070;
-      line-height:1.6;
-    }
-    .ps-w-welcome strong{color:#f0ead8;display:block;margin-bottom:5px;font-size:13px;}
+.ps-w-welcome{background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.18);border-radius:12px;padding:14px 15px;font-size:12px;color:#7c8098;line-height:1.6;}
+.ps-w-welcome strong{color:#e8eaf0;display:block;margin-bottom:5px;font-size:13px;}
 
-    @media(max-width:480px){
-      #ps-widget-panel{width:calc(100vw - 32px);right:16px;bottom:80px;}
-      #ps-widget-btn{right:16px;bottom:16px;}
-    }
+#ps-w-input-area{border-top:1px solid #2a2d3e;padding:10px 12px;display:flex;align-items:flex-end;gap:8px;flex-shrink:0;background:#0f1117;}
+#ps-w-input{flex:1;background:#1a1d27;border:1px solid #2a2d3e;border-radius:10px;padding:9px 12px;color:#e8eaf0;font-family:inherit;font-size:13px;line-height:1.4;resize:none;min-height:38px;max-height:100px;outline:none;transition:border-color .15s;overflow-y:auto;}
+#ps-w-input:focus{border-color:rgba(108,99,255,.5);}
+#ps-w-input::placeholder{color:#7c8098;}
+#ps-w-send{background:#6c63ff;border:none;border-radius:8px;width:36px;height:36px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:opacity .15s;}
+#ps-w-send:hover{opacity:.85;}
+#ps-w-send:disabled{opacity:.3;cursor:not-allowed;}
+#ps-w-send svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+@media(max-width:480px){
+  #ps-widget-panel{width:calc(100vw - 16px);right:8px;bottom:8px;height:80vh;border-radius:14px;}
+  #ps-w-minibar{right:8px;bottom:8px;max-width:calc(100vw - 16px);}
+}
   `;
 
-  function injectCSS() {
-    var style = document.createElement('style');
-    style.textContent = css;
-    document.head.appendChild(style);
-  }
+  function injectCSS() { var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s); }
 
-  // ── DOM injection ────────────────────────────────────────────────────────────
+  // ── DOM ──────────────────────────────────────────────────────────────────────
   function injectDOM() {
-    // Toggle button
-    var btn = document.createElement('button');
-    btn.id = 'ps-widget-btn';
-    btn.title = 'Assistant IA';
-    btn.innerHTML = '<em class="ps-w-emoji">✦</em><em class="ps-w-close">✕</em>';
-    btn.addEventListener('click', toggleWidget);
+    // Mini-bar (shown when panel is closed)
+    var minibar = document.createElement('div');
+    minibar.id = 'ps-w-minibar';
+    minibar.innerHTML =
+      '<img id="ps-w-minibar-logo" src="' + BOT_LOGO_URL + '" alt="AI Assistant">' +
+      '<div id="ps-w-minibar-text"><strong>Studio AI</strong> — Posez une question…</div>';
+    minibar.addEventListener('click', function() { openWidget(); });
 
     // Panel
     var panel = document.createElement('div');
     panel.id = 'ps-widget-panel';
-    panel.innerHTML = `
-      <div id="ps-w-header">
-        <div id="ps-w-bot-info">
-          <div id="ps-w-avatar">✦</div>
-          <div>
-            <div id="ps-w-name">Assistant IA</div>
-            <div id="ps-w-sub">—</div>
-          </div>
-        </div>
-        <div id="ps-w-actions">
-          <a href="/assistant.html" id="ps-w-full-btn" title="Ouvrir en plein écran">⤢ Plein écran</a>
-          <button id="ps-w-new-btn" onclick="(function(){var e=document.getElementById('ps-w-messages');if(e)e.innerHTML='';window._psWidgetMessages&&(window._psWidgetMessages=[]);window._psWidgetShowWelcome&&window._psWidgetShowWelcome();})()" title="Nouvelle conversation">↺</button>
-        </div>
-      </div>
-      <div id="ps-w-tabs"></div>
-      <div id="ps-w-messages"></div>
-      <div id="ps-w-input-area">
-        <textarea id="ps-w-input" placeholder="Votre question…" rows="1"></textarea>
-        <button id="ps-w-send" disabled>
-          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>`;
+    panel.innerHTML =
+      '<div id="ps-w-header">' +
+        '<div id="ps-w-bot-info">' +
+          '<div id="ps-w-avatar"><img src="' + BOT_LOGO_URL + '" alt=""></div>' +
+          '<div><div id="ps-w-name">Studio AI</div><div id="ps-w-sub">Assistant gratuit</div></div>' +
+        '</div>' +
+        '<div id="ps-w-header-btns">' +
+          '<button class="ps-w-hbtn" id="ps-w-new-btn" title="Nouvelle conversation">↺</button>' +
+          '<button class="ps-w-hbtn" id="ps-w-close-btn" title="Réduire">✕</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="ps-w-mode-tabs"></div>' +
+      '<div id="ps-w-quota"><span id="ps-w-quota-text">—</span><div id="ps-w-quota-bar"><div id="ps-w-quota-fill" style="width:0%"></div></div></div>' +
+      '<div id="ps-w-messages"></div>' +
+      '<div id="ps-w-input-area">' +
+        '<textarea id="ps-w-input" placeholder="Votre question…" rows="1"></textarea>' +
+        '<button id="ps-w-send" disabled><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>' +
+      '</div>';
 
-    document.body.appendChild(btn);
+    document.body.appendChild(minibar);
     document.body.appendChild(panel);
+
+    document.getElementById('ps-w-new-btn').addEventListener('click', function() { _messages = []; clearMessages(); showWelcome(); });
+    document.getElementById('ps-w-close-btn').addEventListener('click', function() { closeWidget(); });
   }
 
-  // ── Toggle ───────────────────────────────────────────────────────────────────
-  function toggleWidget() {
-    _open = !_open;
-    document.getElementById('ps-widget-btn').classList.toggle('is-open', _open);
-    document.getElementById('ps-widget-panel').classList.toggle('is-open', _open);
-    if (_open) {
-      setTimeout(function () { document.getElementById('ps-w-input')?.focus(); }, 100);
-    }
+  function openWidget() {
+    _open = true;
+    document.getElementById('ps-w-minibar').style.display = 'none';
+    document.getElementById('ps-widget-panel').classList.add('is-open');
+    setTimeout(function() { document.getElementById('ps-w-input')?.focus(); }, 100);
   }
 
-  // ── Header ───────────────────────────────────────────────────────────────────
+  function closeWidget() {
+    _open = false;
+    document.getElementById('ps-widget-panel').classList.remove('is-open');
+    document.getElementById('ps-w-minibar').style.display = 'flex';
+  }
+
+  // ── Header ──────────────────────────────────────────────────────────────────
   function updateHeader() {
-    var bot = BOT_META[_vertical] || { name: 'Studio AI', emoji: '✦', color: '#7c3aed' };
-    var sub = _subs[_vertical] || {};
-    var tier = sub.tier ? (sub.tier.charAt(0).toUpperCase() + sub.tier.slice(1)) : '';
-
+    var bot = BOT_META[_vertical] || BOT_META.free;
+    var isFree = (_vertical === 'free');
     var avatar = document.getElementById('ps-w-avatar');
-    if (avatar) {
-      avatar.textContent = bot.emoji;
-      avatar.style.background = bot.color + '22';
-      avatar.style.borderColor = bot.color + '44';
-    }
-    var nameEl = document.getElementById('ps-w-name');
-    if (nameEl) nameEl.textContent = bot.name;
-    var subEl = document.getElementById('ps-w-sub');
-    if (subEl) subEl.textContent = tier || '—';
 
-    // Also update toggle button emoji
-    var btnEmoji = document.querySelector('#ps-widget-btn .ps-w-emoji');
-    if (btnEmoji) btnEmoji.textContent = bot.emoji;
-    document.getElementById('ps-widget-btn').style.background = bot.color;
-    document.getElementById('ps-widget-btn').style.boxShadow = '0 4px 24px ' + bot.color + '55';
+    if (isFree) {
+      avatar.innerHTML = '<img src="' + BOT_LOGO_URL + '" alt="">';
+      avatar.style.background = '#6c63ff22';
+      avatar.style.border = '1px solid #6c63ff44';
+    } else {
+      avatar.innerHTML = bot.emoji;
+      avatar.style.background = bot.color + '22';
+      avatar.style.border = '1px solid ' + bot.color + '44';
+      avatar.style.fontSize = '16px';
+    }
+
+    document.getElementById('ps-w-name').textContent = bot.name;
+    document.getElementById('ps-w-sub').textContent = isFree ? 'Assistant gratuit' : bot.desc + ' · 1 crédit/msg';
+    updateQuotaBar();
   }
 
-  // ── Vertical tabs ─────────────────────────────────────────────────────────────
   function renderTabs() {
-    var container = document.getElementById('ps-w-tabs');
-    if (!container) return;
-    var verticals = Object.keys(_subs);
-    if (verticals.length <= 1) return;
+    var container = document.getElementById('ps-w-mode-tabs');
+    var verts = PS.subscribedVerticals();
 
-    container.classList.add('has-tabs');
-    container.innerHTML = verticals.map(function (v) {
-      var b = BOT_META[v] || { emoji: '✦', name: v };
-      return '<button class="ps-w-tab' + (v === _vertical ? ' active' : '') + '" data-v="' + v + '">' + b.emoji + ' ' + b.name + '</button>';
-    }).join('');
+    var tabs = '<button class="ps-w-mtab active" data-v="free" style="--tab-color:#6c63ff">✦ Studio AI <span class="ps-w-badge free">Gratuit</span></button>';
+    verts.forEach(function(v) {
+      var b = BOT_META[v] || { emoji: '?', name: v, color: '#6c63ff' };
+      tabs += '<button class="ps-w-mtab" data-v="' + v + '" style="--tab-color:' + b.color + '">' + b.emoji + ' ' + b.name + ' <span class="ps-w-badge paid">Pro</span></button>';
+    });
+    container.innerHTML = tabs;
 
-    container.querySelectorAll('.ps-w-tab').forEach(function (tab) {
-      tab.addEventListener('click', function () {
+    container.querySelectorAll('.ps-w-mtab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
         var v = this.getAttribute('data-v');
         if (v === _vertical) return;
         _vertical = v;
         _messages = [];
-        updateHeader();
-        container.querySelectorAll('.ps-w-tab').forEach(function (t) { t.classList.remove('active'); });
+        container.querySelectorAll('.ps-w-mtab').forEach(function(t) { t.classList.remove('active'); });
         this.classList.add('active');
+        updateHeader();
         clearMessages();
         showWelcome();
       });
     });
   }
 
-  // ── Messages ──────────────────────────────────────────────────────────────────
-  function clearMessages() {
-    var el = document.getElementById('ps-w-messages');
-    if (el) el.innerHTML = '';
+  function updateQuotaBar() {
+    var el = document.getElementById('ps-w-quota');
+    if (_vertical === 'free') { el.classList.remove('show'); return; }
+    var sub = PS.subForVertical(_vertical);
+    if (!sub) { el.classList.remove('show'); return; }
+    var limit = { bronze: 50, silver: 150, gold: Infinity }[sub.tier] || 50;
+    if (limit === Infinity) {
+      document.getElementById('ps-w-quota-text').textContent = 'Gold · Illimité';
+      document.getElementById('ps-w-quota-fill').style.width = '5%';
+      document.getElementById('ps-w-quota-fill').style.background = '#22c55e';
+    } else {
+      document.getElementById('ps-w-quota-text').textContent = '— / ' + limit + ' crédits';
+      document.getElementById('ps-w-quota-fill').style.width = '0%';
+      document.getElementById('ps-w-quota-fill').style.background = '#6c63ff';
+    }
+    el.classList.add('show');
   }
+
+  function updateQuotaFromResponse(data) {
+    if (!data.quota || _vertical === 'free') return;
+    var q = data.quota;
+    var txt = document.getElementById('ps-w-quota-text');
+    var fill = document.getElementById('ps-w-quota-fill');
+    if (q.limit === 'unlimited') {
+      txt.textContent = q.used + ' utilisés · Illimité';
+      fill.style.width = '5%'; fill.style.background = '#22c55e';
+    } else {
+      txt.textContent = q.used + ' / ' + q.limit + ' crédits';
+      var pct = Math.min(100, Math.round((q.used / q.limit) * 100));
+      fill.style.width = pct + '%';
+      fill.style.background = pct > 80 ? '#ef4444' : '#6c63ff';
+    }
+    document.getElementById('ps-w-quota').classList.add('show');
+  }
+
+  // ── Messages ────────────────────────────────────────────────────────────────
+  function clearMessages() { var el = document.getElementById('ps-w-messages'); if (el) el.innerHTML = ''; }
 
   function showWelcome() {
-    var bot = BOT_META[_vertical] || { name: 'Studio AI', emoji: '✦', label: _vertical };
+    var bot = BOT_META[_vertical] || BOT_META.free;
+    var isFree = (_vertical === 'free');
     clearMessages();
-    appendRaw('<div class="ps-w-welcome"><strong>' + bot.emoji + ' ' + bot.name + '</strong>Votre assistant IA spécialisé. Posez-moi vos questions professionnelles.</div>');
-    scrollBottom();
-  }
 
-  // Store reference for the new-chat button inline handler
-  window._psWidgetMessages = _messages;
-  window._psWidgetShowWelcome = showWelcome;
+    var greeting = _userName ? ('Bonjour ' + esc(_userName) + ' 👋') : 'Bonjour 👋';
+    var extra = isFree
+      ? '<br><em style="font-size:11px;opacity:.7">Réponses courtes et gratuites. Pour des réponses détaillées, passez sur un assistant expert.</em>'
+      : '<br><em style="font-size:11px;opacity:.7">Réponses détaillées et spécialisées · 1 crédit par message</em>';
+
+    appendRaw(
+      '<div class="ps-w-welcome">' +
+        '<strong>' + bot.emoji + ' ' + greeting + '</strong>' +
+        'Je suis ' + bot.name + ', votre assistant IA. Comment puis-je vous aider ?' +
+        extra +
+      '</div>'
+    );
+  }
 
   function appendRaw(html) {
     var el = document.getElementById('ps-w-messages');
     if (!el) return;
-    var wrap = document.createElement('div');
-    wrap.innerHTML = html;
+    var wrap = document.createElement('div'); wrap.innerHTML = html;
     el.appendChild(wrap.firstChild || wrap);
     scrollBottom();
   }
 
+  function botAvatarHtml() {
+    var bot = BOT_META[_vertical] || BOT_META.free;
+    if (_vertical === 'free') {
+      return '<div class="ps-w-av" style="background:#6c63ff22;border:1px solid #6c63ff44;padding:2px"><img src="' + BOT_LOGO_URL + '" alt=""></div>';
+    }
+    return '<div class="ps-w-av" style="background:' + bot.color + '22;border:1px solid ' + bot.color + '44">' + bot.emoji + '</div>';
+  }
+
   function appendBot(content) {
-    var bot = BOT_META[_vertical] || { emoji: '✦' };
-    var div = document.createElement('div');
-    div.className = 'ps-w-msg';
-    div.innerHTML = '<div class="ps-w-avatar">' + bot.emoji + '</div>' +
-      '<div class="ps-w-bubble">' + simpleRender(content) + '</div>';
+    var div = document.createElement('div'); div.className = 'ps-w-msg';
+    div.innerHTML = botAvatarHtml() + '<div class="ps-w-bubble">' + simpleRender(content) + '</div>';
     document.getElementById('ps-w-messages').appendChild(div);
     scrollBottom();
   }
 
   function appendUser(content) {
-    var email = (PS._session && PS._session.user && PS._session.user.email) || '?';
-    var initial = email[0].toUpperCase();
-    var div = document.createElement('div');
-    div.className = 'ps-w-msg ps-w-user';
-    div.innerHTML = '<div class="ps-w-avatar">' + initial + '</div>' +
-      '<div class="ps-w-bubble">' + esc(content).replace(/\n/g, '<br>') + '</div>';
+    var initial = _userName ? _userName[0].toUpperCase() : (PS.session?.user?.email || '?')[0].toUpperCase();
+    var div = document.createElement('div'); div.className = 'ps-w-msg ps-w-user';
+    div.innerHTML = '<div class="ps-w-av">' + initial + '</div><div class="ps-w-bubble">' + esc(content).replace(/\n/g, '<br>') + '</div>';
     document.getElementById('ps-w-messages').appendChild(div);
     scrollBottom();
   }
 
   function appendTyping() {
-    var div = document.createElement('div');
-    div.className = 'ps-w-msg';
-    div.id = 'ps-w-typing-row';
-    var bot = BOT_META[_vertical] || { emoji: '✦' };
-    div.innerHTML = '<div class="ps-w-avatar">' + bot.emoji + '</div>' +
-      '<div class="ps-w-typing"><span></span><span></span><span></span></div>';
+    var div = document.createElement('div'); div.className = 'ps-w-msg'; div.id = 'ps-w-typing-row';
+    div.innerHTML = botAvatarHtml() + '<div class="ps-w-typing"><span></span><span></span><span></span></div>';
     document.getElementById('ps-w-messages').appendChild(div);
     scrollBottom();
   }
 
-  function removeTyping() {
-    var el = document.getElementById('ps-w-typing-row');
-    if (el) el.remove();
-  }
+  function removeTyping() { var el = document.getElementById('ps-w-typing-row'); if (el) el.remove(); }
+  function scrollBottom() { var el = document.getElementById('ps-w-messages'); if (el) el.scrollTop = el.scrollHeight; }
 
-  function scrollBottom() {
-    var el = document.getElementById('ps-w-messages');
-    if (el) el.scrollTop = el.scrollHeight;
-  }
-
-  // ── Send ──────────────────────────────────────────────────────────────────────
+  // ── Send ────────────────────────────────────────────────────────────────────
   async function send() {
     if (_sending) return;
     var input = document.getElementById('ps-w-input');
-    var text  = input.value.trim();
+    var text = input.value.trim();
     if (!text) return;
 
-    input.value = '';
-    input.style.height = 'auto';
+    input.value = ''; input.style.height = 'auto';
     _messages.push({ role: 'user', content: text });
     appendUser(text);
     setSending(true);
     appendTyping();
 
     try {
-      var session = await PS.getSession();
-      if (!session) { removeTyping(); return setSending(false); }
+      var session = PS.session;
+      if (!session) { removeTyping(); setSending(false); return; }
 
-      var rawText = await fetch(API_ENDPOINT, {
-        method:  'POST',
+      var res = await fetch(API, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-        body:    JSON.stringify({
-          vertical: _vertical,
-          messages: _messages.slice(-MAX_TURNS),
-        }),
-      }).then(function (r) { return r.text(); });
+        body: JSON.stringify({ vertical: _vertical, messages: _messages.slice(-MAX_TURNS) }),
+      });
 
       var data;
-      try { data = JSON.parse(rawText); } catch (e) { throw new Error('Réponse serveur invalide'); }
-
+      try { data = await res.json(); } catch (e) { throw new Error('Réponse invalide'); }
       removeTyping();
 
       if (!data.reply) {
-        var errObj = data.error ? tryParseJson(data.error) : null;
-        appendBot(errObj
-          ? (errObj.reason === 'quota_exceeded' ? '📊 Quota mensuel atteint. Revient le 1er du mois.' : '❌ ' + (errObj.message || data.error || 'Erreur'))
-          : ('❌ ' + (data.error || 'Erreur inconnue')));
+        var err = data.error;
+        var msg = (err && typeof err === 'object') ? (err.message || 'Erreur') : (err || 'Erreur');
+        if (err?.code === 'QUOTA_EXCEEDED') msg = '📊 Quota atteint. Repassez en mode gratuit ou attendez le 1er du mois.';
+        if (err?.code === 'RATE_LIMITED') msg = '⏳ Trop de messages, patientez.';
+        if (err?.code === 'NO_SUBSCRIPTION') msg = '🔒 Abonnement requis. Utilisez Studio AI (gratuit) ou souscrivez.';
+        appendBot(msg);
         _messages.pop();
         return;
       }
 
       _messages.push({ role: 'assistant', content: data.reply });
       appendBot(data.reply);
-
+      if (data.quota) updateQuotaFromResponse(data);
     } catch (e) {
       removeTyping();
       appendBot('⚠️ ' + (e.message || 'Erreur de connexion.'));
@@ -402,39 +371,27 @@
 
   function setSending(v) {
     _sending = v;
-    var btn   = document.getElementById('ps-w-send');
+    var btn = document.getElementById('ps-w-send');
     var input = document.getElementById('ps-w-input');
     if (btn) btn.disabled = v || !(input && input.value.trim());
   }
 
-  // ── Input setup ───────────────────────────────────────────────────────────────
   function setupInput() {
-    var input   = document.getElementById('ps-w-input');
+    var input = document.getElementById('ps-w-input');
     var sendBtn = document.getElementById('ps-w-send');
     if (!input || !sendBtn) return;
-
-    sendBtn.disabled = false;
-    input.addEventListener('input', function () {
+    input.addEventListener('input', function() {
       this.style.height = 'auto';
       this.style.height = Math.min(this.scrollHeight, 100) + 'px';
       sendBtn.disabled = !this.value.trim() || _sending;
     });
-    input.addEventListener('keydown', function (e) {
+    input.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
     });
     sendBtn.addEventListener('click', send);
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────────
-  function esc(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function tryParseJson(s) {
-    try { return JSON.parse(s); } catch (_) { return null; }
-  }
-
-  // Minimal markdown for widget (smaller subset)
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function simpleRender(text) {
     var s = esc(text);
     s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -444,43 +401,42 @@
     return s;
   }
 
-  // ── Entry point ───────────────────────────────────────────────────────────────
+  // ── Init ────────────────────────────────────────────────────────────────────
   function initWidget() {
-    _subs      = PS._subsMap || {};
-    var verts  = Object.keys(_subs);
+    if (!PS.session) return;
+    if (window.location.pathname.includes('assistant')) return;
+    if (window.location.pathname.includes('admin')) return;
 
-    if (verts.length === 0) return; // no subscription → don't show widget
+    // Get user first name for personalized greeting
+    _userName = PS.profile?.first_name || PS.session.user.user_metadata?.first_name || '';
 
-    // Don't show widget on the full assistant page (redundant)
-    if (window.location.pathname === '/assistant.html') return;
-
-    _vertical = verts[0];
-
+    _vertical = 'free';
     injectCSS();
     injectDOM();
     updateHeader();
     renderTabs();
     showWelcome();
     setupInput();
-  }
 
-  // Wait for PS to be ready (handles pages where ps-auth.js may load async)
-  function tryInit() {
-    if (typeof PS === 'undefined' || typeof PS._ready === 'undefined') {
-      return setTimeout(tryInit, 300);
+    // Auto-open on dashboard
+    var isDashboard = window.location.pathname.includes('dashboard');
+    var alreadyOpened = sessionStorage.getItem('ps_chat_opened');
+    if (isDashboard && !alreadyOpened) {
+      sessionStorage.setItem('ps_chat_opened', '1');
+      openWidget();
     }
-    PS._ready.then(function () {
-      // Only init for authenticated users
-      PS.getSession().then(function (session) {
-        if (session) initWidget();
-      });
-    });
+
+    console.log('[ChatWidget] Ready — greeting:', _userName || 'anonymous');
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', tryInit);
-  } else {
-    tryInit();
+  // Listen for ps:ready event from ps-auth.js (guaranteed profile is loaded)
+  window.addEventListener('ps:ready', function(e) {
+    if (e.detail?.session) initWidget();
+  });
+
+  // Fallback: if ps:ready already fired before this script loaded
+  if (typeof PS !== 'undefined' && PS.ready && PS.session) {
+    initWidget();
   }
 
 })();

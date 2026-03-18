@@ -21,7 +21,7 @@
       --accent2: #a78bfa;
       --sidebar: 240px;
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; overflow-x: hidden; width: 100%; }
 
     /* ── Sidebar ── */
     .sidebar { width: var(--sidebar); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top:0; left:0; bottom:0; z-index: 50; }
@@ -44,7 +44,7 @@
     .logout-btn:hover { color: #ef4444; }
 
     /* ── Main ── */
-    .main { margin-left: var(--sidebar); flex: 1; display: flex; flex-direction: column; }
+    .main { margin-left: var(--sidebar); flex: 1; display: flex; flex-direction: column; max-width: calc(100vw - var(--sidebar)); overflow-x: hidden; min-width: 0; }
 
     /* Top bar */
     .topbar { padding: 18px 32px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: space-between; }
@@ -89,7 +89,7 @@
     .filter-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: .78rem; cursor: pointer; transition: all .15s; }
     .filter-btn.active, .filter-btn:hover { border-color: currentColor; }
 
-    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 14px; }
 
     .tool-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px; transition: border-color .18s, transform .18s; position: relative; }
     .tool-card:hover { transform: translateY(-2px); }
@@ -166,7 +166,41 @@
     .filter-btn.active { font-weight: 600; }
     .filter-btn:not(.active):hover { color: var(--text); border-color: var(--text); }
 
-    @media(max-width:700px) { .sidebar{display:none;} .main{margin-left:0;} .vtab-bar,.topbar,.content{padding-left:16px;padding-right:16px;} }
+    /* ── Tablet ── */
+    @media(max-width:900px) {
+      .tools-grid { grid-template-columns: repeat(auto-fill,minmax(min(200px,100%),1fr)) !important; }
+      .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .v-banner { flex-direction: column; gap: 12px; align-items: flex-start; }
+      .v-banner-right { text-align: left; }
+      .v-banner-bar { margin-left: 0; }
+    }
+    /* ── Mobile ── */
+    @media(max-width:700px) {
+      :root { --sidebar: 0px; }
+      .sidebar { display: none; }
+      .main { margin-left: 0; max-width: 100vw; }
+      .topbar { padding: 16px; }
+      .topbar h1 { font-size: 1.1rem; }
+      .topbar-right { display: none; }
+      .vtab-bar { padding: 8px 12px; gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
+      .vtab-btn { white-space: nowrap; font-size: .78rem; padding: 8px 12px; }
+      .content { padding: 14px; }
+      .tools-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+      .tool-card { padding: 14px; }
+      .tc-name { font-size: .88rem; }
+      .v-banner { padding: 14px 16px; border-radius: 10px; }
+      .v-banner-icon { font-size: 1.5rem; }
+      .v-banner-title { font-size: .95rem; }
+      .welcome-banner { margin: 0 0 12px; padding: 12px; flex-direction: column; gap: 8px; text-align: center; font-size: .82rem; }
+      .tools-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+      .filter-row { flex-wrap: wrap; }
+    }
+    /* ── Small mobile ── */
+    @media(max-width:400px) {
+      .content { padding: 10px; }
+      .tool-card { padding: 12px; }
+      .vtab-btn { font-size: .72rem; padding: 6px 10px; }
+    }
   </style>
 </head>
 <body>
@@ -207,9 +241,14 @@
   <div class="vtab-bar" id="vtab-bar"></div>
 
   <div class="content" id="content">
-    <!-- Filled by JS -->
+    <!-- Skeleton placeholder — replaced by JS on load -->
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
-      ${Array(6).fill('<div class="skel" style="height:140px;border-radius:12px;"></div>').join('')}
+      <div class="skel" style="height:140px;border-radius:12px;background:var(--surface,#1a1d27);"></div>
+      <div class="skel" style="height:140px;border-radius:12px;background:var(--surface,#1a1d27);"></div>
+      <div class="skel" style="height:140px;border-radius:12px;background:var(--surface,#1a1d27);"></div>
+      <div class="skel" style="height:140px;border-radius:12px;background:var(--surface,#1a1d27);"></div>
+      <div class="skel" style="height:140px;border-radius:12px;background:var(--surface,#1a1d27);"></div>
+      <div class="skel" style="height:140px;border-radius:12px;background:var(--surface,#1a1d27);"></div>
     </div>
   </div>
 </div>
@@ -487,16 +526,31 @@ async function init() {
 
   document.getElementById('sb-email').textContent = PS.session.user.email;
 
+  // Show profile completion banner (non-blocking — doesn't prevent tool access)
+  if (!PS.isProfileComplete()) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);border-radius:12px;padding:14px 20px;margin:0 0 20px;display:flex;align-items:center;justify-content:space-between;font-size:.875rem;';
+    banner.innerHTML = '<span>👋 Complétez votre profil pour une meilleure expérience.</span><a href="/complete-profile.html?redirect=/dashboard.html" style="background:#6c63ff;color:#fff;padding:6px 16px;border-radius:7px;text-decoration:none;font-weight:600;font-size:.8rem;white-space:nowrap;margin-left:12px;">Compléter →</a>';
+    const main = document.querySelector('.main-content') || document.querySelector('.content') || document.body.querySelector('.dashboard-content');
+    if (main) main.prepend(banner);
+    else document.body.insertBefore(banner, document.body.firstChild);
+  }
+
+  console.log('[Dashboard] subs:', PS.subs.length, PS.subs.map(s => s.vertical + ':' + s.tier));
+
   if (!PS.hasAnySubscription()) {
+    console.warn('[Dashboard] No active subscriptions found');
     renderNoSub();
     return;
   }
 
   // Load tools from database (replaces hardcoded ALL_TOOLS)
   const catalog = await ToolCatalog.load();
+  console.log('[Dashboard] Catalog source:', catalog.source, '| tools:', catalog.tools ? Object.keys(catalog.tools).length + ' verticals' : 'null');
   if (catalog.source === 'db' && catalog.tools) {
     ALL_TOOLS = catalog.tools;
-    console.log('[Dashboard] Tools loaded from DB:', Object.keys(ALL_TOOLS).map(k => `${k}:${ALL_TOOLS[k].length}`).join(', '));
+  } else if (catalog.source === 'cache' && catalog.tools) {
+    ALL_TOOLS = catalog.tools;
   }
 
   renderSidebar();
@@ -511,5 +565,6 @@ async function init() {
 
 init();
 </script>
+<script src="/js/ps-chat-widget.js"></script>
 </body>
 </html>

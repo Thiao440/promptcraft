@@ -1,8 +1,13 @@
 /**
- * ps-auth.js — The Prompt Studio shared auth utility (v3)
+ * ps-auth.js — The Prompt Studio shared auth utility (v6 — single session)
  *
- * Architecture: 1 subscription per vertical, user can have multiple
- * Colors: immo=blue, commerce=orange, legal=red, finance=green
+ * Auth: email + password via Supabase Auth.
+ * Profile: loaded on init(), checked for completeness.
+ * Session: single active session per user (prevents account sharing).
+ * Subscriptions: 1 per vertical, user can have multiple.
+ *
+ * Events:
+ *   window dispatches 'ps:ready' when init() completes (used by chat widget).
  */
 
 const SUPABASE_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';
@@ -26,73 +31,131 @@ const VERTICALS = {
 const PS = (() => {
   let _sb       = null;
   let _session  = null;
+  let _profile  = null;
   let _subs     = [];
   let _subsMap  = {};
   let _ready    = false;
+  let _sessionId = null; // unique per browser tab/login
 
   function getClient() {
     if (!_sb) {
       _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
-        auth: { flowType: 'pkce', autoRefreshToken: true, persistSession: true },
+        auth: { autoRefreshToken: true, persistSession: true },
       });
     }
     return _sb;
   }
 
-  async function init() {
-    if (_ready) return { session: _session, subs: _subs };
-    const sb = getClient();
-
-    // PKCE code exchange
-    const params = new URLSearchParams(window.location.search);
-    const code   = params.get('code');
-    if (code) {
-      try { await sb.auth.exchangeCodeForSession(window.location.href); } catch(e) {}
-      const clean = window.location.pathname + (params.get('welcome') ? '?welcome=' + params.get('welcome') : '');
-      window.history.replaceState({}, '', clean);
+  // Generate a unique session ID for this browser tab
+  function getSessionId() {
+    if (!_sessionId) {
+      _sessionId = sessionStorage.getItem('ps_session_id');
+      if (!_sessionId) {
+        _sessionId = crypto.randomUUID ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2));
+        sessionStorage.setItem('ps_session_id', _sessionId);
+      }
     }
-
-    const { data: { session } } = await sb.auth.getSession();
-    _session = session;
-
-    if (session) {
-      const { data } = await sb
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('status', 'active');
-      _subs = (data || []).filter(s => !s.current_period_end || new Date(s.current_period_end) > new Date());
-      _subsMap = {};
-      _subs.forEach(s => { _subsMap[s.vertical] = s; });
-    }
-
-    console.log('[PS] init complete — user:', _session?.user?.id, '| subs:', _subs, '| subsMap:', _subsMap);
-
-    _ready = true;
-    return { session: _session, subs: _subs };
+    return _sessionId;
   }
 
-  // Re-fetches session + subscriptions from the DB without a page reload.
-  // Bypasses the _ready guard so stale cached state is always overwritten.
-  async function refresh() {
+  async function init() {
+    if (_ready) return { session: _session, profile: _profile, subs: _subs };
     const sb = getClient();
+
     const { data: { session } } = await sb.auth.getSession();
     _session = session;
-    _subs    = [];
-    _subsMap = {};
 
     if (session) {
-      const { data } = await sb
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('status', 'active');
-      _subs = (data || []).filter(s => !s.current_period_end || new Date(s.current_period_end) > new Date());
+      // Load profile + subscriptions in parallel
+      const [profileRes, subsRes] = await Promise.all([
+        sb.from('profiles').select('*').eq('id', session.user.id).single(),
+        sb.from('subscriptions').select('*').eq('user_id', session.user.id).eq('status', 'active'),
+      ]);
+
+      _profile = profileRes.data || null;
+      _subs = (subsRes.data || []).filter(s => !s.current_period_end || new Date(s.current_period_end) > new Date());
+      _subsMap = {};
       _subs.forEach(s => { _subsMap[s.vertical] = s; });
+
+      // Ensure profile row exists (in case trigger didn't fire)
+      if (!_profile) {
+        const meta = session.user.user_metadata || {};
+        await sb.from('profiles').upsert({
+          id:         session.user.id,
+          email:      session.user.email,
+          first_name: meta.first_name || '',
+          last_name:  meta.last_name || '',
+          full_name:  meta.full_name || '',
+        }, { onConflict: 'id' });
+        const { data } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+        _profile = data;
+      }
+
+      // ── Single session enforcement ────────────────────────────────────────
+      const sid = getSessionId();
+      // Claim this session
+      await sb.rpc('claim_session', { p_user_id: session.user.id, p_session_id: sid }).catch(() => {});
+
+      // Periodic check: verify this session is still the active one (every 30s)
+      setInterval(async () => {
+        if (!_session) return;
+        try {
+          const { data: valid } = await sb.rpc('check_session', {
+            p_user_id: _session.user.id,
+            p_session_id: sid,
+          });
+          if (valid === false) {
+            // Another session took over → force logout
+            console.warn('[PS] Session invalidated by another login');
+            _session = null;
+            _profile = null;
+            _subs = [];
+            _subsMap = {};
+            _ready = false;
+            await sb.auth.signOut();
+            window.location.href = '/login.html?reason=session_replaced';
+          }
+        } catch (e) {
+          // RPC not available yet, silently ignore
+        }
+      }, 30_000);
+
+      // Track login (fire-and-forget)
+      sb.rpc('track_login', { p_user_id: session.user.id }).catch(() => {});
     }
 
+    console.log('[PS] init — user:', _session?.user?.email || 'anon', '| profile:', _profile?.first_name || '?', '| subs:', _subs.length);
+
     _ready = true;
-    return { session: _session, subs: _subs };
+
+    // Dispatch event so other scripts (chat widget) know init is complete
+    window.dispatchEvent(new CustomEvent('ps:ready', { detail: { session: _session, profile: _profile, subs: _subs } }));
+
+    return { session: _session, profile: _profile, subs: _subs };
+  }
+
+  async function refresh() {
+    _ready = false;
+    _session = null;
+    _profile = null;
+    _subs = [];
+    _subsMap = {};
+    return init();
+  }
+
+  function isProfileComplete() {
+    if (!_profile) return false;
+    return !!(
+      _profile.first_name &&
+      _profile.last_name &&
+      _profile.phone &&
+      _profile.job_title &&
+      _profile.company_name &&
+      _profile.billing_address_line1 &&
+      _profile.billing_city &&
+      _profile.billing_postal_code &&
+      _profile.profile_completed_at
+    );
   }
 
   async function requireAuth(returnPath) {
@@ -102,6 +165,29 @@ const PS = (() => {
       return false;
     }
     return true;
+  }
+
+  function requireProfile() {
+    if (!_session) return false;
+    if (!isProfileComplete()) {
+      if (!window.location.pathname.includes('complete-profile')) {
+        window.location.href = '/complete-profile.html?redirect=' + encodeURIComponent(window.location.pathname);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  async function updateProfile(fields) {
+    if (!_session) return { error: 'Not authenticated' };
+    const { data, error } = await getClient()
+      .from('profiles')
+      .update({ ...fields, updated_at: new Date().toISOString() })
+      .eq('id', _session.user.id)
+      .select()
+      .single();
+    if (data) _profile = data;
+    return { data, error };
   }
 
   function subForVertical(v)       { return _subsMap[v] || null; }
@@ -132,17 +218,32 @@ const PS = (() => {
   }
 
   async function logout() {
+    // Clear session claim
+    if (_session) {
+      await getClient().from('profiles')
+        .update({ active_session_id: null })
+        .eq('id', _session.user.id)
+        .catch(() => {});
+    }
     await getClient().auth.signOut();
-    window.location.href = '/index.html';
+    _session = null;
+    _profile = null;
+    _subs = [];
+    _subsMap = {};
+    _ready = false;
+    sessionStorage.removeItem('ps_session_id');
+    window.location.href = '/login.html';
   }
 
   return {
     get supabase()  { return getClient(); },
     get session()   { return _session; },
+    get profile()   { return _profile; },
     get subs()      { return _subs; },
     get subsMap()   { return _subsMap; },
-    init, refresh, requireAuth, subForVertical,
-    hasAnySubscription, subscribedVerticals,
+    get ready()     { return _ready; },
+    init, refresh, requireAuth, requireProfile, isProfileComplete,
+    updateProfile, subForVertical, hasAnySubscription, subscribedVerticals,
     canUseTool, getMonthlyUsage, getQuota, logout,
     VERTICALS, TIER_ORDER,
   };

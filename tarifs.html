@@ -143,6 +143,32 @@
     .faq-a.open { max-height: 200px; padding: 0 18px 14px; }
     .faq-arrow { transition: transform .25s; font-size: .8rem; }
     .faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+    /* ── Mobile responsive ── */
+    @media(max-width:600px) {
+      .hero { padding: 40px 16px 24px; }
+      .hero h1 { font-size: 1.5rem; }
+      .steps { flex-direction: column; gap: 6px; font-size: .78rem; }
+      .step-sep { display: none; }
+      .section-title { font-size: .95rem; margin: 28px 0 14px; }
+      .vertical-tabs { gap: 8px; padding: 0 12px; }
+      .vtab { min-width: 100px; padding: 12px 14px; }
+      .vtab .v-icon { font-size: 1.4rem; }
+      .vtab .v-name { font-size: .78rem; }
+      .vtab .v-desc { font-size: .65rem; }
+      .plans-section { padding: 0 12px 48px; }
+      .plans-header h2 { font-size: 1.15rem; }
+      .billing-toggle { font-size: .78rem; padding: 4px 12px; }
+      .plan-card { padding: 20px; }
+      .plan-price { font-size: 2rem; }
+      .tools-preview { padding: 0 12px; margin-bottom: 48px; }
+      .tools-mini-grid { grid-template-columns: 1fr !important; gap: 8px; }
+      .faq { padding: 0 12px; }
+      .ps-nav { padding: 0 12px; height: 50px; }
+      .ps-nav-logo { font-size: .95rem; }
+      .ps-nav-cta { padding: 6px 12px; font-size: .75rem; }
+      body { padding-top: 50px; }
+    }
   </style>
 </head>
 <body>
@@ -165,9 +191,7 @@
         <a href="/tarifs.html?v=freelance" class="ps-dd-row"><span>💼 Freelances & Consultants</span><span class="ps-badge-live">Live</span></a>
       </div>
     </div>
-    <a href="/finance.html" class="ps-nav-a ps-nav-gold">Finance IA</a>
     <a href="/conseil-sur-mesure.html" class="ps-nav-a">Conseil sur mesure</a>
-    <a href="/assistant.html" class="ps-nav-a ps-nav-ai">✦ Assistant IA</a>
     <a href="/contact.html" class="ps-nav-a">Contact</a>
   </div>
   <div class="ps-nav-right">

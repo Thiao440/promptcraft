@@ -22,6 +22,11 @@
   to = "/login.html"
   status = 200
 
+[[redirects]]
+  from = "/complete-profile"
+  to = "/complete-profile.html"
+  status = 200
+
 # Generic dynamic tool page (pretty URL)
 # /t/immo-annonce → /tool.html?slug=immo-annonce
 # Runs AFTER static file check, so existing /tools/*.html pages still work

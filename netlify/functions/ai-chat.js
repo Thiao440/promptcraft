@@ -1,11 +1,12 @@
 /**
- * ai-chat.js — Netlify Function: Conversational AI assistant proxy (v3 hardened)
+ * ai-chat.js — Conversational AI assistant (v4 — free + paid modes)
  *
  * POST /api/ai-chat
- * Body: { vertical: string, messages: [{role:'user'|'assistant', content:string}] }
- * Headers: Authorization: Bearer <supabase_jwt>
+ * Body: { vertical: string|"free", messages: [...] }
  *
- * Hardened: rate limiting, env-var model, retries, structured logging, all 10 verticals
+ * Two modes:
+ *   vertical = "free"   → generic Studio AI, no subscription needed, max 300 tokens, no quota consumed
+ *   vertical = "immo"   → expert ImmoBot, requires subscription, max 1200 tokens, 1 credit consumed
  */
 
 const { createClient } = require('@supabase/supabase-js');
@@ -16,10 +17,31 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const ANTHROPIC_API_KEY    = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_API_URL    = 'https://api.anthropic.com/v1/messages';
 const CLAUDE_MODEL         = process.env.CLAUDE_MODEL || 'claude-3-5-haiku-20241022';
-const MAX_TOKENS           = parseInt(process.env.CHAT_MAX_TOKENS, 10) || 1200;
 const MAX_HISTORY_TURNS    = 24;
 const MAX_MSG_CHARS        = 4000;
 const TIER_QUOTA           = { bronze: 50, silver: 150, gold: Infinity };
+
+// Free mode config
+const FREE_MAX_TOKENS    = 300;
+const FREE_SYSTEM_PROMPT = `Tu es Studio AI, l'assistant gratuit de The Prompt Studio.
+Tu aides les professionnels avec des réponses courtes et utiles.
+Tu réponds toujours en français. Sois concis (3-5 phrases max).
+Si l'utilisateur a besoin d'une réponse plus détaillée ou spécialisée, suggère-lui d'utiliser l'assistant expert de sa verticale (Immobilier, Juridique, Finance, Marketing, etc.) disponible avec un abonnement.`;
+
+// Paid mode config
+const PAID_MAX_TOKENS = 1200;
+const BOT_SYSTEM = {
+  immo: `Tu es ImmoBot, l'assistant IA expert immobilier de The Prompt Studio. Compétences : estimation, rédaction d'annonces, réglementation (ALUR, Hoguet, DPE), gestion locative, prospection, fiscalité (LMNP, SCI). Direct, structuré, opérationnel. Français uniquement.`,
+  commerce: `Tu es CommerceBot, l'assistant IA expert e-commerce de The Prompt Studio. Compétences : SEO, SEA, fiches produit, email marketing, copywriting, CRO, marketplaces. Créatif et orienté résultats. Français uniquement.`,
+  legal: `Tu es JuriBot, l'assistant IA expert juridique de The Prompt Studio. Compétences : contrats, droit des affaires, droit du travail, procédure civile, PI. Assistance informationnelle uniquement — rappelle qu'un avocat doit valider. Français uniquement.`,
+  finance: `Tu es FinBot, l'assistant IA expert finance de The Prompt Studio. Compétences : analyse financière, investissement, business plan, comptabilité, fiscalité, M&A. Ce n'est pas un conseil en investissement. Français uniquement.`,
+  marketing: `Tu es MarketBot, l'assistant IA expert marketing de The Prompt Studio. Compétences : stratégie de contenu, SEO/SEA, réseaux sociaux, email marketing, branding. Créatif et data-driven. Français uniquement.`,
+  rh: `Tu es RHBot, l'assistant IA expert ressources humaines de The Prompt Studio. Compétences : recrutement, gestion des talents, droit social, communication interne, marque employeur. Français uniquement.`,
+  sante: `Tu es SantéBot, l'assistant IA expert santé de The Prompt Studio. Compétences : communication médicale, gestion de cabinet, marketing santé. Jamais de diagnostic médical. Français uniquement.`,
+  education: `Tu es EduBot, l'assistant IA expert éducation de The Prompt Studio. Compétences : ingénierie pédagogique, e-learning, formation professionnelle, Qualiopi. Français uniquement.`,
+  restauration: `Tu es RestoBot, l'assistant IA expert restauration de The Prompt Studio. Compétences : menus, descriptions de plats, marketing food, gestion, recrutement restauration. Français uniquement.`,
+  freelance: `Tu es FreelanceBot, l'assistant IA expert freelance de The Prompt Studio. Compétences : prospection, propositions commerciales, personal branding, gestion d'activité, statuts juridiques. Français uniquement.`,
+};
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 const _rl = new Map();
@@ -32,10 +54,7 @@ function isRateLimited(uid) {
   ts.push(now);
   return false;
 }
-setInterval(() => {
-  const cutoff = Date.now() - 120000;
-  for (const [k, v] of _rl) { if (!v.length || v[v.length-1] < cutoff) _rl.delete(k); }
-}, 300000);
+setInterval(() => { const c = Date.now() - 120000; for (const [k, v] of _rl) { if (!v.length || v[v.length-1] < c) _rl.delete(k); } }, 300000);
 
 function log(event, data = {}) {
   console.log(JSON.stringify({ fn: 'ai-chat', event, ts: new Date().toISOString(), ...data }));
@@ -53,26 +72,11 @@ const fail = (code, errorCode, message, details = {}) => ({
   body: JSON.stringify({ error: { code: errorCode, message, ...details } }),
 });
 
-// ── Bot system prompts (all 10 verticals) ────────────────────────────────────
-const BOT_SYSTEM = {
-  immo: `Tu es ImmoBot, l'assistant IA expert immobilier de The Prompt Studio. Tu aides les professionnels de l'immobilier. Compétences : estimation, rédaction d'annonces, réglementation (ALUR, Hoguet, DPE), gestion locative, prospection, fiscalité (LMNP, SCI). Direct, structuré, opérationnel. Français uniquement.`,
-  commerce: `Tu es CommerceBot, l'assistant IA expert e-commerce de The Prompt Studio. Compétences : SEO, SEA, fiches produit, email marketing, copywriting, CRO, marketplaces. Créatif et orienté résultats. Français uniquement.`,
-  legal: `Tu es JuriBot, l'assistant IA expert juridique de The Prompt Studio. Compétences : contrats, droit des affaires, droit du travail, procédure civile, PI. IMPORTANT : assistance informationnelle uniquement, rappelle qu'un avocat doit valider. Français uniquement.`,
-  finance: `Tu es FinBot, l'assistant IA expert finance de The Prompt Studio. Compétences : analyse financière, investissement, business plan, comptabilité, fiscalité, M&A. Rappelle que ce n'est pas un conseil en investissement. Français uniquement.`,
-  marketing: `Tu es MarketBot, l'assistant IA expert marketing de The Prompt Studio. Compétences : stratégie de contenu, SEO/SEA, réseaux sociaux, email marketing, branding. Créatif et data-driven. Français uniquement.`,
-  rh: `Tu es RHBot, l'assistant IA expert ressources humaines de The Prompt Studio. Compétences : recrutement, gestion des talents, droit social, communication interne, marque employeur. Bienveillant et orienté conformité. Français uniquement.`,
-  sante: `Tu es SantéBot, l'assistant IA expert santé de The Prompt Studio. Compétences : communication médicale, gestion de cabinet, marketing santé. JAMAIS de diagnostic médical, contenus informatifs uniquement. Français uniquement.`,
-  education: `Tu es EduBot, l'assistant IA expert éducation de The Prompt Studio. Compétences : ingénierie pédagogique, e-learning, formation professionnelle, Qualiopi. Pédagogue et structuré. Français uniquement.`,
-  restauration: `Tu es RestoBot, l'assistant IA expert restauration de The Prompt Studio. Compétences : menus, descriptions de plats, marketing food, gestion, recrutement restauration. Créatif et orienté business. Français uniquement.`,
-  freelance: `Tu es FreelanceBot, l'assistant IA expert freelance de The Prompt Studio. Compétences : prospection, propositions commerciales, personal branding, gestion d'activité, statuts juridiques. Pragmatique et empathique. Français uniquement.`,
-};
-
 function buildSystemPrompt(vertical, tier) {
-  const base = BOT_SYSTEM[vertical] ||
-    `Tu es Studio AI, l'assistant IA de The Prompt Studio. Tu aides les professionnels. Français uniquement.`;
-  const tierLabel = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' }[tier] || tier;
+  const base = BOT_SYSTEM[vertical] || FREE_SYSTEM_PROMPT;
+  const tierLabel = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' }[tier] || '';
   const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-  return `${base}\n\n---\nContexte : abonnement ${tierLabel} — ${vertical}. Date : ${today}. Ton conversationnel et professionnel.`;
+  return `${base}\n\n---\nDate : ${today}.${tierLabel ? ` Abonnement ${tierLabel}.` : ''} Ton conversationnel et professionnel.`;
 }
 
 function callClaude(systemPrompt, messages, maxTokens, retries = 2) {
@@ -122,6 +126,7 @@ async function incrementQuota(supabase, userId) {
   }
 }
 
+// ── Main handler ──────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST') return fail(405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
@@ -141,6 +146,7 @@ exports.handler = async (event) => {
     .map(m => ({ role: m.role, content: m.content.slice(0, MAX_MSG_CHARS) }));
   if (!sanitized.length || sanitized[sanitized.length - 1].role !== 'user') return fail(400, 'INVALID_MESSAGES', 'Last message must be from user');
 
+  // Auth
   const token = (event.headers.authorization || event.headers.Authorization || '').replace('Bearer ', '').trim();
   if (!token) return fail(401, 'AUTH_REQUIRED', 'Missing token');
 
@@ -153,33 +159,55 @@ exports.handler = async (event) => {
     return fail(429, 'RATE_LIMITED', 'Trop de requêtes. Patientez 1 minute.');
   }
 
+  const isFree = (vertical === 'free');
+
+  // ── FREE MODE: no subscription check, no quota consumed ─────────────────
+  if (isFree) {
+    const startMs = Date.now();
+    let cr;
+    try { cr = await callClaude(buildSystemPrompt('free', ''), sanitized, FREE_MAX_TOKENS); }
+    catch (e) {
+      log('chat_error', { userId: user.id, vertical: 'free', error: e.message });
+      return fail(502, 'GENERATION_FAILED', 'Erreur. Réessayez.');
+    }
+    const reply = cr.content?.[0]?.text || '';
+    const tokensUsed = (cr.usage?.input_tokens || 0) + (cr.usage?.output_tokens || 0);
+    log('chat_free', { userId: user.id, durationMs: Date.now() - startMs, tokensUsed });
+    return ok({ reply, tokensUsed, durationMs: Date.now() - startMs, mode: 'free' });
+  }
+
+  // ── PAID MODE: subscription + quota check ───────────────────────────────
   const { data: sub } = await supabase.from('subscriptions').select('tier, current_period_end')
     .eq('user_id', user.id).eq('vertical', vertical).eq('status', 'active').single();
-  if (!sub) return fail(403, 'NO_SUBSCRIPTION', 'Aucun abonnement actif.', { vertical });
+  if (!sub) return fail(403, 'NO_SUBSCRIPTION', 'Aucun abonnement actif pour cette verticale.', { vertical });
   if (sub.current_period_end && new Date(sub.current_period_end) < new Date()) return fail(403, 'SUBSCRIPTION_EXPIRED', 'Abonnement expiré.');
 
   const quota = TIER_QUOTA[sub.tier] ?? 50;
+  let currentCount = 0;
   if (quota !== Infinity) {
     const month = new Date().toISOString().slice(0, 7);
     const { data: uRow } = await supabase.from('usage_quotas').select('count').eq('user_id', user.id).eq('month', month).single();
-    if ((uRow?.count || 0) >= quota) return fail(429, 'QUOTA_EXCEEDED', `Quota atteint.`, { used: uRow?.count, limit: quota });
+    currentCount = uRow?.count || 0;
+    if (currentCount >= quota) return fail(429, 'QUOTA_EXCEEDED', 'Quota atteint.', { used: currentCount, limit: quota });
   }
 
   const startMs = Date.now();
   let cr;
-  try { cr = await callClaude(buildSystemPrompt(vertical, sub.tier), sanitized, MAX_TOKENS); }
+  try { cr = await callClaude(buildSystemPrompt(vertical, sub.tier), sanitized, PAID_MAX_TOKENS); }
   catch (e) {
-    log('chat_error', { userId: user.id, vertical, error: e.message, durationMs: Date.now() - startMs });
-    return fail(e.message === 'CLAUDE_TIMEOUT' ? 504 : 502, 'GENERATION_FAILED', 'Génération échouée. Réessayez.');
+    log('chat_error', { userId: user.id, vertical, error: e.message });
+    return fail(e.message === 'CLAUDE_TIMEOUT' ? 504 : 502, 'GENERATION_FAILED', 'Erreur. Réessayez.');
   }
 
   const durationMs = Date.now() - startMs;
   const reply = cr.content?.[0]?.text || '';
-  const usage = cr.usage || {};
-  const tokensUsed = (usage.input_tokens || 0) + (usage.output_tokens || 0);
+  const tokensUsed = (cr.usage?.input_tokens || 0) + (cr.usage?.output_tokens || 0);
 
-  log('chat_success', { userId: user.id, vertical, tier: sub.tier, durationMs, tokensUsed });
+  log('chat_paid', { userId: user.id, vertical, tier: sub.tier, durationMs, tokensUsed });
   await incrementQuota(supabase, user.id);
 
-  return ok({ reply, tokensUsed, durationMs });
+  return ok({
+    reply, tokensUsed, durationMs, mode: 'paid',
+    quota: { used: currentCount + 1, limit: quota === Infinity ? 'unlimited' : quota },
+  });
 };
