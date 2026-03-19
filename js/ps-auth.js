@@ -206,6 +206,10 @@ const PS = (() => {
     if (!_session) return { allowed: false, reason: 'not_logged_in' };
     const sub = _subsMap[toolVertical];
     if (!sub)  return { allowed: false, reason: 'no_subscription', vertical: toolVertical, label: VERTICALS[toolVertical]?.label };
+    // Trial = full access to all tools
+    if (sub.trial_ends_at && new Date(sub.trial_ends_at) > new Date()) {
+      return { allowed: true, tier: sub.tier, vertical: toolVertical, trial: true };
+    }
     const u = TIER_ORDER[sub.tier]     || 0;
     const t = TIER_ORDER[toolMinTier]  || 1;
     if (u < t) return { allowed: false, reason: 'upgrade_required', required: toolMinTier, yours: sub.tier, vertical: toolVertical };
@@ -249,6 +253,26 @@ const PS = (() => {
     window.location.href = '/login.html';
   }
 
+  // ── Trial detection ─────────────────────────────────────────────────────────
+  // A user is in trial if they have a subscription with trial_ends_at in the future.
+  // During trial: full access to all features, no ads.
+  function isInTrial(vertical) {
+    if (vertical) {
+      const sub = _subsMap[vertical];
+      return sub?.trial_ends_at && new Date(sub.trial_ends_at) > new Date();
+    }
+    return _subs.some(s => s.trial_ends_at && new Date(s.trial_ends_at) > new Date());
+  }
+
+  function getTrialEnd(vertical) {
+    if (vertical) {
+      const sub = _subsMap[vertical];
+      return sub?.trial_ends_at ? new Date(sub.trial_ends_at) : null;
+    }
+    const trial = _subs.find(s => s.trial_ends_at && new Date(s.trial_ends_at) > new Date());
+    return trial?.trial_ends_at ? new Date(trial.trial_ends_at) : null;
+  }
+
   // ── Feature gating ─────────────────────────────────────────────────────────
   // Defines which tier is required for each gated feature.
   const FEATURE_GATES = {
@@ -266,12 +290,17 @@ const PS = (() => {
 
   /**
    * Check if user can access a gated feature for a given vertical.
-   * Returns { allowed: boolean, reason?: string, requiredTier?: string, yourTier?: string }
+   * During trial → always allowed (full access).
+   * Returns { allowed, reason?, requiredTier?, yourTier?, trial? }
    */
   function canAccessFeature(featureName, vertical) {
     if (!_session) return { allowed: false, reason: 'not_logged_in' };
+
+    // Trial = full access to everything
+    if (isInTrial(vertical)) return { allowed: true, trial: true };
+
     const requiredTier = FEATURE_GATES[featureName];
-    if (!requiredTier) return { allowed: true }; // Unknown feature = not gated
+    if (!requiredTier) return { allowed: true };
 
     // For features that need a vertical subscription
     if (vertical) {
@@ -293,6 +322,18 @@ const PS = (() => {
     return { allowed: true, tier: bestTier.tier };
   }
 
+  /**
+   * Should ads be shown to this user?
+   * YES only if: has Starter tier AND is NOT in trial.
+   */
+  function shouldShowAds() {
+    if (!_session || !_subs.length) return false;  // Not logged in or no sub = no ads
+    if (isInTrial()) return false;                  // Trial = no ads
+    // Show ads only if ALL subscriptions are Starter (no Pro/Gold/Team)
+    const bestLevel = _subs.reduce((best, s) => Math.max(best, TIER_ORDER[s.tier] || 0), 0);
+    return bestLevel <= TIER_ORDER['starter'];
+  }
+
   return {
     get supabase()  { return getClient(); },
     get session()   { return _session; },
@@ -302,7 +343,8 @@ const PS = (() => {
     get ready()     { return _ready; },
     init, refresh, requireAuth, requireProfile, isProfileComplete,
     updateProfile, subForVertical, hasAnySubscription, subscribedVerticals,
-    canUseTool, canAccessFeature, getMonthlyUsage, getQuota, logout,
+    canUseTool, canAccessFeature, isInTrial, getTrialEnd, shouldShowAds,
+    getMonthlyUsage, getQuota, logout,
     VERTICALS, TIER_ORDER, FEATURE_GATES,
   };
 })();

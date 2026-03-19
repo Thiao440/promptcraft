@@ -406,6 +406,11 @@ const PSTool = (() => {
         PSAnalytics.trackToolComplete(_cfg.toolSlug, data.durationMs);
       }
 
+      // Ads: maybe show interstitial (Starter only, not trial)
+      if (typeof PSAds !== 'undefined') {
+        PSAds.maybeShowInterstitial();
+      }
+
     } catch (err) {
       console.error('[PSTool] generate error', err);
       showToast('Erreur de connexion. Vérifiez votre réseau.', 'error');

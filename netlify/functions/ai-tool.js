@@ -318,7 +318,7 @@ exports.handler = async (event) => {
   // ── 6. Load subscription — filtered by tool vertical ──────────────────────
   const { data: sub } = await supabase
     .from('subscriptions')
-    .select('tier, vertical, current_period_end')
+    .select('tier, vertical, current_period_end, trial_ends_at')
     .eq('user_id', user.id)
     .eq('vertical', tool.vertical)
     .eq('status', 'active')
@@ -331,12 +331,17 @@ exports.handler = async (event) => {
     return fail(403, 'SUBSCRIPTION_EXPIRED', 'Abonnement expiré.', { vertical: tool.vertical });
   }
 
-  const userTierOrder = TIER_ORDER[sub.tier]      || 0;
-  const toolTierOrder = TIER_ORDER[tool.min_tier] || 1;
-  if (userTierOrder < toolTierOrder) {
-    return fail(403, 'UPGRADE_REQUIRED', `Upgrade requis (${tool.min_tier}).`, {
-      required: tool.min_tier, yours: sub.tier,
-    });
+  // Trial = full access to all tools regardless of tier
+  const isInTrial = sub.trial_ends_at && new Date(sub.trial_ends_at) > new Date();
+
+  if (!isInTrial) {
+    const userTierOrder = TIER_ORDER[sub.tier]      || 0;
+    const toolTierOrder = TIER_ORDER[tool.min_tier] || 1;
+    if (userTierOrder < toolTierOrder) {
+      return fail(403, 'UPGRADE_REQUIRED', `Upgrade requis (${tool.min_tier}).`, {
+        required: tool.min_tier, yours: sub.tier,
+      });
+    }
   }
 
   // ── 7. Check monthly quota (per vertical) ─────────────────────────────────

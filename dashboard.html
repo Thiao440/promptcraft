@@ -12,6 +12,7 @@
   <script src="/js/tool-catalog.js"></script>
   <script src="/js/ps-projects.js"></script>
   <script src="/js/ps-feedback.js"></script>
+  <script src="/js/ps-ads.js"></script>
   <script src="/js/ps-lang.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -536,6 +537,9 @@ function renderTools(v, sub, filter = 'all') {
       <div class="tc-action" style="color:var(--accent2)">Proposer une idée →</div>
     </div>
   </div>`;
+
+  // Ad slot (Starter only, between suggest card and tools)
+  html += '<div id="ad-slot-dashboard" data-ad-slot="banner"></div>';
 
   // Tier sections
   let hasContent = false;
