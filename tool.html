@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/css/tool.css"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/ps-auth.js"></script>
+  <script src="/js/ps-analytics.js"></script>
   <script src="/js/ps-tool.js"></script>
   <script src="/js/tool-renderer.js"></script>
   <script src="/js/ps-projects.js"></script>
@@ -347,6 +348,11 @@ function _buildGenericSchema(tool) {
   // ── 5b. Project selector + pre-fill ──────────────────────────────────────
   if (typeof PSProjects !== 'undefined') {
     await _initProjectSelector(tool, formEl);
+  }
+
+  // ── 5c. Analytics: track tool opened ──────────────────────────────────────
+  if (typeof PSAnalytics !== 'undefined') {
+    PSAnalytics.trackToolStart(tool.slug);
   }
 
   // ── 6. Initialize PSTool ──────────────────────────────────────────────────

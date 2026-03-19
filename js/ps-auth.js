@@ -80,12 +80,20 @@ const PS = (() => {
       // Ensure profile row exists (in case trigger didn't fire)
       if (!_profile) {
         const meta = session.user.user_metadata || {};
+        // Capture UTM data from localStorage (set by ps-analytics.js on first visit)
+        let utm = {};
+        try { utm = JSON.parse(localStorage.getItem('ps_utm') || '{}'); } catch (_) {}
         await sb.from('profiles').upsert({
-          id:         session.user.id,
-          email:      session.user.email,
-          first_name: meta.first_name || '',
-          last_name:  meta.last_name || '',
-          full_name:  meta.full_name || '',
+          id:           session.user.id,
+          email:        session.user.email,
+          first_name:   meta.first_name || '',
+          last_name:    meta.last_name || '',
+          full_name:    meta.full_name || '',
+          signup_date:  new Date().toISOString(),
+          signup_source: utm.ref || utm.source || (document.referrer ? 'referral' : 'direct'),
+          utm_source:   utm.source || '',
+          utm_medium:   utm.medium || '',
+          utm_campaign: utm.campaign || '',
         }, { onConflict: 'id' });
         const { data } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
         _profile = data;

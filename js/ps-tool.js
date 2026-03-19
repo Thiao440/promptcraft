@@ -162,13 +162,19 @@ const PSTool = (() => {
     const ta = document.getElementById('result-textarea');
     if (!ta) return;
     navigator.clipboard.writeText(ta.value)
-      .then(() => showToast('Copié dans le presse-papiers !'))
+      .then(() => {
+        showToast('Copié dans le presse-papiers !');
+        if (typeof PSAnalytics !== 'undefined') PSAnalytics.trackOutputAction('copy', _cfg.toolSlug);
+      })
       .catch(() => showToast('Impossible de copier.', 'error'));
   }
 
   // ── Regenerate ──────────────────────────────────────────────────────────────
   function regenerate() {
-    if (_lastInputs) generate(_lastInputs);
+    if (_lastInputs) {
+      if (typeof PSAnalytics !== 'undefined') PSAnalytics.trackOutputAction('regenerate', _cfg.toolSlug);
+      generate(_lastInputs);
+    }
   }
 
   // ── Quota display ───────────────────────────────────────────────────────────
@@ -394,6 +400,11 @@ const PSTool = (() => {
       displayResult(data.output, { durationMs: data.durationMs, tokensUsed: data.tokensUsed });
       updateQuotaDisplay();
       loadHistory();
+
+      // Analytics: track generation complete
+      if (typeof PSAnalytics !== 'undefined') {
+        PSAnalytics.trackToolComplete(_cfg.toolSlug, data.durationMs);
+      }
 
     } catch (err) {
       console.error('[PSTool] generate error', err);

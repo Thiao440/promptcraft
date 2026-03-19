@@ -229,6 +229,12 @@ async function handleSubscriptionCreated(payload, supabase) {
 
   if (error) log('sub_upsert_error', { subId, error: error.message });
 
+  // Log subscription history for analytics
+  await supabase.from('subscription_history').insert({
+    user_id: userId, vertical: customVertical, new_tier: tier, new_status: 'active',
+    change_type: 'created', metadata: { subId, lemon_order_id: String(attrs.order_id || '') },
+  }).catch(() => {});
+
   await sendMagicLink(supabase, email, tier, 'subscription');
   log('sub_complete', { subId, email, tier, vertical: customVertical, userId });
 }
@@ -265,7 +271,17 @@ async function handleSubscriptionUpdated(payload, supabase) {
     .eq('lemon_subscription_id', subId);
 
   if (error) log('sub_update_error', { subId, error: error.message });
-  else log('sub_updated', { subId, status: update.status });
+  else {
+    log('sub_updated', { subId, status: update.status });
+    // Log to subscription history
+    const { data: sub } = await supabase.from('subscriptions').select('user_id, vertical, tier').eq('lemon_subscription_id', subId).single();
+    if (sub) {
+      await supabase.from('subscription_history').insert({
+        user_id: sub.user_id, vertical: sub.vertical, new_tier: sub.tier, new_status: update.status,
+        change_type: update.status === 'cancelled' ? 'cancelled' : 'update',
+      }).catch(() => {});
+    }
+  }
 }
 
 /**
@@ -290,7 +306,16 @@ async function handleSubscriptionCancelled(payload, supabase) {
     .eq('lemon_subscription_id', subId);
 
   if (error) log('sub_cancel_error', { subId, error: error.message });
-  else log('sub_cancelled', { subId, accessUntil: periodEnd });
+  else {
+    log('sub_cancelled', { subId, accessUntil: periodEnd });
+    const { data: sub } = await supabase.from('subscriptions').select('user_id, vertical, tier').eq('lemon_subscription_id', subId).single();
+    if (sub) {
+      await supabase.from('subscription_history').insert({
+        user_id: sub.user_id, vertical: sub.vertical, old_tier: sub.tier, new_status: 'cancelled',
+        change_type: 'cancelled',
+      }).catch(() => {});
+    }
+  }
 }
 
 /**
