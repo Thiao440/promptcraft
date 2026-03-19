@@ -829,6 +829,11 @@ async function init() {
     const firstV = (urlV && PS.subForVertical(urlV)) ? urlV : PS.subs[0]?.vertical;
     await switchVertical(firstV);
     maybeShowWelcome();
+
+    // Show welcome interstitial ad (Starter only, once per session)
+    if (typeof PSAds !== 'undefined') {
+      setTimeout(function() { PSAds.showWelcomeInterstitial(); }, 1000);
+    }
   }
 }
 

@@ -154,17 +154,19 @@
   /** Generate a banner ad HTML (upsell or partner) */
   function _renderBanner(size) {
     var ad = _pickAd();
-    var isSmall = size === 'small';
     var isPartner = ad.type === 'partner';
     var target = isPartner ? ' target="_blank" rel="noopener sponsored"' : '';
     var logoHtml = ad.logo ? '<span class="ps-ad-logo">' + ad.logo + '</span>' : '';
-    return '<div class="ps-ad ps-ad-banner' + (isSmall ? ' ps-ad-sm' : '') + (isPartner ? ' ps-ad-partner' : '') + '" style="--ad-color:' + ad.color + '">'
+    return '<div class="ps-ad ps-ad-banner' + (isPartner ? ' ps-ad-partner' : '') + '" style="--ad-color:' + ad.color + '">'
+      + '<div class="ps-ad-ribbon">PUBLICITÉ</div>'
+      + '<div class="ps-ad-body">'
       + logoHtml
       + '<div class="ps-ad-content">'
       + '<div class="ps-ad-title">' + ad.title + '</div>'
-      + (isSmall ? '' : '<div class="ps-ad-text">' + ad.text + '</div>')
+      + '<div class="ps-ad-text">' + ad.text + '</div>'
       + '</div>'
       + '<a href="' + ad.href + '" class="ps-ad-cta"' + target + '>' + ad.cta + '</a>'
+      + '</div>'
       + '<button class="ps-ad-close" onclick="this.closest(\'.ps-ad\').remove()" title="Fermer">✕</button>'
       + '</div>';
   }
@@ -185,31 +187,60 @@
     var style = document.createElement('style');
     style.id = 'ps-ads-css';
     style.textContent = [
-      '.ps-ad { border: 1px solid rgba(108,99,255,.15); border-radius: 10px; background: rgba(108,99,255,.04); position: relative; overflow: hidden; }',
-      '.ps-ad-partner { background: rgba(255,255,255,.02); border-color: rgba(255,255,255,.08); }',
-      '.ps-ad-banner { display: flex; align-items: center; gap: 14px; padding: 12px 18px; margin: 12px 0; }',
-      '.ps-ad-sm { padding: 8px 14px; }',
-      '.ps-ad-logo { font-size: 1.6rem; flex-shrink: 0; width: 36px; text-align: center; }',
-      '.ps-ad-sm .ps-ad-logo { font-size: 1.2rem; width: 28px; }',
+      /* Container */
+      '.ps-ad { border: 1px solid rgba(108,99,255,.2); border-radius: 12px; background: linear-gradient(135deg, rgba(108,99,255,.06) 0%, rgba(108,99,255,.02) 100%); position: relative; overflow: hidden; margin: 16px 0; }',
+      '.ps-ad-partner { background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.01) 100%); border-color: rgba(255,255,255,.1); }',
+
+      /* Ribbon "PUBLICITÉ" */
+      '.ps-ad-ribbon { background: rgba(108,99,255,.15); color: #7c8098; font-size: .6rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; text-align: center; padding: 5px 0; border-bottom: 1px solid rgba(108,99,255,.1); }',
+      '.ps-ad-partner .ps-ad-ribbon { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.06); }',
+
+      /* Body (below ribbon) */
+      '.ps-ad-body { display: flex; align-items: center; gap: 16px; padding: 18px 22px; }',
+      '.ps-ad-banner { display: block; }',
+
+      /* Logo */
+      '.ps-ad-logo { font-size: 2.2rem; flex-shrink: 0; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.04); border-radius: 10px; }',
+
+      /* Content */
       '.ps-ad-content { flex: 1; min-width: 0; }',
-      '.ps-ad-title { font-size: .85rem; font-weight: 700; color: var(--ad-color, #a78bfa); margin-bottom: 2px; }',
-      '.ps-ad-sm .ps-ad-title { font-size: .78rem; margin: 0; }',
-      '.ps-ad-text { font-size: .78rem; color: #7c8098; line-height: 1.4; }',
-      '.ps-ad-cta { flex-shrink: 0; padding: 6px 14px; border-radius: 7px; background: var(--ad-color, #6c63ff); color: #fff; font-size: .78rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: opacity .15s; }',
-      '.ps-ad-cta:hover { opacity: .85; }',
-      '.ps-ad-close { position: absolute; top: 4px; right: 6px; background: none; border: none; color: #7c8098; font-size: .7rem; cursor: pointer; opacity: .5; padding: 2px 4px; }',
+      '.ps-ad-title { font-size: .95rem; font-weight: 700; color: var(--ad-color, #a78bfa); margin-bottom: 4px; line-height: 1.3; }',
+      '.ps-ad-text { font-size: .82rem; color: #8a8da8; line-height: 1.5; }',
+
+      /* CTA button */
+      '.ps-ad-cta { flex-shrink: 0; padding: 10px 20px; border-radius: 8px; background: var(--ad-color, #6c63ff); color: #fff; font-size: .82rem; font-weight: 700; text-decoration: none; white-space: nowrap; transition: all .18s; box-shadow: 0 2px 8px rgba(0,0,0,.2); }',
+      '.ps-ad-cta:hover { opacity: .88; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.3); }',
+
+      /* Close button */
+      '.ps-ad-close { position: absolute; top: 3px; right: 8px; background: none; border: none; color: #7c8098; font-size: .72rem; cursor: pointer; opacity: .4; padding: 2px 4px; transition: opacity .15s; }',
       '.ps-ad-close:hover { opacity: 1; }',
-      '.ps-ad-sidebar { padding: 14px; margin: 14px 0; text-align: center; }',
+
+      /* Sidebar variant */
+      '.ps-ad-sidebar { text-align: center; }',
+      '.ps-ad-sidebar .ps-ad-body { flex-direction: column; align-items: center; gap: 10px; padding: 20px; }',
+      '.ps-ad-sidebar .ps-ad-logo { width: 56px; height: 56px; font-size: 2.5rem; }',
       '.ps-ad-sidebar .ps-ad-title { margin-bottom: 6px; }',
-      '.ps-ad-sidebar .ps-ad-cta { display: inline-block; margin-top: 8px; }',
+      '.ps-ad-sidebar .ps-ad-cta { margin-top: 4px; }',
       '.ps-ad-interstitial-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 99998; display: flex; align-items: center; justify-content: center; }',
       '.ps-ad-interstitial { background: #1a1d27; border: 1px solid #2a2d3e; border-radius: 16px; padding: 32px; max-width: 420px; width: 90%; text-align: center; }',
       '.ps-ad-interstitial .ps-ad-title { font-size: 1.1rem; margin-bottom: 10px; }',
       '.ps-ad-interstitial .ps-ad-text { margin-bottom: 16px; }',
       '.ps-ad-interstitial .ps-ad-cta { padding: 10px 24px; font-size: .9rem; }',
       '.ps-ad-interstitial .ps-ad-skip { display: block; margin-top: 12px; background: none; border: none; color: #7c8098; font-size: .78rem; cursor: pointer; }',
-      '.ps-ad-label { font-size: .6rem; color: #7c8098; opacity: .5; text-transform: uppercase; letter-spacing: .08em; position: absolute; top: 4px; left: 8px; }',
-      '@media(max-width:600px) { .ps-ad-banner { flex-direction: column; text-align: center; gap: 8px; } }',
+      /* Interstitial */
+      '.ps-ad-interstitial-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 99998; display: flex; align-items: center; justify-content: center; padding: 20px; }',
+      '.ps-ad-interstitial { background: #1a1d27; border: 1px solid #2a2d3e; border-radius: 16px; max-width: 460px; width: 90%; text-align: center; overflow: hidden; }',
+      '.ps-ad-interstitial .ps-ad-ribbon { padding: 8px 0; font-size: .65rem; }',
+      '.ps-ad-interstitial .ps-ad-inner { padding: 28px 32px; }',
+      '.ps-ad-interstitial .ps-ad-logo { font-size: 3rem; margin-bottom: 12px; display: block; width: auto; height: auto; background: none; }',
+      '.ps-ad-interstitial .ps-ad-title { font-size: 1.15rem; margin-bottom: 10px; }',
+      '.ps-ad-interstitial .ps-ad-text { margin-bottom: 20px; font-size: .88rem; }',
+      '.ps-ad-interstitial .ps-ad-cta { padding: 12px 28px; font-size: .92rem; display: inline-block; }',
+      '.ps-ad-interstitial .ps-ad-skip { display: block; margin-top: 14px; background: none; border: none; color: #7c8098; font-size: .78rem; cursor: pointer; transition: color .15s; }',
+      '.ps-ad-interstitial .ps-ad-skip:hover { color: #e8eaf0; }',
+
+      /* Responsive */
+      '@media(max-width:600px) { .ps-ad-body { flex-direction: column; text-align: center; gap: 10px; } .ps-ad-logo { margin: 0 auto; } }',
     ].join('\n');
     document.head.appendChild(style);
   }
@@ -236,11 +267,16 @@
     var target = isPartner ? ' target="_blank" rel="noopener sponsored"' : '';
     el.insertAdjacentHTML('beforeend',
       '<div class="ps-ad ps-ad-sidebar' + (isPartner ? ' ps-ad-partner' : '') + '" style="--ad-color:' + ad.color + '">'
-      + '<div class="ps-ad-label">Publicité</div>'
-      + (ad.logo ? '<div style="font-size:2rem;margin-bottom:6px">' + ad.logo + '</div>' : '')
+      + '<div class="ps-ad-ribbon">PUBLICITÉ</div>'
+      + '<div class="ps-ad-body">'
+      + (ad.logo ? '<span class="ps-ad-logo">' + ad.logo + '</span>' : '')
+      + '<div class="ps-ad-content">'
       + '<div class="ps-ad-title">' + ad.title + '</div>'
       + '<div class="ps-ad-text">' + ad.text + '</div>'
+      + '</div>'
       + '<a href="' + ad.href + '" class="ps-ad-cta"' + target + '>' + ad.cta + '</a>'
+      + '</div>'
+      + '<button class="ps-ad-close" onclick="this.closest(\'.ps-ad\').remove()" title="Fermer">✕</button>'
       + '</div>'
     );
   }
@@ -259,11 +295,14 @@
     overlay.className = 'ps-ad-interstitial-overlay';
     overlay.innerHTML =
       '<div class="ps-ad-interstitial" style="--ad-color:' + ad.color + '">'
-      + (ad.logo ? '<div style="font-size:2.5rem;margin-bottom:10px">' + ad.logo + '</div>' : '')
+      + '<div class="ps-ad-ribbon">PUBLICITÉ</div>'
+      + '<div class="ps-ad-inner">'
+      + (ad.logo ? '<span class="ps-ad-logo">' + ad.logo + '</span>' : '')
       + '<div class="ps-ad-title">' + ad.title + '</div>'
       + '<div class="ps-ad-text">' + ad.text + '</div>'
       + '<a href="' + ad.href + '" class="ps-ad-cta"' + target + '>' + ad.cta + '</a>'
-      + '<button class="ps-ad-skip" onclick="this.closest(\'.ps-ad-interstitial-overlay\').remove()">Continuer ›</button>'
+      + '<button class="ps-ad-skip" onclick="this.closest(\'.ps-ad-interstitial-overlay\').remove()">Continuer sans publicité ›</button>'
+      + '</div>'
       + '</div>';
     document.body.appendChild(overlay);
 
@@ -286,15 +325,51 @@
     });
   }
 
+  /**
+   * Show a welcome interstitial on dashboard open (once per session).
+   * Skippable, auto-closes after 10s. Only for Starter / preview users.
+   */
+  function showWelcomeInterstitial() {
+    if (!_shouldShow()) return;
+    // Only show once per browser session
+    var KEY = 'ps_ad_welcome_shown';
+    try { if (sessionStorage.getItem(KEY)) return; } catch (_) {}
+
+    _injectCSS();
+    var ad = _pickAd();
+    var isPartner = ad.type === 'partner';
+    var target = isPartner ? ' target="_blank" rel="noopener sponsored"' : '';
+
+    var overlay = document.createElement('div');
+    overlay.className = 'ps-ad-interstitial-overlay';
+    overlay.innerHTML =
+      '<div class="ps-ad-interstitial" style="--ad-color:' + ad.color + '">'
+      + '<div class="ps-ad-ribbon">PUBLICITÉ</div>'
+      + '<div class="ps-ad-inner">'
+      + (ad.logo ? '<span class="ps-ad-logo">' + ad.logo + '</span>' : '')
+      + '<div class="ps-ad-title">' + ad.title + '</div>'
+      + '<div class="ps-ad-text">' + ad.text + '</div>'
+      + '<a href="' + ad.href + '" class="ps-ad-cta"' + target + '>' + ad.cta + '</a>'
+      + '<button class="ps-ad-skip" onclick="this.closest(\'.ps-ad-interstitial-overlay\').remove()">Accéder à mon espace ›</button>'
+      + '</div>'
+      + '</div>';
+    document.body.appendChild(overlay);
+
+    try { sessionStorage.setItem(KEY, '1'); } catch (_) {}
+    setTimeout(function () { if (overlay.parentNode) overlay.remove(); }, 10000);
+    if (typeof PSAnalytics !== 'undefined') PSAnalytics.track('ad_shown', { type: 'welcome_interstitial', ad_title: ad.title });
+  }
+
   // ── Auto-init: inject slots after PS is ready ──────────────────────────────
   window.addEventListener('ps:ready', function () {
-    setTimeout(injectAllSlots, 500); // Small delay to let page render
+    setTimeout(injectAllSlots, 500);
   });
 
   window.PSAds = {
     injectBanner: injectBanner,
     injectSidebar: injectSidebar,
     maybeShowInterstitial: maybeShowInterstitial,
+    showWelcomeInterstitial: showWelcomeInterstitial,
     injectAllSlots: injectAllSlots,
   };
 })();
