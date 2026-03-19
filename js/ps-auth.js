@@ -13,7 +13,7 @@
 const SUPABASE_URL  = 'https://jbrloxoqtfeqvghkzupj.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_47qhKUm9nD9uQ57bTa25Dg_wWdUF4wg';
 
-const TIER_ORDER = { bronze: 1, silver: 2, gold: 3 };
+const TIER_ORDER = { starter: 1, pro: 2, gold: 3, team: 4 };
 
 const VERTICALS = {
   immo:         { label: 'Immobilier',            icon: '🏠', color: '#f59e0b', bg: 'rgba(245,158,11,.12)',  border: 'rgba(245,158,11,.3)'  },
@@ -94,7 +94,7 @@ const PS = (() => {
       // ── Single session enforcement ────────────────────────────────────────
       const sid = getSessionId();
       // Claim this session
-      await sb.rpc('claim_session', { p_user_id: session.user.id, p_session_id: sid }).catch(() => {});
+      try { await sb.rpc('claim_session', { p_user_id: session.user.id, p_session_id: sid }); } catch (_) {}
 
       // Periodic check: verify this session is still the active one (every 30s)
       setInterval(async () => {
@@ -121,7 +121,7 @@ const PS = (() => {
       }, 30_000);
 
       // Track login (fire-and-forget)
-      sb.rpc('track_login', { p_user_id: session.user.id }).catch(() => {});
+      try { await sb.rpc('track_login', { p_user_id: session.user.id }); } catch (_) {}
     }
 
     console.log('[PS] init — user:', _session?.user?.email || 'anon', '| profile:', _profile?.first_name || '?', '| subs:', _subs.length);
@@ -204,17 +204,23 @@ const PS = (() => {
     return { allowed: true, tier: sub.tier, vertical: toolVertical };
   }
 
-  async function getMonthlyUsage() {
+  /**
+   * Get monthly usage. If vertical is provided, returns usage for that vertical only.
+   * If not, returns total across all verticals (for backward compat).
+   */
+  async function getMonthlyUsage(vertical) {
     if (!_session) return 0;
     const month = new Date().toISOString().slice(0, 7);
-    const { data } = await getClient().from('usage_quotas').select('count').eq('user_id', _session.user.id).eq('month', month);
+    let q = getClient().from('usage_quotas').select('count').eq('user_id', _session.user.id).eq('month', month);
+    if (vertical) q = q.eq('vertical', vertical);
+    const { data } = await q;
     return (data || []).reduce((s, r) => s + (r.count || 0), 0);
   }
 
   function getQuota(vertical) {
     const sub = _subsMap[vertical];
     if (!sub) return 0;
-    return { bronze: 50, silver: 150, gold: Infinity }[sub.tier] ?? 50;
+    return { starter: 50, pro: 150, gold: Infinity, team: Infinity }[sub.tier] ?? 50;
   }
 
   async function logout() {
@@ -235,6 +241,50 @@ const PS = (() => {
     window.location.href = '/login.html';
   }
 
+  // ── Feature gating ─────────────────────────────────────────────────────────
+  // Defines which tier is required for each gated feature.
+  const FEATURE_GATES = {
+    chatbot_generic:    'pro',      // Chatbot IA générique
+    chatbot_specialist: 'pro',      // Chatbot IA spécialiste métier
+    crm_projects:       'gold',     // CRM & Gestion de projets
+    custom_tones:       'gold',     // Tons personnalisés
+    export_pdf:         'pro',      // Export PDF
+    export_docx:        'gold',     // Export DOCX
+    api_access:         'team',     // Intégrations API
+    automations:        'team',     // Automatisations & workflows
+    shared_workspace:   'team',     // Espace partagé
+    analytics:          'team',     // Analytics d'usage
+  };
+
+  /**
+   * Check if user can access a gated feature for a given vertical.
+   * Returns { allowed: boolean, reason?: string, requiredTier?: string, yourTier?: string }
+   */
+  function canAccessFeature(featureName, vertical) {
+    if (!_session) return { allowed: false, reason: 'not_logged_in' };
+    const requiredTier = FEATURE_GATES[featureName];
+    if (!requiredTier) return { allowed: true }; // Unknown feature = not gated
+
+    // For features that need a vertical subscription
+    if (vertical) {
+      const sub = _subsMap[vertical];
+      if (!sub) return { allowed: false, reason: 'no_subscription', requiredTier, vertical };
+      const userLevel = TIER_ORDER[sub.tier] || 0;
+      const reqLevel  = TIER_ORDER[requiredTier] || 1;
+      if (userLevel < reqLevel) return { allowed: false, reason: 'upgrade_required', requiredTier, yourTier: sub.tier, vertical };
+      return { allowed: true, tier: sub.tier };
+    }
+
+    // For features that just need ANY subscription at the right tier
+    const bestTier = _subs.reduce((best, s) => {
+      const lvl = TIER_ORDER[s.tier] || 0;
+      return lvl > best.lvl ? { tier: s.tier, lvl } : best;
+    }, { tier: null, lvl: 0 });
+    const reqLevel = TIER_ORDER[requiredTier] || 1;
+    if (bestTier.lvl < reqLevel) return { allowed: false, reason: 'upgrade_required', requiredTier, yourTier: bestTier.tier };
+    return { allowed: true, tier: bestTier.tier };
+  }
+
   return {
     get supabase()  { return getClient(); },
     get session()   { return _session; },
@@ -244,7 +294,7 @@ const PS = (() => {
     get ready()     { return _ready; },
     init, refresh, requireAuth, requireProfile, isProfileComplete,
     updateProfile, subForVertical, hasAnySubscription, subscribedVerticals,
-    canUseTool, getMonthlyUsage, getQuota, logout,
-    VERTICALS, TIER_ORDER,
+    canUseTool, canAccessFeature, getMonthlyUsage, getQuota, logout,
+    VERTICALS, TIER_ORDER, FEATURE_GATES,
   };
 })();

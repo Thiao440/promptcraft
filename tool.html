@@ -11,6 +11,9 @@
   <script src="/js/ps-auth.js"></script>
   <script src="/js/ps-tool.js"></script>
   <script src="/js/tool-renderer.js"></script>
+  <script src="/js/ps-projects.js"></script>
+  <script src="/js/ps-feedback.js"></script>
+  <script src="/js/ps-lang.js"></script>
 </head>
 <body>
 
@@ -91,6 +94,10 @@
           </div>
         </div>
 
+        <div class="bug-report-bar">
+          <button class="bug-report-btn" id="btn-report-bug" onclick="PSFeedback.showBugModal({ toolSlug: new URLSearchParams(location.search).get('slug'), vertical: window._toolVertical })">🐛 Signaler un problème</button>
+        </div>
+
       </form>
     </div>
 
@@ -147,11 +154,115 @@
  * 1. Read slug from URL query params
  * 2. Auth check via PS.requireAuth()
  * 3. Fetch tool config from Supabase (including input_schema)
- * 4. Render tool header, breadcrumb, badges
- * 5. Render form dynamically via ToolRenderer
- * 6. Initialize PSTool with dynamic collectInputs
- * 7. PSTool handles: submit, API call, result, history, quota
+ * 4. If no input_schema → generate generic form based on tool name/description
+ * 5. Render tool header, breadcrumb, badges
+ * 6. Render form dynamically via ToolRenderer
+ * 7. Initialize PSTool with dynamic collectInputs
+ * 8. PSTool handles: submit, API call, result, history, quota
  */
+
+/**
+ * Build a generic input_schema for tools that don't have one in the DB.
+ * Uses the tool name & description to produce context-aware fields.
+ */
+function _buildGenericSchema(tool) {
+  const label = (tool.label || tool.name || '').toLowerCase();
+  const desc  = (tool.description || '').toLowerCase();
+
+  // Tone options (common to most content tools)
+  const toneField = {
+    name: 'ton', label: 'Ton', type: 'tone_grid', required: false,
+    options: [
+      { value: 'professionnel', label: 'Professionnel', icon: '🎯' },
+      { value: 'persuasif',     label: 'Persuasif',     icon: '💪' },
+      { value: 'formel',        label: 'Formel',        icon: '🎩' },
+      { value: 'decontracte',   label: 'Décontracté',   icon: '😊' },
+      { value: 'expert',        label: 'Expert',        icon: '🧠' },
+      { value: 'empathique',    label: 'Empathique',    icon: '💛' },
+    ],
+    default: 'professionnel'
+  };
+
+  const fields = [];
+
+  // ── Detect the kind of tool and add relevant fields ──
+
+  // Email / message tools
+  if (label.includes('email') || label.includes('message') || label.includes('relance') || label.includes('newsletter')) {
+    fields.push({ name: 'destinataire', label: 'Destinataire', type: 'text', placeholder: 'Ex: Client, prospect, candidat…', required: true });
+    fields.push({ name: 'objet', label: 'Objet / Sujet', type: 'text', placeholder: "Ex: Relance suite à notre échange…", required: true });
+    fields.push({ name: 'contexte', label: 'Contexte', type: 'textarea', placeholder: 'Décrivez le contexte et l\'objectif de ce message…', required: true, rows: 3 });
+    fields.push(toneField);
+    fields.push({ name: 'infos_comp', label: 'Informations complémentaires', type: 'textarea', placeholder: 'Détails supplémentaires, contraintes…', required: false, rows: 2 });
+  }
+  // Post / réseaux sociaux
+  else if (label.includes('post') || label.includes('instagram') || label.includes('linkedin') || label.includes('twitter') || label.includes('thread')) {
+    fields.push({ name: 'sujet', label: 'Sujet du post', type: 'text', placeholder: 'De quoi parle ce post ?', required: true });
+    fields.push({ name: 'objectif', label: 'Objectif', type: 'select', options: ['Engagement', 'Notoriété', 'Conversion', 'Éducation', 'Divertissement'], required: true });
+    fields.push({ name: 'cible', label: 'Audience cible', type: 'text', placeholder: 'Ex: Professionnels de l\'immobilier, décideurs B2B…', required: false });
+    fields.push({ name: 'contexte', label: 'Contexte / Points clés', type: 'textarea', placeholder: 'Informations à inclure, angle souhaité…', required: true, rows: 3 });
+    fields.push(toneField);
+  }
+  // Analyse / rapport / bilan / audit
+  else if (label.includes('analyse') || label.includes('rapport') || label.includes('bilan') || label.includes('audit') || label.includes('dashboard') || label.includes('synthèse') || label.includes('synthese')) {
+    fields.push({ name: 'sujet', label: 'Sujet de l\'analyse', type: 'text', placeholder: 'Ex: Bilan annuel 2025, Audit RGPD site web…', required: true });
+    fields.push({ name: 'donnees', label: 'Données / éléments disponibles', type: 'textarea', placeholder: 'Collez ou décrivez les données à analyser…', required: true, rows: 4 });
+    fields.push({ name: 'objectif', label: 'Objectif de l\'analyse', type: 'text', placeholder: 'Ex: Identifier les risques, optimiser les coûts…', required: false });
+    fields.push({ name: 'contexte', label: 'Contexte', type: 'textarea', placeholder: 'Informations complémentaires…', required: false, rows: 2 });
+    fields.push(toneField);
+  }
+  // Fiche produit / description
+  else if (label.includes('fiche') || label.includes('description') || label.includes('produit') || label.includes('menu') || label.includes('plat') || label.includes('carte')) {
+    fields.push({ name: 'nom', label: 'Nom / Titre', type: 'text', placeholder: 'Nom du produit, plat, service…', required: true });
+    fields.push({ name: 'categorie', label: 'Catégorie', type: 'text', placeholder: 'Ex: Entrée, Tech, Mode…', required: false });
+    fields.push({ name: 'description', label: 'Description / Caractéristiques', type: 'textarea', placeholder: 'Décrivez les caractéristiques, ingrédients, avantages…', required: true, rows: 4 });
+    fields.push({ name: 'cible', label: 'Public cible', type: 'text', placeholder: 'Ex: Familles, professionnels, CSP+…', required: false });
+    fields.push(toneField);
+  }
+  // Plan / stratégie / programme / prévisionnel
+  else if (label.includes('plan') || label.includes('stratégie') || label.includes('strategie') || label.includes('programme') || label.includes('prévisionnel') || label.includes('previsionnel') || label.includes('calendrier')) {
+    fields.push({ name: 'sujet', label: 'Sujet / Projet', type: 'text', placeholder: 'Ex: Plan marketing Q2, Programme de soins, Stratégie SEO…', required: true });
+    fields.push({ name: 'objectifs', label: 'Objectifs', type: 'textarea', placeholder: 'Quels sont les objectifs à atteindre ?', required: true, rows: 3 });
+    fields.push({ name: 'contexte', label: 'Contexte & contraintes', type: 'textarea', placeholder: 'Budget, délais, ressources, public cible…', required: true, rows: 3 });
+    fields.push({ name: 'duree', label: 'Durée / Période', type: 'text', placeholder: 'Ex: 3 mois, 1 an, Q2 2026…', required: false });
+    fields.push(toneField);
+  }
+  // Contrat / juridique / lettre / mise en demeure / clauses / CGV
+  else if (label.includes('contrat') || label.includes('clause') || label.includes('juridique') || label.includes('demeure') || label.includes('conclusions') || label.includes('cgv') || label.includes('règlement') || label.includes('reglement') || label.includes('politique')) {
+    fields.push({ name: 'type_document', label: 'Type de document', type: 'text', placeholder: 'Ex: Contrat de prestation, mise en demeure, CGV…', required: true });
+    fields.push({ name: 'parties', label: 'Parties concernées', type: 'text', placeholder: 'Ex: SAS Dupont (client) / SARL Martin (prestataire)', required: true });
+    fields.push({ name: 'objet', label: 'Objet', type: 'textarea', placeholder: 'Décrivez l\'objet du document…', required: true, rows: 3 });
+    fields.push({ name: 'details', label: 'Détails & clauses spécifiques', type: 'textarea', placeholder: 'Montants, délais, conditions particulières…', required: false, rows: 3 });
+    fields.push(toneField);
+  }
+  // Offre emploi / recrutement / grille / entretien
+  else if (label.includes('emploi') || label.includes('recrutement') || label.includes('entretien') || label.includes('candidat') || label.includes('sourcing') || label.includes('onboarding') || label.includes('intégration') || label.includes('integration')) {
+    fields.push({ name: 'poste', label: 'Poste / Fonction', type: 'text', placeholder: 'Ex: Développeur Senior Full-Stack', required: true });
+    fields.push({ name: 'entreprise', label: 'Entreprise', type: 'text', placeholder: 'Nom et secteur', required: false });
+    fields.push({ name: 'contexte', label: 'Contexte', type: 'textarea', placeholder: 'Décrivez le contexte du recrutement, le profil recherché…', required: true, rows: 3 });
+    fields.push({ name: 'details', label: 'Détails complémentaires', type: 'textarea', placeholder: 'Avantages, salaire, localisation, compétences clés…', required: false, rows: 3 });
+    fields.push(toneField);
+  }
+  // Deck / pitch / présentation / landing page / brief
+  else if (label.includes('deck') || label.includes('pitch') || label.includes('landing') || label.includes('brief') || label.includes('persona') || label.includes('headline') || label.includes('accroche') || label.includes('script') || label.includes('titre')) {
+    fields.push({ name: 'projet', label: 'Projet / Produit / Service', type: 'text', placeholder: 'De quoi s\'agit-il ?', required: true });
+    fields.push({ name: 'cible', label: 'Audience cible', type: 'text', placeholder: 'À qui s\'adresse ce contenu ?', required: true });
+    fields.push({ name: 'objectif', label: 'Objectif', type: 'text', placeholder: 'Ex: Convaincre des investisseurs, générer des leads…', required: true });
+    fields.push({ name: 'points_cles', label: 'Points clés à couvrir', type: 'textarea', placeholder: 'Messages clés, chiffres, arguments…', required: true, rows: 4 });
+    fields.push({ name: 'contexte', label: 'Contexte complémentaire', type: 'textarea', placeholder: 'Ton, contraintes, historique…', required: false, rows: 2 });
+    fields.push(toneField);
+  }
+  // Generic fallback
+  else {
+    fields.push({ name: 'sujet', label: 'Sujet', type: 'text', placeholder: 'Décrivez ce que vous souhaitez…', required: true });
+    fields.push({ name: 'contexte', label: 'Contexte & détails', type: 'textarea', placeholder: 'Fournissez le maximum de contexte : objectif, audience, contraintes…', required: true, rows: 4 });
+    fields.push({ name: 'informations', label: 'Informations à inclure', type: 'textarea', placeholder: 'Données, chiffres, points clés…', required: false, rows: 3 });
+    fields.push(toneField);
+    fields.push({ name: 'instructions', label: 'Instructions spécifiques', type: 'textarea', placeholder: 'Format souhaité, longueur, style…', required: false, rows: 2 });
+  }
+
+  return { fields };
+}
 
 (async function initDynamicTool() {
 
@@ -184,11 +295,9 @@
     return;
   }
 
-  // Guard: this tool needs input_schema to render dynamically
+  // If no input_schema, generate a sensible generic form based on the tool's info
   if (!tool.input_schema || !tool.input_schema.fields || !tool.input_schema.fields.length) {
-    // Fallback: redirect to static page if it exists
-    window.location.href = `/tools/${slug}.html`;
-    return;
+    tool.input_schema = _buildGenericSchema(tool);
   }
 
   // ── 4. Render tool header ─────────────────────────────────────────────────
@@ -196,6 +305,7 @@
   const vertical  = PS.VERTICALS[tool.vertical] || { label: tool.vertical, icon: '📁' };
 
   document.title = `${toolLabel} – The Prompt Studio`;
+  window._toolVertical = tool.vertical;  // for project creation
 
   document.getElementById('tool-icon').textContent        = tool.icon || '🔧';
   document.getElementById('tool-title').textContent       = toolLabel;
@@ -208,10 +318,10 @@
     `${tool.icon || ''} ${toolLabel}`;
 
   // Badges
-  const tierLabels = { bronze: '🥉 Bronze +', silver: '🥈 Silver +', gold: '🥇 Gold' };
+  const tierLabels = { starter: '🚀 Starter +', pro: '⚡ Pro +', gold: '👑 Gold' };
   const badges     = document.getElementById('tool-badges');
   badges.innerHTML = `
-    <span class="badge badge-tier${tool.min_tier === 'silver' ? ' silver' : tool.min_tier === 'gold' ? ' gold' : ''}">${tierLabels[tool.min_tier] || tool.min_tier}</span>
+    <span class="badge badge-tier${tool.min_tier === 'pro' ? ' pro' : tool.min_tier === 'gold' ? ' gold' : ''}">${tierLabels[tool.min_tier] || tool.min_tier}</span>
     <span class="badge badge-vertical">${vertical.icon} ${vertical.label}</span>
     ${tool.is_new ? '<span class="badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);">Nouveau</span>' : ''}
   `;
@@ -233,6 +343,11 @@
   const renderer  = ToolRenderer.create(tool.input_schema);
   const formEl    = document.getElementById('form-fields');
   renderer.renderInto(formEl);
+
+  // ── 5b. Project selector + pre-fill ──────────────────────────────────────
+  if (typeof PSProjects !== 'undefined') {
+    await _initProjectSelector(tool, formEl);
+  }
 
   // ── 6. Initialize PSTool ──────────────────────────────────────────────────
   // PSTool handles: form submit, API call, result display, history, quota, copy, regen
@@ -266,6 +381,284 @@
   document.getElementById('btn-text').textContent = tool.generate_label || 'Générer';
 
 })();
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PROJECT SELECTOR + POST-GENERATION PROMPT
+// ══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Renders a project selector bar above the form.
+ * - If ?project=ID → pre-selects and pre-fills.
+ * - Otherwise shows "Aucun projet" + dropdown of existing projects for this vertical.
+ * - Changing the selector pre-fills the form + updates window._activeProjectId.
+ */
+async function _initProjectSelector(tool, formEl) {
+  // Feature gate: CRM requires Gold+
+  if (PS.canAccessFeature && !PS.canAccessFeature('crm_projects').allowed) return;
+
+  const vertical = tool.vertical;
+  const urlProjectId = new URLSearchParams(location.search).get('project');
+
+  // Load existing projects for this vertical
+  let projects = [];
+  try {
+    projects = await PSProjects.list({ vertical, status: 'active', limit: 50 });
+  } catch (e) { console.warn('[tool] project list error', e); }
+
+  // Build the bar HTML
+  const bar = document.createElement('div');
+  bar.className = 'project-bar';
+  bar.id = 'project-bar';
+
+  const esc = PSProjects.escapeHtml;
+
+  const options = projects.map(p =>
+    `<option value="${p.id}" ${p.id === urlProjectId ? 'selected' : ''}>${esc(p.name)}</option>`
+  ).join('');
+
+  bar.innerHTML = `
+    <span class="project-bar-icon">📁</span>
+    <span class="project-bar-label">Projet :</span>
+    <select id="project-select">
+      <option value="">— Aucun projet —</option>
+      <option value="__new__">＋ Créer un nouveau projet…</option>
+      ${options}
+    </select>
+    <button class="project-bar-new" id="project-bar-new" title="Créer un projet">＋</button>
+    <a href="#" class="project-bar-link" id="project-bar-view" style="display:none">Voir →</a>
+  `;
+
+  // Insert before the form
+  formEl.parentElement.insertBefore(bar, formEl);
+
+  const select  = document.getElementById('project-select');
+  const viewLink = document.getElementById('project-bar-view');
+
+  // ── Apply pre-fill for a given project ID ──
+  async function applyProject(projId) {
+    window._activeProjectId = projId || undefined;
+
+    if (!projId) {
+      viewLink.style.display = 'none';
+      // Update URL without project param
+      const u = new URL(location.href);
+      u.searchParams.delete('project');
+      history.replaceState({}, '', u.toString());
+      return;
+    }
+
+    viewLink.style.display = 'inline';
+    viewLink.href = `/project.html?id=${projId}`;
+
+    // Update URL
+    const u = new URL(location.href);
+    u.searchParams.set('project', projId);
+    history.replaceState({}, '', u.toString());
+
+    // Pre-fill from project data
+    try {
+      const proj = projects.find(p => p.id === projId) || await PSProjects.get(projId);
+      if (!proj) return;
+      const prefill = await PSProjects.getToolPrefill(proj, tool.slug);
+      Object.entries(prefill).forEach(([fieldName, value]) => {
+        const input = formEl.querySelector(`[name="${fieldName}"]`);
+        if (input && !input.value) {  // Only fill empty fields
+          input.value = value;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+    } catch (e) { console.warn('[tool] prefill error', e); }
+  }
+
+  // ── On selector change ──
+  select.addEventListener('change', () => {
+    if (select.value === '__new__') {
+      select.value = '';  // Reset select to "Aucun projet"
+      _showCreateProjectFromTool();
+      return;
+    }
+    applyProject(select.value);
+  });
+
+  // ── + button also opens create ──
+  document.getElementById('project-bar-new').addEventListener('click', (e) => {
+    e.preventDefault();
+    _showCreateProjectFromTool();
+  });
+
+  // ── Apply initial project if URL has ?project= ──
+  if (urlProjectId) {
+    // If project not in list (might be from another status), force-add it
+    if (!projects.find(p => p.id === urlProjectId)) {
+      try {
+        const proj = await PSProjects.get(urlProjectId);
+        if (proj) {
+          const opt = document.createElement('option');
+          opt.value = proj.id;
+          opt.textContent = proj.name;
+          opt.selected = true;
+          select.appendChild(opt);
+          projects.push(proj);
+        }
+      } catch (e) {}
+    }
+    await applyProject(urlProjectId);
+  }
+
+  // ── POST-GENERATION: propose to create project if none selected ──
+  // Override the global displayResult hook (listen for result-content changes)
+  const resultContent = document.getElementById('result-content');
+  if (resultContent) {
+    const observer = new MutationObserver(() => {
+      // Check if a generation appeared (not empty state)
+      const hasResult = resultContent.querySelector('.result-rendered');
+      if (!hasResult) return;
+      // Don't show if already linked to a project
+      if (window._activeProjectId) return;
+      // Don't show if prompt already visible
+      if (document.getElementById('project-prompt')) return;
+      // Don't show if user doesn't have CRM access (Gold+)
+      if (PS.canAccessFeature && !PS.canAccessFeature('crm_projects').allowed) return;
+
+      // Build prompt
+      const prompt = document.createElement('div');
+      prompt.className = 'project-prompt';
+      prompt.id = 'project-prompt';
+      prompt.innerHTML = `
+        <span class="project-prompt-icon">📁</span>
+        <div class="project-prompt-text">
+          <strong>Sauvegarder dans un projet ?</strong><br>
+          Créez un projet pour retrouver ce résultat et réutiliser ces informations avec d'autres outils.
+        </div>
+        <button class="project-prompt-btn primary" onclick="_showCreateProjectFromTool()">Créer un projet</button>
+        <button class="project-prompt-btn secondary" onclick="this.closest('.project-prompt').remove()">Non merci</button>
+      `;
+      resultContent.parentElement.insertBefore(prompt, resultContent.nextSibling);
+    });
+    observer.observe(resultContent, { childList: true, subtree: true });
+  }
+}
+
+/**
+ * Show a modal to create a new project from the tool page,
+ * pre-populated with the current form data.
+ */
+function _showCreateProjectFromTool() {
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('slug');
+
+  // Get current tool vertical from the page context
+  const verticalEl = document.getElementById('breadcrumb-vertical');
+  const vertical = _getToolVertical();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'proj-modal-overlay';
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+
+  overlay.innerHTML = `
+    <div class="proj-modal">
+      <h3>📁 Créer un projet avec ces informations</h3>
+      <input type="text" class="proj-modal-input" id="new-proj-name-tool"
+             placeholder="Nom du projet (ex: Appartement T3 Paris 11)" autofocus/>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:12px;">
+        Les informations du formulaire seront automatiquement enregistrées dans le projet.
+      </p>
+      <div class="proj-modal-btns">
+        <button class="proj-modal-btn cancel" onclick="this.closest('.proj-modal-overlay').remove()">Annuler</button>
+        <button class="proj-modal-btn primary" onclick="_doCreateProjectFromTool()">Créer et lier →</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  setTimeout(() => document.getElementById('new-proj-name-tool')?.focus(), 50);
+}
+
+/** Extract the tool vertical from page context */
+function _getToolVertical() {
+  // The slug-based approach: read from the hidden state
+  const select = document.getElementById('project-select');
+  // We can also check the badge or the breadcrumb
+  const badge = document.querySelector('.badge-vertical');
+  if (badge) {
+    const vmeta = PS.VERTICALS;
+    for (const [k, v] of Object.entries(vmeta)) {
+      if (badge.textContent.includes(v.label)) return k;
+    }
+  }
+  // Fallback: parse from URL via the tool config (stored in window)
+  return window._toolVertical || 'immo';
+}
+
+/** Actually create the project from the tool page */
+async function _doCreateProjectFromTool() {
+  const name = document.getElementById('new-proj-name-tool')?.value?.trim();
+  if (!name) { alert('Veuillez saisir un nom.'); return; }
+
+  const vertical = _getToolVertical();
+
+  // Collect current form inputs as project data
+  // Map tool fields → project fields (reverse mapping)
+  let projectData = {};
+  try {
+    const formEl = document.getElementById('form-fields');
+    const mappings = await PSProjects.loadToolMappings(vertical);
+    const slug = new URLSearchParams(location.search).get('slug');
+    const toolMap = mappings[slug] || {};
+    // Reverse: projectField → toolField  →  we want toolField → projectField
+    const reverseMap = {};
+    Object.entries(toolMap).forEach(([projField, toolField]) => {
+      reverseMap[toolField] = projField;
+    });
+    // Collect all form fields
+    formEl.querySelectorAll('[name]').forEach(input => {
+      const val = input.value?.trim();
+      if (!val) return;
+      const projField = reverseMap[input.name];
+      if (projField) {
+        projectData[projField] = val;
+      }
+    });
+  } catch (e) { console.warn('[tool] reverse mapping error', e); }
+
+  // Create project
+  const proj = await PSProjects.create({ vertical, name, data: projectData });
+  document.querySelector('.proj-modal-overlay')?.remove();
+
+  if (proj) {
+    // Link this generation to the new project
+    window._activeProjectId = proj.id;
+
+    // Update the selector
+    const select = document.getElementById('project-select');
+    if (select) {
+      const opt = document.createElement('option');
+      opt.value = proj.id;
+      opt.textContent = proj.name;
+      opt.selected = true;
+      select.appendChild(opt);
+    }
+
+    // Update URL
+    const u = new URL(location.href);
+    u.searchParams.set('project', proj.id);
+    history.replaceState({}, '', u.toString());
+
+    // Show link
+    const viewLink = document.getElementById('project-bar-view');
+    if (viewLink) {
+      viewLink.style.display = 'inline';
+      viewLink.href = `/project.html?id=${proj.id}`;
+    }
+
+    // Remove the prompt
+    document.getElementById('project-prompt')?.remove();
+
+    // Toast
+    PSTool.showToast?.('Projet créé et lié !') || alert('Projet créé et lié !');
+  } else {
+    alert('Erreur lors de la création du projet.');
+  }
+}
 </script>
 <script src="/js/ps-chat-widget.js"></script>
 </body>

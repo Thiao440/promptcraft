@@ -91,17 +91,23 @@
     .toggle-sw.on::after { transform: translateX(18px); }
     .save-tag { background: rgba(34,197,94,.12); color: #22c55e; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(34,197,94,.2); }
 
-    .plans-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-    @media(max-width:860px) { .plans-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
+    .plans-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    @media(max-width:1060px) { .plans-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:600px) { .plans-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
+
+    .trial-banner { max-width: 700px; margin: 0 auto 36px; padding: 18px 24px; background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.25); border-radius: 14px; text-align: center; }
+    .trial-banner strong { color: #22c55e; font-size: .95rem; }
+    .trial-banner p { color: var(--muted); font-size: .82rem; margin-top: 4px; }
 
     .plan-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; position: relative; transition: border-color .2s, transform .2s; display: flex; flex-direction: column; }
     .plan-card:hover { transform: translateY(-3px); }
     .plan-card.popular { border-color: var(--v-color); box-shadow: 0 0 0 1px var(--v-color); }
     .pop-tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--v-color); color: #fff; font-size: .7rem; font-weight: 800; padding: 2px 12px; border-radius: 10px; white-space: nowrap; text-transform: uppercase; letter-spacing: .04em; }
     .plan-tier { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
-    .plan-tier.bronze { color: #cd7f32; }
-    .plan-tier.silver { color: #a8a9ad; }
+    .plan-tier.starter { color: #3b82f6; }
+    .plan-tier.pro    { color: #a78bfa; }
     .plan-tier.gold   { color: #c9a84c; }
+    .plan-tier.team   { color: #10b981; }
     .plan-price { font-size: 2.4rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
     .plan-price .per { font-size: .85rem; font-weight: 400; color: var(--muted); }
     .plan-yearly { font-size: .78rem; color: var(--muted); margin-bottom: 16px; min-height: 18px; }
@@ -130,9 +136,9 @@
     .tm-name { font-size: .82rem; font-weight: 600; margin-bottom: 3px; }
     .tm-desc { font-size: .75rem; color: var(--muted); line-height: 1.3; }
     .tm-tier { display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 7px; border-radius: 8px; margin-top: 6px; }
-    .tm-tier.bronze { background: rgba(205,127,50,.13); color: #cd7f32; }
-    .tm-tier.silver { background: rgba(168,169,173,.13); color: #a8a9ad; }
-    .tm-tier.gold   { background: rgba(201,168,76,.13);  color: #c9a84c; }
+    .tm-tier.starter { background: rgba(59,130,246,.13); color: #3b82f6; }
+    .tm-tier.pro     { background: rgba(167,139,250,.13); color: #a78bfa; }
+    .tm-tier.gold    { background: rgba(201,168,76,.13);  color: #c9a84c; }
 
     .faq { max-width: 700px; margin: 0 auto 80px; padding: 0 20px; }
     .faq h3 { text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
@@ -170,6 +176,7 @@
       body { padding-top: 50px; }
     }
   </style>
+  <script src="/js/ps-lang.js"></script>
 </head>
 <body>
 
@@ -191,7 +198,7 @@
         <a href="/tarifs.html?v=freelance" class="ps-dd-row"><span>💼 Freelances & Consultants</span><span class="ps-badge-live">Live</span></a>
       </div>
     </div>
-    <a href="/conseil-sur-mesure.html" class="ps-nav-a">Conseil sur mesure</a>
+    <a href="/conseil-sur-mesure.html" class="ps-nav-a"><span data-fr>Conseil sur mesure</span><span data-en>Custom consulting</span><span data-es>Consultoría a medida</span><span data-pt>Consultoria personalizada</span><span data-ar>استشارات مخصصة</span></a>
     <a href="/contact.html" class="ps-nav-a">Contact</a>
   </div>
   <div class="ps-nav-right">
@@ -205,35 +212,40 @@
         <button class="ps-lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
       </div>
     </div>
-    <a href="/login.html" class="ps-nav-a" id="nav-account-link">Mon compte</a>
-    <a href="/tarifs.html" class="ps-nav-cta">Voir les offres</a>
+    <a href="/login.html" class="ps-nav-a" id="nav-account-link"><span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span></a>
+    <a href="/tarifs.html" class="ps-nav-cta"><span data-fr>Voir les offres</span><span data-en>View plans</span><span data-es>Ver ofertas</span><span data-pt>Ver ofertas</span><span data-ar>عرض الخطط</span></a>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="hero-tag">Sans engagement · Accès immédiat</div>
-  <h1>L'IA conçue pour<br><span id="hero-label" style="color:#f59e0b">votre métier</span></h1>
-  <p>Choisissez votre domaine, sélectionnez votre offre.<br>Vos outils IA sont disponibles immédiatement après paiement.</p>
+  <div class="hero-tag"><span data-fr>Essai gratuit 7 jours · Sans engagement</span><span data-en>Free 7-day trial · No commitment</span><span data-es>Prueba gratis 7 días · Sin compromiso</span><span data-pt>Teste grátis 7 dias · Sem compromisso</span><span data-ar>تجربة مجانية 7 أيام · بدون التزام</span></div>
+  <h1><span data-fr>L'IA conçue pour<br></span><span data-en>AI designed for<br></span><span data-es>IA diseñada para<br></span><span data-pt>IA criada para<br></span><span data-ar>ذكاء اصطناعي مصمم لـ<br></span><span id="hero-label" style="color:#f59e0b"><span data-fr>votre métier</span><span data-en>your profession</span><span data-es>tu profesión</span><span data-pt>sua profissão</span><span data-ar>مهنتك</span></span></h1>
+  <p><span data-fr>Choisissez votre domaine, sélectionnez votre offre.<br>7 jours d'essai gratuit avec 10 générations incluses — puis accès immédiat après paiement.</span><span data-en>Choose your field, select your plan.<br>7-day free trial with 10 generations included — then instant access after payment.</span><span data-es>Elige tu sector, selecciona tu oferta.<br>7 días de prueba gratis con 10 generaciones — acceso inmediato tras el pago.</span><span data-pt>Escolha seu setor, selecione sua oferta.<br>7 dias de teste grátis com 10 gerações — acesso imediato após o pagamento.</span><span data-ar>اختر مجالك، حدد عرضك.<br>7 أيام تجربة مجانية مع 10 عمليات توليد — ثم وصول فوري بعد الدفع.</span></p>
   <div class="steps">
-    <div class="step active"><span class="num">1</span> Choisir une verticale</div>
+    <div class="step active"><span class="num">1</span> <span data-fr>Choisir une verticale</span><span data-en>Choose a vertical</span><span data-es>Elegir un sector</span><span data-pt>Escolher um setor</span><span data-ar>اختر قطاعاً</span></div>
     <div class="step-sep">›</div>
-    <div class="step" id="step2"><span class="num">2</span> Sélectionner une offre</div>
+    <div class="step" id="step2"><span class="num">2</span> <span data-fr>Sélectionner une offre</span><span data-en>Select a plan</span><span data-es>Seleccionar una oferta</span><span data-pt>Selecionar uma oferta</span><span data-ar>حدد عرضاً</span></div>
     <div class="step-sep">›</div>
-    <div class="step"><span class="num">3</span> Accès immédiat</div>
+    <div class="step"><span class="num">3</span> <span data-fr>Accès immédiat</span><span data-en>Instant access</span><span data-es>Acceso inmediato</span><span data-pt>Acesso imediato</span><span data-ar>وصول فوري</span></div>
   </div>
 </div>
 
-<div class="section-title">Pour quel secteur travaillez-vous ? <span>Étape 1/2</span></div>
+<div class="section-title"><span data-fr>Pour quel secteur travaillez-vous ?</span><span data-en>What sector do you work in?</span><span data-es>¿En qué sector trabajas?</span><span data-pt>Em que setor você trabalha?</span><span data-ar>في أي قطاع تعمل؟</span> <span><span data-fr>Étape 1/2</span><span data-en>Step 1/2</span><span data-es>Paso 1/2</span><span data-pt>Passo 1/2</span><span data-ar>الخطوة 1/2</span></span></div>
 <div class="vertical-tabs" id="vertical-tabs"></div>
+
+<div class="trial-banner">
+  <strong><span data-fr>Essai gratuit — 7 jours, 10 générations</span><span data-en>Free trial — 7 days, 10 generations</span><span data-es>Prueba gratis — 7 días, 10 generaciones</span><span data-pt>Teste grátis — 7 dias, 10 gerações</span><span data-ar>تجربة مجانية — 7 أيام، 10 عمليات توليد</span></strong>
+  <p><span data-fr>Testez tous les outils de votre verticale sans carte bancaire. Aucun engagement.</span><span data-en>Test all tools in your vertical without a credit card. No commitment.</span><span data-es>Prueba todas las herramientas sin tarjeta. Sin compromiso.</span><span data-pt>Teste todas as ferramentas sem cartão. Sem compromisso.</span><span data-ar>جرّب جميع الأدوات بدون بطاقة ائتمان. بدون التزام.</span></p>
+</div>
 
 <div class="plans-section">
   <div class="plans-header">
     <h2>Offres <span id="plans-vname" style="color:#f59e0b">Immobilier</span> <span style="color:var(--muted);font-size:1rem" id="plans-vicon">🏠</span></h2>
-    <p>Bronze pour démarrer · Silver pour les actifs · Gold pour tout exploiter</p>
+    <p><span data-fr>Starter pour découvrir · Pro pour produire · Gold pour tout exploiter · Team pour collaborer</span><span data-en>Starter to explore · Pro to produce · Gold for full access · Team to collaborate</span><span data-es>Starter para descubrir · Pro para producir · Gold para todo · Team para colaborar</span><span data-pt>Starter para descobrir · Pro para produzir · Gold para tudo · Team para colaborar</span><span data-ar>Starter للاستكشاف · Pro للإنتاج · Gold للوصول الكامل · Team للتعاون</span></p>
     <div class="billing-toggle" onclick="toggleBilling()">
-      <span style="color:var(--muted)">Mensuel</span>
+      <span style="color:var(--muted)"><span data-fr>Mensuel</span><span data-en>Monthly</span><span data-es>Mensual</span><span data-pt>Mensal</span><span data-ar>شهري</span></span>
       <div class="toggle-sw" id="tsw"></div>
-      <span style="color:var(--muted)">Annuel</span>
+      <span style="color:var(--muted)"><span data-fr>Annuel</span><span data-en>Annual</span><span data-es>Anual</span><span data-pt>Anual</span><span data-ar>سنوي</span></span>
       <span class="save-tag">-20%</span>
     </div>
   </div>
@@ -246,26 +258,30 @@
 </div>
 
 <div class="faq">
-  <h3>Questions fréquentes</h3>
+  <h3><span data-fr>Questions fréquentes</span><span data-en>Frequently Asked Questions</span><span data-es>Preguntas frecuentes</span><span data-pt>Perguntas frequentes</span><span data-ar>أسئلة شائعة</span></h3>
   <div class="faq-item">
-    <div class="faq-q" onclick="faq(this)">Puis-je m'abonner à plusieurs verticales ? <span class="faq-arrow">▼</span></div>
-    <div class="faq-a">Oui. Chaque abonnement est indépendant par verticale. Un consultant peut s'abonner à Finance et Juridique avec des offres différentes sur chacune. Votre espace affiche uniquement les verticales auxquelles vous êtes abonné.</div>
+    <div class="faq-q" onclick="faq(this)"><span data-fr>Puis-je m'abonner à plusieurs verticales ?</span><span data-en>Can I subscribe to multiple verticals?</span><span data-es>¿Puedo suscribirme a varias verticales?</span><span data-pt>Posso assinar várias verticais?</span><span data-ar>هل يمكنني الاشتراك في عدة قطاعات؟</span> <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><span data-fr>Oui. Chaque abonnement est indépendant par verticale. L'offre Team permet jusqu'à 3 verticales incluses dans un seul abonnement.</span><span data-en>Yes. Each subscription is independent per vertical. The Team plan includes up to 3 verticals in a single subscription.</span><span data-es>Sí. Cada suscripción es independiente por vertical. El plan Team incluye hasta 3 verticales.</span><span data-pt>Sim. Cada assinatura é independente por vertical. O plano Team inclui até 3 verticais.</span><span data-ar>نعم. كل اشتراك مستقل لكل قطاع. خطة Team تشمل حتى 3 قطاعات.</span></div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="faq(this)">Puis-je changer de verticale ? <span class="faq-arrow">▼</span></div>
-    <div class="faq-a">Votre abonnement est lié à une verticale. Pour accéder à un autre secteur, souscrivez un abonnement supplémentaire. Vous pouvez résilier l'ancien à tout moment.</div>
+    <div class="faq-q" onclick="faq(this)"><span data-fr>Qu'est-ce qu'une "génération" ?</span><span data-en>What is a "generation"?</span><span data-es>¿Qué es una "generación"?</span><span data-pt>O que é uma "geração"?</span><span data-ar>ما هي "عملية التوليد"؟</span> <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><span data-fr>Une génération = un appel à l'IA. Starter = 50/mois, Pro = 150/mois, Gold & Team = illimité.</span><span data-en>One generation = one AI call. Starter = 50/mo, Pro = 150/mo, Gold & Team = unlimited.</span><span data-es>Una generación = una llamada a la IA. Starter = 50/mes, Pro = 150/mes, Gold y Team = ilimitado.</span><span data-pt>Uma geração = uma chamada à IA. Starter = 50/mês, Pro = 150/mês, Gold e Team = ilimitado.</span><span data-ar>عملية توليد واحدة = مكالمة واحدة للذكاء الاصطناعي. Starter = 50/شهر، Pro = 150/شهر، Gold و Team = غير محدود.</span></div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="faq(this)">Qu'est-ce qu'une "génération" ? <span class="faq-arrow">▼</span></div>
-    <div class="faq-a">Une génération = un appel à l'IA (annonce, email, rapport…). Bronze = 50/mois, Silver = 150/mois, Gold = illimité. Le compteur se remet à zéro le 1er de chaque mois.</div>
+    <div class="faq-q" onclick="faq(this)"><span data-fr>Y a-t-il un engagement ?</span><span data-en>Is there a commitment?</span><span data-es>¿Hay algún compromiso?</span><span data-pt>Existe algum compromisso?</span><span data-ar>هل هناك التزام؟</span> <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><span data-fr>Aucun. Résiliation possible à tout moment. L'accès reste actif jusqu'à la fin de la période payée.</span><span data-en>None. Cancel anytime. Access remains active until the end of the paid period.</span><span data-es>Ninguno. Cancelación posible en cualquier momento.</span><span data-pt>Nenhum. Cancelamento possível a qualquer momento.</span><span data-ar>لا يوجد. يمكن الإلغاء في أي وقت.</span></div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="faq(this)">Y a-t-il un engagement ? <span class="faq-arrow">▼</span></div>
-    <div class="faq-a">Aucun. Résiliation possible à tout moment depuis votre espace compte. L'accès reste actif jusqu'à la fin de la période payée.</div>
+    <div class="faq-q" onclick="faq(this)"><span data-fr>Comment fonctionne l'essai gratuit ?</span><span data-en>How does the free trial work?</span><span data-es>¿Cómo funciona la prueba gratis?</span><span data-pt>Como funciona o teste grátis?</span><span data-ar>كيف تعمل التجربة المجانية؟</span> <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><span data-fr>7 jours d'accès complet avec 10 générations incluses, sans carte bancaire.</span><span data-en>7 days of full access with 10 generations included, no credit card required.</span><span data-es>7 días de acceso completo con 10 generaciones, sin tarjeta.</span><span data-pt>7 dias de acesso completo com 10 gerações, sem cartão.</span><span data-ar>7 أيام وصول كامل مع 10 عمليات توليد، بدون بطاقة ائتمان.</span></div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="faq(this)">Comment accéder après paiement ? <span class="faq-arrow">▼</span></div>
-    <div class="faq-a">Dès le paiement validé, vous recevez un email avec un lien magique. Un clic et vous êtes connecté — sans mot de passe.</div>
+    <div class="faq-q" onclick="faq(this)"><span data-fr>Comment accéder après paiement ?</span><span data-en>How do I access after payment?</span><span data-es>¿Cómo accedo tras el pago?</span><span data-pt>Como acesso após o pagamento?</span><span data-ar>كيف أصل بعد الدفع؟</span> <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><span data-fr>Dès le paiement validé, vous recevez un email avec un lien magique — sans mot de passe.</span><span data-en>Once payment is confirmed, you receive an email with a magic link — no password needed.</span><span data-es>Una vez confirmado el pago, recibes un email con un enlace mágico.</span><span data-pt>Após a confirmação do pagamento, você recebe um email com um link mágico.</span><span data-ar>بمجرد تأكيد الدفع، تتلقى بريداً إلكترونياً برابط سحري — بدون كلمة مرور.</span></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="faq(this)"><span data-fr>À quoi sert l'offre Team ?</span><span data-en>What is the Team plan for?</span><span data-es>¿Para qué sirve el plan Team?</span><span data-pt>Para que serve o plano Team?</span><span data-ar>ما فائدة خطة Team؟</span> <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><span data-fr>L'offre Team inclut jusqu'à 3 verticales, un espace partagé, des analytics, et un accès API.</span><span data-en>The Team plan includes up to 3 verticals, a shared workspace, analytics, and API access.</span><span data-es>El plan Team incluye hasta 3 verticales, espacio compartido, analytics y acceso API.</span><span data-pt>O plano Team inclui até 3 verticais, espaço compartilhado, analytics e acesso API.</span><span data-ar>خطة Team تشمل حتى 3 قطاعات، مساحة عمل مشتركة، تحليلات، ووصول API.</span></div>
   </div>
 </div>
 
@@ -293,44 +309,44 @@ const BASE = 'https://shop.theprompt.studio/checkout/buy';
    Replace _UUID placeholders with real Lemon Squeezy product UUIDs */
 const VIDS = {
   immo: {
-    monthly: { bronze:'IMMO_UUID_BM?enabled=1408953', silver:'IMMO_UUID_SM?enabled=1408957', gold:'IMMO_UUID_GM?enabled=1408958' },
-    yearly:  { bronze:'IMMO_UUID_BY?enabled=1408965', silver:'IMMO_UUID_SY?enabled=1408967', gold:'IMMO_UUID_GY?enabled=1408969' },
+    monthly: { starter:'IMMO_UUID_SM?enabled=1408953', pro:'IMMO_UUID_PM?enabled=1408957', gold:'IMMO_UUID_GM?enabled=1408958', team:'IMMO_UUID_TM' },
+    yearly:  { starter:'IMMO_UUID_SY?enabled=1408965', pro:'IMMO_UUID_PY?enabled=1408967', gold:'IMMO_UUID_GY?enabled=1408969', team:'IMMO_UUID_TY' },
   },
   commerce: {
-    monthly: { bronze:'COM_UUID_BM', silver:'COM_UUID_SM', gold:'COM_UUID_GM' },
-    yearly:  { bronze:'COM_UUID_BY', silver:'COM_UUID_SY', gold:'COM_UUID_GY' },
+    monthly: { starter:'COM_UUID_SM', pro:'COM_UUID_PM', gold:'COM_UUID_GM', team:'COM_UUID_TM' },
+    yearly:  { starter:'COM_UUID_SY', pro:'COM_UUID_PY', gold:'COM_UUID_GY', team:'COM_UUID_TY' },
   },
   legal: {
-    monthly: { bronze:'4f047236-3552-449f-b0e9-877315747b1c?enabled=1408992', silver:'1a51f4ee-7715-4915-aa5c-4a0e8faa806f?enabled=1408993', gold:'7bb2a72b-e063-4a2f-81a6-aeadf89abe6a?enabled=1408994' },
-    yearly:  { bronze:'91eb08ec-ffd4-4f56-927b-ce7784297695?enabled=1408995', silver:'c031b536-ba92-49dd-a565-3c0792a35a36?enabled=1408996', gold:'4317d321-8542-4a18-8920-7878430a47b6?enabled=1408997' },
+    monthly: { starter:'4f047236-3552-449f-b0e9-877315747b1c?enabled=1408992', pro:'1a51f4ee-7715-4915-aa5c-4a0e8faa806f?enabled=1408993', gold:'7bb2a72b-e063-4a2f-81a6-aeadf89abe6a?enabled=1408994', team:'LEGAL_UUID_TM' },
+    yearly:  { starter:'91eb08ec-ffd4-4f56-927b-ce7784297695?enabled=1408995', pro:'c031b536-ba92-49dd-a565-3c0792a35a36?enabled=1408996', gold:'4317d321-8542-4a18-8920-7878430a47b6?enabled=1408997', team:'LEGAL_UUID_TY' },
   },
   finance: {
-    monthly: { bronze:'FIN_UUID_BM', silver:'FIN_UUID_SM', gold:'FIN_UUID_GM' },
-    yearly:  { bronze:'FIN_UUID_BY', silver:'FIN_UUID_SY', gold:'FIN_UUID_GY' },
+    monthly: { starter:'FIN_UUID_SM', pro:'FIN_UUID_PM', gold:'FIN_UUID_GM', team:'FIN_UUID_TM' },
+    yearly:  { starter:'FIN_UUID_SY', pro:'FIN_UUID_PY', gold:'FIN_UUID_GY', team:'FIN_UUID_TY' },
   },
   marketing: {
-    monthly: { bronze:'MKT_UUID_BM', silver:'MKT_UUID_SM', gold:'MKT_UUID_GM' },
-    yearly:  { bronze:'MKT_UUID_BY', silver:'MKT_UUID_SY', gold:'MKT_UUID_GY' },
+    monthly: { starter:'MKT_UUID_SM', pro:'MKT_UUID_PM', gold:'MKT_UUID_GM', team:'MKT_UUID_TM' },
+    yearly:  { starter:'MKT_UUID_SY', pro:'MKT_UUID_PY', gold:'MKT_UUID_GY', team:'MKT_UUID_TY' },
   },
   rh: {
-    monthly: { bronze:'RH_UUID_BM', silver:'RH_UUID_SM', gold:'RH_UUID_GM' },
-    yearly:  { bronze:'RH_UUID_BY', silver:'RH_UUID_SY', gold:'RH_UUID_GY' },
+    monthly: { starter:'RH_UUID_SM', pro:'RH_UUID_PM', gold:'RH_UUID_GM', team:'RH_UUID_TM' },
+    yearly:  { starter:'RH_UUID_SY', pro:'RH_UUID_PY', gold:'RH_UUID_GY', team:'RH_UUID_TY' },
   },
   sante: {
-    monthly: { bronze:'SAN_UUID_BM', silver:'SAN_UUID_SM', gold:'SAN_UUID_GM' },
-    yearly:  { bronze:'SAN_UUID_BY', silver:'SAN_UUID_SY', gold:'SAN_UUID_GY' },
+    monthly: { starter:'SAN_UUID_SM', pro:'SAN_UUID_PM', gold:'SAN_UUID_GM', team:'SAN_UUID_TM' },
+    yearly:  { starter:'SAN_UUID_SY', pro:'SAN_UUID_PY', gold:'SAN_UUID_GY', team:'SAN_UUID_TY' },
   },
   education: {
-    monthly: { bronze:'EDU_UUID_BM', silver:'EDU_UUID_SM', gold:'EDU_UUID_GM' },
-    yearly:  { bronze:'EDU_UUID_BY', silver:'EDU_UUID_SY', gold:'EDU_UUID_GY' },
+    monthly: { starter:'EDU_UUID_SM', pro:'EDU_UUID_PM', gold:'EDU_UUID_GM', team:'EDU_UUID_TM' },
+    yearly:  { starter:'EDU_UUID_SY', pro:'EDU_UUID_PY', gold:'EDU_UUID_GY', team:'EDU_UUID_TY' },
   },
   restauration: {
-    monthly: { bronze:'REST_UUID_BM', silver:'REST_UUID_SM', gold:'REST_UUID_GM' },
-    yearly:  { bronze:'REST_UUID_BY', silver:'REST_UUID_SY', gold:'REST_UUID_GY' },
+    monthly: { starter:'REST_UUID_SM', pro:'REST_UUID_PM', gold:'REST_UUID_GM', team:'REST_UUID_TM' },
+    yearly:  { starter:'REST_UUID_SY', pro:'REST_UUID_PY', gold:'REST_UUID_GY', team:'REST_UUID_TY' },
   },
   freelance: {
-    monthly: { bronze:'FREE_UUID_BM', silver:'FREE_UUID_SM', gold:'FREE_UUID_GM' },
-    yearly:  { bronze:'FREE_UUID_BY', silver:'FREE_UUID_SY', gold:'FREE_UUID_GY' },
+    monthly: { starter:'FREE_UUID_SM', pro:'FREE_UUID_PM', gold:'FREE_UUID_GM', team:'FREE_UUID_TM' },
+    yearly:  { starter:'FREE_UUID_SY', pro:'FREE_UUID_PY', gold:'FREE_UUID_GY', team:'FREE_UUID_TY' },
   },
 };
 
@@ -338,14 +354,17 @@ const VIDS = {
 let TOOLS = {};
 
 const PLANS_DEF = [
-  { tier:'bronze', label:'Bronze', price:19, desc:"Démarrez avec les outils essentiels.",
-    features:['3 outils essentiels','50 générations / mois','Accès immédiat','Support email'],
-    locked:['Outils avancés (Silver)','Outils premium (Gold)'] },
-  { tier:'silver', label:'Silver', price:49, popular:true, desc:"Les outils avancés pour les professionnels actifs.",
-    features:['7 outils essentiels & avancés','150 générations / mois','Accès immédiat','Support prioritaire'],
-    locked:['Outils premium (Gold)'] },
-  { tier:'gold',   label:'Gold',   price:99, desc:"Accès complet aux 10 outils.",
-    features:['10 outils complets','Générations illimitées','Accès immédiat','Support dédié','Nouveaux outils en avant-première'],
+  { tier:'starter', label:'Starter', price:19, desc:"Découvrez l'IA métier avec les outils essentiels.",
+    features:['3 outils essentiels','50 générations / mois','Historique 7 jours','Export : copie','Support email'],
+    locked:['Chatbot IA générique (Pro)','Chatbot IA spécialiste métier (Pro)','Outils avancés (Pro)','CRM & Gestion de projets (Gold)','Outils premium (Gold)'] },
+  { tier:'pro', label:'Pro', price:49, popular:true, desc:"Les outils avancés + les chatbots IA pour professionnels actifs.",
+    features:['7 outils (essentiels + avancés)','150 générations / mois','💬 Chatbot IA générique','💬 Chatbot IA spécialiste métier','Historique 30 jours','Export copie + PDF','Support prioritaire'],
+    locked:['CRM & Gestion de projets (Gold)','Outils premium (Gold)','Tons personnalisés','Export DOCX'] },
+  { tier:'gold', label:'Gold', price:99, desc:"Accès complet : CRM, outils premium, sans limite.",
+    features:['10 outils complets','Générations illimitées','📁 CRM & Gestion de projets','💬 Chatbots IA (générique + spécialiste)','Historique 90 jours','Tous les exports (PDF, DOCX…)','Tons personnalisés','Support prioritaire + chat','Nouveaux outils en avant-première'],
+    locked:[] },
+  { tier:'team', label:'Team', price:199, desc:"Collaborez en équipe avec intégrations & automatisations.",
+    features:['Jusqu\'à 3 verticales','10 outils / verticale','Générations illimitées','📁 CRM & Gestion de projets','💬 Chatbots IA','🔗 Intégrations API (CRM, email, outils métier)','⚡ Automatisations & workflows','Espace partagé & analytics','Historique illimité','Support dédié'],
     locked:[] },
 ];
 
@@ -403,7 +422,8 @@ function renderPlans() {
     const url     = isReady
       ? `${BASE}/${path}${sep}checkout[custom][tier]=${p.tier}&checkout[custom][vertical]=${activeV}&checkout[custom][period]=${period}`
       : '#coming-soon';
-    const tierIcon = {bronze:'🥉',silver:'🥈',gold:'🥇'}[p.tier]||'';
+    const tierIcon = {starter:'🚀',pro:'⚡',gold:'👑',team:'🏢'}[p.tier]||'';
+    const ctaLabel = {starter:'Démarrer →',pro:'Passer en Pro →',gold:'Tout débloquer →',team:'Contacter l\'équipe →'}[p.tier]||'Commencer →';
     return `<div class="plan-card ${p.popular?'popular':''}">
       ${p.popular?`<div class="pop-tag" style="background:${m.color}">Le plus populaire</div>`:''}
       <div class="plan-tier ${p.tier}">${tierIcon} ${p.label}</div>
@@ -414,10 +434,10 @@ function renderPlans() {
         ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
         ${p.locked.map(f=>`<li><span class="lk">✕</span><span class="lt">${f}</span></li>`).join('')}
       </ul>
-      <a href="${url}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady?'':'disabled'}"
-         style="${p.popular?`background:${isReady?m.color:'#555'}`:`border-color:${isReady?m.color:'#555'};color:${isReady?m.color:'#888'}`}"
-         ${isReady?`target="_blank" rel="noopener"`:'onclick="return false" title="Bientôt disponible"'}>
-        ${isReady ? (p.tier==='bronze'?'Commencer →':p.tier==='silver'?'Commencer en Silver →':'Tout accéder →') : 'Bientôt disponible'}
+      <a href="${p.tier==='team'?'/contact.html?subject=Team':url}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady||p.tier==='team'?'':'disabled'}"
+         style="${p.popular?`background:${isReady?m.color:'#555'}`:`border-color:${isReady||p.tier==='team'?m.color:'#555'};color:${isReady||p.tier==='team'?m.color:'#888'}`}"
+         ${isReady||p.tier==='team'?'':`onclick="return false" title="Bientôt disponible"`}>
+        ${isReady||p.tier==='team' ? ctaLabel : 'Bientôt disponible'}
       </a>
     </div>`;
   }).join('');
@@ -425,7 +445,7 @@ function renderPlans() {
 
 function renderTools() {
   const m = VMETA[activeV];
-  const tiers = {bronze:'🥉 Bronze',silver:'🥈 Silver',gold:'🥇 Gold'};
+  const tiers = {starter:'🚀 Starter',pro:'⚡ Pro',gold:'👑 Gold'};
   const vTools = TOOLS[activeV] || [];
   const count = vTools.length || 10;
   document.getElementById('tools-title').innerHTML = `🔧 Les ${count} outils <span id="tools-vname" style="color:${m.color}">${m.label}</span>`;
@@ -434,7 +454,7 @@ function renderTools() {
       <div class="tm-icon">${t.icon || m.icon}</div>
       <div class="tm-name">${t.name}</div>
       <div class="tm-desc">${t.desc || t.description || ''}</div>
-      <span class="tm-tier ${t.tier || t.min_tier || 'bronze'}">${tiers[t.tier || t.min_tier] || '🥉 Bronze'}</span>
+      <span class="tm-tier ${t.tier || t.min_tier || 'starter'}">${tiers[t.tier || t.min_tier] || '🚀 Starter'}</span>
     </div>`
   ).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">Outils en cours de chargement…</p>`;
 }
@@ -483,26 +503,7 @@ async function checkAuth() {
   checkAuth();
 })();
 
-// ── LANG SWITCHER ──
-var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
-function setLang(lang) {
-  document.documentElement.setAttribute('data-lang', lang);
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-  var btn = document.getElementById('lang-current');
-  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
-  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
-    var fn = o.getAttribute('onclick') || '';
-    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
-  });
-  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
-}
-(function() {
-  try {
-    var saved = localStorage.getItem('ps_lang');
-    if (saved && ['fr','en','es','pt','ar'].indexOf(saved) !== -1) setLang(saved);
-  } catch(e) {}
-})();
+// Lang handled by ps-lang.js (loaded in <head>)
 </script>
 <script src="/js/ps-chat-widget.js"></script>
 </body>

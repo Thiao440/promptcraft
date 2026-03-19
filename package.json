@@ -7,7 +7,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "dev": "netlify dev"
+    "dev": "netlify dev --env-file .env"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3"

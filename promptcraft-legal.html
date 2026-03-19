@@ -342,6 +342,7 @@ body.en .fr-content{display:none;}body.en .en-content{display:block;}
 "availability":"https://schema.org/InStock",
 "seller":{"@type":"Organization","name":"The Prompt Studio"}}}
 </script>
+<script src="/js/ps-lang.js"></script>
 </head>
 <body>
 
@@ -822,7 +823,6 @@ body.en .fr-content{display:none;}body.en .en-content{display:block;}
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-function setLang(l){document.body.className=l==='en'?'en':'';document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');document.documentElement.lang=l;}
 document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{const i=q.closest('.faq-item'),w=i.classList.contains('open');document.querySelectorAll('.faq-item').forEach(x=>x.classList.remove('open'));if(!w)i.classList.add('open');});});
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
@@ -851,7 +851,6 @@ function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b
 
 <script>
 function psSetLang(l){ setLang(l); var b=document.getElementById('ps-lang-btn'); if(b) b.innerHTML=(l==='en'?'🇬🇧 EN':'🇫🇷 FR')+' ▾'; document.querySelectorAll('.ps-lang-opt').forEach(function(o){o.classList.toggle('active',o.getAttribute('onclick')==="psSetLang('"+l+"')");});}
-(function(){ try{ var l=localStorage.getItem('ps_lang'); if(l&&l!=='fr') psSetLang(l); }catch(e){} })();
 </script>
 </body>
 </html>

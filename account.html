@@ -8,6 +8,7 @@
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/ps-auth.js"></script>
+  <script src="/js/ps-lang.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -179,8 +180,8 @@
 
 <script>
 const VMETA = PS.VERTICALS;
-const TIER_LABELS = { bronze:'🥉 Bronze', silver:'🥈 Silver', gold:'🥇 Gold' };
-const QUOTA_MAX   = { bronze:50, silver:150, gold:Infinity };
+const TIER_LABELS = { starter:'🚀 Starter', pro:'⚡ Pro', gold:'👑 Gold', team:'🏢 Team' };
+const QUOTA_MAX   = { starter:50, pro:150, gold:Infinity, team:Infinity };
 const ALL_VERTICALS = ['immo','commerce','legal','finance'];
 
 function toast(msg, type='success') {
@@ -217,7 +218,7 @@ function renderSubs() {
           <div class="sub-meta-row"><span class="l">Quota</span><span class="v">${max===Infinity?'Illimité':max+' gen/mois'}</span></div>
           <div class="sub-vcard-actions">
             <a href="/dashboard.html?v=${s.vertical}" class="btn btn-solid" style="background:${m.color}">Accéder →</a>
-            ${s.tier!=='gold'?`<a href="/tarifs.html?v=${s.vertical}" class="btn btn-outline" style="border-color:${m.color};color:${m.color}">Upgrade</a>`:''}
+            ${s.tier!=='gold'&&s.tier!=='team'?`<a href="/tarifs.html?v=${s.vertical}" class="btn btn-outline" style="border-color:${m.color};color:${m.color}">Upgrade</a>`:''}
           </div>
         </div>`;
     }).join('') + `
@@ -230,22 +231,26 @@ function renderSubs() {
 }
 
 async function renderUsage() {
-  const count = await PS.getMonthlyUsage();
-  const subs  = PS.subs;
-  const el    = document.getElementById('usage-section');
+  const subs = PS.subs;
+  const el   = document.getElementById('usage-section');
   if (!subs.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem;">Aucun abonnement actif.</p>'; return; }
 
-  // Global total (rough — per subscription breakdown would need per-tool data)
-  const totalMax = subs.reduce((sum,s)=>{ const m=QUOTA_MAX[s.tier]??50; return m===Infinity?Infinity:sum+m; },0);
-  el.innerHTML = `
-    <div class="usage-bar-wrap">
+  // Per-vertical usage bars
+  const bars = await Promise.all(subs.map(async (s) => {
+    const count = await PS.getMonthlyUsage(s.vertical);
+    const max   = QUOTA_MAX[s.tier] ?? 50;
+    const pct   = max === Infinity ? Math.min(100, count / 10) : Math.min(100, Math.round(count / max * 100));
+    const m     = VMETA[s.vertical] || {};
+    return `<div class="usage-bar-wrap" style="margin-bottom:10px;">
       <div class="usage-label">
-        <span>Total générations ce mois</span>
-        <span><strong>${count}</strong> / ${totalMax===Infinity?'∞':totalMax}</span>
+        <span>${m.icon || ''} ${m.label || s.vertical} <span style="font-size:.72rem;color:var(--muted)">${TIER_LABELS[s.tier] || s.tier}</span></span>
+        <span><strong>${count}</strong> / ${max === Infinity ? '∞' : max}</span>
       </div>
-      <div class="ubar"><div class="ubar-fill" style="width:${totalMax===Infinity?Math.min(100,count/10*100/100):Math.min(100,Math.round(count/totalMax*100))}%;background:var(--accent)"></div></div>
-    </div>
-    <p style="font-size:.78rem;color:var(--muted);margin-top:6px;">Compteur remis à zéro le 1er de chaque mois.</p>`;
+      <div class="ubar"><div class="ubar-fill" style="width:${pct}%;background:${m.color || 'var(--accent)'}"></div></div>
+    </div>`;
+  }));
+
+  el.innerHTML = bars.join('') + '<p style="font-size:.78rem;color:var(--muted);margin-top:6px;">Compteurs remis à zéro le 1er de chaque mois. Chaque verticale a son propre quota.</p>';
 }
 
 function renderAddVerticals() {

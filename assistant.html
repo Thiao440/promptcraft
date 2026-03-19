@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="/js/ps-lang.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -473,7 +474,7 @@ async function updateQuotaInfo() {
   if (!el) return;
   const sub = _subs[_vertical];
   if (!sub) return;
-  const tierLabel = { bronze: 'Bronze · 50 messages/mois', silver: 'Silver · 150 messages/mois', gold: 'Gold · illimité' }[sub.tier] || sub.tier;
+  const tierLabel = { starter: 'Starter · 50 messages/mois', pro: 'Pro · 150 messages/mois', gold: 'Gold · illimité', team: 'Team · illimité' }[sub.tier] || sub.tier;
   el.textContent = tierLabel;
 }
 
@@ -516,26 +517,6 @@ function renderMd(text) {
   return `<p>${s}</p>`;
 }
 
-// ── LANG SWITCHER ─────────────────────────────────────────────────────────────
-var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
-function setLang(lang) {
-  document.documentElement.setAttribute('data-lang', lang);
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-  var btn = document.getElementById('lang-current');
-  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
-  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
-    var fn = o.getAttribute('onclick') || '';
-    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
-  });
-  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
-}
-(function() {
-  try {
-    var saved = localStorage.getItem('ps_lang');
-    if (saved && ['fr','en','es','pt','ar'].indexOf(saved) !== -1) setLang(saved);
-  } catch(e) {}
-})();
 </script>
 </body>
 </html>

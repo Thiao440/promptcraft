@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projet – The Prompt Studio</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="icon" href="/assets/images/favicon.ico"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/ps-auth.js"></script>
+  <script src="/js/ps-projects.js"></script>
+  <script src="/js/tool-catalog.js"></script>
+  <script src="/js/ps-lang.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #22253a;
+      --border: #2a2d3e; --text: #e8eaf0; --muted: #7c8098;
+      --accent: #6c63ff; --accent2: #a78bfa;
+      --success: #22c55e; --danger: #ef4444; --warning: #f59e0b;
+      --sidebar: 240px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+    /* ── Sidebar ── */
+    .sidebar { width: var(--sidebar); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 50; }
+    .sb-logo { padding: 22px 20px; border-bottom: 1px solid var(--border); }
+    .sb-logo a { text-decoration: none; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .sb-logo span { color: var(--accent2); }
+    .sb-nav { flex: 1; padding: 14px 0; overflow-y: auto; }
+    .nav-section { padding: 10px 18px 4px; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 18px; color: var(--muted); text-decoration: none; font-size: .875rem; transition: background .14s, color .14s; }
+    .nav-item:hover { background: rgba(108,99,255,.07); color: var(--text); }
+    .nav-item.active { background: rgba(108,99,255,.14); color: var(--accent2); }
+    .nav-item .ico { font-size: 1rem; width: 20px; text-align: center; }
+    .sb-footer { padding: 14px 18px; border-top: 1px solid var(--border); }
+    .sb-email { font-size: .73rem; color: var(--muted); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn { display: flex; align-items: center; gap: 7px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: .85rem; padding: 5px 0; transition: color .14s; }
+    .logout-btn:hover { color: #ef4444; }
+
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar); flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb { padding: 16px 32px; font-size: .82rem; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; gap: 8px; }
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text); }
+    .breadcrumb .sep { opacity: .4; }
+
+    /* ── Project Header ── */
+    .proj-header { padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .proj-header-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+    .proj-icon { font-size: 2rem; }
+    .proj-name { font-size: 1.3rem; font-weight: 700; }
+    .proj-name-input { font-size: 1.3rem; font-weight: 700; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 4px 10px; width: 100%; max-width: 400px; }
+    .proj-meta { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+    .proj-status { font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .05em; }
+    .proj-date { font-size: .78rem; color: var(--muted); }
+    .proj-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn { padding: 8px 16px; border-radius: 8px; font-size: .82rem; font-weight: 600; cursor: pointer; border: none; transition: all .15s; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-solid { background: var(--accent); color: #fff; }
+    .btn-solid:hover { opacity: .88; }
+    .btn-outline { background: none; border: 1px solid var(--border); color: var(--muted); }
+    .btn-outline:hover { border-color: var(--text); color: var(--text); }
+    .btn-danger { background: none; border: 1px solid rgba(239,68,68,.3); color: #ef4444; }
+    .btn-danger:hover { background: rgba(239,68,68,.1); }
+    .btn-sm { padding: 5px 10px; font-size: .75rem; }
+
+    /* ── Content ── */
+    .content { flex: 1; padding: 28px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-content: start; }
+    @media(max-width: 1000px) { .content { grid-template-columns: 1fr; } }
+
+    /* ── Cards ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 0; overflow: hidden; }
+    .card-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: .88rem; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+    .card-body { padding: 20px; }
+
+    /* ── Project Form Fields ── */
+    .pf-group { margin-bottom: 14px; }
+    .pf-label { font-size: .78rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block; }
+    .pf-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 8px 12px; font-size: .85rem; font-family: inherit; transition: border-color .15s; }
+    .pf-input:focus { outline: none; border-color: var(--accent); }
+    .pf-textarea { resize: vertical; min-height: 60px; }
+
+    /* ── Tools Quick Access ── */
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .tool-quick { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; cursor: pointer; transition: all .15s; text-decoration: none; display: block; }
+    .tool-quick:hover { border-color: var(--accent2); transform: translateY(-1px); }
+    .tq-icon { font-size: 1.2rem; margin-bottom: 4px; }
+    .tq-name { font-size: .82rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .tq-desc { font-size: .72rem; color: var(--muted); line-height: 1.3; }
+    .tq-prefill { font-size: .68rem; color: var(--success); margin-top: 4px; }
+    .tool-quick.locked { opacity: .4; pointer-events: none; }
+
+    /* ── Generation History ── */
+    .gen-list { display: flex; flex-direction: column; gap: 8px; }
+    .gen-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+    .gen-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .gen-tool { font-size: .78rem; font-weight: 600; }
+    .gen-date { font-size: .72rem; color: var(--muted); }
+    .gen-preview { font-size: .82rem; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .gen-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+    /* ── Notes ── */
+    .notes-area { width: 100%; min-height: 100px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 12px; font-size: .85rem; font-family: inherit; resize: vertical; }
+    .notes-area:focus { outline: none; border-color: var(--accent); }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 32px; color: var(--muted); font-size: .85rem; }
+    .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    /* ── Toast ── */
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface); border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; font-size: .85rem; z-index: 9999; opacity: 0; transition: opacity .2s; pointer-events: none; }
+    .toast.show { opacity: 1; }
+    .toast.success { border-color: rgba(34,197,94,.4); }
+    .toast.error { border-color: rgba(239,68,68,.4); }
+
+    /* ── Full-width sections ── */
+    .full-width { grid-column: 1 / -1; }
+
+    /* ── Status selector ── */
+    .status-select { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 5px 10px; font-size: .78rem; font-family: inherit; cursor: pointer; }
+
+    /* ── Mobile ── */
+    @media(max-width: 700px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .content { padding: 16px; gap: 16px; }
+      .proj-header { padding: 16px; flex-direction: column; }
+      .proj-actions { width: 100%; justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sb-logo"><a href="/dashboard.html">The Prompt<span>Studio</span></a></div>
+  <nav class="sb-nav">
+    <div class="nav-section">NAVIGATION</div>
+    <a href="/dashboard.html" class="nav-item"><span class="ico">🧰</span> Mes outils</a>
+    <a href="/dashboard.html?view=projects" class="nav-item active"><span class="ico">📁</span> Mes projets</a>
+    <a href="/account.html" class="nav-item"><span class="ico">👤</span> Mon compte</a>
+    <a href="/tarifs.html" class="nav-item"><span class="ico">💎</span> Offres & Tarifs</a>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-email" id="sb-email"></div>
+    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="breadcrumb" id="breadcrumb">
+    <a href="/dashboard.html">🧰 Dashboard</a>
+    <span class="sep">›</span>
+    <a href="/dashboard.html?view=projects">📁 Projets</a>
+    <span class="sep">›</span>
+    <span id="bc-name">Chargement…</span>
+  </div>
+
+  <div class="proj-header" id="proj-header">
+    <div class="proj-header-left">
+      <span class="proj-icon" id="proj-icon">📁</span>
+      <div>
+        <div class="proj-name" id="proj-name">Chargement…</div>
+        <div class="proj-meta">
+          <select class="status-select" id="proj-status" onchange="updateStatus(this.value)">
+            <option value="active">🟢 En cours</option>
+            <option value="completed">🔵 Terminé</option>
+            <option value="archived">⚪ Archivé</option>
+          </select>
+          <span class="proj-date" id="proj-date"></span>
+        </div>
+      </div>
+    </div>
+    <div class="proj-actions">
+      <button class="btn btn-solid" onclick="saveProject()">💾 Sauvegarder</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteProject()">🗑</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- LEFT: Project Info -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">📋 Informations du projet</div>
+        <div>
+          <label class="pf-label" style="display:inline;margin:0">Nom :</label>
+          <input type="text" class="proj-name-input" id="proj-name-edit" style="width:200px;display:inline-block;font-size:.85rem;padding:4px 8px;" onchange="markDirty()"/>
+        </div>
+      </div>
+      <div class="card-body" id="project-fields">
+        <div class="empty"><div class="empty-icon">⏳</div>Chargement des champs…</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Quick Tools -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">⚡ Outils rapides</div>
+      </div>
+      <div class="card-body">
+        <div class="tools-grid" id="tools-grid">
+          <div class="empty"><div class="empty-icon">🔧</div>Chargement des outils…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULL WIDTH: Notes -->
+    <div class="card full-width">
+      <div class="card-head">
+        <div class="card-title">📝 Notes</div>
+      </div>
+      <div class="card-body">
+        <textarea class="notes-area" id="proj-notes" placeholder="Ajoutez vos notes ici…" onchange="markDirty()"></textarea>
+      </div>
+    </div>
+
+    <!-- FULL WIDTH: Generation History for this project -->
+    <div class="card full-width">
+      <div class="card-head">
+        <div class="card-title">📜 Historique des générations</div>
+        <span id="gen-count" style="font-size:.78rem;color:var(--muted)"></span>
+      </div>
+      <div class="card-body">
+        <div class="gen-list" id="gen-list">
+          <div class="empty"><div class="empty-icon">📭</div>Aucune génération liée à ce projet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const VMETA = PS.VERTICALS;
+let _project = null;
+let _dirty   = false;
+
+function markDirty() { _dirty = true; }
+
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ── Load Project ─────────────────────────────────────────────────────────────
+async function loadProject() {
+  const id = new URLSearchParams(location.search).get('id');
+  if (!id) { location.href = '/dashboard.html?view=projects'; return; }
+
+  _project = await PSProjects.get(id);
+  if (!_project) { toast('Projet introuvable', 'error'); return; }
+
+  const m = VMETA[_project.vertical] || {};
+
+  // Header
+  document.getElementById('proj-icon').textContent = m.icon || '📁';
+  document.getElementById('proj-name').textContent = _project.name;
+  document.getElementById('proj-name-edit').value  = _project.name;
+  document.getElementById('bc-name').textContent   = _project.name;
+  document.getElementById('proj-status').value     = _project.status;
+  document.getElementById('proj-date').textContent =
+    'Créé le ' + new Date(_project.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('proj-notes').value = _project.notes || '';
+
+  document.title = `${_project.name} — The Prompt Studio`;
+
+  // Sidebar email
+  if (PS.profile) document.getElementById('sb-email').textContent = PS.profile.email || '';
+
+  // Render fields
+  await PSProjects.renderForm('project-fields', _project.vertical, _project.data || {});
+  // Listen for changes on all fields
+  document.querySelectorAll('#project-fields .pf-input').forEach(el => {
+    el.addEventListener('change', markDirty);
+  });
+
+  // Load tools for this vertical
+  await loadToolsForProject();
+
+  // Load generation history
+  await loadGenerations();
+}
+
+// ── Tools Grid ───────────────────────────────────────────────────────────────
+async function loadToolsForProject() {
+  if (!_project) return;
+  const m = VMETA[_project.vertical] || {};
+  const sub = PS.subForVertical(_project.vertical);
+
+  try {
+    const catalog = await ToolCatalog.load();
+    const vTools  = catalog.tools?.[_project.vertical] || [];
+    const mappings = await PSProjects.loadToolMappings(_project.vertical);
+
+    document.getElementById('tools-grid').innerHTML = vTools.map(t => {
+      const access = PS.canUseTool(t.slug, t.min_tier || 'starter', _project.vertical);
+      const toolMap = mappings[t.slug];
+      const prefillCount = toolMap ? Object.keys(toolMap).filter(k => _project.data?.[k]).length : 0;
+
+      return `<a href="/tool.html?slug=${t.slug}&project=${_project.id}" class="tool-quick ${access.allowed ? '' : 'locked'}">
+        <div class="tq-icon">${t.icon || '🔧'}</div>
+        <div class="tq-name">${escapeHtml(t.name)}</div>
+        <div class="tq-desc">${escapeHtml(t.description || t.desc || '')}</div>
+        ${prefillCount > 0 ? `<div class="tq-prefill">✓ ${prefillCount} champ(s) pré-rempli(s)</div>` : ''}
+        ${!access.allowed ? '<div style="font-size:.68rem;color:var(--muted);margin-top:4px">🔒 Upgrade requis</div>' : ''}
+      </a>`;
+    }).join('') || '<div class="empty">Aucun outil disponible pour cette verticale.</div>';
+  } catch (e) {
+    console.warn('[project] tools load failed', e);
+  }
+}
+
+// ── Generations History ──────────────────────────────────────────────────────
+async function loadGenerations() {
+  if (!_project) return;
+  const gens = await PSProjects.getGenerations(_project.id);
+  const el   = document.getElementById('gen-list');
+  const cnt  = document.getElementById('gen-count');
+  if (cnt) cnt.textContent = gens.length ? `${gens.length} génération(s)` : '';
+
+  if (!gens.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>Aucune génération liée à ce projet. Utilisez un outil rapide ci-dessus pour commencer.</div>';
+    return;
+  }
+
+  el.innerHTML = gens.map(g => {
+    const date = new Date(g.created_at).toLocaleDateString('fr-FR', {
+      day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+    });
+    const preview = (g.output_text || '').slice(0, 200);
+    return `<div class="gen-item">
+      <div class="gen-head">
+        <span class="gen-tool">${escapeHtml(g.tool_slug)}</span>
+        <span class="gen-date">${date}</span>
+      </div>
+      <div class="gen-preview">${escapeHtml(preview)}${preview.length >= 200 ? '…' : ''}</div>
+      <div class="gen-actions">
+        <a href="/tool.html?slug=${g.tool_slug}&project=${_project.id}" class="btn btn-outline btn-sm">🔧 Réutiliser</a>
+        <button class="btn btn-outline btn-sm" onclick="copyGen('${g.id}')">📋 Copier</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Store text for copy
+  window._genCache = {};
+  gens.forEach(g => { window._genCache[g.id] = g.output_text; });
+}
+
+function copyGen(id) {
+  const text = window._genCache?.[id];
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => toast('Copié !'));
+}
+
+// ── Save ─────────────────────────────────────────────────────────────────────
+async function saveProject() {
+  if (!_project) return;
+  const data  = PSProjects.collectFormData('project-fields');
+  const name  = document.getElementById('proj-name-edit').value.trim() || _project.name;
+  const notes = document.getElementById('proj-notes').value;
+
+  const result = await PSProjects.update(_project.id, { name, data, notes });
+  if (result) {
+    _project = result;
+    document.getElementById('proj-name').textContent = name;
+    document.getElementById('bc-name').textContent   = name;
+    _dirty = false;
+    toast('Projet sauvegardé');
+  } else {
+    toast('Erreur lors de la sauvegarde', 'error');
+  }
+}
+
+async function updateStatus(status) {
+  if (!_project) return;
+  const result = await PSProjects.update(_project.id, { status });
+  if (result) {
+    _project.status = status;
+    toast('Statut mis à jour');
+  }
+}
+
+async function deleteProject() {
+  if (!confirm('Supprimer ce projet ? Cette action est irréversible.')) return;
+  const ok = await PSProjects.remove(_project.id);
+  if (ok) {
+    location.href = '/dashboard.html?view=projects';
+  } else {
+    toast('Erreur lors de la suppression', 'error');
+  }
+}
+
+// ── Unsaved changes warning ──────────────────────────────────────────────────
+window.addEventListener('beforeunload', e => {
+  if (_dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+(async function () {
+  try {
+    await PS.requireAuth();
+    // Feature gate: CRM requires Gold+
+    const crmAccess = PS.canAccessFeature('crm_projects');
+    if (!crmAccess.allowed) {
+      document.querySelector('.content').innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+          <div style="font-size:3rem;margin-bottom:16px">🔒</div>
+          <h2 style="font-size:1.2rem;margin-bottom:8px">CRM disponible à partir de Gold</h2>
+          <p style="color:var(--muted);margin-bottom:24px">Passez à l'offre Gold pour accéder au CRM intégré.</p>
+          <a href="/tarifs.html" style="background:var(--accent);color:#fff;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:700">Voir les offres →</a>
+        </div>`;
+      return;
+    }
+    await loadProject();
+  } catch (e) {
+    console.error('[project] init error', e);
+    location.href = '/login.html';
+  }
+})();
+</script>
+</body>
+</html>

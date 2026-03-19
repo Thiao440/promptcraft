@@ -124,7 +124,7 @@ const ToolCatalog = (() => {
           icon:     row.icon || '🔧',
           name:     row.label || row.slug,
           desc:     row.description || '',
-          tier:     row.min_tier || 'bronze',
+          tier:     row.min_tier || 'starter',
           featured: row.is_featured || false,
           isNew:    row.is_new || false,
         });
@@ -145,18 +145,15 @@ const ToolCatalog = (() => {
 
   /**
    * Get the URL for a tool page.
-   * Tools with input_schema → /tool.html?slug=xxx (dynamic page)
-   * Tools without           → /tools/slug.html (static page)
+   * ALL tools now route through /tool.html?slug=xxx (dynamic page).
+   * tool.html handles missing input_schema with a generic fallback form.
    */
   function toolUrl(slug) {
-    if (_dynamicSlugs.has(slug)) {
-      return `/tool.html?slug=${slug}`;
-    }
-    return `/tools/${slug}.html`;
+    return `/tool.html?slug=${slug}`;
   }
 
   /**
-   * Check if a tool uses the dynamic renderer
+   * Check if a tool uses the dynamic renderer (has input_schema with fields)
    */
   function isDynamic(slug) {
     return _dynamicSlugs.has(slug);

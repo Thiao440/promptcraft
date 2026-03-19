@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"The Prompt Studio Finance","provider":{"@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio"},"description":"Consulting IA pour équipes finance : audit, automatisation, dashboards et applications sur-mesure","areaServed":"FR","serviceType":"AI Consulting"}</script>
+<script src="/js/ps-lang.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -525,28 +526,6 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
 function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
 function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
-</script>
-<script>
-// ── LANG SWITCHER ──
-var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
-function setLang(lang) {
-  document.documentElement.setAttribute('data-lang', lang);
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-  var btn = document.getElementById('lang-current');
-  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
-  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
-    var fn = o.getAttribute('onclick') || '';
-    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
-  });
-  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
-}
-(function() {
-  try {
-    var saved = localStorage.getItem('ps_lang');
-    if (saved && ['fr','en','es','pt','ar'].indexOf(saved) !== -1) setLang(saved);
-  } catch(e) {}
-})();
 </script>
 <script src="/js/ps-auth.js"></script>
 <script src="/js/ps-chat-widget.js"></script>

@@ -6,7 +6,7 @@
  * Required config:
  *   toolSlug      {string}   e.g. 'immo-annonce'
  *   toolVertical  {string}   e.g. 'immo'
- *   toolMinTier   {string}   'bronze' | 'silver' | 'gold'
+ *   toolMinTier   {string}   'starter' | 'pro' | 'gold' | 'team'
  *   collectInputs {function} returns plain object of form values
  *
  * Optional config:
@@ -26,8 +26,9 @@
 
 const PSTool = (() => {
 
-  let _cfg       = null;
-  let _lastInputs = null;
+  let _cfg          = null;
+  let _lastInputs   = null;
+  let _historyCache = {};  // safeId → { output_text, input_data }
 
   // ── Toast ───────────────────────────────────────────────────────────────────
   function showToast(msg, type = 'success') {
@@ -71,10 +72,73 @@ const PSTool = (() => {
     }
   }
 
+  // ── Markdown renderer ───────────────────────────────────────────────────────
+  function renderMarkdown(text) {
+    let s = escapeHtml(text);
+    // Headers
+    s = s.replace(/^#### (.+)$/gm, '<h5>$1</h5>');
+    s = s.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+    s = s.replace(/^## (.+)$/gm,  '<h3>$1</h3>');
+    s = s.replace(/^# (.+)$/gm,   '<h2>$1</h2>');
+    // Horizontal rules
+    s = s.replace(/^(?:---+|\*\*\*+)$/gm, '<hr>');
+    // Bold / italic / bold-italic
+    s = s.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    s = s.replace(/\*\*(.+?)\*\*/g,     '<strong>$1</strong>');
+    s = s.replace(/\*(.+?)\*/g,         '<em>$1</em>');
+    // Unordered lists (- or •)
+    s = s.replace(/((?:^[ \t]*[-•] .+$\n?)+)/gm, m => {
+      const items = m.trim().split('\n')
+        .map(l => `<li>${l.replace(/^[ \t]*[-•] /, '')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    });
+    // Ordered lists
+    s = s.replace(/((?:^\d+\. .+$\n?)+)/gm, m => {
+      const items = m.trim().split('\n')
+        .map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+      return `<ol>${items}</ol>`;
+    });
+    // Paragraphs from double newlines
+    return s.split(/\n{2,}/).map(b => {
+      b = b.trim();
+      if (!b) return '';
+      if (/^<(?:h[1-6]|ul|ol|hr)/.test(b)) return b;
+      return `<p>${b.replace(/\n/g, '<br>')}</p>`;
+    }).filter(Boolean).join('\n');
+  }
+
+  // ── Toggle between rendered view and raw edit mode ─────────────────────────
+  function toggleResultView() {
+    const rendered = document.getElementById('result-rendered');
+    const textarea = document.getElementById('result-textarea');
+    const btn      = document.getElementById('result-toggle-btn');
+    if (!rendered || !textarea || !btn) return;
+
+    const isEditing = !textarea.classList.contains('result-text--hidden');
+    if (isEditing) {
+      // Switch back to rendered — re-render in case user edited the textarea
+      rendered.innerHTML = renderMarkdown(textarea.value);
+      rendered.classList.remove('result-rendered--hidden');
+      textarea.classList.add('result-text--hidden');
+      btn.textContent = '✏️ Éditer';
+    } else {
+      // Switch to raw edit
+      rendered.classList.add('result-rendered--hidden');
+      textarea.classList.remove('result-text--hidden');
+      textarea.focus();
+      btn.textContent = '👁 Aperçu';
+    }
+  }
+
   // ── Display result ──────────────────────────────────────────────────────────
   function displayResult(output, meta = {}) {
     const content = document.getElementById('result-content');
-    content.innerHTML = `<textarea class="result-text" id="result-textarea" spellcheck="false">${escapeHtml(output)}</textarea>`;
+    content.innerHTML = `
+      <div class="result-rendered" id="result-rendered">${renderMarkdown(output)}</div>
+      <textarea class="result-text result-text--hidden" id="result-textarea" spellcheck="false">${escapeHtml(output)}</textarea>
+      <div class="result-view-toggle">
+        <button class="result-toggle-btn" id="result-toggle-btn" onclick="PSTool._toggleResultView()">✏️ Éditer</button>
+      </div>`;
 
     const metaEl = document.getElementById('result-meta');
     if (metaEl) {
@@ -112,7 +176,7 @@ const PSTool = (() => {
     const sub = PS.subForVertical(_cfg.toolVertical);
     if (!sub) return;
 
-    const count  = await PS.getMonthlyUsage();
+    const count  = await PS.getMonthlyUsage(_cfg.toolVertical);
     const limit  = PS.getQuota(_cfg.toolVertical);
     const pct    = limit === Infinity ? 5 : Math.min(100, Math.round((count / limit) * 100));
 
@@ -140,51 +204,109 @@ const PSTool = (() => {
       .eq('user_id', PS.session.user.id)
       .eq('tool_slug', _cfg.toolSlug)
       .order('created_at', { ascending: false })
-      .limit(10);
+      .limit(20);
 
     const list  = document.getElementById('history-list');
     const count = document.getElementById('history-count');
     if (!list) return;
 
     if (!data?.length) {
-      list.innerHTML     = `<div style="color:var(--muted);font-size:.875rem;">Aucune génération pour cet outil.</div>`;
+      list.innerHTML = `<div style="color:var(--muted);font-size:.875rem;">Aucune génération pour cet outil.</div>`;
       if (count) count.textContent = '';
       return;
     }
 
-    if (count) count.textContent = `${data.length} dernière(s)`;
+    if (count) count.textContent = `${data.length} entrée(s)`;
+
+    // Label map for common field names
+    const FIELD_LABELS = {
+      type_bien: 'Type', transaction: 'Transaction', surface: 'Surface',
+      pieces: 'Pièces', prix: 'Prix', localisation: 'Ville',
+      points_forts: 'Points forts', infos_comp: 'Infos comp.', ton: 'Ton',
+      objet: 'Objet', destinataire: 'Destinataire', contexte: 'Contexte',
+      vertical: 'Secteur', langue: 'Langue', style: 'Style',
+    };
 
     list.innerHTML = data.map(item => {
-      const date    = new Date(item.created_at).toLocaleDateString('fr-FR', {
+      const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
         day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
       });
-      const preview = (item.output_text || '').slice(0, 120);
-      const info    = _cfg.renderHistoryInfo
+      const info = _cfg.renderHistoryInfo
         ? _cfg.renderHistoryInfo(item)
-        : new Date(item.created_at).toLocaleTimeString('fr-FR');
+        : date;
 
-      // Safely encode output for inline handler
-      const encoded = encodeURIComponent(item.output_text || '');
+      const preview = (item.output_text || '').slice(0, 100);
+      const safeId  = item.id.replace(/-/g, '');
+
+      // Store in cache for onclick lookup
+      _historyCache[safeId] = { output_text: item.output_text || '', input_data: item.input_data };
+
+      // Input fields block
+      const inputFields = item.input_data
+        ? Object.entries(item.input_data)
+            .filter(([, v]) => v && String(v).trim())
+            .map(([k, v]) => {
+              const label = FIELD_LABELS[k] || k;
+              return `<div class="hist-field">
+                <span class="hist-field-key">${escapeHtml(label)}</span>
+                <span class="hist-field-val">${escapeHtml(String(v))}</span>
+              </div>`;
+            }).join('')
+        : '';
 
       return `
-        <div class="history-item" onclick="PSTool._loadFromHistory(decodeURIComponent('${encoded}'))">
-          <div class="history-item-header">
-            <span>${escapeHtml(info)}</span>
-            <span>${date}</span>
+        <div class="history-item" id="hist-${safeId}">
+          <div class="history-item-header" onclick="PSTool._loadFromHistory('${safeId}')">
+            <div class="hist-header-left">
+              <span class="hist-info">${escapeHtml(info)}</span>
+              <span class="hist-preview">${escapeHtml(preview)}${preview.length >= 100 ? '…' : ''}</span>
+            </div>
+            <button class="hist-btn-detail" title="Voir les détails"
+              onclick="event.stopPropagation(); PSTool._toggleHistoryDetail('${safeId}')">
+              🔍
+            </button>
           </div>
-          <div class="history-item-preview">${escapeHtml(preview)}…</div>
+          <div class="history-detail" id="hist-detail-${safeId}">
+            ${inputFields ? `
+              <div class="hist-section">
+                <div class="hist-section-label">Paramètres</div>
+                <div class="hist-fields">${inputFields}</div>
+              </div>` : ''}
+            <div class="hist-section">
+              <div class="hist-section-label">
+                Résultat complet
+                <button class="hist-load-btn"
+                  onclick="event.stopPropagation(); PSTool._loadFromHistory('${safeId}')">
+                  ↑ Charger dans le panneau
+                </button>
+              </div>
+              <div class="result-rendered hist-output-rendered">${renderMarkdown(item.output_text || '')}</div>
+            </div>
+          </div>
         </div>`;
     }).join('');
   }
 
-  function _loadFromHistory(text) {
+  function _loadFromHistory(safeId) {
+    const cached = _historyCache[safeId];
+    if (!cached) return;
+    const text = cached.output_text;
     if (_cfg?.onHistoryClick) {
       _cfg.onHistoryClick(text);
     } else {
       displayResult(text, {});
       const content = document.getElementById('result-content');
-      if (content) content.scrollIntoView({ behavior: 'smooth' });
+      if (content) content.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  function toggleHistoryDetail(safeId) {
+    const detail = document.getElementById(`hist-detail-${safeId}`);
+    const btn    = document.querySelector(`#hist-${safeId} .hist-btn-detail`);
+    if (!detail) return;
+    const isOpen = detail.classList.contains('history-detail--open');
+    detail.classList.toggle('history-detail--open', !isOpen);
+    if (btn) btn.textContent = isOpen ? '🔍' : '✕';
   }
 
   // ── Error message resolver (v3 standardized + v2 legacy compat) ─────────────
@@ -196,7 +318,7 @@ const PSTool = (() => {
       e = data.error;
       const codeMap = {
         'QUOTA_EXCEEDED':       `Quota atteint (${e.used||'?'}/${e.limit||'?'} ce mois).`,
-        'UPGRADE_REQUIRED':     `Upgrade requis (${e.required || 'silver'}).`,
+        'UPGRADE_REQUIRED':     `Upgrade requis (${e.required || 'pro'}).`,
         'NO_SUBSCRIPTION':      'Aucun abonnement actif. Veuillez vous abonner.',
         'SUBSCRIPTION_EXPIRED': 'Abonnement expiré. Veuillez renouveler.',
         'RATE_LIMITED':         'Trop de requêtes. Patientez 1 minute.',
@@ -249,7 +371,7 @@ const PSTool = (() => {
           'Content-Type':  'application/json',
           'Authorization': `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ toolSlug: _cfg.toolSlug, inputs }),
+        body: JSON.stringify({ toolSlug: _cfg.toolSlug, inputs, projectId: window._activeProjectId || undefined }),
       });
 
       // Parse response defensively: Netlify can return plain-text errors
@@ -336,6 +458,6 @@ const PSTool = (() => {
     await loadHistory();
   }
 
-  return { init, showToast, copyResult, regenerate, _loadFromHistory };
+  return { init, showToast, copyResult, regenerate, _loadFromHistory, _toggleResultView: toggleResultView, _toggleHistoryDetail: toggleHistoryDetail };
 
 })();

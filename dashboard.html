@@ -9,6 +9,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/ps-auth.js"></script>
   <script src="/js/tool-catalog.js"></script>
+  <script src="/js/ps-projects.js"></script>
+  <script src="/js/ps-feedback.js"></script>
+  <script src="/js/ps-lang.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -64,9 +67,10 @@
     .vtab-btn.active { font-weight: 600; }
     .vtab-btn[data-v].active { font-weight: 600; }
     .vtab-btn .tier-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .tier-dot.bronze { background: #cd7f32; }
-    .tier-dot.silver { background: #a8a9ad; }
+    .tier-dot.starter { background: #3b82f6; }
+    .tier-dot.pro    { background: #a78bfa; }
     .tier-dot.gold   { background: #c9a84c; }
+    .tier-dot.team   { background: #10b981; }
 
     /* Content area */
     .content { flex: 1; padding: 28px 32px; }
@@ -99,9 +103,9 @@
     .tool-card .tc-name { font-size: .9rem; font-weight: 600; }
     .tool-card .tc-desc { font-size: .8rem; color: var(--muted); line-height: 1.4; flex: 1; }
     .tool-card .tc-tier { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 8px; width: fit-content; }
-    .tc-tier.bronze { background: rgba(205,127,50,.13); color: #cd7f32; }
-    .tc-tier.silver { background: rgba(168,169,173,.13); color: #a8a9ad; }
-    .tc-tier.gold   { background: rgba(201,168,76,.13);  color: #c9a84c; }
+    .tc-tier.starter { background: rgba(59,130,246,.13); color: #3b82f6; }
+    .tc-tier.pro     { background: rgba(167,139,250,.13); color: #a78bfa; }
+    .tc-tier.gold    { background: rgba(201,168,76,.13);  color: #c9a84c; }
     .tool-card .tc-action { margin-top: 4px; font-size: .82rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; }
     .lock-overlay { position: absolute; top: 10px; right: 10px; font-size: 1rem; opacity: .6; }
     .upgrade-hint { font-size: .75rem; color: var(--muted); margin-top: 2px; }
@@ -166,6 +170,39 @@
     .filter-btn.active { font-weight: 600; }
     .filter-btn:not(.active):hover { color: var(--text); border-color: var(--text); }
 
+    /* ── Projects view ── */
+    .proj-view-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .proj-view-header h2 { font-size: 1.15rem; font-weight: 700; }
+    .proj-filters { display: flex; gap: 8px; align-items: center; }
+    .proj-filters select { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 10px; font-size: .8rem; font-family: inherit; }
+    .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .proj-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; cursor: pointer; transition: all .18s; text-decoration: none; display: flex; flex-direction: column; gap: 8px; }
+    .proj-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+    .proj-card-head { display: flex; align-items: center; gap: 10px; }
+    .proj-card-icon { font-size: 1.4rem; }
+    .proj-card-name { font-size: .95rem; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .proj-card-status { font-size: .65rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; text-transform: uppercase; letter-spacing: .04em; }
+    .proj-card-meta { font-size: .78rem; color: var(--muted); line-height: 1.4; }
+    .proj-card-meta strong { color: var(--text); font-weight: 500; }
+    .proj-card-date { font-size: .72rem; color: var(--muted); margin-top: auto; }
+    .proj-card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+    .proj-card-tag { font-size: .68rem; padding: 2px 6px; border-radius: 6px; background: rgba(108,99,255,.1); color: var(--accent2); }
+    .new-proj-card { border-style: dashed; align-items: center; justify-content: center; min-height: 140px; }
+    .new-proj-card:hover { border-color: var(--accent); background: rgba(108,99,255,.04); }
+    .new-proj-plus { font-size: 2rem; color: var(--muted); margin-bottom: 4px; }
+    .new-proj-label { font-size: .85rem; color: var(--muted); }
+
+    /* ── Create project modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 90%; max-width: 440px; }
+    .modal h3 { font-size: 1.05rem; margin-bottom: 16px; }
+    .modal-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px 14px; font-size: .9rem; font-family: inherit; margin-bottom: 12px; }
+    .modal-input:focus { outline: none; border-color: var(--accent); }
+    .modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+    .modal-btn { padding: 8px 18px; border-radius: 8px; font-size: .85rem; font-weight: 600; cursor: pointer; border: none; }
+    .modal-btn-primary { background: var(--accent); color: #fff; }
+    .modal-btn-cancel { background: none; border: 1px solid var(--border); color: var(--muted); }
+
     /* ── Tablet ── */
     @media(max-width:900px) {
       .tools-grid { grid-template-columns: repeat(auto-fill,minmax(min(200px,100%),1fr)) !important; }
@@ -201,6 +238,31 @@
       .tool-card { padding: 12px; }
       .vtab-btn { font-size: .72rem; padding: 6px 10px; }
     }
+
+    /* ── Feedback modals (shared with tool.css) ── */
+    .fb-overlay { position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px; }
+    .fb-modal { background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden; }
+    .fb-modal.fb-modal-lg { max-width:640px; }
+    .fb-modal-head { padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:.95rem;font-weight:700; }
+    .fb-close { background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:4px; }
+    .fb-close:hover { color:var(--text); }
+    .fb-modal-body { padding:20px 22px;overflow-y:auto;flex:1; }
+    .fb-modal-foot { padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end; }
+    .fb-intro { font-size:.82rem;color:var(--muted);line-height:1.5;margin-bottom:16px; }
+    .fb-row { display:flex;gap:12px; }
+    .fb-field { margin-bottom:12px;flex:1; }
+    .fb-field.fb-half { flex:1;min-width:0; }
+    .fb-field label { display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:4px; }
+    .fb-field input,.fb-field textarea,.fb-field select { width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:.85rem;font-family:inherit; }
+    .fb-field input:focus,.fb-field textarea:focus,.fb-field select:focus { outline:none;border-color:var(--accent); }
+    .fb-field textarea { resize:vertical;min-height:50px; }
+    .fb-context-info { font-size:.72rem;color:var(--muted);background:rgba(108,99,255,.06);border:1px solid rgba(108,99,255,.15);border-radius:8px;padding:8px 12px;margin-top:4px; }
+    .fb-btn { padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none; }
+    .fb-btn.fb-btn-submit { background:var(--accent);color:#fff; }
+    .fb-btn.fb-btn-submit:hover { opacity:.88; }
+    .fb-btn.fb-btn-submit:disabled { opacity:.5;cursor:not-allowed; }
+    .fb-btn.fb-btn-cancel { background:none;border:1px solid var(--border);color:var(--muted); }
+    @media(max-width:600px) { .fb-row{flex-direction:column;gap:0;} .fb-modal{max-width:100%;} }
   </style>
 </head>
 <body>
@@ -213,12 +275,21 @@
       <div class="nav-item" style="color:var(--muted);font-size:.82rem;padding-left:18px;">Chargement…</div>
     </div>
     <div class="nav-section" style="margin-top:8px;">Navigation</div>
+    <a href="/dashboard.html?view=projects" class="nav-item" id="nav-projects">
+      <span class="ico">📁</span> Mes projets
+      <span id="proj-lock-badge" style="margin-left:auto;font-size:.6rem;color:var(--muted);display:none">🔒</span>
+      <span id="proj-count-badge" style="margin-left:auto;font-size:.7rem;background:rgba(108,99,255,.15);color:var(--accent2);padding:1px 6px;border-radius:8px;display:none"></span>
+    </a>
     <a href="/account.html" class="nav-item"><span class="ico">👤</span> Mon compte</a>
-    <a href="/tarifs.html"  class="nav-item"><span class="ico">➕</span> Ajouter une verticale</a>
+    <div class="nav-section" style="margin-top:8px;">Feedback</div>
+    <a href="#" class="nav-item" onclick="event.preventDefault(); PSFeedback.showBugModal()"><span class="ico">🐛</span> Signaler un bug</a>
   </nav>
   <div class="sb-footer">
     <div class="sb-email" id="sb-email"></div>
-    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+      <a href="/tarifs.html" style="font-size:.7rem;color:var(--muted);text-decoration:none;opacity:.6;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">+ Verticale</a>
+    </div>
   </div>
 </aside>
 
@@ -233,7 +304,6 @@
         <span id="quota-text">— / —</span>
         <div class="quota-bar"><div class="quota-fill" id="quota-fill" style="width:0%"></div></div>
       </div>
-      <a href="/tarifs.html" style="font-size:.8rem;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:7px;transition:all .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">+ Verticale</a>
     </div>
   </div>
 
@@ -255,8 +325,8 @@
 
 <script>
 const VMETA = PS.VERTICALS;
-const TIER_LABELS = { bronze:'🥉 Bronze', silver:'🥈 Silver', gold:'🥇 Gold' };
-const QUOTA_MAX   = { bronze:50, silver:150, gold:Infinity };
+const TIER_LABELS = { starter:'🚀 Starter', pro:'⚡ Pro', gold:'👑 Gold', team:'🏢 Team' };
+const QUOTA_MAX   = { starter:50, pro:150, gold:Infinity, team:Infinity };
 
 // Tools loaded from DB via ToolCatalog (replaces old hardcoded ALL_TOOLS)
 let ALL_TOOLS = {};
@@ -266,9 +336,10 @@ let usageCount   = 0;
 let activeFilter = 'all'; // 'all' | 'accessible' | 'locked'
 
 const TIER_META = {
-  bronze: { label: '🥉 Bronze', color: '#cd7f32' },
-  silver: { label: '🥈 Silver', color: '#a8a9ad' },
-  gold:   { label: '🥇 Gold',   color: '#c9a84c' },
+  starter: { label: '🚀 Starter', color: '#3b82f6' },
+  pro:     { label: '⚡ Pro',     color: '#a78bfa' },
+  gold:    { label: '👑 Gold',    color: '#c9a84c' },
+  team:    { label: '🏢 Team',    color: '#10b981' },
 };
 
 // ── Render sidebar verticals ───────────────────────────────────────────────
@@ -338,7 +409,7 @@ function setFilter(f) {
 // ── Update quota display ───────────────────────────────────────────────────
 async function updateQuota(v, sub) {
   if (!sub) return;
-  const count = await PS.getMonthlyUsage();
+  const count = await PS.getMonthlyUsage(v);
   usageCount  = count;
   const max   = QUOTA_MAX[sub.tier] ?? 50;
   const pct   = max === Infinity ? 5 : Math.min(100, Math.round(count/max*100));
@@ -414,7 +485,7 @@ function renderTools(v, sub, filter = 'all') {
                 : annotated;
 
   // Group visible tools by tier; within each tier: featured first, then alphabetical
-  const byTier = { bronze: [], silver: [], gold: [] };
+  const byTier = { starter: [], pro: [], gold: [] };
   visible.forEach(t => { (byTier[t.tier] = byTier[t.tier] || []).push(t); });
   Object.values(byTier).forEach(g => g.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)));
 
@@ -454,9 +525,20 @@ function renderTools(v, sub, filter = 'all') {
     </div>
   </div>`;
 
+  // ── "Proposer un outil" special card — always first ──
+  html += `<div class="tools-grid" style="margin-bottom:20px">
+    <div class="tool-card accessible suggest-tool-card" style="border-style:dashed;border-color:rgba(108,99,255,.3);cursor:pointer;background:rgba(108,99,255,.03)"
+         onclick="PSFeedback.showSuggestModal({ vertical: '${v}' })">
+      <div class="tc-icon" style="font-size:2rem">💡</div>
+      <div class="tc-name" style="color:var(--accent2)">Proposer un outil</div>
+      <div class="tc-desc">Un outil vous manque ? Décrivez-le et nous le développerons si la demande est forte.</div>
+      <div class="tc-action" style="color:var(--accent2)">Proposer une idée →</div>
+    </div>
+  </div>`;
+
   // Tier sections
   let hasContent = false;
-  ['bronze','silver','gold'].forEach(tier => {
+  ['starter','pro','gold'].forEach(tier => {
     const group = byTier[tier];
     if (!group || !group.length) return;
     hasContent = true;
@@ -519,6 +601,190 @@ function maybeShowWelcome() {
   window.history.replaceState({}, '', '/dashboard.html');
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// PROJECT VIEW
+// ══════════════════════════════════════════════════════════════════════════════
+let _projFilterVertical = '';
+let _projFilterStatus   = 'active';
+
+async function renderProjectsView() {
+  // ── Feature gate: CRM requires Gold+ ──
+  const crmAccess = PS.canAccessFeature('crm_projects');
+  if (!crmAccess.allowed) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const navProj = document.getElementById('nav-projects');
+    if (navProj) navProj.classList.add('active');
+    document.getElementById('topbar-title').textContent = '📁 Mes projets';
+    document.getElementById('topbar-sub').textContent   = '';
+    document.getElementById('vtab-bar').innerHTML = '';
+    document.getElementById('quota-pill').style.display = 'none';
+    document.getElementById('content').innerHTML = `
+      <div class="empty-state">
+        <div class="big">🔒</div>
+        <h2>CRM & Gestion de projets</h2>
+        <p>Le CRM intégré est disponible à partir de l'offre <strong style="color:#c9a84c">Gold</strong>.<br>
+        Créez des projets, centralisez vos dossiers et utilisez les outils IA en contexte.</p>
+        <a href="/tarifs.html" class="btn-cta">Passer à Gold →</a>
+      </div>`;
+    return;
+  }
+
+  const params = new URLSearchParams(location.search);
+  _projFilterVertical = params.get('pv') || '';
+  _projFilterStatus   = params.get('ps') || 'active';
+
+  // Update nav active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navProj = document.getElementById('nav-projects');
+  if (navProj) navProj.classList.add('active');
+
+  // Header
+  document.getElementById('topbar-title').textContent = '📁 Mes projets';
+  document.getElementById('topbar-sub').textContent   = 'Gérez vos dossiers et utilisez les outils IA en contexte';
+  document.getElementById('vtab-bar').innerHTML = '';
+  document.getElementById('quota-pill').style.display = 'none';
+
+  const projects = await PSProjects.list({
+    vertical: _projFilterVertical || undefined,
+    status:   _projFilterStatus   || undefined,
+    limit: 100
+  });
+
+  // Build vertical options for filter
+  const subVerticals = PS.subs.map(s => s.vertical);
+  const vOpts = subVerticals.map(v => {
+    const m = VMETA[v] || {};
+    return `<option value="${v}" ${v === _projFilterVertical ? 'selected' : ''}>${m.icon || ''} ${m.label || v}</option>`;
+  }).join('');
+
+  let html = `
+    <div class="proj-view-header">
+      <h2>📁 ${projects.length} projet(s)</h2>
+      <div class="proj-filters">
+        <select onchange="filterProjects(this.value, '${_projFilterStatus}')">
+          <option value="">Toutes les verticales</option>
+          ${vOpts}
+        </select>
+        <select onchange="filterProjects('${_projFilterVertical}', this.value)">
+          <option value="active"    ${_projFilterStatus==='active'?'selected':''}>🟢 En cours</option>
+          <option value="completed" ${_projFilterStatus==='completed'?'selected':''}>🔵 Terminés</option>
+          <option value="archived"  ${_projFilterStatus==='archived'?'selected':''}>⚪ Archivés</option>
+          <option value=""           ${!_projFilterStatus?'selected':''}>Tous</option>
+        </select>
+      </div>
+    </div>
+    <div class="proj-grid">`;
+
+  // New project card
+  html += `
+    <div class="proj-card new-proj-card" onclick="showCreateProjectModal()">
+      <div class="new-proj-plus">+</div>
+      <div class="new-proj-label">Nouveau projet</div>
+    </div>`;
+
+  // Project cards
+  projects.forEach(p => {
+    const m    = VMETA[p.vertical] || {};
+    const sm   = PSProjects.STATUS_META[p.status] || {};
+    const date = new Date(p.updated_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+
+    // Extract key data preview
+    const dataEntries = Object.entries(p.data || {}).filter(([,v]) => v).slice(0, 3);
+    const preview = dataEntries.map(([k,v]) => `<strong>${PSProjects.escapeHtml(k)}</strong>: ${PSProjects.escapeHtml(String(v).slice(0,40))}`).join(' · ');
+
+    html += `
+      <a href="/project.html?id=${p.id}" class="proj-card" style="border-color:${m.border || 'var(--border)'}">
+        <div class="proj-card-head">
+          <span class="proj-card-icon">${m.icon || '📁'}</span>
+          <span class="proj-card-name">${PSProjects.escapeHtml(p.name)}</span>
+          <span class="proj-card-status" style="background:${sm.color}22;color:${sm.color}">${sm.label || p.status}</span>
+        </div>
+        <div class="proj-card-meta">${preview || '<em style="opacity:.5">Aucune info renseignée</em>'}</div>
+        <div class="proj-card-tags">
+          <span class="proj-card-tag" style="background:${m.bg || 'rgba(108,99,255,.1)'};color:${m.color || 'var(--accent2)'}">${m.label || p.vertical}</span>
+        </div>
+        <div class="proj-card-date">Mis à jour le ${date}</div>
+      </a>`;
+  });
+
+  html += '</div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+function filterProjects(vertical, status) {
+  const params = new URLSearchParams();
+  params.set('view', 'projects');
+  if (vertical) params.set('pv', vertical);
+  if (status)   params.set('ps', status);
+  history.replaceState({}, '', '/dashboard.html?' + params.toString());
+  renderProjectsView();
+}
+
+function showCreateProjectModal() {
+  const subVerticals = PS.subs.map(s => s.vertical);
+  const vOpts = subVerticals.map(v => {
+    const m = VMETA[v] || {};
+    return `<option value="${v}">${m.icon || ''} ${m.label || v}</option>`;
+  }).join('');
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3>📁 Nouveau projet</h3>
+      <input type="text" class="modal-input" id="new-proj-name" placeholder="Nom du projet (ex: Appartement T3 Paris 11)" autofocus/>
+      <select class="modal-input" id="new-proj-vertical">${vOpts}</select>
+      <div class="modal-btns">
+        <button class="modal-btn modal-btn-cancel" onclick="this.closest('.modal-overlay').remove()">Annuler</button>
+        <button class="modal-btn modal-btn-primary" onclick="createProject()">Créer →</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(() => document.getElementById('new-proj-name')?.focus(), 50);
+}
+
+async function createProject() {
+  const name     = document.getElementById('new-proj-name')?.value?.trim();
+  const vertical = document.getElementById('new-proj-vertical')?.value;
+  if (!name) { alert('Veuillez saisir un nom de projet.'); return; }
+  if (!vertical) { alert('Veuillez sélectionner une verticale.'); return; }
+
+  const proj = await PSProjects.create({ vertical, name });
+  document.querySelector('.modal-overlay')?.remove();
+  if (proj) {
+    location.href = `/project.html?id=${proj.id}`;
+  } else {
+    alert('Erreur lors de la création du projet.');
+  }
+}
+
+// ── Project count badge in sidebar ───────────────────────────────────────────
+async function updateProjectBadge() {
+  const crmAccess = PS.canAccessFeature('crm_projects');
+  const lockBadge = document.getElementById('proj-lock-badge');
+  const countBadge = document.getElementById('proj-count-badge');
+
+  if (!crmAccess.allowed) {
+    // Show lock, hide count
+    if (lockBadge) lockBadge.style.display = 'inline';
+    if (countBadge) countBadge.style.display = 'none';
+    return;
+  }
+
+  // Hide lock
+  if (lockBadge) lockBadge.style.display = 'none';
+
+  try {
+    const counts = await PSProjects.countByVertical();
+    const total  = Object.values(counts).reduce((s, n) => s + n, 0);
+    if (countBadge && total > 0) {
+      countBadge.textContent = total;
+      countBadge.style.display = 'inline';
+    }
+  } catch (e) {}
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────
 async function init() {
   const ok = await PS.requireAuth('/dashboard.html');
@@ -526,41 +792,39 @@ async function init() {
 
   document.getElementById('sb-email').textContent = PS.session.user.email;
 
-  // Show profile completion banner (non-blocking — doesn't prevent tool access)
+  // Profile completion banner
   if (!PS.isProfileComplete()) {
     const banner = document.createElement('div');
     banner.style.cssText = 'background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);border-radius:12px;padding:14px 20px;margin:0 0 20px;display:flex;align-items:center;justify-content:space-between;font-size:.875rem;';
     banner.innerHTML = '<span>👋 Complétez votre profil pour une meilleure expérience.</span><a href="/complete-profile.html?redirect=/dashboard.html" style="background:#6c63ff;color:#fff;padding:6px 16px;border-radius:7px;text-decoration:none;font-weight:600;font-size:.8rem;white-space:nowrap;margin-left:12px;">Compléter →</a>';
-    const main = document.querySelector('.main-content') || document.querySelector('.content') || document.body.querySelector('.dashboard-content');
+    const main = document.querySelector('.content');
     if (main) main.prepend(banner);
-    else document.body.insertBefore(banner, document.body.firstChild);
   }
 
-  console.log('[Dashboard] subs:', PS.subs.length, PS.subs.map(s => s.vertical + ':' + s.tier));
+  // Check if projects view is requested
+  const view = new URLSearchParams(location.search).get('view');
 
   if (!PS.hasAnySubscription()) {
-    console.warn('[Dashboard] No active subscriptions found');
     renderNoSub();
     return;
   }
 
-  // Load tools from database (replaces hardcoded ALL_TOOLS)
+  // Load tools
   const catalog = await ToolCatalog.load();
-  console.log('[Dashboard] Catalog source:', catalog.source, '| tools:', catalog.tools ? Object.keys(catalog.tools).length + ' verticals' : 'null');
-  if (catalog.source === 'db' && catalog.tools) {
-    ALL_TOOLS = catalog.tools;
-  } else if (catalog.source === 'cache' && catalog.tools) {
-    ALL_TOOLS = catalog.tools;
-  }
+  if (catalog.tools) ALL_TOOLS = catalog.tools;
 
   renderSidebar();
-  renderTabBar();
+  updateProjectBadge();
 
-  // Default to first subscribed vertical (or ?v= param)
-  const urlV = new URLSearchParams(window.location.search).get('v');
-  const firstV = (urlV && PS.subForVertical(urlV)) ? urlV : PS.subs[0]?.vertical;
-  await switchVertical(firstV);
-  maybeShowWelcome();
+  if (view === 'projects') {
+    await renderProjectsView();
+  } else {
+    renderTabBar();
+    const urlV  = new URLSearchParams(location.search).get('v');
+    const firstV = (urlV && PS.subForVertical(urlV)) ? urlV : PS.subs[0]?.vertical;
+    await switchVertical(firstV);
+    maybeShowWelcome();
+  }
 }
 
 init();

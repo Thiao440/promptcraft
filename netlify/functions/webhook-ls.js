@@ -203,7 +203,7 @@ async function handleSubscriptionCreated(payload, supabase) {
   // Resolve tier from custom data (primary) or variant map (fallback)
   const customTier     = payload.meta?.custom_data?.tier?.toLowerCase();
   const customVertical = payload.meta?.custom_data?.vertical?.toLowerCase() || null;
-  const tier = customTier || TIER_VARIANT_MAP[variantId] || 'bronze';
+  const tier = customTier || TIER_VARIANT_MAP[variantId] || 'starter';
 
   // Period end
   const periodEnd = attrs.renews_at

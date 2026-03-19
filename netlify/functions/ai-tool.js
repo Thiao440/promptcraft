@@ -36,10 +36,23 @@ const SUPABASE_URL         = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const ANTHROPIC_API_KEY    = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_API_URL    = 'https://api.anthropic.com/v1/messages';
-const CLAUDE_MODEL         = process.env.CLAUDE_MODEL || 'claude-3-5-haiku-20241022';
+const CLAUDE_MODEL         = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
 const DEFAULT_MAX_TOKENS   = parseInt(process.env.DEFAULT_MAX_TOKENS, 10) || 800;
-const TIER_QUOTA           = { bronze: 50, silver: 150, gold: Infinity };
-const TIER_ORDER           = { bronze: 1, silver: 2, gold: 3 };
+const TIER_QUOTA           = { starter: 50, pro: 150, gold: Infinity, team: Infinity };
+const TIER_ORDER           = { starter: 1, pro: 2, gold: 3, team: 4 };
+
+// ── Cost estimation (USD per million tokens) ─────────────────────────────────
+// Pricing as of 2025 for claude-haiku-4-5. Update when model changes.
+const COST_PER_M = {
+  'claude-haiku-4-5-20251001':    { input: 0.80,  output: 4.00 },
+  'claude-sonnet-4-5-20241022':   { input: 3.00,  output: 15.00 },
+  'default':                      { input: 1.00,  output: 5.00 },
+};
+
+function estimateCost(model, inputTokens, outputTokens) {
+  const pricing = COST_PER_M[model] || COST_PER_M['default'];
+  return ((inputTokens * pricing.input) + (outputTokens * pricing.output)) / 1_000_000;
+}
 
 // ── Rate limiting (in-memory sliding window, per function instance) ──────────
 const RATE_LIMIT_WINDOW_MS = 60_000;  // 1 minute
@@ -92,8 +105,9 @@ function sanitizeInputs(inputs, inputSchema) {
 }
 
 // ── CORS headers ──────────────────────────────────────────────────────────────
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 const CORS = {
-  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Content-Type': 'application/json',
@@ -168,11 +182,7 @@ function callClaude(systemPrompt, userMessage, maxTokens, retries = 2) {
     const payload = JSON.stringify({
       model:      CLAUDE_MODEL,
       max_tokens: maxTokens,
-      system: [{
-        type: 'text',
-        text: systemPrompt,
-        cache_control: { type: 'ephemeral' },
-      }],
+      system: systemPrompt,
       messages: [{ role: 'user', content: userMessage }],
     });
 
@@ -182,7 +192,6 @@ function callClaude(systemPrompt, userMessage, maxTokens, retries = 2) {
         'Content-Type':      'application/json',
         'x-api-key':         ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
-        'anthropic-beta':    'prompt-caching-2024-07-31',
         'Content-Length':    Buffer.byteLength(payload),
       },
       timeout: 15_000, // 15s timeout
@@ -233,22 +242,23 @@ function callClaude(systemPrompt, userMessage, maxTokens, retries = 2) {
   });
 }
 
-// ── Helper: atomic quota increment via RPC ────────────────────────────────────
-async function incrementQuota(supabase, userId) {
+// ── Helper: atomic quota increment via RPC (per vertical) ─────────────────────
+async function incrementQuota(supabase, userId, vertical = '') {
   const month = new Date().toISOString().slice(0, 7);
   const { error } = await supabase.rpc('increment_usage_quota', {
-    p_user_id: userId,
-    p_month:   month,
+    p_user_id:  userId,
+    p_month:    month,
+    p_vertical: vertical,
   });
   if (error) {
     log('rpc_fallback', { reason: error.message });
     const { data: existing } = await supabase
       .from('usage_quotas').select('id, count')
-      .eq('user_id', userId).eq('month', month).single();
+      .eq('user_id', userId).eq('month', month).eq('vertical', vertical).single();
     if (existing) {
       await supabase.from('usage_quotas').update({ count: existing.count + 1 }).eq('id', existing.id);
     } else {
-      await supabase.from('usage_quotas').insert({ user_id: userId, month, count: 1 });
+      await supabase.from('usage_quotas').insert({ user_id: userId, month, vertical, count: 1 });
     }
   }
 }
@@ -267,9 +277,9 @@ exports.handler = async (event) => {
   }
 
   // ── 1. Parse body ──────────────────────────────────────────────────────────
-  let toolSlug, inputs;
+  let toolSlug, inputs, projectId;
   try {
-    ({ toolSlug, inputs } = JSON.parse(event.body || '{}'));
+    ({ toolSlug, inputs, projectId } = JSON.parse(event.body || '{}'));
   } catch {
     return fail(400, 'INVALID_JSON', 'Invalid JSON body');
   }
@@ -329,18 +339,22 @@ exports.handler = async (event) => {
     });
   }
 
-  // ── 7. Check monthly quota ─────────────────────────────────────────────────
-  const quota = TIER_QUOTA[sub.tier] ?? 50;
+  // ── 7. Check monthly quota (per vertical) ─────────────────────────────────
+  const quota = TIER_QUOTA[sub.tier];
+  if (quota === undefined) {
+    log('unknown_tier', { userId: user.id, tier: sub.tier, vertical: tool.vertical });
+    return fail(403, 'INVALID_TIER', `Tier inconnu: ${sub.tier}.`);
+  }
   if (quota !== Infinity) {
     const month = new Date().toISOString().slice(0, 7);
     const { data: usageRow } = await supabase
       .from('usage_quotas').select('count')
-      .eq('user_id', user.id).eq('month', month).single();
+      .eq('user_id', user.id).eq('month', month).eq('vertical', tool.vertical).single();
 
     const currentCount = usageRow?.count || 0;
     if (currentCount >= quota) {
       return fail(429, 'QUOTA_EXCEEDED', `Quota atteint (${currentCount}/${quota}).`, {
-        used: currentCount, limit: quota,
+        used: currentCount, limit: quota, vertical: tool.vertical,
       });
     }
   }
@@ -358,6 +372,14 @@ exports.handler = async (event) => {
   } catch (e) {
     const durationMs = Date.now() - startMs;
     log('generation_error', { userId: user.id, toolSlug, error: e.message, durationMs });
+    // Log failed request to DB for admin monitoring
+    try {
+      await supabase.from('tool_usage').insert({
+        user_id: user.id, tool_slug: toolSlug, input_data: inputs,
+        duration_ms: durationMs, vertical: tool.vertical, model: CLAUDE_MODEL,
+        request_status: 'error', output_text: `[ERROR] ${e.message}`.slice(0, 500),
+      });
+    } catch (_) { /* best-effort */ }
 
     if (e.message === 'CLAUDE_TIMEOUT') {
       return fail(504, 'GENERATION_TIMEOUT', "La génération a pris trop de temps. Réessayez.");
@@ -371,30 +393,49 @@ exports.handler = async (event) => {
     return fail(502, 'GENERATION_FAILED', 'Génération IA échouée. Réessayez dans un instant.');
   }
 
-  const durationMs   = Date.now() - startMs;
-  const outputText   = claudeResponse.content?.[0]?.text || '';
-  const usage        = claudeResponse.usage || {};
-  const tokensUsed   = (usage.input_tokens || 0) + (usage.output_tokens || 0);
-  const tokensSaved  = usage.cache_read_input_tokens || 0;
-  const cacheHit     = tokensSaved > 0;
+  const durationMs    = Date.now() - startMs;
+  const outputText    = claudeResponse.content?.[0]?.text || '';
+  const usage         = claudeResponse.usage || {};
+  const inputTokens   = usage.input_tokens || 0;
+  const outputTokens  = usage.output_tokens || 0;
+  const tokensUsed    = inputTokens + outputTokens;
+  const tokensSaved   = usage.cache_read_input_tokens || 0;
+  const cacheHit      = tokensSaved > 0;
+  const modelUsed     = CLAUDE_MODEL;
+  const estCost       = estimateCost(modelUsed, inputTokens, outputTokens);
 
   // ── 10. Log usage (structured) ──────────────────────────────────────────────
   log('generation_success', {
     userId: user.id, toolSlug, vertical: tool.vertical, tier: sub.tier,
     durationMs, tokensUsed, tokensSaved, cacheHit, maxTokens,
-    inputTokens: usage.input_tokens, outputTokens: usage.output_tokens,
+    inputTokens, outputTokens, model: modelUsed, estimated_cost_usd: estCost,
   });
 
-  await Promise.all([
-    supabase.from('tool_usage').insert({
-      user_id:     user.id,
-      tool_slug:   toolSlug,
-      input_data:  inputs,
-      output_text: outputText,
-      tokens_used: tokensUsed,
-      duration_ms: durationMs,
+  const usageRow = {
+    user_id:            user.id,
+    tool_slug:          toolSlug,
+    input_data:         inputs,
+    output_text:        outputText,
+    tokens_used:        tokensUsed,
+    input_tokens:       inputTokens,
+    output_tokens:      outputTokens,
+    duration_ms:        durationMs,
+    model:              modelUsed,
+    vertical:           tool.vertical,
+    estimated_cost_usd: estCost,
+    request_status:     'success',
+  };
+  // Link to project if provided (CRM)
+  if (projectId && typeof projectId === 'string' && projectId.length > 10) {
+    usageRow.project_id = projectId;
+  }
+
+  // Non-blocking: don't fail user response if logging/quota fails
+  await Promise.allSettled([
+    supabase.from('tool_usage').insert(usageRow).then(({ error }) => {
+      if (error) log('usage_log_error', { error: error.message, toolSlug });
     }),
-    incrementQuota(supabase, user.id),
+    incrementQuota(supabase, user.id, tool.vertical),
   ]);
 
   // ── 11. Return ──────────────────────────────────────────────────────────────

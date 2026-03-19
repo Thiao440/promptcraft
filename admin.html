@@ -8,6 +8,7 @@
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/ps-auth.js"></script>
+  <script src="/js/ps-lang.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,9 +24,10 @@
       --success: #22c55e;
       --danger:  #ef4444;
       --warning: #f59e0b;
-      --bronze:  #cd7f32;
-      --silver:  #a8a9ad;
+      --starter: #3b82f6;
+      --pro:     #a78bfa;
       --gold:    #c9a84c;
+      --team:    #10b981;
       --sidebar: 220px;
     }
 
@@ -873,6 +875,11 @@
         <span>Analytics</span>
       </button>
 
+      <button class="nav-item" data-section="costs">
+        <span class="ico">💰</span>
+        <span>Coûts & Usage</span>
+      </button>
+
       <button class="nav-item" data-section="settings">
         <span class="ico">⚙</span>
         <span>Paramètres</span>
@@ -1016,9 +1023,10 @@
             <input type="text" class="search-input" id="user-search" placeholder="Rechercher par email ou nom…"/>
             <select class="filter-select" id="user-filter-tier">
               <option value="">Tous les tiers</option>
-              <option value="bronze">Bronze</option>
-              <option value="silver">Silver</option>
+              <option value="starter">Starter</option>
+              <option value="pro">Pro</option>
               <option value="gold">Gold</option>
+              <option value="team">Team</option>
               <option value="none">Sans abonnement</option>
             </select>
             <select class="filter-select" id="user-filter-vertical">
@@ -1086,9 +1094,10 @@
             </select>
             <select class="filter-select" id="sub-filter-tier">
               <option value="">Tous les tiers</option>
-              <option value="bronze">Bronze</option>
-              <option value="silver">Silver</option>
+              <option value="starter">Starter</option>
+              <option value="pro">Pro</option>
               <option value="gold">Gold</option>
+              <option value="team">Team</option>
             </select>
             <select class="filter-select" id="sub-filter-vertical">
               <option value="">Tous les verticals</option>
@@ -1124,6 +1133,8 @@
             <table id="subs-table">
               <thead>
                 <tr>
+                  <th>Prénom Nom</th>
+                  <th>User ID</th>
                   <th>Email</th>
                   <th>Tier</th>
                   <th>Vertical</th>
@@ -1134,7 +1145,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td colspan="7" class="empty-state">Chargement…</td></tr>
+                <tr><td colspan="9" class="empty-state">Chargement…</td></tr>
               </tbody>
             </table>
           </div>
@@ -1177,7 +1188,7 @@
             <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px;">Ajouter un outil</div>
             <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 8px;">Template SQL INSERT :</div>
             <pre style="background: var(--surface2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 0.7rem; color: var(--accent2);"><code>INSERT INTO tools (slug, name, label, description, icon, vertical, min_tier, is_active, category)
-VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'bronze', true, 'category');</code></pre>
+VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'starter', true, 'category');</code></pre>
           </div>
 
           <div class="last-refresh" id="last-refresh-tools">Jamais actualisé</div>
@@ -1237,6 +1248,159 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'bro
         </div>
 
         <div class="last-refresh" id="last-refresh-analytics">Jamais actualisé</div>
+      </div>
+
+      <!-- 💰 Coûts & Usage -->
+      <div class="section" id="section-costs">
+
+        <!-- KPI row -->
+        <div class="card">
+          <div class="card-title">💰 Vue d'ensemble — Mois en cours</div>
+          <div class="card-row">
+            <div class="kpi">
+              <div class="kpi-num" id="cost-total-usd">–</div>
+              <div class="kpi-label">Coût total (USD)</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-num" id="cost-total-requests">–</div>
+              <div class="kpi-label">Requêtes AI</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-num" id="cost-total-tokens">–</div>
+              <div class="kpi-label">Tokens consommés</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-num" id="cost-avg-per-request">–</div>
+              <div class="kpi-label">Coût moyen / requête</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-num" id="cost-success-rate">–</div>
+              <div class="kpi-label">Taux de succès</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-num" id="cost-active-users">–</div>
+              <div class="kpi-label">Users actifs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cost per vertical -->
+        <div class="card">
+          <div class="card-title">📊 Coût par verticale (mois en cours)</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Verticale</th>
+                  <th>Requêtes</th>
+                  <th>Users</th>
+                  <th>Input tokens</th>
+                  <th>Output tokens</th>
+                  <th>Coût USD</th>
+                  <th>Durée moy.</th>
+                </tr>
+              </thead>
+              <tbody id="cost-vertical-body">
+                <tr><td colspan="7" class="empty-state">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Cost per tool -->
+        <div class="card">
+          <div class="card-title">🔧 Top outils par coût (mois en cours)</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Outil</th>
+                  <th>Verticale</th>
+                  <th>Requêtes</th>
+                  <th>Users</th>
+                  <th>Tokens</th>
+                  <th>Coût USD</th>
+                  <th>Coût moy./req</th>
+                </tr>
+              </thead>
+              <tbody id="cost-tool-body">
+                <tr><td colspan="7" class="empty-state">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top consuming users -->
+        <div class="card">
+          <div class="card-title">👤 Top utilisateurs par coût (mois en cours)</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Requêtes</th>
+                  <th>Tokens</th>
+                  <th>Coût USD</th>
+                  <th>Durée moy.</th>
+                  <th>Dernière requête</th>
+                </tr>
+              </thead>
+              <tbody id="cost-user-body">
+                <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Failed requests -->
+        <div class="card">
+          <div class="card-title">❌ Requêtes en erreur (récentes)</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>User</th>
+                  <th>Outil</th>
+                  <th>Verticale</th>
+                  <th>Modèle</th>
+                  <th>Erreur</th>
+                  <th>Durée</th>
+                </tr>
+              </thead>
+              <tbody id="cost-errors-body">
+                <tr><td colspan="7" class="empty-state">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Monthly trend -->
+        <div class="card">
+          <div class="card-title">📅 Historique mensuel</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mois</th>
+                  <th>Requêtes</th>
+                  <th>Users actifs</th>
+                  <th>Outils utilisés</th>
+                  <th>Tokens totaux</th>
+                  <th>Coût USD</th>
+                  <th>Coût moy./req</th>
+                  <th>Erreurs</th>
+                  <th>Succès %</th>
+                </tr>
+              </thead>
+              <tbody id="cost-monthly-body">
+                <tr><td colspan="9" class="empty-state">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="last-refresh" id="last-refresh-costs">Jamais actualisé</div>
       </div>
 
       <!-- ⚙ Paramètres -->
@@ -1381,9 +1545,10 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'bro
 
     // ── Utility: Color helpers ──
     const TIER_COLORS = {
-      bronze: { color: '#cd7f32', bg: 'rgba(205,127,50,.15)', border: 'rgba(205,127,50,.3)' },
-      silver: { color: '#a8a9ad', bg: 'rgba(168,169,173,.15)', border: 'rgba(168,169,173,.3)' },
-      gold:   { color: '#c9a84c', bg: 'rgba(201,168,76,.15)', border: 'rgba(201,168,76,.3)' },
+      starter: { color: '#3b82f6', bg: 'rgba(59,130,246,.15)', border: 'rgba(59,130,246,.3)' },
+      pro:     { color: '#a78bfa', bg: 'rgba(167,139,250,.15)', border: 'rgba(167,139,250,.3)' },
+      gold:    { color: '#c9a84c', bg: 'rgba(201,168,76,.15)', border: 'rgba(201,168,76,.3)' },
+      team:    { color: '#10b981', bg: 'rgba(16,185,129,.15)', border: 'rgba(16,185,129,.3)' },
     };
 
     const STATUS_COLORS = {
@@ -1745,10 +1910,9 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'bro
           const user = userMap[s.user_id];
           return `
             <tr>
-              <td>
-                <div style="font-weight:500">${user?.email || '<span style="color:var(--danger)">ID: ' + s.user_id.slice(0,8) + '…</span>'}</div>
-                <div style="font-size:.75rem;color:var(--muted)">${user?.full_name || ''}</div>
-              </td>
+              <td style="font-weight:500">${user?.full_name || '–'}</td>
+              <td><code style="font-size:.7rem;color:var(--muted)">${s.user_id.slice(0,8)}…</code></td>
+              <td>${user?.email || '–'}</td>
               <td>${tierBadge(s.tier)}</td>
               <td>${verticalBadge(s.vertical)}</td>
               <td>${statusBadge(s.status)}</td>
@@ -1757,7 +1921,7 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'bro
               <td>${formatDateShort(s.created_at)}</td>
             </tr>
           `;
-        }).join('') || '<tr><td colspan="7" class="empty-state">Aucun abonnement</td></tr>';
+        }).join('') || '<tr><td colspan="9" class="empty-state">Aucun abonnement</td></tr>';
 
         // Status summaries with colors
         const allCount = STATE.allSubs.length;
@@ -2008,6 +2172,129 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'bro
       }
     }
 
+    // ── Load Data: Costs & Usage ──
+    async function loadCosts() {
+      const sb = PS.supabase;
+      const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+      const fmtCost = (n) => n != null ? '$' + Number(n).toFixed(4) : '–';
+      const fmtTokens = (n) => formatNum(n || 0);
+
+      // Load user email map for display
+      let userMap = {};
+      try {
+        const { data: users } = await sb.from('profiles').select('id, email, full_name');
+        (users || []).forEach(u => { userMap[u.id] = u; });
+      } catch (_) {}
+
+      const vertMeta = PS.VERTICALS || {};
+
+      try {
+        // ── 1. Monthly summary (current month KPIs) ──
+        const { data: monthlySummary } = await sb.from('admin_monthly_summary').select('*').limit(12);
+        const currentMonth = (monthlySummary || [])[0];
+        if (currentMonth) {
+          document.getElementById('cost-total-usd').textContent = fmtCost(currentMonth.total_cost_usd);
+          document.getElementById('cost-total-requests').textContent = formatNum(currentMonth.total_requests);
+          document.getElementById('cost-total-tokens').textContent = fmtTokens(currentMonth.total_tokens);
+          document.getElementById('cost-avg-per-request').textContent = fmtCost(currentMonth.avg_cost_per_request);
+          document.getElementById('cost-success-rate').textContent = (currentMonth.success_rate_pct || 0) + '%';
+          document.getElementById('cost-active-users').textContent = formatNum(currentMonth.active_users);
+        }
+
+        // Monthly trend table
+        const monthlyBody = document.getElementById('cost-monthly-body');
+        monthlyBody.innerHTML = (monthlySummary || []).map(m => `
+          <tr>
+            <td>${m.month}</td>
+            <td>${formatNum(m.total_requests)}</td>
+            <td>${formatNum(m.active_users)}</td>
+            <td>${formatNum(m.tools_used)}</td>
+            <td>${fmtTokens(m.total_tokens)}</td>
+            <td style="font-weight:600;color:var(--warning)">${fmtCost(m.total_cost_usd)}</td>
+            <td>${fmtCost(m.avg_cost_per_request)}</td>
+            <td>${m.error_count || 0}</td>
+            <td>${m.success_rate_pct || 0}%</td>
+          </tr>
+        `).join('') || '<tr><td colspan="9" class="empty-state">Aucune donnée</td></tr>';
+
+        // ── 2. Cost per vertical ──
+        const currentMonthStr = new Date().toISOString().slice(0, 7) + '-01';
+        const { data: vertData } = await sb.from('admin_cost_per_vertical').select('*').gte('month', currentMonthStr);
+        const vertBody = document.getElementById('cost-vertical-body');
+        const sortedVert = (vertData || []).sort((a, b) => (b.total_cost_usd || 0) - (a.total_cost_usd || 0));
+        vertBody.innerHTML = sortedVert.map(v => {
+          const vm = vertMeta[v.vertical] || {};
+          return `<tr>
+            <td style="color:${vm.color || 'var(--text)'}">${vm.icon || ''} ${vm.label || v.vertical}</td>
+            <td>${formatNum(v.total_requests)}</td>
+            <td>${formatNum(v.unique_users)}</td>
+            <td>${fmtTokens(v.total_input_tokens)}</td>
+            <td>${fmtTokens(v.total_output_tokens)}</td>
+            <td style="font-weight:600;color:var(--warning)">${fmtCost(v.total_cost_usd)}</td>
+            <td>${v.avg_duration_ms || 0}ms</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="7" class="empty-state">Aucune donnée</td></tr>';
+
+        // ── 3. Cost per tool ──
+        const { data: toolData } = await sb.from('admin_cost_per_tool').select('*').gte('month', currentMonthStr).order('total_cost_usd', { ascending: false }).limit(20);
+        const toolBody = document.getElementById('cost-tool-body');
+        toolBody.innerHTML = (toolData || []).map(t => {
+          const vm = vertMeta[t.vertical] || {};
+          return `<tr>
+            <td>${esc(t.tool_slug)}</td>
+            <td style="color:${vm.color || 'var(--muted)'}">${vm.icon || ''} ${vm.label || t.vertical}</td>
+            <td>${formatNum(t.total_requests)}</td>
+            <td>${formatNum(t.unique_users)}</td>
+            <td>${fmtTokens(t.total_tokens)}</td>
+            <td style="font-weight:600;color:var(--warning)">${fmtCost(t.total_cost_usd)}</td>
+            <td>${fmtCost(t.avg_cost_per_request)}</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="7" class="empty-state">Aucune donnée</td></tr>';
+
+        // ── 4. Top users by cost ──
+        const { data: topUsers } = await sb.from('admin_top_users').select('*').limit(15);
+        const userBody = document.getElementById('cost-user-body');
+        userBody.innerHTML = (topUsers || []).map(u => {
+          const profile = userMap[u.user_id];
+          const label = profile?.email?.split('@')[0] || u.user_id.slice(0, 8);
+          const lastReq = u.last_request_at ? new Date(u.last_request_at).toLocaleString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '–';
+          return `<tr>
+            <td title="${profile?.email || ''}">${esc(label)}</td>
+            <td>${formatNum(u.request_count)}</td>
+            <td>${fmtTokens(u.total_tokens)}</td>
+            <td style="font-weight:600;color:var(--warning)">${fmtCost(u.total_cost_usd)}</td>
+            <td>${u.avg_duration_ms || 0}ms</td>
+            <td style="color:var(--muted)">${lastReq}</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="6" class="empty-state">Aucune donnée</td></tr>';
+
+        // ── 5. Failed requests ──
+        const { data: errors } = await sb.from('admin_failed_requests').select('*').limit(30);
+        const errorsBody = document.getElementById('cost-errors-body');
+        errorsBody.innerHTML = (errors || []).map(e => {
+          const profile = userMap[e.user_id];
+          const label = profile?.email?.split('@')[0] || e.user_id.slice(0, 8);
+          const date = new Date(e.created_at).toLocaleString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+          const errMsg = (e.error_message || '').replace('[ERROR] ', '').slice(0, 80);
+          const vm = vertMeta[e.vertical] || {};
+          return `<tr>
+            <td style="color:var(--muted)">${date}</td>
+            <td title="${profile?.email || ''}">${esc(label)}</td>
+            <td>${esc(e.tool_slug || '–')}</td>
+            <td style="color:${vm.color || 'var(--muted)'}">${vm.icon || ''} ${e.vertical || '–'}</td>
+            <td style="font-size:.75rem;color:var(--muted)">${esc(e.model || '–')}</td>
+            <td style="color:var(--danger);font-size:.78rem">${esc(errMsg)}</td>
+            <td>${e.duration_ms || 0}ms</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="7" class="empty-state">Aucune erreur récente 🎉</td></tr>';
+
+        document.getElementById('last-refresh-costs').textContent = 'Actualisé ' + new Date().toLocaleTimeString('fr-FR');
+      } catch (e) {
+        console.error('Costs load error:', e);
+        document.getElementById('cost-monthly-body').innerHTML = `<tr><td colspan="9" class="empty-state" style="color:var(--danger)">Erreur: ${e.message}. Avez-vous exécuté sql/usage-tracking-upgrade.sql ?</td></tr>`;
+      }
+    }
+
     // ── Load Data: Settings ──
     async function loadSettings() {
       const sb = PS.supabase;
@@ -2084,6 +2371,7 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'bro
           case 'subscriptions': await loadSubscriptions(); break;
           case 'tools': await loadTools(); break;
           case 'analytics': await loadAnalytics(); break;
+          case 'costs': await loadCosts(); break;
           case 'settings': await loadSettings(); break;
         }
       } catch (e) {

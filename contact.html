@@ -168,6 +168,7 @@ footer p{font-size:11px;color:var(--muted);}
 <meta name="twitter:image" content="https://theprompt.studio/assets/images/og-image.png">
 <link rel="manifest" href="manifest.json">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ContactPage","name":"Contact — The Prompt Studio","url":"https://theprompt.studio/contact.html","description":"Contactez The Prompt Studio pour un diagnostic IA gratuit","mainEntity":{"@type":"Organization","name":"The Prompt Studio","email":"contact@theprompt.studio","url":"https://theprompt.studio"}}</script>
+<script src="/js/ps-lang.js"></script>
 </head>
 <body>
 
@@ -396,28 +397,6 @@ function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b
     entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
   }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
   document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
-})();
-</script>
-<script>
-// ── LANG SWITCHER ──
-var FLAGS = {fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',ar:'🇸🇦'};
-function setLang(lang) {
-  document.documentElement.setAttribute('data-lang', lang);
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-  var btn = document.getElementById('lang-current');
-  if (btn) btn.textContent = FLAGS[lang] + ' \u25be';
-  document.querySelectorAll('.ps-lang-opt').forEach(function(o) {
-    var fn = o.getAttribute('onclick') || '';
-    o.setAttribute('aria-current', fn.indexOf("'" + lang + "'") !== -1 ? 'true' : 'false');
-  });
-  try { localStorage.setItem('ps_lang', lang); } catch(e) {}
-}
-(function() {
-  try {
-    var saved = localStorage.getItem('ps_lang');
-    if (saved && ['fr','en','es','pt','ar'].indexOf(saved) !== -1) setLang(saved);
-  } catch(e) {}
 })();
 </script>
 <script src="/js/ps-auth.js"></script>

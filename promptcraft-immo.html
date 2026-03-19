@@ -910,6 +910,7 @@ body.en .en-content { display: block; }
 "availability":"https://schema.org/InStock",
 "seller":{"@type":"Organization","name":"The Prompt Studio"}}}
 </script>
+<script src="/js/ps-lang.js"></script>
 </head>
 <body>
 
@@ -1383,14 +1384,6 @@ body.en .en-content { display: block; }
 </footer>
 
 <script>
-// LANG SWITCHER
-function setLang(lang) {
-  document.body.className = lang === 'en' ? 'en' : '';
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  const _lb = document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`); if(_lb) _lb.classList.add('active');
-  document.documentElement.lang = lang;
-}
-
 // FAQ TOGGLE
 document.querySelectorAll('.faq-q').forEach(q => {
   q.addEventListener('click', () => {
@@ -1435,7 +1428,6 @@ function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b
 
 <script>
 function psSetLang(l){ setLang(l); var b=document.getElementById('ps-lang-btn'); if(b) b.innerHTML=(l==='en'?'🇬🇧 EN':'🇫🇷 FR')+' ▾'; document.querySelectorAll('.ps-lang-opt').forEach(function(o){o.classList.toggle('active',o.getAttribute('onclick')==="psSetLang('"+l+"')");});}
-(function(){ try{ var l=localStorage.getItem('ps_lang'); if(l&&l!=='fr') psSetLang(l); }catch(e){} })();
 </script>
 </body>
 </html>

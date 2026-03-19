@@ -16,10 +16,20 @@ const SUPABASE_URL         = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const ANTHROPIC_API_KEY    = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_API_URL    = 'https://api.anthropic.com/v1/messages';
-const CLAUDE_MODEL         = process.env.CLAUDE_MODEL || 'claude-3-5-haiku-20241022';
+const CLAUDE_MODEL         = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
 const MAX_HISTORY_TURNS    = 24;
 const MAX_MSG_CHARS        = 4000;
-const TIER_QUOTA           = { bronze: 50, silver: 150, gold: Infinity };
+const TIER_QUOTA           = { starter: 50, pro: 150, gold: Infinity, team: Infinity };
+
+// Cost estimation (USD per million tokens)
+const COST_PER_M = {
+  'claude-haiku-4-5-20251001':  { input: 0.80,  output: 4.00 },
+  'default':                    { input: 1.00,  output: 5.00 },
+};
+function estimateCost(model, inTok, outTok) {
+  const p = COST_PER_M[model] || COST_PER_M['default'];
+  return ((inTok * p.input) + (outTok * p.output)) / 1_000_000;
+}
 
 // Free mode config
 const FREE_MAX_TOKENS    = 300;
@@ -60,8 +70,9 @@ function log(event, data = {}) {
   console.log(JSON.stringify({ fn: 'ai-chat', event, ts: new Date().toISOString(), ...data }));
 }
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 const CORS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Content-Type': 'application/json',
@@ -74,7 +85,7 @@ const fail = (code, errorCode, message, details = {}) => ({
 
 function buildSystemPrompt(vertical, tier) {
   const base = BOT_SYSTEM[vertical] || FREE_SYSTEM_PROMPT;
-  const tierLabel = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' }[tier] || '';
+  const tierLabel = { starter: 'Starter', pro: 'Pro', gold: 'Gold', team: 'Team' }[tier] || '';
   const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   return `${base}\n\n---\nDate : ${today}.${tierLabel ? ` Abonnement ${tierLabel}.` : ''} Ton conversationnel et professionnel.`;
 }
@@ -116,13 +127,13 @@ function callClaude(systemPrompt, messages, maxTokens, retries = 2) {
   });
 }
 
-async function incrementQuota(supabase, userId) {
+async function incrementQuota(supabase, userId, vertical = '') {
   const month = new Date().toISOString().slice(0, 7);
-  const { error } = await supabase.rpc('increment_usage_quota', { p_user_id: userId, p_month: month });
+  const { error } = await supabase.rpc('increment_usage_quota', { p_user_id: userId, p_month: month, p_vertical: vertical });
   if (error) {
-    const { data: ex } = await supabase.from('usage_quotas').select('id, count').eq('user_id', userId).eq('month', month).single();
+    const { data: ex } = await supabase.from('usage_quotas').select('id, count').eq('user_id', userId).eq('month', month).eq('vertical', vertical).single();
     if (ex) await supabase.from('usage_quotas').update({ count: ex.count + 1 }).eq('id', ex.id);
-    else await supabase.from('usage_quotas').insert({ user_id: userId, month, count: 1 });
+    else await supabase.from('usage_quotas').insert({ user_id: userId, month, vertical, count: 1 });
   }
 }
 
@@ -171,9 +182,19 @@ exports.handler = async (event) => {
       return fail(502, 'GENERATION_FAILED', 'Erreur. Réessayez.');
     }
     const reply = cr.content?.[0]?.text || '';
-    const tokensUsed = (cr.usage?.input_tokens || 0) + (cr.usage?.output_tokens || 0);
-    log('chat_free', { userId: user.id, durationMs: Date.now() - startMs, tokensUsed });
-    return ok({ reply, tokensUsed, durationMs: Date.now() - startMs, mode: 'free' });
+    const inTok = cr.usage?.input_tokens || 0;
+    const outTok = cr.usage?.output_tokens || 0;
+    const dMs = Date.now() - startMs;
+    log('chat_free', { userId: user.id, durationMs: dMs, tokensUsed: inTok + outTok });
+    // Log to DB (best-effort, don't block response)
+    supabase.from('tool_usage').insert({
+      user_id: user.id, tool_slug: 'assistant-free', vertical: 'free',
+      input_data: { message: sanitized.slice(0, 200) }, output_text: reply,
+      tokens_used: inTok + outTok, input_tokens: inTok, output_tokens: outTok,
+      duration_ms: dMs, model: CLAUDE_MODEL, estimated_cost_usd: estimateCost(CLAUDE_MODEL, inTok, outTok),
+      request_status: 'success',
+    }).then(() => {}).catch(() => {});
+    return ok({ reply, tokensUsed: inTok + outTok, durationMs: dMs, mode: 'free' });
   }
 
   // ── PAID MODE: subscription + quota check ───────────────────────────────
@@ -186,9 +207,10 @@ exports.handler = async (event) => {
   let currentCount = 0;
   if (quota !== Infinity) {
     const month = new Date().toISOString().slice(0, 7);
-    const { data: uRow } = await supabase.from('usage_quotas').select('count').eq('user_id', user.id).eq('month', month).single();
+    const { data: uRow } = await supabase.from('usage_quotas').select('count')
+      .eq('user_id', user.id).eq('month', month).eq('vertical', vertical).single();
     currentCount = uRow?.count || 0;
-    if (currentCount >= quota) return fail(429, 'QUOTA_EXCEEDED', 'Quota atteint.', { used: currentCount, limit: quota });
+    if (currentCount >= quota) return fail(429, 'QUOTA_EXCEEDED', 'Quota atteint.', { used: currentCount, limit: quota, vertical });
   }
 
   const startMs = Date.now();
@@ -201,10 +223,23 @@ exports.handler = async (event) => {
 
   const durationMs = Date.now() - startMs;
   const reply = cr.content?.[0]?.text || '';
-  const tokensUsed = (cr.usage?.input_tokens || 0) + (cr.usage?.output_tokens || 0);
+  const inTok = cr.usage?.input_tokens || 0;
+  const outTok = cr.usage?.output_tokens || 0;
+  const tokensUsed = inTok + outTok;
+  const costUsd = estimateCost(CLAUDE_MODEL, inTok, outTok);
 
-  log('chat_paid', { userId: user.id, vertical, tier: sub.tier, durationMs, tokensUsed });
-  await incrementQuota(supabase, user.id);
+  log('chat_paid', { userId: user.id, vertical, tier: sub.tier, durationMs, tokensUsed, costUsd });
+
+  await Promise.all([
+    incrementQuota(supabase, user.id, vertical),
+    supabase.from('tool_usage').insert({
+      user_id: user.id, tool_slug: `assistant-${vertical}`, vertical,
+      input_data: { message: sanitized.slice(0, 200) }, output_text: reply,
+      tokens_used: tokensUsed, input_tokens: inTok, output_tokens: outTok,
+      duration_ms: durationMs, model: CLAUDE_MODEL, estimated_cost_usd: costUsd,
+      request_status: 'success',
+    }),
+  ]);
 
   return ok({
     reply, tokensUsed, durationMs, mode: 'paid',

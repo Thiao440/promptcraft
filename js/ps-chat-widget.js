@@ -199,17 +199,40 @@
     var container = document.getElementById('ps-w-mode-tabs');
     var verts = PS.subscribedVerticals();
 
-    var tabs = '<button class="ps-w-mtab active" data-v="free" style="--tab-color:#6c63ff">✦ Studio AI <span class="ps-w-badge free">Gratuit</span></button>';
+    // Check feature gates
+    var canGeneric    = PS.canAccessFeature ? PS.canAccessFeature('chatbot_generic').allowed : true;
+    var canSpecialist = function(v) { return PS.canAccessFeature ? PS.canAccessFeature('chatbot_specialist', v).allowed : true; };
+
+    var tabs = '<button class="ps-w-mtab' + (canGeneric ? ' active' : '') + '" data-v="free" style="--tab-color:#6c63ff">'
+      + '✦ Studio AI <span class="ps-w-badge free">' + (canGeneric ? 'Gratuit' : '🔒 Pro') + '</span></button>';
     verts.forEach(function(v) {
       var b = BOT_META[v] || { emoji: '?', name: v, color: '#6c63ff' };
-      tabs += '<button class="ps-w-mtab" data-v="' + v + '" style="--tab-color:' + b.color + '">' + b.emoji + ' ' + b.name + ' <span class="ps-w-badge paid">Pro</span></button>';
+      var locked = !canSpecialist(v);
+      tabs += '<button class="ps-w-mtab' + (locked ? ' locked' : '') + '" data-v="' + v + '" style="--tab-color:' + b.color + '">'
+        + b.emoji + ' ' + b.name + ' <span class="ps-w-badge paid">' + (locked ? '🔒 Pro' : 'Pro') + '</span></button>';
     });
     container.innerHTML = tabs;
+
+    // Default to free if generic is accessible, otherwise show first tab
+    if (canGeneric) {
+      _vertical = 'free';
+    }
 
     container.querySelectorAll('.ps-w-mtab').forEach(function(tab) {
       tab.addEventListener('click', function() {
         var v = this.getAttribute('data-v');
         if (v === _vertical) return;
+
+        // Check gate when switching
+        if (v === 'free' && !canGeneric) {
+          _showChatUpgrade('chatbot IA générique', 'Pro');
+          return;
+        }
+        if (v !== 'free' && !canSpecialist(v)) {
+          _showChatUpgrade('chatbot spécialiste', 'Pro');
+          return;
+        }
+
         _vertical = v;
         _messages = [];
         container.querySelectorAll('.ps-w-mtab').forEach(function(t) { t.classList.remove('active'); });
@@ -221,14 +244,24 @@
     });
   }
 
+  function _showChatUpgrade(featureName, requiredTier) {
+    var body = document.getElementById('ps-w-body');
+    if (!body) return;
+    body.innerHTML = '<div style="text-align:center;padding:32px 16px;color:#7c8098;font-size:.85rem;">'
+      + '<div style="font-size:2rem;margin-bottom:12px">🔒</div>'
+      + '<strong style="color:#e8eaf0">Le ' + featureName + ' est disponible à partir de ' + requiredTier + '</strong><br><br>'
+      + '<a href="/tarifs.html" style="background:#6c63ff;color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.82rem">Voir les offres →</a>'
+      + '</div>';
+  }
+
   function updateQuotaBar() {
     var el = document.getElementById('ps-w-quota');
     if (_vertical === 'free') { el.classList.remove('show'); return; }
     var sub = PS.subForVertical(_vertical);
     if (!sub) { el.classList.remove('show'); return; }
-    var limit = { bronze: 50, silver: 150, gold: Infinity }[sub.tier] || 50;
+    var limit = { starter: 50, pro: 150, gold: Infinity, team: Infinity }[sub.tier] || 50;
     if (limit === Infinity) {
-      document.getElementById('ps-w-quota-text').textContent = 'Gold · Illimité';
+      document.getElementById('ps-w-quota-text').textContent = (sub.tier === 'team' ? 'Team' : 'Gold') + ' · Illimité';
       document.getElementById('ps-w-quota-fill').style.width = '5%';
       document.getElementById('ps-w-quota-fill').style.background = '#22c55e';
     } else {
@@ -325,6 +358,16 @@
     var input = document.getElementById('ps-w-input');
     var text = input.value.trim();
     if (!text) return;
+
+    // Feature gate check before sending
+    if (PS.canAccessFeature) {
+      var featureName = _vertical === 'free' ? 'chatbot_generic' : 'chatbot_specialist';
+      var access = PS.canAccessFeature(featureName, _vertical === 'free' ? undefined : _vertical);
+      if (!access.allowed) {
+        _showChatUpgrade(featureName === 'chatbot_generic' ? 'chatbot IA générique' : 'chatbot spécialiste', 'Pro');
+        return;
+      }
+    }
 
     input.value = ''; input.style.height = 'auto';
     _messages.push({ role: 'user', content: text });
