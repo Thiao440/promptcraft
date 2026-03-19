@@ -138,6 +138,59 @@ section{padding:96px 24px;position:relative;z-index:1;}
   font-weight:300;line-height:1.12;margin-bottom:20px;}
 .section-sub{font-size:16px;color:var(--muted);max-width:600px;line-height:1.65;margin-bottom:60px;}
 
+/* ── DEMO SECTION ── */
+.demo-container{max-width:900px;margin:0 auto;}
+.demo-video-wrap{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:#0a0c10;position:relative;aspect-ratio:16/9;box-shadow:0 32px 80px rgba(0,0,0,.4);}
+.demo-placeholder{width:100%;height:100%;position:relative;display:flex;align-items:stretch;}
+.demo-mockup{display:flex;width:100%;height:100%;font-family:'Outfit',sans-serif;font-size:11px;color:var(--cream);overflow:hidden;}
+.demo-sidebar{width:160px;background:#111009;border-right:1px solid var(--border);padding:14px 0;flex-shrink:0;display:flex;flex-direction:column;}
+.demo-sb-logo{padding:8px 14px 16px;font-weight:700;font-size:13px;color:var(--cream);}
+.demo-sb-logo span{color:var(--gold);font-style:italic;}
+.demo-sb-item{padding:7px 14px;color:var(--muted);font-size:10px;transition:all .2s;cursor:default;}
+.demo-sb-item.active{color:var(--gold);background:rgba(201,168,76,.06);border-right:2px solid var(--gold);}
+.demo-main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.demo-topbar{padding:10px 16px;background:#111009;border-bottom:1px solid var(--border);font-weight:600;font-size:11px;color:var(--gold);}
+.demo-body{flex:1;padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;overflow:hidden;}
+.demo-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:10px;overflow:hidden;}
+.demo-card-title{font-size:10px;font-weight:700;color:var(--cream);margin-bottom:8px;display:flex;align-items:center;gap:4px;}
+.demo-field{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:9px;}
+.demo-field span:first-child{color:var(--muted);}
+.demo-field span:last-child{color:var(--cream);font-weight:500;}
+.demo-tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.demo-tool{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:8px;text-align:center;cursor:default;transition:all .2s;}
+.demo-tool.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.06);}
+.demo-result{grid-column:1/-1;}
+.demo-typing{font-size:9px;line-height:1.5;color:var(--muted);position:relative;}
+.demo-cursor{display:inline-block;width:6px;height:12px;background:var(--gold);animation:blink 1s step-end infinite;vertical-align:middle;margin-right:2px;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* Staggered animation for cards */
+.demo-card-animate{opacity:0;transform:translateY(10px);animation:demoFadeIn .6s ease forwards;}
+.delay-1{animation-delay:.3s;}
+.delay-2{animation-delay:.6s;}
+@keyframes demoFadeIn{to{opacity:1;transform:translateY(0);}}
+
+/* Play button overlay */
+.demo-play-btn{position:absolute;bottom:16px;right:16px;background:rgba(201,168,76,.9);color:#0c0b09;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;z-index:2;display:flex;align-items:center;gap:6px;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.demo-play-btn:hover{background:var(--gold);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4);}
+
+/* Feature bullets under demo */
+.demo-features{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;}
+.demo-feat{display:flex;gap:12px;align-items:flex-start;}
+.demo-feat-icon{font-size:1.6rem;flex-shrink:0;margin-top:2px;}
+.demo-feat strong{font-size:14px;display:block;margin-bottom:2px;}
+.demo-feat p{font-size:12px;color:var(--muted);line-height:1.4;margin:0;}
+@media(max-width:768px){
+  .demo-features{grid-template-columns:1fr;gap:16px;}
+  .demo-sidebar{width:100px;font-size:9px;}
+  .demo-sb-item{font-size:8px;padding:5px 8px;}
+  .demo-body{grid-template-columns:1fr;font-size:8px;}
+  .demo-play-btn{font-size:11px;padding:8px 14px;}
+}
+@media(max-width:480px){
+  .demo-sidebar{display:none;}
+}
+
 /* ── PRODUCT GRID ── */
 .prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;}
 .prod-card{background:var(--card);border:1px solid var(--border);border-radius:16px;
@@ -320,6 +373,106 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
 </section>
 
 <div class="hero-divider"></div>
+
+<!-- ── DEMO VIDEO / INTERACTIVE PREVIEW ── -->
+<section id="demo">
+  <div class="container">
+    <p class="section-label a1">
+      <span data-fr>Voir en action</span><span data-en>See it in action</span><span data-es>Ver en acción</span><span data-pt>Veja em ação</span><span data-ar>شاهد العمل</span>
+    </p>
+    <h2 class="section-title a2">
+      <span data-fr>Votre espace IA <em>professionnel</em></span>
+      <span data-en>Your professional <em>AI workspace</em></span>
+      <span data-es>Tu espacio IA <em>profesional</em></span>
+      <span data-pt>Seu espaço IA <em>profissional</em></span>
+      <span data-ar>مساحة عمل <em>الذكاء الاصطناعي</em> المهنية</span>
+    </h2>
+    <p class="section-sub a3">
+      <span data-fr>Gérez vos projets, générez du contenu en un clic, suivez votre activité. Tout dans un seul espace.</span>
+      <span data-en>Manage projects, generate content in one click, track your activity. All in one workspace.</span>
+      <span data-es>Gestiona proyectos, genera contenido en un clic, sigue tu actividad.</span>
+      <span data-pt>Gerencie projetos, gere conteúdo com um clique, acompanhe sua atividade.</span>
+      <span data-ar>أدر مشاريعك، أنشئ محتوى بنقرة واحدة، تابع نشاطك.</span>
+    </p>
+
+    <!-- Video placeholder — replace src with your real video -->
+    <div class="demo-container a4">
+      <div class="demo-video-wrap" id="demo-video-wrap">
+        <!-- Replace this with: <video>, <iframe>, or Loom embed -->
+        <div class="demo-placeholder" id="demo-placeholder">
+          <div class="demo-mockup">
+            <!-- Animated CRM mockup -->
+            <div class="demo-sidebar">
+              <div class="demo-sb-logo">PS <span>Studio</span></div>
+              <div class="demo-sb-item active">🏠 Immobilier</div>
+              <div class="demo-sb-item">📁 Mes projets</div>
+              <div class="demo-sb-item">👤 Mon compte</div>
+            </div>
+            <div class="demo-main">
+              <div class="demo-topbar">📁 Projet : Appartement T3 — Paris 11</div>
+              <div class="demo-body">
+                <div class="demo-card demo-card-animate">
+                  <div class="demo-card-title">📋 Informations du projet</div>
+                  <div class="demo-field"><span>Type</span><span>Appartement T3</span></div>
+                  <div class="demo-field"><span>Surface</span><span>72 m²</span></div>
+                  <div class="demo-field"><span>Prix</span><span>485 000 €</span></div>
+                  <div class="demo-field"><span>Ville</span><span>Paris 11e</span></div>
+                </div>
+                <div class="demo-card demo-card-animate delay-1">
+                  <div class="demo-card-title">⚡ Outils rapides</div>
+                  <div class="demo-tools-grid">
+                    <div class="demo-tool">🏡 Annonce</div>
+                    <div class="demo-tool active">📧 Email prospect</div>
+                    <div class="demo-tool">💶 Estimation</div>
+                    <div class="demo-tool">📊 Analyse marché</div>
+                  </div>
+                </div>
+                <div class="demo-card demo-card-animate delay-2 demo-result">
+                  <div class="demo-card-title">💬 Résultat généré</div>
+                  <div class="demo-typing">
+                    <span class="demo-cursor"></span>
+                    Objet : Appartement T3 lumineux — Paris 11e, 72m²<br><br>
+                    Bonjour M. Dupont,<br><br>
+                    Suite à votre recherche, j'ai le plaisir de vous présenter ce T3 de 72m² situé au cœur du 11e arrondissement…
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Play button overlay for future video -->
+          <button class="demo-play-btn" onclick="document.getElementById('demo-placeholder').innerHTML='<div style=&quot;text-align:center;padding:80px 20px;color:#7c8098&quot;><p style=&quot;font-size:1.2rem;margin-bottom:12px&quot;>🎬</p><p>Vidéo bientôt disponible</p><p style=&quot;font-size:.82rem;margin-top:8px&quot;>En attendant, <a href=/tarifs.html style=color:#c9a84c>essayez gratuitement →</a></p></div>'">
+            ▶ <span data-fr>Voir la démo</span><span data-en>Watch demo</span><span data-es>Ver demo</span><span data-pt>Ver demo</span><span data-ar>شاهد العرض</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature bullets under demo -->
+    <div class="demo-features a5">
+      <div class="demo-feat">
+        <span class="demo-feat-icon">📁</span>
+        <div>
+          <strong data-fr>CRM intégré</strong><strong data-en>Built-in CRM</strong><strong data-es>CRM integrado</strong><strong data-pt>CRM integrado</strong><strong data-ar>CRM مدمج</strong>
+          <p data-fr>Créez des projets, centralisez les infos de vos clients</p><p data-en>Create projects, centralize your client info</p><p data-es>Crea proyectos, centraliza la info de tus clientes</p><p data-pt>Crie projetos, centralize as infos dos seus clientes</p><p data-ar>أنشئ مشاريع، جمّع معلومات عملائك</p>
+        </div>
+      </div>
+      <div class="demo-feat">
+        <span class="demo-feat-icon">⚡</span>
+        <div>
+          <strong data-fr>Outils pré-remplis</strong><strong data-en>Pre-filled tools</strong><strong data-es>Herramientas pre-llenadas</strong><strong data-pt>Ferramentas pré-preenchidas</strong><strong data-ar>أدوات معبأة مسبقاً</strong>
+          <p data-fr>Les outils s'alimentent automatiquement depuis vos projets</p><p data-en>Tools auto-fill from your project data</p><p data-es>Las herramientas se rellenan desde tus proyectos</p><p data-pt>As ferramentas preenchem automaticamente desde seus projetos</p><p data-ar>الأدوات تملأ تلقائياً من بيانات مشاريعك</p>
+        </div>
+      </div>
+      <div class="demo-feat">
+        <span class="demo-feat-icon">💬</span>
+        <div>
+          <strong data-fr>Chatbot IA spécialiste</strong><strong data-en>Specialist AI chatbot</strong><strong data-es>Chatbot IA especialista</strong><strong data-pt>Chatbot IA especialista</strong><strong data-ar>شات بوت ذكاء اصطناعي متخصص</strong>
+          <p data-fr>Un assistant IA expert de votre métier, disponible 24/7</p><p data-en>An AI assistant expert in your field, available 24/7</p><p data-es>Un asistente IA experto en tu sector, 24/7</p><p data-pt>Um assistente IA especialista na sua área, 24/7</p><p data-ar>مساعد ذكاء اصطناعي خبير في مجالك، متاح 24/7</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ── PRODUCTS ── -->
 <section id="products">
