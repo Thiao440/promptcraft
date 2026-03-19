@@ -26,13 +26,18 @@
   var INTERSTITIAL_EVERY = 3;       // Show interstitial every N generations
   var _genCount = 0;
 
-  // Ad provider mode: 'internal' (upsell banners) or 'adsense' (Google AdSense)
-  // Switch to 'adsense' when you have an approved AdSense account
-  var AD_MODE = 'internal';
+  // Preview mode: force-show ads for specific emails (for testing/demo)
+  // Remove emails from this list to disable preview
+  var PREVIEW_EMAILS = ['mathieu.thiao@gmail.com'];
 
-  // ── Internal upsell ad creatives ───────────────────────────────────────────
+  // Ad mix: 'mixed' = rotate between upsell + external partner ads
+  // Options: 'internal' (upsell only), 'external' (partner only), 'mixed' (both)
+  var AD_MODE = 'mixed';
+
+  // ── Internal upsell creatives ──────────────────────────────────────────────
   var UPSELL_ADS = [
     {
+      type: 'upsell',
       title: 'Passez à Pro — sans publicité',
       text: 'Débloquez les chatbots IA, l\'export PDF et 150 générations/mois.',
       cta: 'Upgrade →',
@@ -40,6 +45,7 @@
       color: '#a78bfa',
     },
     {
+      type: 'upsell',
       title: 'Essayez Gold — CRM intégré',
       text: 'Gérez vos projets, accédez aux 10 outils, générations illimitées.',
       cta: 'Découvrir Gold →',
@@ -47,42 +53,118 @@
       color: '#c9a84c',
     },
     {
+      type: 'upsell',
       title: '0 pub, 100% productivité',
-      text: 'Les offres Pro et Gold suppriment toute publicité. Concentrez-vous sur l\'essentiel.',
+      text: 'Les offres Pro et Gold suppriment toute publicité.',
       cta: 'Voir les offres →',
       href: '/tarifs.html',
       color: '#6c63ff',
     },
     {
+      type: 'upsell',
       title: '💡 Vous utilisez souvent cet outil ?',
-      text: 'Avec Pro, accédez à 7 outils avancés et au chatbot IA spécialiste de votre métier.',
+      text: 'Avec Pro, accédez à 7 outils avancés et au chatbot IA spécialiste.',
       cta: 'Passer à Pro →',
       href: '/tarifs.html',
       color: '#ec4899',
     },
   ];
 
-  function _randomUpsell() {
-    return UPSELL_ADS[Math.floor(Math.random() * UPSELL_ADS.length)];
+  // ── External partner ads (affiliate / free tier partnerships) ──────────────
+  // These are real products with affiliate programs or free to promote.
+  // Replace href with your affiliate links when available.
+  var PARTNER_ADS = [
+    {
+      type: 'partner',
+      title: '⚡ Automatisez avec Make',
+      text: 'Connectez vos outils et automatisez vos workflows — 1000 opérations gratuites/mois.',
+      cta: 'Essayer Make →',
+      href: 'https://www.make.com/en/register?utm_source=theprompt.studio',
+      color: '#6d28d9',
+      logo: '⚡',
+    },
+    {
+      type: 'partner',
+      title: '📧 Email pro avec Brevo',
+      text: 'Envoyez 300 emails/jour gratuitement. Parfait pour vos campagnes.',
+      cta: 'Créer un compte →',
+      href: 'https://www.brevo.com/?utm_source=theprompt.studio',
+      color: '#0b4dda',
+      logo: '📧',
+    },
+    {
+      type: 'partner',
+      title: '🎨 Créez vos visuels avec Canva',
+      text: 'Complétez vos contenus IA avec des visuels professionnels gratuits.',
+      cta: 'Commencer gratis →',
+      href: 'https://www.canva.com/?utm_source=theprompt.studio',
+      color: '#00c4cc',
+      logo: '🎨',
+    },
+    {
+      type: 'partner',
+      title: '📊 CRM gratuit avec HubSpot',
+      text: 'Gérez vos contacts et prospects avec le CRM gratuit le plus populaire.',
+      cta: 'Essayer HubSpot →',
+      href: 'https://www.hubspot.com/products/crm?utm_source=theprompt.studio',
+      color: '#ff7a59',
+      logo: '📊',
+    },
+    {
+      type: 'partner',
+      title: '📝 Notion pour votre équipe',
+      text: 'Centralisez vos docs, wikis et projets. Gratuit pour les petites équipes.',
+      cta: 'Découvrir Notion →',
+      href: 'https://www.notion.so/?utm_source=theprompt.studio',
+      color: '#000000',
+      logo: '📝',
+    },
+    {
+      type: 'partner',
+      title: '🔒 Mots de passe sécurisés — Bitwarden',
+      text: 'Gestionnaire de mots de passe open source et gratuit pour votre équipe.',
+      cta: 'Sécuriser mes accès →',
+      href: 'https://bitwarden.com/?utm_source=theprompt.studio',
+      color: '#175ddc',
+      logo: '🔒',
+    },
+  ];
+
+  // ── Pick a random ad based on mode ─────────────────────────────────────────
+  function _pickAd() {
+    if (AD_MODE === 'internal') return UPSELL_ADS[Math.floor(Math.random() * UPSELL_ADS.length)];
+    if (AD_MODE === 'external') return PARTNER_ADS[Math.floor(Math.random() * PARTNER_ADS.length)];
+    // mixed: 40% upsell, 60% partner
+    var pool = Math.random() < 0.4 ? UPSELL_ADS : PARTNER_ADS;
+    return pool[Math.floor(Math.random() * pool.length)];
   }
 
   // ── Should we show ads? ────────────────────────────────────────────────────
   function _shouldShow() {
+    // Preview mode: force-show for test emails
+    if (typeof PS !== 'undefined' && PS.session) {
+      var email = PS.session.user?.email || '';
+      if (PREVIEW_EMAILS.indexOf(email) !== -1) return true;
+    }
     return typeof PS !== 'undefined' && PS.shouldShowAds && PS.shouldShowAds();
   }
 
   // ── Render helpers ─────────────────────────────────────────────────────────
 
-  /** Generate internal upsell banner HTML */
-  function _renderInternalBanner(size) {
-    var ad = _randomUpsell();
+  /** Generate a banner ad HTML (upsell or partner) */
+  function _renderBanner(size) {
+    var ad = _pickAd();
     var isSmall = size === 'small';
-    return '<div class="ps-ad ps-ad-banner' + (isSmall ? ' ps-ad-sm' : '') + '" style="--ad-color:' + ad.color + '">'
+    var isPartner = ad.type === 'partner';
+    var target = isPartner ? ' target="_blank" rel="noopener sponsored"' : '';
+    var logoHtml = ad.logo ? '<span class="ps-ad-logo">' + ad.logo + '</span>' : '';
+    return '<div class="ps-ad ps-ad-banner' + (isSmall ? ' ps-ad-sm' : '') + (isPartner ? ' ps-ad-partner' : '') + '" style="--ad-color:' + ad.color + '">'
+      + logoHtml
       + '<div class="ps-ad-content">'
       + '<div class="ps-ad-title">' + ad.title + '</div>'
       + (isSmall ? '' : '<div class="ps-ad-text">' + ad.text + '</div>')
       + '</div>'
-      + '<a href="' + ad.href + '" class="ps-ad-cta">' + ad.cta + '</a>'
+      + '<a href="' + ad.href + '" class="ps-ad-cta"' + target + '>' + ad.cta + '</a>'
       + '<button class="ps-ad-close" onclick="this.closest(\'.ps-ad\').remove()" title="Fermer">✕</button>'
       + '</div>';
   }
@@ -104,8 +186,11 @@
     style.id = 'ps-ads-css';
     style.textContent = [
       '.ps-ad { border: 1px solid rgba(108,99,255,.15); border-radius: 10px; background: rgba(108,99,255,.04); position: relative; overflow: hidden; }',
+      '.ps-ad-partner { background: rgba(255,255,255,.02); border-color: rgba(255,255,255,.08); }',
       '.ps-ad-banner { display: flex; align-items: center; gap: 14px; padding: 12px 18px; margin: 12px 0; }',
       '.ps-ad-sm { padding: 8px 14px; }',
+      '.ps-ad-logo { font-size: 1.6rem; flex-shrink: 0; width: 36px; text-align: center; }',
+      '.ps-ad-sm .ps-ad-logo { font-size: 1.2rem; width: 28px; }',
       '.ps-ad-content { flex: 1; min-width: 0; }',
       '.ps-ad-title { font-size: .85rem; font-weight: 700; color: var(--ad-color, #a78bfa); margin-bottom: 2px; }',
       '.ps-ad-sm .ps-ad-title { font-size: .78rem; margin: 0; }',
@@ -137,8 +222,7 @@
     _injectCSS();
     var el = document.getElementById(containerId);
     if (!el) return;
-    var html = AD_MODE === 'adsense' ? _renderAdsenseBanner(null, 'auto') : _renderInternalBanner(size || 'normal');
-    el.insertAdjacentHTML('beforeend', '<div class="ps-ad-label">Publicité</div>' + html);
+    el.insertAdjacentHTML('beforeend', _renderBanner(size || 'normal'));
   }
 
   /** Inject a sidebar ad */
@@ -147,13 +231,16 @@
     _injectCSS();
     var el = document.getElementById(containerId);
     if (!el) return;
-    var ad = _randomUpsell();
+    var ad = _pickAd();
+    var isPartner = ad.type === 'partner';
+    var target = isPartner ? ' target="_blank" rel="noopener sponsored"' : '';
     el.insertAdjacentHTML('beforeend',
-      '<div class="ps-ad ps-ad-sidebar" style="--ad-color:' + ad.color + '">'
+      '<div class="ps-ad ps-ad-sidebar' + (isPartner ? ' ps-ad-partner' : '') + '" style="--ad-color:' + ad.color + '">'
       + '<div class="ps-ad-label">Publicité</div>'
+      + (ad.logo ? '<div style="font-size:2rem;margin-bottom:6px">' + ad.logo + '</div>' : '')
       + '<div class="ps-ad-title">' + ad.title + '</div>'
       + '<div class="ps-ad-text">' + ad.text + '</div>'
-      + '<a href="' + ad.href + '" class="ps-ad-cta">' + ad.cta + '</a>'
+      + '<a href="' + ad.href + '" class="ps-ad-cta"' + target + '>' + ad.cta + '</a>'
       + '</div>'
     );
   }
@@ -165,15 +252,18 @@
     if (_genCount % INTERSTITIAL_EVERY !== 0) return;
 
     _injectCSS();
-    var ad = _randomUpsell();
+    var ad = _pickAd();
+    var isPartner = ad.type === 'partner';
+    var target = isPartner ? ' target="_blank" rel="noopener sponsored"' : '';
     var overlay = document.createElement('div');
     overlay.className = 'ps-ad-interstitial-overlay';
     overlay.innerHTML =
       '<div class="ps-ad-interstitial" style="--ad-color:' + ad.color + '">'
+      + (ad.logo ? '<div style="font-size:2.5rem;margin-bottom:10px">' + ad.logo + '</div>' : '')
       + '<div class="ps-ad-title">' + ad.title + '</div>'
       + '<div class="ps-ad-text">' + ad.text + '</div>'
-      + '<a href="' + ad.href + '" class="ps-ad-cta">' + ad.cta + '</a>'
-      + '<button class="ps-ad-skip" onclick="this.closest(\'.ps-ad-interstitial-overlay\').remove()">Continuer sans upgrade ›</button>'
+      + '<a href="' + ad.href + '" class="ps-ad-cta"' + target + '>' + ad.cta + '</a>'
+      + '<button class="ps-ad-skip" onclick="this.closest(\'.ps-ad-interstitial-overlay\').remove()">Continuer ›</button>'
       + '</div>';
     document.body.appendChild(overlay);
 
