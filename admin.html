@@ -876,6 +876,21 @@
         <span>Analytics</span>
       </button>
 
+      <button class="nav-item" data-section="revenue">
+        <span class="ico">💵</span>
+        <span>Revenue & MRR</span>
+      </button>
+
+      <button class="nav-item" data-section="retention">
+        <span class="ico">🔄</span>
+        <span>Retention & Cohorts</span>
+      </button>
+
+      <button class="nav-item" data-section="acquisition">
+        <span class="ico">🎯</span>
+        <span>Acquisition</span>
+      </button>
+
       <button class="nav-item" data-section="costs">
         <span class="ico">💰</span>
         <span>Coûts & Usage</span>
@@ -1248,7 +1263,93 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
           </div>
         </div>
 
+        <!-- Event tracking (new) -->
+        <div class="card">
+          <div class="card-title">🔔 Événements récents (30 jours)</div>
+          <div class="table-wrapper">
+            <table><thead><tr><th>Événement</th><th>Jour</th><th>Occurrences</th><th>Users uniques</th><th>Sessions</th></tr></thead>
+            <tbody id="analytics-events-body"><tr><td colspan="5" class="empty-state">Chargement…</td></tr></tbody></table>
+          </div>
+        </div>
+
+        <!-- Feature adoption -->
+        <div class="card">
+          <div class="card-title">🚀 Adoption des features</div>
+          <div class="table-wrapper">
+            <table><thead><tr><th>Feature</th><th>Adoptants totaux</th><th>Ce mois</th><th>1ère adoption</th><th>Dernière</th></tr></thead>
+            <tbody id="analytics-features-body"><tr><td colspan="5" class="empty-state">Chargement…</td></tr></tbody></table>
+          </div>
+        </div>
+
+        <!-- User segments -->
+        <div class="card">
+          <div class="card-title">👤 Segmentation utilisateurs</div>
+          <div class="card-row" id="analytics-segments">
+            <div class="kpi"><div class="kpi-num" id="seg-power">–</div><div class="kpi-label">Power Users</div></div>
+            <div class="kpi"><div class="kpi-num" id="seg-active">–</div><div class="kpi-label">Actifs</div></div>
+            <div class="kpi"><div class="kpi-num" id="seg-casual">–</div><div class="kpi-label">Casual</div></div>
+            <div class="kpi"><div class="kpi-num" id="seg-dormant">–</div><div class="kpi-label">Dormants</div></div>
+            <div class="kpi"><div class="kpi-num" id="seg-inactive">–</div><div class="kpi-label">Inactifs</div></div>
+          </div>
+          <div class="card-row" id="analytics-health" style="margin-top:12px">
+            <div class="kpi"><div class="kpi-num" style="color:#22c55e" id="health-healthy">–</div><div class="kpi-label">🟢 Healthy</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:#f59e0b" id="health-cooling">–</div><div class="kpi-label">🟡 Cooling</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:#ef4444" id="health-risk">–</div><div class="kpi-label">🔴 At Risk</div></div>
+          </div>
+        </div>
+
         <div class="last-refresh" id="last-refresh-analytics">Jamais actualisé</div>
+      </div>
+
+      <!-- 💵 Revenue & MRR -->
+      <div class="section" id="section-revenue">
+        <div class="card">
+          <div class="card-title">💵 MRR par verticale</div>
+          <div class="table-wrapper">
+            <table><thead><tr><th>Verticale</th><th>Tier</th><th>Cycle</th><th>Abonnements</th><th>MRR (USD)</th></tr></thead>
+            <tbody id="revenue-mrr-body"><tr><td colspan="5" class="empty-state">Chargement…</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 Net Revenue Retention (NRR)</div>
+          <div class="table-wrapper">
+            <table><thead><tr><th>Mois</th><th>Users payants</th><th>MRR total (USD)</th></tr></thead>
+            <tbody id="revenue-nrr-body"><tr><td colspan="3" class="empty-state">Chargement…</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📉 Churn Analysis</div>
+          <div class="table-wrapper">
+            <table><thead><tr><th>Mois</th><th>Verticale</th><th>Tier</th><th>Churned</th><th>Raison</th><th>Durée moy. (jours)</th></tr></thead>
+            <tbody id="revenue-churn-body"><tr><td colspan="6" class="empty-state">Chargement…</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="last-refresh" id="last-refresh-revenue">Jamais actualisé</div>
+      </div>
+
+      <!-- 🔄 Retention & Cohorts -->
+      <div class="section" id="section-retention">
+        <div class="card">
+          <div class="card-title">🔄 Rétention par cohorte (semaine d'inscription)</div>
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:12px;">Chaque ligne = une cohorte d'inscription. Les colonnes montrent combien d'utilisateurs sont revenus chaque semaine.</p>
+          <div class="table-wrapper">
+            <table><thead><tr><th>Cohorte</th><th>Taille</th><th>S0</th><th>S1</th><th>S2</th><th>S3</th><th>S4-7</th><th>S8-11</th><th>S12+</th></tr></thead>
+            <tbody id="retention-cohort-body"><tr><td colspan="9" class="empty-state">Chargement…</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="last-refresh" id="last-refresh-retention">Jamais actualisé</div>
+      </div>
+
+      <!-- 🎯 Acquisition -->
+      <div class="section" id="section-acquisition">
+        <div class="card">
+          <div class="card-title">🎯 Funnel d'acquisition (par semaine)</div>
+          <div class="table-wrapper">
+            <table><thead><tr><th>Semaine</th><th>Source</th><th>UTM Source</th><th>Campagne</th><th>Signups</th><th>Profils complets</th><th>Convertis (payant)</th><th>Taux conv.</th></tr></thead>
+            <tbody id="acquisition-funnel-body"><tr><td colspan="8" class="empty-state">Chargement…</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="last-refresh" id="last-refresh-acquisition">Jamais actualisé</div>
       </div>
 
       <!-- 💰 Coûts & Usage -->
@@ -2167,9 +2268,160 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
           `;
         }).join('');
 
+        // ── Events summary ──
+        try {
+          const { data: evts } = await sb.from('admin_event_summary').select('*').limit(50);
+          const evtsBody = document.getElementById('analytics-events-body');
+          if (evtsBody) evtsBody.innerHTML = (evts || []).map(e => `<tr>
+            <td style="font-weight:600">${esc(e.event_name)}</td>
+            <td>${e.day}</td><td>${formatNum(e.event_count)}</td>
+            <td>${formatNum(e.unique_users)}</td><td>${formatNum(e.unique_sessions)}</td>
+          </tr>`).join('') || '<tr><td colspan="5" class="empty-state">Exécutez sql/analytics-complete.sql</td></tr>';
+        } catch (_) {}
+
+        // ── Feature adoption ──
+        try {
+          const { data: feats } = await sb.from('admin_feature_adoption').select('*');
+          const featsBody = document.getElementById('analytics-features-body');
+          if (featsBody) featsBody.innerHTML = (feats || []).map(f => `<tr>
+            <td style="font-weight:600">${esc(f.feature_name)}</td>
+            <td>${formatNum(f.total_adopters)}</td><td>${formatNum(f.adopted_this_month)}</td>
+            <td style="color:var(--muted)">${f.first_adoption ? new Date(f.first_adoption).toLocaleDateString('fr-FR') : '–'}</td>
+            <td style="color:var(--muted)">${f.latest_adoption ? new Date(f.latest_adoption).toLocaleDateString('fr-FR') : '–'}</td>
+          </tr>`).join('') || '<tr><td colspan="5" class="empty-state">Aucune donnée</td></tr>';
+        } catch (_) {}
+
+        // ── User segments ──
+        try {
+          const { data: segs } = await sb.from('admin_user_segments').select('usage_segment, health_segment');
+          if (segs) {
+            const usage = {}, health = {};
+            segs.forEach(s => { usage[s.usage_segment] = (usage[s.usage_segment] || 0) + 1; health[s.health_segment] = (health[s.health_segment] || 0) + 1; });
+            document.getElementById('seg-power').textContent = formatNum(usage.power_user || 0);
+            document.getElementById('seg-active').textContent = formatNum(usage.active || 0);
+            document.getElementById('seg-casual').textContent = formatNum(usage.casual || 0);
+            document.getElementById('seg-dormant').textContent = formatNum(usage.dormant || 0);
+            document.getElementById('seg-inactive').textContent = formatNum(usage.inactive || 0);
+            document.getElementById('health-healthy').textContent = formatNum(health.healthy || 0);
+            document.getElementById('health-cooling').textContent = formatNum(health.cooling || 0);
+            document.getElementById('health-risk').textContent = formatNum(health.at_risk || 0);
+          }
+        } catch (_) {}
+
         document.getElementById('last-refresh-analytics').textContent = 'Actualisé ' + new Date().toLocaleTimeString('fr-FR');
       } catch (e) {
         console.error('Analytics load error:', e);
+      }
+    }
+
+    // ── Load Data: Revenue & MRR ──
+    async function loadRevenue() {
+      const sb = PS.supabase;
+      const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+      const fmtCost = (n) => n != null ? '$' + Number(n).toFixed(2) : '–';
+      const vertMeta = PS.VERTICALS || {};
+
+      try {
+        // MRR by vertical/tier
+        const { data: mrr } = await sb.from('admin_mrr').select('*');
+        const mrrBody = document.getElementById('revenue-mrr-body');
+        let totalMRR = 0;
+        mrrBody.innerHTML = (mrr || []).map(r => {
+          totalMRR += Number(r.mrr_usd || 0);
+          const vm = vertMeta[r.vertical] || {};
+          return `<tr>
+            <td style="color:${vm.color || 'var(--text)'}">${vm.icon || ''} ${vm.label || r.vertical}</td>
+            <td>${r.tier}</td><td>${r.billing_cycle}</td>
+            <td>${formatNum(r.subscription_count)}</td>
+            <td style="font-weight:700;color:var(--success)">${fmtCost(r.mrr_usd)}</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="5" class="empty-state">Aucun abonnement actif</td></tr>';
+        if (totalMRR > 0) mrrBody.innerHTML += `<tr style="border-top:2px solid var(--border)"><td colspan="3" style="font-weight:700">TOTAL MRR</td><td></td><td style="font-weight:700;color:var(--success);font-size:1.1rem">${fmtCost(totalMRR)}</td></tr>`;
+
+        // NRR
+        const { data: nrr } = await sb.from('admin_nrr').select('*').limit(12);
+        const nrrBody = document.getElementById('revenue-nrr-body');
+        nrrBody.innerHTML = (nrr || []).map(r => `<tr>
+          <td>${r.month}</td>
+          <td>${formatNum(r.paying_users)}</td>
+          <td style="font-weight:600;color:var(--success)">${fmtCost(r.total_mrr)}</td>
+        </tr>`).join('') || '<tr><td colspan="3" class="empty-state">Aucune donnée</td></tr>';
+
+        // Churn
+        const { data: churn } = await sb.from('admin_churn_analysis').select('*').limit(30);
+        const churnBody = document.getElementById('revenue-churn-body');
+        churnBody.innerHTML = (churn || []).map(r => {
+          const vm = vertMeta[r.vertical] || {};
+          return `<tr>
+            <td>${r.churn_month}</td>
+            <td style="color:${vm.color || 'var(--muted)'}">${vm.icon || ''} ${r.vertical}</td>
+            <td>${r.tier}</td>
+            <td style="color:var(--danger)">${r.churned_count}</td>
+            <td style="font-size:.78rem">${esc(r.cancellation_reason || '–')}</td>
+            <td>${r.avg_lifetime_days || '–'}j</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="6" class="empty-state">Aucun churn 🎉</td></tr>';
+
+        document.getElementById('last-refresh-revenue').textContent = 'Actualisé ' + new Date().toLocaleTimeString('fr-FR');
+      } catch (e) {
+        console.error('Revenue load error:', e);
+        document.getElementById('revenue-mrr-body').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:var(--danger)">Erreur: ${e.message}. Exécutez sql/analytics-complete.sql</td></tr>`;
+      }
+    }
+
+    // ── Load Data: Retention & Cohorts ──
+    async function loadRetention() {
+      const sb = PS.supabase;
+      try {
+        const { data: cohorts } = await sb.from('admin_cohort_retention').select('*').limit(20);
+        const body = document.getElementById('retention-cohort-body');
+
+        body.innerHTML = (cohorts || []).map(c => {
+          const size = c.cohort_size || 1;
+          const pct = (v) => size > 0 ? Math.round((v / size) * 100) : 0;
+          const cell = (v) => {
+            const p = pct(v);
+            const color = p >= 40 ? '#22c55e' : p >= 20 ? '#f59e0b' : p > 0 ? '#ef4444' : 'var(--muted)';
+            return `<td style="color:${color};font-weight:${p > 0 ? '600' : '400'}">${v || 0} <span style="font-size:.68rem;opacity:.6">(${p}%)</span></td>`;
+          };
+          return `<tr>
+            <td style="font-weight:600">${c.cohort_week}</td>
+            <td>${c.cohort_size}</td>
+            ${cell(c.week_0)}${cell(c.week_1)}${cell(c.week_2)}${cell(c.week_3)}
+            ${cell(c.week_4_7)}${cell(c.week_8_11)}${cell(c.week_12_plus)}
+          </tr>`;
+        }).join('') || '<tr><td colspan="9" class="empty-state">Exécutez sql/analytics-complete.sql + backfill signup_date</td></tr>';
+
+        document.getElementById('last-refresh-retention').textContent = 'Actualisé ' + new Date().toLocaleTimeString('fr-FR');
+      } catch (e) {
+        console.error('Retention load error:', e);
+        document.getElementById('retention-cohort-body').innerHTML = `<tr><td colspan="9" class="empty-state" style="color:var(--danger)">Erreur: ${e.message}</td></tr>`;
+      }
+    }
+
+    // ── Load Data: Acquisition ──
+    async function loadAcquisition() {
+      const sb = PS.supabase;
+      const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+      try {
+        const { data: funnel } = await sb.from('admin_acquisition_funnel').select('*').limit(30);
+        const body = document.getElementById('acquisition-funnel-body');
+
+        body.innerHTML = (funnel || []).map(f => `<tr>
+          <td>${f.week}</td>
+          <td>${esc(f.signup_source || '–')}</td>
+          <td>${esc(f.utm_source || '–')}</td>
+          <td style="font-size:.78rem">${esc(f.utm_campaign || '–')}</td>
+          <td style="font-weight:600">${formatNum(f.signups)}</td>
+          <td>${formatNum(f.profiles_completed)}</td>
+          <td style="font-weight:600;color:var(--success)">${formatNum(f.converted_to_paid)}</td>
+          <td style="color:${(f.conversion_rate_pct || 0) >= 20 ? 'var(--success)' : 'var(--warning)'}">${f.conversion_rate_pct || 0}%</td>
+        </tr>`).join('') || '<tr><td colspan="8" class="empty-state">Exécutez sql/analytics-complete.sql + backfill signup_date</td></tr>';
+
+        document.getElementById('last-refresh-acquisition').textContent = 'Actualisé ' + new Date().toLocaleTimeString('fr-FR');
+      } catch (e) {
+        console.error('Acquisition load error:', e);
+        document.getElementById('acquisition-funnel-body').innerHTML = `<tr><td colspan="8" class="empty-state" style="color:var(--danger)">Erreur: ${e.message}</td></tr>`;
       }
     }
 
@@ -2372,6 +2624,9 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
           case 'subscriptions': await loadSubscriptions(); break;
           case 'tools': await loadTools(); break;
           case 'analytics': await loadAnalytics(); break;
+          case 'revenue': await loadRevenue(); break;
+          case 'retention': await loadRetention(); break;
+          case 'acquisition': await loadAcquisition(); break;
           case 'costs': await loadCosts(); break;
           case 'settings': await loadSettings(); break;
         }
