@@ -441,6 +441,8 @@ exports.handler = async (event) => {
       if (error) log('usage_log_error', { error: error.message, toolSlug });
     }),
     incrementQuota(supabase, user.id, tool.vertical),
+    // Increment tool-level usage counter for dynamic "Populaire" badges
+    supabase.rpc('increment_tool_usage', { tool_slug: toolSlug }).catch(() => {}),
   ]);
 
   // ── 11. Return ──────────────────────────────────────────────────────────────

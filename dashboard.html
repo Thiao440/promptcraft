@@ -62,17 +62,6 @@
     .quota-bar { width: 60px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
     .quota-fill { height: 100%; border-radius: 3px; transition: width .4s; }
 
-    /* Vertical tab bar */
-    .vtab-bar { display: flex; align-items: center; gap: 2px; padding: 0 32px; border-bottom: 1px solid var(--border); background: var(--surface); overflow-x: auto; }
-    .vtab-btn { display: flex; align-items: center; gap: 7px; padding: 13px 20px; font-size: .875rem; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--muted); border-bottom: 2px solid transparent; transition: all .18s; white-space: nowrap; }
-    .vtab-btn:hover { color: var(--text); }
-    .vtab-btn.active { font-weight: 600; }
-    .vtab-btn[data-v].active { font-weight: 600; }
-    .vtab-btn .tier-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .tier-dot.starter { background: #3b82f6; }
-    .tier-dot.pro    { background: #a78bfa; }
-    .tier-dot.gold   { background: #c9a84c; }
-    .tier-dot.team   { background: #10b981; }
 
     /* Content area */
     .content { flex: 1; padding: 28px 32px; }
@@ -149,6 +138,27 @@
     /* Push icon down when badge is present so they don't overlap */
     .tool-card.has-badge .tc-icon { margin-top: 18px; }
 
+    /* ── Announcement banner ── */
+    .announce-bar {
+      background: linear-gradient(90deg, #6c63ff 0%, #a78bfa 100%);
+      color: #fff;
+      text-align: center;
+      padding: 10px 48px 10px 20px;
+      font-size: .85rem;
+      font-weight: 500;
+      position: relative;
+      letter-spacing: .01em;
+      line-height: 1.4;
+    }
+    .announce-bar a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+    .announce-bar a:hover { opacity: .85; }
+    .announce-bar .announce-close {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: rgba(255,255,255,.7); font-size: 1.1rem;
+      cursor: pointer; padding: 4px; line-height: 1; transition: color .15s;
+    }
+    .announce-bar .announce-close:hover { color: #fff; }
+
     /* ── Locked card redesign (no full-card opacity fade) ── */
     .tool-card.locked { opacity: 1; border-style: dashed; cursor: default; }
     .tool-card.locked:hover { transform: none; box-shadow: none; }
@@ -221,8 +231,6 @@
       .topbar { padding: 16px; }
       .topbar h1 { font-size: 1.1rem; }
       .topbar-right { display: none; }
-      .vtab-bar { padding: 8px 12px; gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
-      .vtab-btn { white-space: nowrap; font-size: .78rem; padding: 8px 12px; }
       .content { padding: 14px; }
       .tools-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
       .tool-card { padding: 14px; }
@@ -296,6 +304,10 @@
 </aside>
 
 <div class="main">
+  <div class="announce-bar" id="announce-bar">
+    📱 Bientôt disponible — L'app mobile The Prompt Studio : vos outils IA pro, partout, tout le temps.
+    <button class="announce-close" onclick="document.getElementById('announce-bar').style.display='none'; try{localStorage.setItem('ps_announce_dismissed','1')}catch(e){}" aria-label="Fermer">✕</button>
+  </div>
   <div class="topbar">
     <div class="topbar-left">
       <h1 id="topbar-title">Mon espace</h1>
@@ -308,9 +320,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Vertical tab bar -->
-  <div class="vtab-bar" id="vtab-bar"></div>
 
   <div class="content" id="content">
     <!-- Skeleton placeholder — replaced by JS on load -->
@@ -360,19 +369,6 @@ function renderSidebar() {
   }).join('');
 }
 
-// ── Render vertical tab bar ────────────────────────────────────────────────
-function renderTabBar() {
-  const bar = document.getElementById('vtab-bar');
-  bar.innerHTML = PS.subs.map(s => {
-    const m = VMETA[s.vertical] || {};
-    return `<button class="vtab-btn" data-v="${s.vertical}" onclick="switchVertical('${s.vertical}')">
-      <span>${m.icon||'📁'}</span>
-      <span>${m.label||s.vertical}</span>
-      <span class="tier-dot ${s.tier}"></span>
-    </button>`;
-  }).join('');
-}
-
 // ── Switch vertical ────────────────────────────────────────────────────────
 async function switchVertical(v) {
   activeV      = v;
@@ -381,13 +377,7 @@ async function switchVertical(v) {
   const m   = VMETA[v] || {};
   const vc  = m.color || '#6c63ff';
 
-  // Active states with dynamic color
-  document.querySelectorAll('.vtab-btn').forEach(b => {
-    const isActive = b.dataset.v === v;
-    b.classList.toggle('active', isActive);
-    b.style.color = isActive ? vc : '';
-    b.style.borderBottomColor = isActive ? vc : 'transparent';
-  });
+  // Active states with dynamic color — sidebar nav only
   document.querySelectorAll('.nav-item[data-v]').forEach(b => {
     const isActive = b.dataset.v === v;
     b.classList.toggle('active', isActive);
@@ -397,6 +387,12 @@ async function switchVertical(v) {
 
   document.getElementById('topbar-title').textContent = `${m.icon || ''} ${m.label || v}`;
   document.getElementById('topbar-sub').textContent   = sub ? `${TIER_LABELS[sub.tier]} · accès aux outils ${m.label}` : '';
+
+  /* ── Dynamic theming: sidebar logo, topbar border ── */
+  const logoSpan = document.querySelector('.sb-logo span');
+  if (logoSpan) logoSpan.style.color = vc;
+  const topbar = document.querySelector('.topbar');
+  if (topbar) topbar.style.borderBottomColor = vc;
 
   await updateQuota(v, sub);
   renderTools(v, sub, 'all');
@@ -580,7 +576,6 @@ function renderTools(v, sub, filter = 'all') {
 
 // ── No subscription state ──────────────────────────────────────────────────
 function renderNoSub() {
-  document.getElementById('vtab-bar').innerHTML = '';
   document.getElementById('topbar-title').textContent = 'Mon espace';
   document.getElementById('topbar-sub').textContent   = 'Aucun abonnement actif';
   document.getElementById('content').innerHTML = `
@@ -621,8 +616,7 @@ async function renderProjectsView() {
     if (navProj) navProj.classList.add('active');
     document.getElementById('topbar-title').textContent = '📁 Mes projets';
     document.getElementById('topbar-sub').textContent   = '';
-    document.getElementById('vtab-bar').innerHTML = '';
-    document.getElementById('quota-pill').style.display = 'none';
+      document.getElementById('quota-pill').style.display = 'none';
     document.getElementById('content').innerHTML = `
       <div class="empty-state">
         <div class="big">🔒</div>
@@ -646,7 +640,6 @@ async function renderProjectsView() {
   // Header
   document.getElementById('topbar-title').textContent = '📁 Mes projets';
   document.getElementById('topbar-sub').textContent   = 'Gérez vos dossiers et utilisez les outils IA en contexte';
-  document.getElementById('vtab-bar').innerHTML = '';
   document.getElementById('quota-pill').style.display = 'none';
 
   const projects = await PSProjects.list({
@@ -824,7 +817,6 @@ async function init() {
   if (view === 'projects') {
     await renderProjectsView();
   } else {
-    renderTabBar();
     const urlV  = new URLSearchParams(location.search).get('v');
     const firstV = (urlV && PS.subForVertical(urlV)) ? urlV : PS.subs[0]?.vertical;
     await switchVertical(firstV);
@@ -840,5 +832,6 @@ async function init() {
 init();
 </script>
 <script src="/js/ps-chat-widget.js?v=1.0"></script>
+<script>try{if(localStorage.getItem('ps_announce_dismissed')==='1'){var b=document.getElementById('announce-bar');if(b)b.style.display='none';}}catch(e){}</script>
 </body>
 </html>

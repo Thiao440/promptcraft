@@ -405,7 +405,6 @@ form.addEventListener('submit', async (e) => {
       }
 
       // Email exists but password is wrong
-      // Could be a magic-link-only account (no password set)
       return showError(
         'Mot de passe incorrect.<br>' +
         '<a class="link" id="reset-link">Mot de passe oublié ou jamais défini ?</a>'

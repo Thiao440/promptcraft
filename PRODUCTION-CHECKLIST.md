@@ -60,7 +60,7 @@ CNAME   www     theprompt.studio.
 - [ ] **RLS activé** sur toutes les tables (le SQL le fait automatiquement)
 - [ ] **Email templates** personnalisés (Supabase → Auth → Email Templates)
   - Confirmation email → branding The Prompt Studio
-  - Magic link email → branding + redirect vers `/dashboard.html`
+  - Password reset email → branding + redirect vers `/login.html`
   - Password reset → branding
 - [ ] **Redirect URLs** : Auth → URL Configuration
   - Site URL : `https://theprompt.studio`
@@ -69,7 +69,7 @@ CNAME   www     theprompt.studio.
 
 ### 3.2 Auth providers
 - [ ] Email/Password activé
-- [ ] Magic link activé (email uniquement, pas de mot de passe)
+- [ ] Authentification email + mot de passe activée
 - [ ] Google OAuth (optionnel pour faciliter l'inscription)
 
 ### 3.3 Backups
@@ -115,7 +115,7 @@ Remplacer les placeholders (`IMMO_UUID_SM`, `COM_UUID_PM`, etc.) dans le fichier
 ## 5. EMAILS TRANSACTIONNELS
 
 ### 5.1 Option A : Supabase Auth (déjà en place)
-- Magic link pour la connexion
+- Email + mot de passe pour la connexion
 - Confirmation email
 - Personnaliser les templates dans Supabase
 

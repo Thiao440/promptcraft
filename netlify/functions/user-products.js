@@ -1,8 +1,8 @@
 /**
  * GET /api/user-products
  * ───────────────────────
- * Returns the list of products the authenticated user has access to.
- * Called by the dashboard to show purchased toolkits.
+ * Returns the list of active subscriptions for the authenticated user.
+ * Called by the dashboard to show accessible verticals and tier info.
  *
  * Auth: Bearer token (Supabase JWT) in Authorization header
  */
@@ -13,68 +13,34 @@ function log(event, data = {}) {
   console.log(JSON.stringify({ fn: 'user-products', event, ts: new Date().toISOString(), ...data }));
 }
 
-// Product metadata for frontend display
-const PRODUCT_META = {
+// Vertical metadata for frontend display
+const VERTICAL_META = {
   immo: {
-    name: 'ImmoPrompts Pro',
+    name: 'Outils IA Immobilier',
     icon: '🏠',
-    description: '50 prompts + workflows IA pour agents immobiliers',
-    price: '€47',
+    description: 'Outils IA spécialisés pour professionnels de l\'immobilier',
     page: '/promptcraft-immo.html',
-    pdf: 'ImmoPrompts_Pack_AgentImmo_Pro.pdf',
-    features: [
-      'Diagnostic acquisition IA',
-      '50 prompts métier immobilier',
-      'Workflows automatisation CRM',
-      'Formation vidéo incluse',
-      'Plan 30 jours d\'implémentation',
-    ],
   },
   commerce: {
-    name: 'Commerce Pro',
+    name: 'Outils IA Commerce',
     icon: '🛒',
-    description: 'Fiches produits, email marketing, chatbots e-commerce',
-    price: '€57',
+    description: 'Outils IA pour e-commerce et retail',
     page: '/promptcraft-commerce.html',
-    pdf: 'PromptCraft_Commerce_Pro.pdf',
-    features: [
-      'Générateur fiches produits IA',
-      'Séquences email automatisées',
-      'Chatbot service client',
-      'Stratégie réseaux sociaux',
-      '40+ prompts commerce',
-    ],
   },
   legal: {
-    name: 'Juridique Pro',
+    name: 'Outils IA Juridique',
     icon: '⚖️',
-    description: 'Rédaction juridique, recherches, notes de synthèse',
-    price: '€97',
+    description: 'Outils IA pour professionnels du droit',
     page: '/promptcraft-legal.html',
-    pdf: 'PromptCraft_Legal_Pro.pdf',
-    features: [
-      'Rédaction contrats assistée',
-      'Notes juridiques en 5 min',
-      'Recherche jurisprudence IA',
-      'Analyse de documents',
-      'Modèles éditables inclus',
-    ],
   },
-  pro: {
-    name: 'Pro Abonnement',
-    icon: '⭐',
-    description: 'Accès à tous les toolkits + nouveautés en avant-première',
-    price: '€XX/mois',
-    page: '/index.html',
-    pdf: null,
-    features: [
-      'Tous les toolkits inclus',
-      'Mises à jour prioritaires',
-      'Support email dédié',
-      'Accès Discord membres',
-      'Nouveaux toolkits en avant-première',
-    ],
-  },
+};
+
+// Subscription tier labels
+const TIER_LABELS = {
+  starter: 'Starter',
+  pro:     'Pro',
+  gold:    'Gold',
+  team:    'Team',
 };
 
 exports.handler = async (event) => {
@@ -112,12 +78,12 @@ exports.handler = async (event) => {
     return { statusCode: 401, headers, body: JSON.stringify({ error: 'Invalid token' }) };
   }
 
-  // ── Fetch user's products ─────────────────────────────────────────────
-  const { data: products, error: dbError } = await supabase
-    .from('user_products')
-    .select('product_slug, status, purchased_at, expires_at, lemon_order_id, lemon_subscription_id')
+  // ── Fetch user's subscriptions ────────────────────────────────────────
+  const { data: subscriptions, error: dbError } = await supabase
+    .from('subscriptions')
+    .select('vertical, tier, status, current_period_start, current_period_end, lemon_subscription_id')
     .eq('user_id', user.id)
-    .in('status', ['active']); // Only active (not cancelled/refunded)
+    .in('status', ['active']);
 
   if (dbError) {
     console.error('DB error:', dbError);
@@ -126,30 +92,31 @@ exports.handler = async (event) => {
 
   // Check subscription expiry
   const now = new Date();
-  const activeProducts = (products || []).filter(p => {
-    if (!p.expires_at) return true; // Lifetime access
-    return new Date(p.expires_at) > now;
+  const activeSubs = (subscriptions || []).filter(s => {
+    if (!s.current_period_end) return true;
+    return new Date(s.current_period_end) > now;
   });
 
-  // Build enriched product list
-  const enriched = activeProducts.map(p => ({
-    ...p,
-    ...PRODUCT_META[p.product_slug],
+  // Build enriched subscription list with vertical metadata
+  const enriched = activeSubs.map(s => ({
+    ...s,
+    ...VERTICAL_META[s.vertical],
+    tier_label: TIER_LABELS[s.tier] || s.tier,
     has_access: true,
   }));
 
-  // Pro subscribers get access to all products
-  const hasPro = enriched.some(p => p.product_slug === 'pro');
-  if (hasPro) {
-    const allSlugs = Object.keys(PRODUCT_META).filter(s => s !== 'pro');
-    const ownedSlugs = new Set(enriched.map(p => p.product_slug));
-    allSlugs.forEach(slug => {
-      if (!ownedSlugs.has(slug)) {
+  // Gold/Team subscribers get access to all verticals
+  const hasFullAccess = enriched.some(s => s.tier === 'gold' || s.tier === 'team');
+  if (hasFullAccess) {
+    const allVerticals = Object.keys(VERTICAL_META);
+    const ownedVerticals = new Set(enriched.map(s => s.vertical));
+    allVerticals.forEach(vertical => {
+      if (!ownedVerticals.has(vertical)) {
         enriched.push({
-          product_slug: slug,
+          vertical,
           status: 'active',
-          via_pro: true,
-          ...PRODUCT_META[slug],
+          via_full_access: true,
+          ...VERTICAL_META[vertical],
           has_access: true,
         });
       }
@@ -165,8 +132,8 @@ exports.handler = async (event) => {
         email: user.email,
         name: user.user_metadata?.full_name || '',
       },
-      products: enriched,
-      has_pro: hasPro,
+      subscriptions: enriched,
+      has_full_access: hasFullAccess,
     }),
   };
 };

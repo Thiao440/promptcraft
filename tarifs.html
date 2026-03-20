@@ -277,7 +277,7 @@
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="faq(this)"><span data-fr>Comment accéder après paiement ?</span><span data-en>How do I access after payment?</span><span data-es>¿Cómo accedo tras el pago?</span><span data-pt>Como acesso após o pagamento?</span><span data-ar>كيف أصل بعد الدفع؟</span> <span class="faq-arrow">▼</span></div>
-    <div class="faq-a"><span data-fr>Dès le paiement validé, vous recevez un email avec un lien magique — sans mot de passe.</span><span data-en>Once payment is confirmed, you receive an email with a magic link — no password needed.</span><span data-es>Una vez confirmado el pago, recibes un email con un enlace mágico.</span><span data-pt>Após a confirmação do pagamento, você recebe um email com um link mágico.</span><span data-ar>بمجرد تأكيد الدفع، تتلقى بريداً إلكترونياً برابط سحري — بدون كلمة مرور.</span></div>
+    <div class="faq-a"><span data-fr>Dès le paiement validé, votre abonnement est activé. Connectez-vous avec votre email et mot de passe pour accéder à vos outils.</span><span data-en>Once payment is confirmed, your subscription is activated. Log in with your email and password to access your tools.</span><span data-es>Una vez confirmado el pago, su suscripción se activa. Inicie sesión con su email y contraseña para acceder a sus herramientas.</span><span data-pt>Após a confirmação do pagamento, sua assinatura é ativada. Faça login com seu email e senha para acessar suas ferramentas.</span><span data-ar>بمجرد تأكيد الدفع، يتم تفعيل اشتراكك. سجّل الدخول بالبريد الإلكتروني وكلمة المرور للوصول إلى أدواتك.</span></div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="faq(this)"><span data-fr>À quoi sert l'offre Team ?</span><span data-en>What is the Team plan for?</span><span data-es>¿Para qué sirve el plan Team?</span><span data-pt>Para que serve o plano Team?</span><span data-ar>ما فائدة خطة Team؟</span> <span class="faq-arrow">▼</span></div>
@@ -408,6 +408,18 @@ function selectV(v) {
   document.documentElement.style.setProperty('--v-color',  m.color);
   document.documentElement.style.setProperty('--v-bg',     m.bg);
   document.documentElement.style.setProperty('--v-border', m.border);
+
+  /* ── Dynamic theming: logo, nav CTA, step indicators ── */
+  const logoEm = document.querySelector('.ps-nav-logo em');
+  if (logoEm) logoEm.style.color = m.color;
+  const navCta = document.querySelector('.ps-nav-cta');
+  if (navCta) { navCta.style.background = m.color; }
+  const heroTag = document.querySelector('.hero-tag');
+  if (heroTag) { heroTag.style.background = m.bg; heroTag.style.color = m.color; heroTag.style.borderColor = m.border; }
+  document.querySelectorAll('.step.active .num').forEach(n => n.style.background = m.color);
+  const trialStrong = document.querySelector('.trial-banner strong');
+  if (trialStrong) trialStrong.style.color = m.color;
+
   renderPlans(); renderTools();
 }
 

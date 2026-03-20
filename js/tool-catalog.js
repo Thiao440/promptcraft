@@ -12,6 +12,11 @@
  * Each tool object matches the shape expected by dashboard rendering:
  *   { slug, icon, name, desc, tier, featured, isNew }
  *
+ * Badge logic (computed dynamically):
+ *   - "Nouveau"   → created_at ≤ 30 days ago
+ *   - "Populaire" → top 20% by usage_count within its vertical (min 1 use)
+ *   - "Nouveau" takes priority if both apply
+ *
  * Tool links:
  *   ToolCatalog.toolUrl(slug)  → '/t/immo-annonce' (dynamic) or '/tools/immo-annonce.html' (static)
  *   Tools with input_schema use the dynamic page; tools without use the static page.
@@ -100,7 +105,7 @@ const ToolCatalog = (() => {
     try {
       const { data, error } = await PS.supabase
         .from('tools')
-        .select('slug, label, description, icon, vertical, min_tier, is_featured, is_new, sort_order, input_schema')
+        .select('slug, label, description, icon, vertical, min_tier, sort_order, input_schema, created_at, usage_count')
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
 
@@ -108,6 +113,24 @@ const ToolCatalog = (() => {
         console.warn('[ToolCatalog] DB query failed or empty, using fallback:', error?.message);
         return _fallback();
       }
+
+      // ── Compute dynamic badges ──
+      // "Nouveau" = created within the last 30 days
+      const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+      const now = Date.now();
+
+      // "Populaire" = top 20% by usage_count per vertical
+      const usageByVertical = {};
+      data.forEach(row => {
+        if (!usageByVertical[row.vertical]) usageByVertical[row.vertical] = [];
+        usageByVertical[row.vertical].push(row.usage_count || 0);
+      });
+      const popularThresholds = {};
+      Object.entries(usageByVertical).forEach(([v, counts]) => {
+        const sorted = [...counts].sort((a, b) => b - a);
+        const idx = Math.max(0, Math.ceil(sorted.length * 0.2) - 1);
+        popularThresholds[v] = sorted[idx] || 1; // min threshold of 1 to avoid flagging 0-usage tools
+      });
 
       // Group by vertical
       const tools = {};
@@ -119,14 +142,20 @@ const ToolCatalog = (() => {
           _dynamicSlugs.add(row.slug);
         }
 
+        const createdAt = row.created_at ? new Date(row.created_at).getTime() : 0;
+        const isNew     = (now - createdAt) <= ONE_MONTH_MS;
+        const usage     = row.usage_count || 0;
+        const threshold = popularThresholds[row.vertical] || 1;
+        const featured  = usage >= threshold && usage > 0;
+
         tools[row.vertical].push({
           slug:     row.slug,
           icon:     row.icon || '🔧',
           name:     row.label || row.slug,
           desc:     row.description || '',
           tier:     row.min_tier || 'starter',
-          featured: row.is_featured || false,
-          isNew:    row.is_new || false,
+          featured: isNew ? false : featured, // "Nouveau" takes priority over "Populaire"
+          isNew,
         });
       });
 

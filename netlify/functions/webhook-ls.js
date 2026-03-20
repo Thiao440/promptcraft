@@ -2,8 +2,7 @@
  * Lemon Squeezy Webhook Handler — v3 (Hardened for scale)
  * ─────────────────────────────────────────────────────────
  * Handles:
- *   order_created           — one-shot PDF purchase (legacy)
- *   subscription_created    — new SaaS subscription (Bronze/Silver/Gold)
+ *   subscription_created    — new SaaS subscription (Starter/Pro/Gold/Team)
  *   subscription_updated    — renewal, payment retry
  *   subscription_cancelled  — user cancelled (access until period end)
  *   subscription_expired    — period ended, revoke access
@@ -13,7 +12,7 @@
  *   - Email-based user lookup via profiles table (O(1) vs O(n))
  *   - Idempotency check via order_id/subscription_id
  *   - Structured JSON logging for every event
- *   - All 10 verticals supported
+ *   - All verticals supported (Starter/Pro/Gold/Team tiers)
  *
  * Env vars required:
  *   LS_WEBHOOK_SECRET    — from Lemon Squeezy → Settings → Webhooks
@@ -39,13 +38,6 @@ const TIER_VARIANT_MAP = {
   // 'actual-uuid-bronze': 'bronze',
   // 'actual-uuid-silver': 'silver',
   // 'actual-uuid-gold':   'gold',
-};
-
-// ── Legacy PDF product mapping (one-shot orders) ──────────────────────────────
-const LEGACY_VARIANT_MAP = {
-  'dc72fcc3-ad4c-4f94-a689-4892d19434eb': { slug: 'immo',     pdf: 'ImmoPrompts_Pack_AgentImmo_Pro.pdf' },
-  '4b484a81-7d4d-43ef-b827-9292eb78cd91': { slug: 'commerce', pdf: 'PromptCraft_Commerce_Pro.pdf' },
-  'eaa20d56-b434-4335-80b4-942a637e77d1': { slug: 'legal',    pdf: 'PromptCraft_Legal_Pro.pdf' },
 };
 
 // ── Main handler ──────────────────────────────────────────────────────────────
@@ -91,9 +83,6 @@ exports.handler = async (event) => {
   // ── 3. Route event ──────────────────────────────────────────────────────────
   try {
     switch (eventName) {
-      case 'order_created':
-        await handleOrderCreated(payload, supabase);
-        break;
       case 'subscription_created':
         await handleSubscriptionCreated(payload, supabase);
         break;
@@ -121,61 +110,6 @@ exports.handler = async (event) => {
 };
 
 // ── Event handlers ────────────────────────────────────────────────────────────
-
-/**
- * order_created — legacy one-shot PDF purchase
- */
-async function handleOrderCreated(payload, supabase) {
-  const attrs   = payload.data?.attributes || {};
-  const email   = attrs.user_email;
-  const name    = attrs.user_name || '';
-  const orderId = String(payload.data?.id);
-  const item    = attrs.first_order_item || {};
-
-  if (!email) { log('order_no_email', { orderId }); return; }
-
-  // Skip subscription orders (handled by subscription_created)
-  if (attrs.first_subscription_item) {
-    log('order_is_subscription', { orderId, email });
-    return;
-  }
-
-  // Idempotency: check if this order was already processed
-  const { data: existing } = await supabase
-    .from('user_products')
-    .select('id')
-    .eq('lemon_order_id', orderId)
-    .maybeSingle();
-  if (existing) {
-    log('order_duplicate', { orderId, email });
-    return;
-  }
-
-  // Resolve legacy PDF product
-  const variantId   = String(item.variant_id || '');
-  const legacyProd  = LEGACY_VARIANT_MAP[variantId];
-  const customSlug  = payload.meta?.custom_data?.slug;
-  const productSlug = legacyProd?.slug || customSlug || null;
-
-  if (!productSlug) {
-    log('order_unresolved', { orderId, variantId });
-    return;
-  }
-
-  log('order_processing', { orderId, email, productSlug });
-  const userId = await upsertUser(supabase, email, name);
-  if (!userId) return;
-
-  await supabase.from('user_products').upsert({
-    user_id:        userId,
-    product_slug:   productSlug,
-    lemon_order_id: orderId,
-    status:         'active',
-  }, { onConflict: 'user_id,product_slug' });
-
-  await sendMagicLink(supabase, email, productSlug, 'pdf');
-  log('order_complete', { orderId, email, productSlug, userId });
-}
 
 /**
  * subscription_created — new SaaS subscription
@@ -235,7 +169,6 @@ async function handleSubscriptionCreated(payload, supabase) {
     change_type: 'created', metadata: { subId, lemon_order_id: String(attrs.order_id || '') },
   }).catch(() => {});
 
-  await sendMagicLink(supabase, email, tier, 'subscription');
   log('sub_complete', { subId, email, tier, vertical: customVertical, userId });
 }
 
@@ -337,18 +270,24 @@ async function handleSubscriptionExpired(payload, supabase) {
 }
 
 /**
- * order_refunded — revoke PDF access
+ * order_refunded — revoke access
  */
 async function handleRefund(payload, supabase) {
   const orderId = String(payload.data?.id);
+  const subId   = String(payload.data?.attributes?.first_subscription_item?.subscription_id || '');
 
-  const { error } = await supabase
-    .from('user_products')
-    .update({ status: 'refunded' })
-    .eq('lemon_order_id', orderId);
+  // Revoke subscription if linked
+  if (subId) {
+    const { error } = await supabase
+      .from('subscriptions')
+      .update({ status: 'refunded', updated_at: new Date().toISOString() })
+      .eq('lemon_subscription_id', subId);
 
-  if (error) log('refund_error', { orderId, error: error.message });
-  else log('refund_complete', { orderId });
+    if (error) log('refund_error', { orderId, subId, error: error.message });
+    else log('refund_complete', { orderId, subId });
+  } else {
+    log('refund_no_subscription', { orderId });
+  }
 }
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -418,21 +357,3 @@ async function upsertUser(supabase, email, name) {
   return data.user.id;
 }
 
-/**
- * Send magic link email so user can access their dashboard
- */
-async function sendMagicLink(supabase, email, context, type) {
-  const siteUrl = process.env.SITE_URL || 'https://theprompt.studio';
-  const redirectTo = type === 'subscription'
-    ? `${siteUrl}/dashboard?welcome=${context}`
-    : `${siteUrl}/dashboard?welcome=pdf&slug=${context}`;
-
-  const { error } = await supabase.auth.admin.generateLink({
-    type: 'magiclink',
-    email,
-    options: { redirectTo },
-  });
-
-  if (error) log('magiclink_error', { email, error: error.message });
-  else log('magiclink_sent', { email, type, context });
-}

@@ -28,7 +28,7 @@
 
   // Preview mode: force-show ads for specific emails (for testing/demo)
   // Remove emails from this list to disable preview
-  var PREVIEW_EMAILS = ['mathieu.thiao@gmail.com'];
+  var PREVIEW_EMAILS = ['contact@theprompt.studio'];
 
   // Ad mix: 'mixed' = rotate between upsell + external partner ads
   // Options: 'internal' (upsell only), 'external' (partner only), 'mixed' (both)
