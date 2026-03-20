@@ -490,6 +490,20 @@ const PS_I18N = (() => {
       cta_note:       { fr: 'Réponse sous 24h · France, Belgique, Suisse · Remote ou présentiel', en: 'Response within 24h · Worldwide · Remote or on-site', es: 'Respuesta en 24h · Todo el mundo · Remoto o presencial', pt: 'Resposta em 24h · Worldwide · Remoto ou presencial', ar: 'رد خلال 24 ساعة · عالمياً · عن بُعد أو حضورياً' },
     },
 
+    /* ── Vertical labels (translated names) ──────────────────────────────── */
+    verticals: {
+      immo:         { fr: 'Immobilier',               en: 'Real Estate',                  es: 'Inmobiliaria',                 pt: 'Imobiliário',                  ar: 'العقارات' },
+      commerce:     { fr: 'E-Commerce & Retail',      en: 'E-Commerce & Retail',          es: 'E-Commerce & Retail',          pt: 'E-Commerce & Varejo',          ar: 'التجارة الإلكترونية والتجزئة' },
+      legal:        { fr: 'Juridique',                en: 'Legal',                        es: 'Jurídico',                     pt: 'Jurídico',                     ar: 'القانونية' },
+      finance:      { fr: 'Finance & Comptabilité',   en: 'Finance & Accounting',         es: 'Finanzas y Contabilidad',      pt: 'Finanças e Contabilidade',     ar: 'المالية والمحاسبة' },
+      marketing:    { fr: 'Marketing & Com.',         en: 'Marketing & Communications',   es: 'Marketing y Comunicación',     pt: 'Marketing e Comunicação',      ar: 'التسويق والاتصالات' },
+      rh:           { fr: 'Ressources Humaines',      en: 'Human Resources',              es: 'Recursos Humanos',             pt: 'Recursos Humanos',             ar: 'الموارد البشرية' },
+      sante:        { fr: 'Santé & Bien-être',        en: 'Health & Wellness',            es: 'Salud y Bienestar',            pt: 'Saúde e Bem-estar',            ar: 'الصحة والعافية' },
+      education:    { fr: 'Éducation & Formation',    en: 'Education & Training',         es: 'Educación y Formación',        pt: 'Educação e Formação',          ar: 'التعليم والتدريب' },
+      restauration: { fr: 'Restauration',             en: 'Food & Hospitality',           es: 'Restauración',                 pt: 'Restauração',                  ar: 'المطاعم والضيافة' },
+      freelance:    { fr: 'Freelances & Consultants', en: 'Freelancers & Consultants',    es: 'Freelancers y Consultores',    pt: 'Freelancers e Consultores',    ar: 'المستقلون والاستشاريون' },
+    },
+
     /* ── Vertical descriptions (for tarifs tabs) ────────────────────────── */
     vdescs: {
       immo:         { fr: 'Agents, promoteurs, syndics',               en: 'Agents, developers, property managers',     es: 'Agentes, promotores, administradores',      pt: 'Agentes, promotores, administradores',      ar: 'وكلاء، مطورون، مديرو عقارات' },
