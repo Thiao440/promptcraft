@@ -1,0 +1,179 @@
+{
+  "_doc": "Lemon Squeezy product & variant IDs — source of truth for tarifs.html PRODUCTS object",
+  "_checkout_base": "https://shop.theprompt.studio/checkout/buy",
+  "_url_format": "{checkout_base}/{variant_uuid}?checkout[custom][vertical]={key}&checkout[custom][tier]={tier}&checkout[custom][period]={period}",
+  "_updated": "2026-03-20",
+
+  "verticals": {
+    "immo": {
+      "label": "Real Estate",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "8252769b-9537-4922-8d18-5f24edc72d30", "id": 1408953 },
+          "pro":     { "uuid": "d28fc1d2-02cd-4e6c-9650-baf0e67a9884", "id": 1408958 },
+          "gold":    { "uuid": "8ac1e666-094f-4fe9-aa92-261a0ba0e096", "id": 1408967 },
+          "team":    { "uuid": "ad570316-37a6-497b-bf92-36c9e2d65a57", "id": 1425674 }
+        },
+        "yearly": {
+          "starter": { "uuid": "2479d4ac-22ad-482c-8fa5-03b7ffa71f01", "id": 1408957 },
+          "pro":     { "uuid": "7bc40d3e-27f8-4ad0-af52-27c8be1fa767", "id": 1408965 },
+          "gold":    { "uuid": "2934f79f-fe49-4bba-ab22-d7328db1f5ac", "id": 1408969 },
+          "team":    { "uuid": "856ecc02-4ce4-47ca-af0a-7f8fa90d7a81", "id": 1425676 }
+        }
+      }
+    },
+    "commerce": {
+      "label": "E-Commerce & Retail",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "legal": {
+      "label": "Legal",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 1408992 },
+          "pro":     { "uuid": "", "id": 1408993 },
+          "gold":    { "uuid": "", "id": 1408994 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 1408995 },
+          "pro":     { "uuid": "", "id": 1408996 },
+          "gold":    { "uuid": "", "id": 1408997 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "finance": {
+      "label": "Finance & Accounting",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "marketing": {
+      "label": "Marketing & Comms",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "rh": {
+      "label": "Human Resources",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "sante": {
+      "label": "Health & Wellness",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "education": {
+      "label": "Education & Training",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "restauration": {
+      "label": "Food & Hospitality",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    },
+    "freelance": {
+      "label": "Freelancers & Consultants",
+      "variants": {
+        "monthly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        },
+        "yearly": {
+          "starter": { "uuid": "", "id": 0 },
+          "pro":     { "uuid": "", "id": 0 },
+          "gold":    { "uuid": "", "id": 0 },
+          "team":    { "uuid": "", "id": 0 }
+        }
+      }
+    }
+  }
+}

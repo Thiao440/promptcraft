@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Offres & Tarifs – The Prompt Studio</title>
-  <meta name="description" content="Choisissez votre verticale et votre offre. Accès instantané aux outils IA conçus pour votre métier."/>
+  <meta name="description" content="Choose your vertical and plan. Instant access to AI tools built for your industry."/>
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -293,103 +293,89 @@
 /* ── Use PS.VERTICALS as single source of truth ── */
 const VMETA = PS.VERTICALS;
 const VDESCS = {
-  immo:         'Agents, promoteurs, syndics',
-  commerce:     'E-commerce, retail, marques',
-  legal:        'Avocats, juristes, notaires',
-  finance:      'CGP, analystes, DAF',
-  marketing:    'Agences, CMO, growth',
-  rh:           'DRH, recruteurs, managers',
-  sante:        'Praticiens, cliniques, coachs',
-  education:    'Formateurs, écoles, EdTech',
-  restauration: 'Restaurants, traiteurs, franchises',
-  freelance:    'Indépendants, consultants, coachs',
+  immo:         'Agents, developers, property managers',
+  commerce:     'E-commerce, retail, brands',
+  legal:        'Lawyers, legal advisors, notaries',
+  finance:      'Advisors, analysts, CFOs',
+  marketing:    'Agencies, CMOs, growth teams',
+  rh:           'HR directors, recruiters, managers',
+  sante:        'Practitioners, clinics, coaches',
+  education:    'Trainers, schools, EdTech',
+  restauration: 'Restaurants, caterers, franchises',
+  freelance:    'Freelancers, consultants, coaches',
 };
 
 const BASE = 'https://shop.theprompt.studio/checkout/buy';
 
 /*
- * PRODUCTS — 1 Lemon Squeezy product per vertical (subscription type).
- * Each product has 8 variants: 4 tiers × 2 periods (monthly/yearly).
+ * PRODUCTS — Each variant has its own Lemon Squeezy checkout UUID.
  *
- * Structure:
- *   PRODUCTS[vertical].product  = product UUID (Lemon Squeezy)
- *   PRODUCTS[vertical].variants[period][tier] = variant ID (number)
+ *   PRODUCTS[vertical].variants[period][tier] = variant checkout UUID (string)
  *
- * On checkout, ALL variants are visible so the user can switch tier/period.
- * The selected variant is pre-highlighted via ?variant=VARIANT_ID.
- * 7-day free trial is enforced at the variant level in Lemon Squeezy.
+ * Checkout URL = BASE + '/' + variantUUID + custom data params
+ * 7-day free trial is enforced at the variant level in LS (Starter/Pro/Gold only).
  *
- * Replace PLACEHOLDER values with real Lemon Squeezy IDs.
+ * Reference: lemon-squeezy-ids.json
  */
 const PRODUCTS = {
   immo: {
-    product: 'IMMO_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '8252769b-9537-4922-8d18-5f24edc72d30', pro: 'd28fc1d2-02cd-4e6c-9650-baf0e67a9884', gold: '8ac1e666-094f-4fe9-aa92-261a0ba0e096', team: 'ad570316-37a6-497b-bf92-36c9e2d65a57' },
+      yearly:  { starter: '2479d4ac-22ad-482c-8fa5-03b7ffa71f01', pro: '7bc40d3e-27f8-4ad0-af52-27c8be1fa767', gold: '2934f79f-fe49-4bba-ab22-d7328db1f5ac', team: '856ecc02-4ce4-47ca-af0a-7f8fa90d7a81' },
     },
   },
   commerce: {
-    product: 'COM_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   legal: {
-    product: '4f047236-3552-449f-b0e9-877315747b1c',
     variants: {
-      monthly: { starter: 1408992, pro: 1408993, gold: 1408994, team: 0 },
-      yearly:  { starter: 1408995, pro: 1408996, gold: 1408997, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   finance: {
-    product: 'FIN_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   marketing: {
-    product: 'MKT_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   rh: {
-    product: 'RH_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   sante: {
-    product: 'SAN_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   education: {
-    product: 'EDU_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   restauration: {
-    product: 'REST_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
   freelance: {
-    product: 'FREE_PRODUCT_UUID',
     variants: {
-      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
-      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+      monthly: { starter: '', pro: '', gold: '', team: '' },
+      yearly:  { starter: '', pro: '', gold: '', team: '' },
     },
   },
 };
@@ -398,17 +384,17 @@ const PRODUCTS = {
 let TOOLS = {};
 
 const PLANS_DEF = [
-  { tier:'starter', label:'Starter', price:19, desc:"Découvrez l'IA métier avec les outils essentiels.",
-    features:['3 outils essentiels','50 générations / mois','Historique 7 jours','Export : copie','Support email','⚠️ Avec publicités'],
-    locked:['Sans publicité (Pro+)','Chatbot IA générique (Pro)','Chatbot IA spécialiste métier (Pro)','Outils avancés (Pro)','CRM & Gestion de projets (Gold)','Outils premium (Gold)'] },
-  { tier:'pro', label:'Pro', price:49, popular:true, desc:"Les outils avancés + les chatbots IA, sans aucune publicité.",
-    features:['✨ Sans publicité','7 outils (essentiels + avancés)','150 générations / mois','💬 Chatbot IA générique','💬 Chatbot IA spécialiste métier','Historique 30 jours','Export copie + PDF','Support prioritaire'],
-    locked:['CRM & Gestion de projets (Gold)','Outils premium (Gold)','Tons personnalisés','Export DOCX'] },
-  { tier:'gold', label:'Gold', price:99, desc:"Accès complet : CRM, outils premium, sans limite.",
-    features:['✨ Sans publicité','10 outils complets','Générations illimitées','📁 CRM & Gestion de projets','💬 Chatbots IA (générique + spécialiste)','Historique 90 jours','Tous les exports (PDF, DOCX…)','Tons personnalisés','Support prioritaire + chat','Nouveaux outils en avant-première'],
+  { tier:'starter', label:'Starter', price:19, desc:"Discover AI-powered tools for your industry essentials.",
+    features:['3 essential tools','50 generations / month','7-day history','Export: copy','Email support','⚠️ Includes ads'],
+    locked:['Ad-free (Pro+)','Generic AI chatbot (Pro)','Industry-specialist AI chatbot (Pro)','Advanced tools (Pro)','CRM & Project management (Gold)','Premium tools (Gold)'] },
+  { tier:'pro', label:'Pro', price:49, popular:true, desc:"Advanced tools + AI chatbots, completely ad-free.",
+    features:['✨ Ad-free','7 tools (essential + advanced)','150 generations / month','💬 Generic AI chatbot','💬 Industry-specialist AI chatbot','30-day history','Export copy + PDF','Priority support'],
+    locked:['CRM & Project management (Gold)','Premium tools (Gold)','Custom tones','DOCX export'] },
+  { tier:'gold', label:'Gold', price:99, desc:"Full access: CRM, premium tools, unlimited.",
+    features:['✨ Ad-free','10 complete tools','Unlimited generations','📁 CRM & Project management','💬 AI chatbots (generic + specialist)','90-day history','All exports (PDF, DOCX…)','Custom tones','Priority support + chat','Early access to new tools'],
     locked:[] },
-  { tier:'team', label:'Team', price:199, desc:"Collaborez en équipe avec intégrations & automatisations.",
-    features:['✨ Sans publicité','Jusqu\'à 3 verticales','10 outils / verticale','Générations illimitées','📁 CRM & Gestion de projets','💬 Chatbots IA','🔗 Intégrations API (CRM, email, outils métier)','⚡ Automatisations & workflows','Espace partagé & analytics','Historique illimité','Support dédié'],
+  { tier:'team', label:'Team', price:199, desc:"Collaborate as a team with integrations & automations.",
+    features:['✨ Ad-free','Up to 3 verticals','10 tools / vertical','Unlimited generations','📁 CRM & Project management','💬 AI chatbots','🔗 API integrations (CRM, email, business tools)','⚡ Automations & workflows','Shared workspace & analytics','Unlimited history','Dedicated support'],
     locked:[] },
 ];
 
@@ -469,17 +455,13 @@ function selectV(v) {
 function buildCheckoutUrl(vertical, tier, period) {
   const prod = PRODUCTS[vertical];
   if (!prod) return null;
-  const productUUID = prod.product;
-  const variantId   = prod.variants?.[period]?.[tier];
-  // Not ready if product UUID is a placeholder or variant is 0
-  if (!productUUID || productUUID.includes('_UUID') || !variantId) return null;
-  // Build URL: pre-select variant, show all variants so user can switch
+  const variantUUID = prod.variants?.[period]?.[tier];
+  if (!variantUUID) return null;
   const params = new URLSearchParams();
-  params.set('variant', variantId);
   params.set('checkout[custom][tier]', tier);
   params.set('checkout[custom][vertical]', vertical);
   params.set('checkout[custom][period]', period);
-  return `${BASE}/${productUUID}?${params.toString()}`;
+  return `${BASE}/${variantUUID}?${params.toString()}`;
 }
 
 function renderPlans() {
@@ -491,22 +473,22 @@ function renderPlans() {
     const url     = buildCheckoutUrl(activeV, p.tier, period);
     const isReady = !!url;
     const tierIcon = {starter:'🚀',pro:'⚡',gold:'👑',team:'🏢'}[p.tier]||'';
-    const ctaLabel = {starter:'Essai gratuit 7j →',pro:'Essai gratuit 7j →',gold:'Essai gratuit 7j →',team:'Contacter l\'équipe →'}[p.tier]||'Commencer →';
+    const ctaLabel = {starter:'Free 7-day trial →',pro:'Free 7-day trial →',gold:'Free 7-day trial →',team:'Contact us →'}[p.tier]||'Get started →';
     return `<div class="plan-card ${p.popular?'popular':''}">
-      ${p.popular?`<div class="pop-tag" style="background:${m.color}">Le plus populaire</div>`:''}
+      ${p.popular?`<div class="pop-tag" style="background:${m.color}">Most popular</div>`:''}
       <div class="plan-tier ${p.tier}">${tierIcon} ${p.label}</div>
-      <div class="plan-price">${price}<span class="per">€/mois</span></div>
-      <div class="plan-yearly ${yearly?'ok':''}">${yearly?`${annuel}€/an — économie ${p.price*12-annuel}€`:`soit ${annuel}€/an en annuel`}</div>
+      <div class="plan-price">${price}<span class="per">€/mo</span></div>
+      <div class="plan-yearly ${yearly?'ok':''}">${yearly?`${annuel}€/yr — save ${p.price*12-annuel}€`:`${annuel}€/yr if billed annually`}</div>
       <p class="plan-desc">${p.desc}</p>
-      <div style="font-size:.72rem;color:#22c55e;font-weight:600;margin-bottom:12px">7 jours d'essai gratuit · annulation possible à tout moment</div>
+      <div style="font-size:.72rem;color:#22c55e;font-weight:600;margin-bottom:12px">7-day free trial · cancel anytime</div>
       <ul class="plan-feats">
         ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
         ${p.locked.map(f=>`<li><span class="lk">✕</span><span class="lt">${f}</span></li>`).join('')}
       </ul>
       <a href="${p.tier==='team'?'/contact.html?subject=Team':(url||'#coming-soon')}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady||p.tier==='team'?'':'disabled'}"
          style="${p.popular?`background:${isReady?m.color:'#555'}`:`border-color:${isReady||p.tier==='team'?m.color:'#555'};color:${isReady||p.tier==='team'?m.color:'#888'}`}"
-         ${isReady||p.tier==='team'?'':`onclick="return false" title="Bientôt disponible"`}>
-        ${isReady||p.tier==='team' ? ctaLabel : 'Bientôt disponible'}
+         ${isReady||p.tier==='team'?'':`onclick="return false" title="Coming soon"`}>
+        ${isReady||p.tier==='team' ? ctaLabel : 'Coming soon'}
       </a>
     </div>`;
   }).join('');
@@ -517,7 +499,7 @@ function renderTools() {
   const tiers = {starter:'🚀 Starter',pro:'⚡ Pro',gold:'👑 Gold'};
   const vTools = TOOLS[activeV] || [];
   const count = vTools.length || 10;
-  document.getElementById('tools-title').innerHTML = `🔧 Les ${count} outils <span id="tools-vname" style="color:${m.color}">${m.label}</span>`;
+  document.getElementById('tools-title').innerHTML = `🔧 ${count} <span id="tools-vname" style="color:${m.color}">${m.label}</span> tools`;
   document.getElementById('tools-grid').innerHTML = vTools.map(t =>
     `<div class="tool-mini">
       <div class="tm-icon">${t.icon || m.icon}</div>
@@ -525,7 +507,7 @@ function renderTools() {
       <div class="tm-desc">${t.desc || t.description || ''}</div>
       <span class="tm-tier ${t.tier || t.min_tier || 'starter'}">${tiers[t.tier || t.min_tier] || '🚀 Starter'}</span>
     </div>`
-  ).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">Outils en cours de chargement…</p>`;
+  ).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">Loading tools…</p>`;
 }
 
 function toggleBilling() {
@@ -545,7 +527,7 @@ async function checkAuth() {
     await PS.init();
     if (PS.session) {
       const link = document.getElementById('nav-account-link');
-      if (link) { link.textContent = 'Mon espace →'; link.href = '/dashboard.html'; }
+      if (link) { link.textContent = 'My workspace →'; link.href = '/dashboard.html'; }
     }
   } catch(e) {}
 }

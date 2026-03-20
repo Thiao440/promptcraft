@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mon espace – The Prompt Studio</title>
+  <title>My workspace – The Prompt Studio</title>
   <meta name="robots" content="noindex"/>
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -109,7 +109,19 @@
     .btn-cta { display: inline-block; padding: 12px 28px; background: var(--accent); color: #fff; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: .95rem; transition: background .2s; }
     .btn-cta:hover { background: #5a52e0; }
 
-    /* Welcome toast */
+    /* Welcome overlay */
+    .welcome-overlay { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(15,17,23,.85); backdrop-filter: blur(8px); animation: welcomeFadeIn .4s ease; }
+    @keyframes welcomeFadeIn { from { opacity: 0 } to { opacity: 1 } }
+    .welcome-card { background: var(--surface, #1a1d27); border: 1px solid var(--border, #2a2d3a); border-radius: 20px; padding: 48px 40px 36px; max-width: 480px; width: 90%; text-align: center; position: relative; animation: welcomeSlideUp .5s ease; }
+    @keyframes welcomeSlideUp { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: translateY(0) } }
+    .welcome-card .wc-icon { font-size: 3rem; margin-bottom: 16px; }
+    .welcome-card h2 { font-family: Georgia, 'DejaVu Serif', serif; font-size: 1.5rem; font-weight: 700; color: var(--cream, #f0ead8); margin-bottom: 10px; }
+    .welcome-card p { color: var(--muted, #a0a0a0); font-size: .95rem; line-height: 1.6; margin-bottom: 24px; }
+    .welcome-card .wc-tier { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: .8rem; font-weight: 700; margin-bottom: 20px; }
+    .welcome-card .wc-cta { display: inline-block; padding: 12px 32px; background: var(--accent, #6c63ff); color: #fff; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: .95rem; cursor: pointer; border: none; transition: background .2s; }
+    .welcome-card .wc-cta:hover { background: #5a52e0; }
+    .welcome-card .wc-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; }
+    /* Welcome banner (fallback for returning first-login) */
     .welcome-banner { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2); border-radius: 12px; padding: 14px 20px; margin-bottom: 22px; display: flex; align-items: center; gap: 12px; font-size: .875rem; }
     .welcome-banner button { margin-left: auto; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
 
@@ -280,38 +292,38 @@
 <aside class="sidebar">
   <div class="sb-logo"><a href="/index.html">The <span>Prompt</span> Studio</a></div>
   <nav class="sb-nav">
-    <div class="nav-section">Mes espaces</div>
+    <div class="nav-section">My workspaces</div>
     <div id="sidebar-verticals">
-      <div class="nav-item" style="color:var(--muted);font-size:.82rem;padding-left:18px;">Chargement…</div>
+      <div class="nav-item" style="color:var(--muted);font-size:.82rem;padding-left:18px;">Loading…</div>
     </div>
     <div class="nav-section" style="margin-top:8px;">Navigation</div>
     <a href="/dashboard.html?view=projects" class="nav-item" id="nav-projects">
-      <span class="ico">📁</span> Mes projets
+      <span class="ico">📁</span> My projects
       <span id="proj-lock-badge" style="margin-left:auto;font-size:.6rem;color:var(--muted);display:none">🔒</span>
       <span id="proj-count-badge" style="margin-left:auto;font-size:.7rem;background:rgba(108,99,255,.15);color:var(--accent2);padding:1px 6px;border-radius:8px;display:none"></span>
     </a>
-    <a href="/account.html" class="nav-item"><span class="ico">👤</span> Mon compte</a>
+    <a href="/account.html" class="nav-item"><span class="ico">👤</span> My account</a>
     <div class="nav-section" style="margin-top:8px;">Feedback</div>
-    <a href="#" class="nav-item" onclick="event.preventDefault(); PSFeedback.showBugModal()"><span class="ico">🐛</span> Signaler un bug</a>
+    <a href="#" class="nav-item" onclick="event.preventDefault(); PSFeedback.showBugModal()"><span class="ico">🐛</span> Report a bug</a>
   </nav>
   <div class="sb-footer">
     <div class="sb-email" id="sb-email"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-      <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
-      <a href="/tarifs.html" style="font-size:.7rem;color:var(--muted);text-decoration:none;opacity:.6;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">+ Verticale</a>
+      <button class="logout-btn" onclick="PS.logout()">↩ Log out</button>
+      <a href="/tarifs.html" style="font-size:.7rem;color:var(--muted);text-decoration:none;opacity:.6;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">+ Vertical</a>
     </div>
   </div>
 </aside>
 
 <div class="main">
   <div class="announce-bar" id="announce-bar">
-    📱 Bientôt disponible — L'app mobile The Prompt Studio : vos outils IA pro, partout, tout le temps.
-    <button class="announce-close" onclick="document.getElementById('announce-bar').style.display='none'; try{localStorage.setItem('ps_announce_dismissed','1')}catch(e){}" aria-label="Fermer">✕</button>
+    📱 Coming soon — The Prompt Studio mobile app: your pro AI tools, anywhere, anytime.
+    <button class="announce-close" onclick="document.getElementById('announce-bar').style.display='none'; try{localStorage.setItem('ps_announce_dismissed','1')}catch(e){}" aria-label="Close">✕</button>
   </div>
   <div class="topbar">
     <div class="topbar-left">
-      <h1 id="topbar-title">Mon espace</h1>
-      <p id="topbar-sub">Chargement…</p>
+      <h1 id="topbar-title">My workspace</h1>
+      <p id="topbar-sub">Loading…</p>
     </div>
     <div class="topbar-right">
       <div class="quota-pill" id="quota-pill" style="display:none">
@@ -390,8 +402,8 @@ async function switchVertical(v) {
   const isOnTrial = sub?.status === 'on_trial';
   const trialEnd  = sub?.trial_ends_at ? new Date(sub.trial_ends_at) : null;
   const trialDays = trialEnd ? Math.max(0, Math.ceil((trialEnd - Date.now()) / 86400000)) : 0;
-  const trialTag  = isOnTrial ? ` · <span style="color:#22c55e;font-weight:600">Essai gratuit (${trialDays}j restants)</span>` : '';
-  document.getElementById('topbar-sub').innerHTML = sub ? `${TIER_LABELS[sub.tier]} · accès aux outils ${m.label}${trialTag}` : '';
+  const trialTag  = isOnTrial ? ` · <span style="color:#22c55e;font-weight:600">Free trial (${trialDays}d left)</span>` : '';
+  document.getElementById('topbar-sub').innerHTML = sub ? `${TIER_LABELS[sub.tier]} · ${m.label} tools${trialTag}` : '';
 
   /* ── Dynamic theming: sidebar logo, topbar border ── */
   const logoSpan = document.querySelector('.sb-logo span');
@@ -500,25 +512,25 @@ function renderTools(v, sub, filter = 'all') {
         <span class="v-banner-icon">${m.icon||'📁'}</span>
         <div>
           <div class="v-banner-title">${m.label||v}</div>
-          <div class="v-banner-sub">${sub ? TIER_LABELS[sub.tier] + ' · ' + (max===Infinity?'Illimité':max+' générations/mois') : 'Aucun abonnement actif'}</div>
+          <div class="v-banner-sub">${sub ? TIER_LABELS[sub.tier] + ' · ' + (max===Infinity?'Unlimited':max+' generations/month') : 'No active subscription'}</div>
         </div>
       </div>
       <div class="v-banner-right">
-        <div class="v-banner-quota">${max===Infinity ? usageCount+' utilisées' : 'Quota: '+usageCount+' / '+max}</div>
+        <div class="v-banner-quota">${max===Infinity ? usageCount+' used' : 'Quota: '+usageCount+' / '+max}</div>
         <div class="v-banner-bar"><div class="v-banner-fill" style="width:${pct}%"></div></div>
       </div>
     </div>`;
 
   // Header: accessible count + filter buttons
   const filters = [
-    { key:'all',        label:`Tous (${tools.length})` },
-    { key:'accessible', label:`Accessibles (${accessible.length})` },
-    { key:'locked',     label:`Verrouillés (${locked.length})` },
+    { key:'all',        label:`All (${tools.length})` },
+    { key:'accessible', label:`Available (${accessible.length})` },
+    { key:'locked',     label:`Locked (${locked.length})` },
   ];
   html += `<div class="tools-header">
     <h2>
       <span style="color:${color}">${accessible.length}</span>
-      <span style="color:var(--muted);font-weight:400"> / ${tools.length} accessibles</span>
+      <span style="color:var(--muted);font-weight:400"> / ${tools.length} available</span>
     </h2>
     <div class="filter-row">
       ${filters.map(f => `
@@ -528,14 +540,14 @@ function renderTools(v, sub, filter = 'all') {
     </div>
   </div>`;
 
-  // ── "Proposer un outil" special card — always first ──
+  // ── "Suggest a tool" special card — always first ──
   html += `<div class="tools-grid" style="margin-bottom:20px">
     <div class="tool-card accessible suggest-tool-card" style="border-style:dashed;border-color:rgba(108,99,255,.3);cursor:pointer;background:rgba(108,99,255,.03)"
          onclick="PSFeedback.showSuggestModal({ vertical: '${v}' })">
       <div class="tc-icon" style="font-size:2rem">💡</div>
-      <div class="tc-name" style="color:var(--accent2)">Proposer un outil</div>
-      <div class="tc-desc">Un outil vous manque ? Décrivez-le et nous le développerons si la demande est forte.</div>
-      <div class="tc-action" style="color:var(--accent2)">Proposer une idée →</div>
+      <div class="tc-name" style="color:var(--accent2)">Suggest a tool</div>
+      <div class="tc-desc">Missing a tool? Describe it and we'll build it if there's enough demand.</div>
+      <div class="tc-action" style="color:var(--accent2)">Submit an idea →</div>
     </div>
   </div>`;
 
@@ -551,8 +563,8 @@ function renderTools(v, sub, filter = 'all') {
     const tc           = TIER_META[tier];
     const tierAccCount = group.filter(t => t._access.allowed).length;
     const countLabel   = filter === 'all'
-      ? `${tierAccCount} / ${group.length} accessibles`
-      : `${group.length} outil${group.length > 1 ? 's' : ''}`;
+      ? `${tierAccCount} / ${group.length} available`
+      : `${group.length} tool${group.length > 1 ? 's' : ''}`;
 
     html += `<div class="tier-section">
       <div class="tier-section-header">
@@ -571,8 +583,8 @@ function renderTools(v, sub, filter = 'all') {
   // Empty state for filter with no results
   if (!hasContent) {
     html += `<div style="text-align:center;padding:48px 20px;color:var(--muted);font-size:.9rem;">
-      Aucun outil dans cette catégorie.
-      <button onclick="setFilter('all')" style="margin-left:8px;background:none;border:none;color:${color};cursor:pointer;font-weight:600;font-size:.9rem;">Voir tous →</button>
+      No tools in this category.
+      <button onclick="setFilter('all')" style="margin-left:8px;background:none;border:none;color:${color};cursor:pointer;font-weight:600;font-size:.9rem;">View all →</button>
     </div>`;
   }
 
@@ -581,29 +593,86 @@ function renderTools(v, sub, filter = 'all') {
 
 // ── No subscription state ──────────────────────────────────────────────────
 function renderNoSub() {
-  document.getElementById('topbar-title').textContent = 'Mon espace';
-  document.getElementById('topbar-sub').textContent   = 'Aucun abonnement actif';
+  document.getElementById('topbar-title').textContent = 'My workspace';
+  document.getElementById('topbar-sub').textContent   = 'No active subscription';
   document.getElementById('content').innerHTML = `
     <div class="empty-state">
       <div class="big">🚀</div>
-      <h2>Choisissez votre verticale</h2>
-      <p>Sélectionnez le secteur qui correspond à votre métier.<br>Vos outils IA seront disponibles immédiatement après souscription.</p>
-      <a href="/tarifs.html" class="btn-cta">Voir les offres →</a>
+      <h2>Choose your vertical</h2>
+      <p>Select the industry that matches your work.<br>Your AI tools will be available immediately after subscribing.</p>
+      <a href="/tarifs.html" class="btn-cta">View plans →</a>
     </div>`;
 }
 
-// ── Welcome banner ─────────────────────────────────────────────────────────
+// ── Welcome experience ──────────────────────────────────────────────────────
 function maybeShowWelcome() {
-  const welcome = new URLSearchParams(window.location.search).get('welcome');
-  if (!welcome) return;
-  const v = welcome;
-  const m = VMETA[v];
-  if (!m) return;
-  const banner = document.createElement('div');
-  banner.className = 'welcome-banner';
-  banner.innerHTML = `<span style="font-size:1.4rem">${m.icon}</span> <span>Bienvenue ! Votre accès <strong>${m.label}</strong> est actif. Bonne génération ! ✨</span> <button onclick="this.closest('.welcome-banner').remove()">✕</button>`;
-  document.getElementById('content').prepend(banner);
-  window.history.replaceState({}, '', '/dashboard.html');
+  const params = new URLSearchParams(window.location.search);
+  const fromCheckout = params.has('welcome');          // ?welcome=1 from Lemon Squeezy
+  const SEEN_KEY = 'ps_welcome_seen';
+  const firstEverLogin = !localStorage.getItem(SEEN_KEY);
+
+  if (!fromCheckout && !firstEverLogin) return;
+
+  // Mark as seen
+  try { localStorage.setItem(SEEN_KEY, '1'); } catch (e) {}
+
+  // Clean URL if coming from checkout redirect
+  if (fromCheckout) {
+    params.delete('welcome');
+    const clean = params.toString();
+    window.history.replaceState({}, '', '/dashboard.html' + (clean ? '?' + clean : ''));
+  }
+
+  // Detect active vertical & subscription info
+  const sub = PS.subs && PS.subs[0];
+  const v   = activeV || sub?.vertical;
+  const m   = v ? VMETA[v] : null;
+  const tierLabel = sub ? (TIER_LABELS[sub.tier] || sub.tier) : '';
+
+  const isOnTrial = sub?.status === 'on_trial';
+  const trialEnd  = sub?.trial_ends_at ? new Date(sub.trial_ends_at) : null;
+  const trialDays = trialEnd ? Math.max(0, Math.ceil((trialEnd - Date.now()) / 86400000)) : 0;
+
+  // Build welcome overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'welcome-overlay';
+  const verticalColor = m?.color || '#6c63ff';
+
+  let subtitle = '';
+  if (fromCheckout && isOnTrial) {
+    subtitle = `Your <strong>${tierLabel}</strong> plan is active with a <strong>7-day free trial</strong>. You won't be charged until the trial ends.`;
+  } else if (fromCheckout) {
+    subtitle = `Your <strong>${tierLabel}</strong> plan is now active. All your AI tools are ready to use.`;
+  } else {
+    subtitle = `Your workspace is set up and ready. Explore your AI tools below.`;
+  }
+
+  let trialNote = '';
+  if (isOnTrial) {
+    trialNote = `<div class="wc-tier" style="background:rgba(34,197,94,.12);color:#22c55e;">Free trial &middot; ${trialDays} days remaining</div><br>`;
+  }
+
+  overlay.innerHTML = `
+    <div class="welcome-card">
+      <button class="wc-close" onclick="this.closest('.welcome-overlay').remove()" aria-label="Close">&times;</button>
+      <div class="wc-icon">${m?.icon || '🎉'}</div>
+      <h2>Welcome to ${m?.label || 'The Prompt Studio'}!</h2>
+      ${trialNote}
+      <p>${subtitle}</p>
+      <button class="wc-cta" onclick="this.closest('.welcome-overlay').remove()">Get started &rarr;</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // Close on backdrop click
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  // Close on Escape
+  function onEsc(e) { if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', onEsc); } }
+  document.addEventListener('keydown', onEsc);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -619,16 +688,16 @@ async function renderProjectsView() {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const navProj = document.getElementById('nav-projects');
     if (navProj) navProj.classList.add('active');
-    document.getElementById('topbar-title').textContent = '📁 Mes projets';
+    document.getElementById('topbar-title').textContent = '📁 My projects';
     document.getElementById('topbar-sub').textContent   = '';
       document.getElementById('quota-pill').style.display = 'none';
     document.getElementById('content').innerHTML = `
       <div class="empty-state">
         <div class="big">🔒</div>
-        <h2>CRM & Gestion de projets</h2>
-        <p>Le CRM intégré est disponible à partir de l'offre <strong style="color:#c9a84c">Gold</strong>.<br>
-        Créez des projets, centralisez vos dossiers et utilisez les outils IA en contexte.</p>
-        <a href="/tarifs.html" class="btn-cta">Passer à Gold →</a>
+        <h2>CRM & Project Management</h2>
+        <p>The built-in CRM is available starting from the <strong style="color:#c9a84c">Gold</strong> plan.<br>
+        Create projects, centralize your files, and use AI tools in context.</p>
+        <a href="/tarifs.html" class="btn-cta">Upgrade to Gold →</a>
       </div>`;
     return;
   }
@@ -643,8 +712,8 @@ async function renderProjectsView() {
   if (navProj) navProj.classList.add('active');
 
   // Header
-  document.getElementById('topbar-title').textContent = '📁 Mes projets';
-  document.getElementById('topbar-sub').textContent   = 'Gérez vos dossiers et utilisez les outils IA en contexte';
+  document.getElementById('topbar-title').textContent = '📁 My projects';
+  document.getElementById('topbar-sub').textContent   = 'Manage your files and use AI tools in context';
   document.getElementById('quota-pill').style.display = 'none';
 
   const projects = await PSProjects.list({
@@ -662,17 +731,17 @@ async function renderProjectsView() {
 
   let html = `
     <div class="proj-view-header">
-      <h2>📁 ${projects.length} projet(s)</h2>
+      <h2>📁 ${projects.length} project${projects.length > 1 ? 's' : ''}</h2>
       <div class="proj-filters">
         <select onchange="filterProjects(this.value, '${_projFilterStatus}')">
-          <option value="">Toutes les verticales</option>
+          <option value="">All verticals</option>
           ${vOpts}
         </select>
         <select onchange="filterProjects('${_projFilterVertical}', this.value)">
-          <option value="active"    ${_projFilterStatus==='active'?'selected':''}>🟢 En cours</option>
-          <option value="completed" ${_projFilterStatus==='completed'?'selected':''}>🔵 Terminés</option>
-          <option value="archived"  ${_projFilterStatus==='archived'?'selected':''}>⚪ Archivés</option>
-          <option value=""           ${!_projFilterStatus?'selected':''}>Tous</option>
+          <option value="active"    ${_projFilterStatus==='active'?'selected':''}>🟢 Active</option>
+          <option value="completed" ${_projFilterStatus==='completed'?'selected':''}>🔵 Completed</option>
+          <option value="archived"  ${_projFilterStatus==='archived'?'selected':''}>⚪ Archived</option>
+          <option value=""           ${!_projFilterStatus?'selected':''}>All</option>
         </select>
       </div>
     </div>
@@ -682,14 +751,14 @@ async function renderProjectsView() {
   html += `
     <div class="proj-card new-proj-card" onclick="showCreateProjectModal()">
       <div class="new-proj-plus">+</div>
-      <div class="new-proj-label">Nouveau projet</div>
+      <div class="new-proj-label">New project</div>
     </div>`;
 
   // Project cards
   projects.forEach(p => {
     const m    = VMETA[p.vertical] || {};
     const sm   = PSProjects.STATUS_META[p.status] || {};
-    const date = new Date(p.updated_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+    const date = new Date(p.updated_at).toLocaleDateString('en-US', { day:'numeric', month:'short' });
 
     // Extract key data preview
     const dataEntries = Object.entries(p.data || {}).filter(([,v]) => v).slice(0, 3);
@@ -702,7 +771,7 @@ async function renderProjectsView() {
           <span class="proj-card-name">${PSProjects.escapeHtml(p.name)}</span>
           <span class="proj-card-status" style="background:${sm.color}22;color:${sm.color}">${sm.label || p.status}</span>
         </div>
-        <div class="proj-card-meta">${preview || '<em style="opacity:.5">Aucune info renseignée</em>'}</div>
+        <div class="proj-card-meta">${preview || '<em style="opacity:.5">No info provided</em>'}</div>
         <div class="proj-card-tags">
           <span class="proj-card-tag" style="background:${m.bg || 'rgba(108,99,255,.1)'};color:${m.color || 'var(--accent2)'}">${m.label || p.vertical}</span>
         </div>
@@ -735,12 +804,12 @@ function showCreateProjectModal() {
   overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
   overlay.innerHTML = `
     <div class="modal">
-      <h3>📁 Nouveau projet</h3>
-      <input type="text" class="modal-input" id="new-proj-name" placeholder="Nom du projet (ex: Appartement T3 Paris 11)" autofocus/>
+      <h3>📁 New project</h3>
+      <input type="text" class="modal-input" id="new-proj-name" placeholder="Project name (e.g. Apartment 3BR Paris 11th)" autofocus/>
       <select class="modal-input" id="new-proj-vertical">${vOpts}</select>
       <div class="modal-btns">
-        <button class="modal-btn modal-btn-cancel" onclick="this.closest('.modal-overlay').remove()">Annuler</button>
-        <button class="modal-btn modal-btn-primary" onclick="createProject()">Créer →</button>
+        <button class="modal-btn modal-btn-cancel" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="modal-btn modal-btn-primary" onclick="createProject()">Create →</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -750,15 +819,15 @@ function showCreateProjectModal() {
 async function createProject() {
   const name     = document.getElementById('new-proj-name')?.value?.trim();
   const vertical = document.getElementById('new-proj-vertical')?.value;
-  if (!name) { alert('Veuillez saisir un nom de projet.'); return; }
-  if (!vertical) { alert('Veuillez sélectionner une verticale.'); return; }
+  if (!name) { alert('Please enter a project name.'); return; }
+  if (!vertical) { alert('Please select a vertical.'); return; }
 
   const proj = await PSProjects.create({ vertical, name });
   document.querySelector('.modal-overlay')?.remove();
   if (proj) {
     location.href = `/project.html?id=${proj.id}`;
   } else {
-    alert('Erreur lors de la création du projet.');
+    alert('Error creating project.');
   }
 }
 
@@ -799,7 +868,7 @@ async function init() {
   if (!PS.isProfileComplete()) {
     const banner = document.createElement('div');
     banner.style.cssText = 'background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);border-radius:12px;padding:14px 20px;margin:0 0 20px;display:flex;align-items:center;justify-content:space-between;font-size:.875rem;';
-    banner.innerHTML = '<span>👋 Complétez votre profil pour une meilleure expérience.</span><a href="/complete-profile.html?redirect=/dashboard.html" style="background:#6c63ff;color:#fff;padding:6px 16px;border-radius:7px;text-decoration:none;font-weight:600;font-size:.8rem;white-space:nowrap;margin-left:12px;">Compléter →</a>';
+    banner.innerHTML = '<span>👋 Complete your profile for a better experience.</span><a href="/complete-profile.html?redirect=/dashboard.html" style="background:#6c63ff;color:#fff;padding:6px 16px;border-radius:7px;text-decoration:none;font-weight:600;font-size:.8rem;white-space:nowrap;margin-left:12px;">Complete →</a>';
     const main = document.querySelector('.content');
     if (main) main.prepend(banner);
   }
