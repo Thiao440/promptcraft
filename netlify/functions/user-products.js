@@ -83,7 +83,7 @@ exports.handler = async (event) => {
     .from('subscriptions')
     .select('vertical, tier, status, current_period_start, current_period_end, lemon_subscription_id')
     .eq('user_id', user.id)
-    .in('status', ['active']);
+    .in('status', ['active', 'on_trial']);
 
   if (dbError) {
     console.error('DB error:', dbError);

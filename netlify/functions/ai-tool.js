@@ -321,7 +321,7 @@ exports.handler = async (event) => {
     .select('tier, vertical, current_period_end, trial_ends_at')
     .eq('user_id', user.id)
     .eq('vertical', tool.vertical)
-    .eq('status', 'active')
+    .in('status', ['active', 'on_trial'])
     .single();
 
   if (!sub) {

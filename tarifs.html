@@ -306,48 +306,91 @@ const VDESCS = {
 };
 
 const BASE = 'https://shop.theprompt.studio/checkout/buy';
-/* VIDS[vertical][monthly|yearly][tier] = 'UUID?enabled=VARIANT_ID'
-   Replace _UUID placeholders with real Lemon Squeezy product UUIDs */
-const VIDS = {
+
+/*
+ * PRODUCTS — 1 Lemon Squeezy product per vertical (subscription type).
+ * Each product has 8 variants: 4 tiers × 2 periods (monthly/yearly).
+ *
+ * Structure:
+ *   PRODUCTS[vertical].product  = product UUID (Lemon Squeezy)
+ *   PRODUCTS[vertical].variants[period][tier] = variant ID (number)
+ *
+ * On checkout, ALL variants are visible so the user can switch tier/period.
+ * The selected variant is pre-highlighted via ?variant=VARIANT_ID.
+ * 7-day free trial is enforced at the variant level in Lemon Squeezy.
+ *
+ * Replace PLACEHOLDER values with real Lemon Squeezy IDs.
+ */
+const PRODUCTS = {
   immo: {
-    monthly: { starter:'IMMO_UUID_SM?enabled=1408953', pro:'IMMO_UUID_PM?enabled=1408957', gold:'IMMO_UUID_GM?enabled=1408958', team:'IMMO_UUID_TM' },
-    yearly:  { starter:'IMMO_UUID_SY?enabled=1408965', pro:'IMMO_UUID_PY?enabled=1408967', gold:'IMMO_UUID_GY?enabled=1408969', team:'IMMO_UUID_TY' },
+    product: 'IMMO_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   commerce: {
-    monthly: { starter:'COM_UUID_SM', pro:'COM_UUID_PM', gold:'COM_UUID_GM', team:'COM_UUID_TM' },
-    yearly:  { starter:'COM_UUID_SY', pro:'COM_UUID_PY', gold:'COM_UUID_GY', team:'COM_UUID_TY' },
+    product: 'COM_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   legal: {
-    monthly: { starter:'4f047236-3552-449f-b0e9-877315747b1c?enabled=1408992', pro:'1a51f4ee-7715-4915-aa5c-4a0e8faa806f?enabled=1408993', gold:'7bb2a72b-e063-4a2f-81a6-aeadf89abe6a?enabled=1408994', team:'LEGAL_UUID_TM' },
-    yearly:  { starter:'91eb08ec-ffd4-4f56-927b-ce7784297695?enabled=1408995', pro:'c031b536-ba92-49dd-a565-3c0792a35a36?enabled=1408996', gold:'4317d321-8542-4a18-8920-7878430a47b6?enabled=1408997', team:'LEGAL_UUID_TY' },
+    product: '4f047236-3552-449f-b0e9-877315747b1c',
+    variants: {
+      monthly: { starter: 1408992, pro: 1408993, gold: 1408994, team: 0 },
+      yearly:  { starter: 1408995, pro: 1408996, gold: 1408997, team: 0 },
+    },
   },
   finance: {
-    monthly: { starter:'FIN_UUID_SM', pro:'FIN_UUID_PM', gold:'FIN_UUID_GM', team:'FIN_UUID_TM' },
-    yearly:  { starter:'FIN_UUID_SY', pro:'FIN_UUID_PY', gold:'FIN_UUID_GY', team:'FIN_UUID_TY' },
+    product: 'FIN_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   marketing: {
-    monthly: { starter:'MKT_UUID_SM', pro:'MKT_UUID_PM', gold:'MKT_UUID_GM', team:'MKT_UUID_TM' },
-    yearly:  { starter:'MKT_UUID_SY', pro:'MKT_UUID_PY', gold:'MKT_UUID_GY', team:'MKT_UUID_TY' },
+    product: 'MKT_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   rh: {
-    monthly: { starter:'RH_UUID_SM', pro:'RH_UUID_PM', gold:'RH_UUID_GM', team:'RH_UUID_TM' },
-    yearly:  { starter:'RH_UUID_SY', pro:'RH_UUID_PY', gold:'RH_UUID_GY', team:'RH_UUID_TY' },
+    product: 'RH_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   sante: {
-    monthly: { starter:'SAN_UUID_SM', pro:'SAN_UUID_PM', gold:'SAN_UUID_GM', team:'SAN_UUID_TM' },
-    yearly:  { starter:'SAN_UUID_SY', pro:'SAN_UUID_PY', gold:'SAN_UUID_GY', team:'SAN_UUID_TY' },
+    product: 'SAN_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   education: {
-    monthly: { starter:'EDU_UUID_SM', pro:'EDU_UUID_PM', gold:'EDU_UUID_GM', team:'EDU_UUID_TM' },
-    yearly:  { starter:'EDU_UUID_SY', pro:'EDU_UUID_PY', gold:'EDU_UUID_GY', team:'EDU_UUID_TY' },
+    product: 'EDU_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   restauration: {
-    monthly: { starter:'REST_UUID_SM', pro:'REST_UUID_PM', gold:'REST_UUID_GM', team:'REST_UUID_TM' },
-    yearly:  { starter:'REST_UUID_SY', pro:'REST_UUID_PY', gold:'REST_UUID_GY', team:'REST_UUID_TY' },
+    product: 'REST_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
   freelance: {
-    monthly: { starter:'FREE_UUID_SM', pro:'FREE_UUID_PM', gold:'FREE_UUID_GM', team:'FREE_UUID_TM' },
-    yearly:  { starter:'FREE_UUID_SY', pro:'FREE_UUID_PY', gold:'FREE_UUID_GY', team:'FREE_UUID_TY' },
+    product: 'FREE_PRODUCT_UUID',
+    variants: {
+      monthly: { starter: 0, pro: 0, gold: 0, team: 0 },
+      yearly:  { starter: 0, pro: 0, gold: 0, team: 0 },
+    },
   },
 };
 
@@ -423,31 +466,44 @@ function selectV(v) {
   renderPlans(); renderTools();
 }
 
+function buildCheckoutUrl(vertical, tier, period) {
+  const prod = PRODUCTS[vertical];
+  if (!prod) return null;
+  const productUUID = prod.product;
+  const variantId   = prod.variants?.[period]?.[tier];
+  // Not ready if product UUID is a placeholder or variant is 0
+  if (!productUUID || productUUID.includes('_UUID') || !variantId) return null;
+  // Build URL: pre-select variant, show all variants so user can switch
+  const params = new URLSearchParams();
+  params.set('variant', variantId);
+  params.set('checkout[custom][tier]', tier);
+  params.set('checkout[custom][vertical]', vertical);
+  params.set('checkout[custom][period]', period);
+  return `${BASE}/${productUUID}?${params.toString()}`;
+}
+
 function renderPlans() {
   const m = VMETA[activeV];
   document.getElementById('plans-grid').innerHTML = PLANS_DEF.map(p => {
     const price   = yearly ? Math.round(p.price * .8) : p.price;
     const annuel  = Math.round(p.price * 12 * .8);
     const period  = yearly ? 'yearly' : 'monthly';
-    const path    = VIDS[activeV]?.[period]?.[p.tier] || '';
-    const isReady = path && !path.includes('UUID') && !path.includes('_UUID');
-    const sep     = path.includes('?') ? '&' : '?';
-    const url     = isReady
-      ? `${BASE}/${path}${sep}checkout[custom][tier]=${p.tier}&checkout[custom][vertical]=${activeV}&checkout[custom][period]=${period}`
-      : '#coming-soon';
+    const url     = buildCheckoutUrl(activeV, p.tier, period);
+    const isReady = !!url;
     const tierIcon = {starter:'🚀',pro:'⚡',gold:'👑',team:'🏢'}[p.tier]||'';
-    const ctaLabel = {starter:'Démarrer →',pro:'Passer en Pro →',gold:'Tout débloquer →',team:'Contacter l\'équipe →'}[p.tier]||'Commencer →';
+    const ctaLabel = {starter:'Essai gratuit 7j →',pro:'Essai gratuit 7j →',gold:'Essai gratuit 7j →',team:'Contacter l\'équipe →'}[p.tier]||'Commencer →';
     return `<div class="plan-card ${p.popular?'popular':''}">
       ${p.popular?`<div class="pop-tag" style="background:${m.color}">Le plus populaire</div>`:''}
       <div class="plan-tier ${p.tier}">${tierIcon} ${p.label}</div>
       <div class="plan-price">${price}<span class="per">€/mois</span></div>
       <div class="plan-yearly ${yearly?'ok':''}">${yearly?`${annuel}€/an — économie ${p.price*12-annuel}€`:`soit ${annuel}€/an en annuel`}</div>
       <p class="plan-desc">${p.desc}</p>
+      <div style="font-size:.72rem;color:#22c55e;font-weight:600;margin-bottom:12px">7 jours d'essai gratuit · annulation possible à tout moment</div>
       <ul class="plan-feats">
         ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
         ${p.locked.map(f=>`<li><span class="lk">✕</span><span class="lt">${f}</span></li>`).join('')}
       </ul>
-      <a href="${p.tier==='team'?'/contact.html?subject=Team':url}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady||p.tier==='team'?'':'disabled'}"
+      <a href="${p.tier==='team'?'/contact.html?subject=Team':(url||'#coming-soon')}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady||p.tier==='team'?'':'disabled'}"
          style="${p.popular?`background:${isReady?m.color:'#555'}`:`border-color:${isReady||p.tier==='team'?m.color:'#555'};color:${isReady||p.tier==='team'?m.color:'#888'}`}"
          ${isReady||p.tier==='team'?'':`onclick="return false" title="Bientôt disponible"`}>
         ${isReady||p.tier==='team' ? ctaLabel : 'Bientôt disponible'}

@@ -139,37 +139,46 @@ async function handleSubscriptionCreated(payload, supabase) {
   const customVertical = payload.meta?.custom_data?.vertical?.toLowerCase() || null;
   const tier = customTier || TIER_VARIANT_MAP[variantId] || 'starter';
 
+  // Detect trial status — Lemon Squeezy sends status: 'on_trial' during free trial
+  const isOnTrial  = attrs.status === 'on_trial';
+  const trialEnd   = attrs.trial_ends_at ? new Date(attrs.trial_ends_at).toISOString() : null;
+  const subStatus  = isOnTrial ? 'on_trial' : 'active';
+
   // Period end
   const periodEnd = attrs.renews_at
     ? new Date(attrs.renews_at).toISOString()
     : (() => { const d = new Date(); d.setMonth(d.getMonth() + 1); return d.toISOString(); })();
 
-  log('sub_processing', { subId, email, tier, vertical: customVertical });
+  log('sub_processing', { subId, email, tier, vertical: customVertical, isOnTrial, trialEnd });
 
   const userId = await upsertUser(supabase, email, name);
   if (!userId) return;
 
-  const { error } = await supabase.from('subscriptions').upsert({
+  const upsertData = {
     user_id:                userId,
     tier,
-    status:                 'active',
+    status:                 subStatus,
     vertical:               customVertical,
     lemon_subscription_id:  subId,
     lemon_order_id:         String(attrs.order_id || ''),
     current_period_start:   attrs.created_at || new Date().toISOString(),
     current_period_end:     periodEnd,
     updated_at:             new Date().toISOString(),
-  }, { onConflict: 'user_id,vertical' });
+  };
+  if (trialEnd) upsertData.trial_ends_at = trialEnd;
+
+  const { error } = await supabase.from('subscriptions').upsert(upsertData, { onConflict: 'user_id,vertical' });
 
   if (error) log('sub_upsert_error', { subId, error: error.message });
 
   // Log subscription history for analytics
   await supabase.from('subscription_history').insert({
-    user_id: userId, vertical: customVertical, new_tier: tier, new_status: 'active',
-    change_type: 'created', metadata: { subId, lemon_order_id: String(attrs.order_id || '') },
+    user_id: userId, vertical: customVertical, new_tier: tier, new_status: subStatus,
+    change_type: isOnTrial ? 'trial_started' : 'created',
+    metadata: { subId, lemon_order_id: String(attrs.order_id || ''), trial_ends_at: trialEnd },
   }).catch(() => {});
 
-  log('sub_complete', { subId, email, tier, vertical: customVertical, userId });
+  log('sub_complete', { subId, email, tier, vertical: customVertical, userId, status: subStatus });
 }
 
 /**
@@ -184,6 +193,7 @@ async function handleSubscriptionUpdated(payload, supabase) {
     : null;
 
   const statusMap = {
+    on_trial:  'on_trial',
     active:    'active',
     paused:    'active',
     past_due:  'past_due',

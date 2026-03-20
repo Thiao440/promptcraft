@@ -69,7 +69,7 @@ const PS = (() => {
       // Load profile + subscriptions in parallel
       const [profileRes, subsRes] = await Promise.all([
         sb.from('profiles').select('*').eq('id', session.user.id).single(),
-        sb.from('subscriptions').select('*').eq('user_id', session.user.id).eq('status', 'active'),
+        sb.from('subscriptions').select('*').eq('user_id', session.user.id).in('status', ['active', 'on_trial']),
       ]);
 
       _profile = profileRes.data || null;

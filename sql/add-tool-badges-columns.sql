@@ -27,3 +27,19 @@ GRANT EXECUTE ON FUNCTION increment_tool_usage(TEXT) TO authenticated;
 -- NOTE: Keep is_featured and is_new for now as fallback; remove in a future migration.
 -- ALTER TABLE tools DROP COLUMN IF EXISTS is_featured;
 -- ALTER TABLE tools DROP COLUMN IF EXISTS is_new;
+
+-- ══════════════════════════════════════════════════════════════════════════════
+-- Migration: Add trial support to subscriptions table
+-- Purpose: Track 7-day free trial period per subscription
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- 7. Add trial_ends_at column (null = no trial, date = trial active until)
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMPTZ;
+
+-- 8. Add cancelled_at column (tracks when the user cancelled)
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS cancelled_at TIMESTAMPTZ;
+
+-- 9. Update status check constraint to include 'on_trial'
+-- (only if you have a CHECK constraint — Supabase doesn't add one by default, but just in case)
+-- ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS subscriptions_status_check;
+-- ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_status_check CHECK (status IN ('active', 'on_trial', 'cancelled', 'expired', 'past_due', 'refunded'));

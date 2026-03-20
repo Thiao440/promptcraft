@@ -386,7 +386,12 @@ async function switchVertical(v) {
   });
 
   document.getElementById('topbar-title').textContent = `${m.icon || ''} ${m.label || v}`;
-  document.getElementById('topbar-sub').textContent   = sub ? `${TIER_LABELS[sub.tier]} · accès aux outils ${m.label}` : '';
+  // Show trial badge if on_trial
+  const isOnTrial = sub?.status === 'on_trial';
+  const trialEnd  = sub?.trial_ends_at ? new Date(sub.trial_ends_at) : null;
+  const trialDays = trialEnd ? Math.max(0, Math.ceil((trialEnd - Date.now()) / 86400000)) : 0;
+  const trialTag  = isOnTrial ? ` · <span style="color:#22c55e;font-weight:600">Essai gratuit (${trialDays}j restants)</span>` : '';
+  document.getElementById('topbar-sub').innerHTML = sub ? `${TIER_LABELS[sub.tier]} · accès aux outils ${m.label}${trialTag}` : '';
 
   /* ── Dynamic theming: sidebar logo, topbar border ── */
   const logoSpan = document.querySelector('.sb-logo span');

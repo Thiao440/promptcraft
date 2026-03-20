@@ -199,7 +199,7 @@ exports.handler = async (event) => {
 
   // ── PAID MODE: subscription + quota check ───────────────────────────────
   const { data: sub } = await supabase.from('subscriptions').select('tier, current_period_end')
-    .eq('user_id', user.id).eq('vertical', vertical).eq('status', 'active').single();
+    .eq('user_id', user.id).eq('vertical', vertical).in('status', ['active', 'on_trial']).single();
   if (!sub) return fail(403, 'NO_SUBSCRIPTION', 'Aucun abonnement actif pour cette verticale.', { vertical });
   if (sub.current_period_end && new Date(sub.current_period_end) < new Date()) return fail(403, 'SUBSCRIPTION_EXPIRED', 'Abonnement expiré.');
 
