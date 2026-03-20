@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom AI Consulting — The Prompt Studio</title>
+<meta name="description" content="Custom AI consulting for any project, any industry. AI audit, tool deployment, team training. Free 2-hour diagnostic.">
+<meta name="keywords" content="custom AI consulting, AI implementation, business AI automation, SMB AI, AI transformation, AI consultant">
+<link rel="canonical" href="https://theprompt.studio/custom-consulting.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://theprompt.studio/custom-consulting.html">
+<meta property="og:title" content="Custom AI Consulting — The Prompt Studio">
+<meta property="og:description" content="We deploy AI in your organization, regardless of your industry. Free diagnostic, first deliverable in 2 weeks.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0b09'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-style='italic' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>PS</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Custom AI Consulting — The Prompt Studio","provider":{"@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio"},"description":"Custom AI consulting for any project and any industry: audit, deployment, training","areaServed":"Worldwide","serviceType":"AI Consulting"}</script>
+<script src="/js/ps-lang.js?v=1.1"></script>
+<script src="/js/ps-i18n.js?v=1.0"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0c0b09;--surface:#0f110e;--card:#141a17;--border:#1e2b27;
+  --em:#7c3aed;--em-l:#a78bfa;--em-d:#5b21b6;
+  --gold:#c9a84c;--cream:#f0ead8;--muted:#7a8f8b;--white:#faf9f7;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+/* ===== NAV ===== */
+.ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(12,11,9,0.96);backdrop-filter:blur(18px);
+  border-bottom:1px solid #2e2a24;padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;height:58px;}
+.ps-nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;
+  color:#f0ead8;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
+.ps-nav-logo em{color:#c9a84c;font-style:italic;}
+.ps-nav-center{display:flex;align-items:center;gap:0;}
+.ps-nav-item{position:relative;}
+.ps-nav-btn{background:none;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;
+  letter-spacing:0.04em;padding:0 14px;height:58px;
+  display:flex;align-items:center;gap:5px;transition:color 0.2s;}
+.ps-nav-btn:hover{color:#f0ead8;}
+.ps-nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;
+  letter-spacing:0.04em;padding:0 14px;height:58px;text-decoration:none;
+  display:flex;align-items:center;transition:color 0.2s;}
+.ps-nav-a:hover,.ps-nav-a.ps-active{color:#c9a84c;}
+.ps-nav-gold{color:#c9a84c !important;font-weight:600;}
+.ps-nav-ai{color:#a78bfa !important;}.ps-nav-ai:hover{color:#c4b5fd !important;}
+.ps-dd{position:absolute;top:100%;left:-8px;background:#1a1814;
+  border:1px solid #2e2a24;min-width:248px;
+  opacity:0;pointer-events:none;transform:translateY(-6px);
+  transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);}
+.ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-dd-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px;text-decoration:none;color:#f0ead8;
+  font-family:'Outfit',sans-serif;font-size:13px;
+  border-bottom:1px solid #2e2a24;transition:background 0.15s;}
+.ps-dd-row:last-child{border-bottom:none;}
+.ps-dd-row:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(0,137,123,0.18);
+  border:1px solid rgba(0,137,123,0.4);color:#00897b;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-service{font-size:8px;padding:2px 7px;background:rgba(124,58,237,0.15);
+  border:1px solid rgba(124,58,237,0.35);color:#a78bfa;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-nav-right{display:flex;align-items:center;gap:10px;}
+.ps-nav-cta{background:#c9a84c;color:#000;font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:0.06em;padding:9px 18px;
+  border:none;cursor:pointer;text-decoration:none;display:inline-block;
+  transition:background 0.2s;white-space:nowrap;}
+.ps-nav-cta:hover{background:#e8c97a;}
+/* ── LANG SWITCHER ── */
+.ps-lang-drop{position:relative;}
+.ps-lang-drop-btn{background:none;border:none;cursor:pointer;font-size:13px;color:#8a8070;padding:0 8px;height:58px;display:flex;align-items:center;gap:3px;transition:color 0.2s;font-family:'Outfit',sans-serif;}
+.ps-lang-drop-btn:hover{color:#f0ead8;}
+.ps-lang-menu{position:absolute;top:58px;right:0;background:#1a1814;border:1px solid #2e2a24;border-radius:10px;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);min-width:148px;}
+.ps-lang-drop:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-lang-opt{display:block;width:100%;background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:#f0ead8;padding:10px 16px;text-align:left;transition:background 0.15s;border-bottom:1px solid #2e2a24;}
+.ps-lang-opt:last-child{border-bottom:none;}
+.ps-lang-opt:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-lang-opt[aria-current="true"]{color:#c9a84c;}
+@media(max-width:768px){.ps-nav-center{display:none;}.ps-nav{padding:0 20px;}}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 48px 100px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;right:0;width:60%;height:100%;background:radial-gradient(ellipse at right top,rgba(124,58,237,0.1) 0%,transparent 60%);pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 100% 0%,black 20%,transparent 70%);}
+.hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hero-label{font-family:'Outfit',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--em-l);margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.hero-label::after{content:'';flex:1;max-width:36px;height:1px;background:var(--em);opacity:0.5;}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,80px);font-weight:300;line-height:0.95;letter-spacing:-0.02em;margin-bottom:28px;}
+h1 em{color:var(--em-l);font-style:italic;display:block;}
+.hero-p{font-size:17px;color:var(--muted);line-height:1.75;font-weight:300;margin-bottom:40px;max-width:480px;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-em{background:var(--em);color:#fff;padding:15px 36px;font-weight:600;font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
+.btn-em:hover{background:var(--em-l);transform:translateY(-2px);box-shadow:0 12px 36px rgba(124,58,237,0.3);}
+.btn-out{background:none;border:1px solid rgba(124,58,237,0.35);color:var(--cream);padding:15px 36px;font-size:14px;text-decoration:none;letter-spacing:0.05em;transition:all 0.25s;display:inline-block;}
+.btn-out:hover{border-color:var(--em-l);color:var(--em-l);}
+
+/* ===== STATS BOX ===== */
+.stats-box{background:var(--card);border:1px solid var(--border);padding:40px 36px;}
+.stats-box-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--em-l);margin-bottom:28px;opacity:0.8;}
+.stat-row{display:flex;flex-direction:column;gap:20px;}
+.stat-item{display:flex;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.stat-item:last-child{border-bottom:none;padding-bottom:0;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--em-l);line-height:1;flex-shrink:0;width:90px;}
+.stat-text{font-size:13px;color:var(--muted);line-height:1.5;}
+.stat-text strong{display:block;color:var(--cream);font-size:14px;margin-bottom:2px;}
+
+/* ===== SECTIONS ===== */
+section{padding:100px 48px;position:relative;z-index:1;}
+.container{max-width:1100px;margin:0 auto;}
+.sec-label{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--em-l);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;max-width:36px;height:1px;background:var(--em);opacity:0.35;}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,54px);font-weight:300;line-height:1.05;letter-spacing:-0.015em;margin-bottom:14px;}
+h2 em{color:var(--em-l);font-style:italic;}
+.sec-sub{font-size:16px;color:var(--muted);max-width:520px;line-height:1.7;font-weight:300;margin-bottom:56px;}
+
+/* ===== PROBLEM ===== */
+.problem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.prob-card{background:var(--card);border:1px solid var(--border);padding:28px 24px;}
+.prob-icon{font-size:24px;margin-bottom:14px;display:block;opacity:0.7;}
+.prob-title{font-size:14px;font-weight:500;margin-bottom:8px;color:var(--cream);}
+.prob-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ===== SERVICES ===== */
+.services-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;}
+.svc-card{background:var(--card);border:1px solid var(--border);padding:40px 32px;position:relative;overflow:hidden;transition:all 0.3s;}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:0;transition:opacity 0.3s;}
+.svc-card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-4px);box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+.svc-card:hover::before{opacity:1;}
+.svc-num{font-family:'Outfit',monospace;font-size:10px;letter-spacing:0.15em;color:var(--em-l);margin-bottom:20px;opacity:0.7;}
+.svc-icon{font-size:36px;margin-bottom:20px;display:block;}
+.svc-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:12px;line-height:1.2;}
+.svc-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;}
+.svc-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.svc-list li{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:10px;line-height:1.5;}
+.svc-list li::before{content:'→';color:var(--em-l);flex-shrink:0;font-size:11px;margin-top:1px;}
+
+/* ===== SECTEURS ===== */
+.sectors-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.sector-card{background:var(--card);border:1px solid var(--border);padding:28px 22px;text-align:center;}
+.sector-icon{font-size:28px;margin-bottom:12px;display:block;}
+.sector-title{font-size:14px;font-weight:500;color:var(--cream);margin-bottom:6px;}
+.sector-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ===== PROCESS ===== */
+.process-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;}
+.step{position:relative;padding:36px 32px;background:var(--card);border:1px solid var(--border);}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:var(--em);opacity:0.12;position:absolute;top:16px;right:24px;line-height:1;}
+.step-label{font-family:'Outfit',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--em-l);margin-bottom:12px;}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:10px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.65;}
+.step-detail{margin-top:14px;font-size:12px;color:var(--em-l);opacity:0.8;}
+
+/* ===== CTA BLOCK ===== */
+.cta-block{background:linear-gradient(135deg,#0d0c1a 0%,#100f1d 100%);border:1px solid rgba(124,58,237,0.3);padding:72px 64px;text-align:center;position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(124,58,237,0.12) 0%,transparent 60%);pointer-events:none;}
+.cta-block h2{margin-bottom:12px;}
+.cta-block .sec-sub{margin:0 auto 40px;text-align:center;}
+
+/* ===== TRUST STRIP ===== */
+.trust-strip{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:32px 48px;}
+.trust-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
+.trust-item{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;letter-spacing:0.04em;}
+.trust-item span{color:var(--em-l);font-size:16px;}
+
+.div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,0.3),transparent);}
+
+/* ===== REVEAL ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr;gap:48px;}
+  .services-grid{grid-template-columns:1fr;}
+  .process-grid{grid-template-columns:1fr;}
+  .problem-grid{grid-template-columns:1fr 1fr;}
+  .sectors-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  .hero{padding:120px 24px 80px;}
+  .problem-grid{grid-template-columns:1fr;}
+  .sectors-grid{grid-template-columns:1fr 1fr;}
+  .cta-block{padding:48px 24px;}
+  section{padding:72px 24px;}
+}
+
+/* ===== COOKIE BANNER ===== */
+#ps-cookie{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1814;border-top:1px solid #2e2a24;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 -8px 32px rgba(0,0,0,0.4);transform:translateY(100%);transition:transform 0.4s ease;flex-wrap:wrap;}
+#ps-cookie.show{transform:translateY(0);}
+#ps-cookie p{font-size:12px;color:#8a8070;line-height:1.6;max-width:680px;flex:1;}
+#ps-cookie a{color:#c9a84c;text-decoration:underline;}
+.ps-cookie-btns{display:flex;gap:10px;flex-shrink:0;}
+.ps-cookie-accept{background:#c9a84c;color:#000;border:none;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;cursor:pointer;}
+.ps-cookie-refuse{background:none;border:1px solid #2e2a24;color:#8a8070;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:0.06em;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="ps-nav">
+  <a href="/index.html" class="ps-nav-logo">The Prompt<em>Studio</em></a>
+  <div class="ps-nav-center">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn"><span data-fr>Outils IA</span><span data-en>AI Tools</span><span data-es>Herramientas IA</span><span data-pt>Ferramentas IA</span><span data-ar>أدوات IA</span> ▾</button>
+      <div class="ps-dd">
+        <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 <span data-fr>Immobilier</span><span data-en>Real Estate</span><span data-es>Inmobiliaria</span><span data-pt>Imobiliário</span><span data-ar>عقارات</span></span></a>
+        <a href="/tarifs.html?v=commerce" class="ps-dd-row"><span>🛒 <span data-fr>E-Commerce & Retail</span><span data-en>E-Commerce & Retail</span><span data-es>E-Commerce & Retail</span><span data-pt>E-Commerce & Varejo</span><span data-ar>تجارة إلكترونية</span></span></a>
+        <a href="/tarifs.html?v=legal" class="ps-dd-row"><span>⚖️ <span data-fr>Juridique</span><span data-en>Legal</span><span data-es>Legal</span><span data-pt>Jurídico</span><span data-ar>قانوني</span></span></a>
+        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>💰 <span data-fr>Finance & Comptabilité</span><span data-en>Finance & Accounting</span><span data-es>Finanzas y Contabilidad</span><span data-pt>Finanças e Contabilidade</span><span data-ar>مالية ومحاسبة</span></span></a>
+        <a href="/tarifs.html?v=marketing" class="ps-dd-row"><span>📣 <span data-fr>Marketing & Com.</span><span data-en>Marketing & Comms</span><span data-es>Marketing y Com.</span><span data-pt>Marketing e Com.</span><span data-ar>تسويق واتصالات</span></span></a>
+        <a href="/tarifs.html?v=rh" class="ps-dd-row"><span>👥 <span data-fr>Ressources Humaines</span><span data-en>Human Resources</span><span data-es>Recursos Humanos</span><span data-pt>Recursos Humanos</span><span data-ar>موارد بشرية</span></span></a>
+        <a href="/tarifs.html?v=sante" class="ps-dd-row"><span>🏥 <span data-fr>Santé & Bien-être</span><span data-en>Health & Wellness</span><span data-es>Salud y Bienestar</span><span data-pt>Saúde e Bem-estar</span><span data-ar>صحة ورفاهية</span></span></a>
+        <a href="/tarifs.html?v=education" class="ps-dd-row"><span>🎓 <span data-fr>Éducation & Formation</span><span data-en>Education & Training</span><span data-es>Educación y Formación</span><span data-pt>Educação e Formação</span><span data-ar>تعليم وتدريب</span></span></a>
+        <a href="/tarifs.html?v=restauration" class="ps-dd-row"><span>🍽️ <span data-fr>Restauration</span><span data-en>Food & Hospitality</span><span data-es>Restauración</span><span data-pt>Restauração</span><span data-ar>مطاعم وضيافة</span></span></a>
+        <a href="/tarifs.html?v=freelance" class="ps-dd-row"><span>💼 <span data-fr>Freelances & Consultants</span><span data-en>Freelancers & Consultants</span><span data-es>Freelancers y Consultores</span><span data-pt>Freelancers e Consultores</span><span data-ar>مستقلون واستشاريون</span></span></a>
+      </div>
+    </div>
+    <a href="/custom-consulting.html" class="ps-nav-a ps-active"><span data-fr>Conseil sur mesure</span><span data-en>Custom consulting</span><span data-es>Consultoría a medida</span><span data-pt>Consultoria personalizada</span><span data-ar>استشارة مخصصة</span></a>
+    <a href="/contact.html" class="ps-nav-a"><span data-fr>Contact</span><span data-en>Contact</span><span data-es>Contacto</span><span data-pt>Contato</span><span data-ar>اتصل</span></a>
+  </div>
+  <div class="ps-nav-right">
+    <div class="ps-lang-drop">
+      <button id="lang-current" class="ps-lang-drop-btn">🇬🇧 ▾</button>
+      <div class="ps-lang-menu">
+        <button class="ps-lang-opt" onclick="setLang('fr')" aria-current="false">🇫🇷 Français</button>
+        <button class="ps-lang-opt" onclick="setLang('en')" aria-current="true">🇬🇧 English</button>
+        <button class="ps-lang-opt" onclick="setLang('es')" aria-current="false">🇪🇸 Español</button>
+        <button class="ps-lang-opt" onclick="setLang('pt')" aria-current="false">🇧🇷 Português</button>
+        <button class="ps-lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
+      </div>
+    </div>
+    <a href="/login.html" class="ps-nav-a" id="nav-account-link"><span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span></a>
+    <a href="/tarifs.html" class="ps-nav-cta"><span data-fr>Voir les offres</span><span data-en>View plans</span><span data-es>Ver ofertas</span><span data-pt>Ver ofertas</span><span data-ar>عرض الخطط</span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label"><span data-fr>The Prompt Studio — Conseil sur mesure</span><span data-en>The Prompt Studio — Custom Consulting</span><span data-es>The Prompt Studio — Consultoría a medida</span><span data-pt>The Prompt Studio — Consultoria personalizada</span><span data-ar>The Prompt Studio — استشارة مخصصة</span></div>
+      <h1><span data-fr>Votre projet IA.</span><span data-en>Your AI project.</span><span data-es>Su proyecto IA.</span><span data-pt>Seu projeto IA.</span><span data-ar>مشروعك في الذكاء الاصطناعي.</span><br><em><span data-fr>Réalisé.</span><span data-en>Delivered.</span><span data-es>Realizado.</span><span data-pt>Realizado.</span><span data-ar>منجز.</span></em></h1>
+      <p class="hero-p"><span data-fr>Vous avez un projet, un besoin métier, une idée d'automatisation. Peu importe votre secteur — immobilier, commerce, RH, logistique, santé, juridique — nous concevons et déployons les outils IA qui correspondent exactement à votre contexte.</span><span data-en>You have a project, a business need, an automation idea. Whatever your industry — real estate, retail, HR, logistics, healthcare, legal — we design and deploy AI tools that match your exact context.</span><span data-es>Tiene un proyecto, una necesidad empresarial, una idea de automatización. Sea cual sea su sector — inmobiliaria, comercio, RRHH, logística, salud, legal — diseñamos e implementamos herramientas IA adaptadas a su contexto.</span><span data-pt>Você tem um projeto, uma necessidade empresarial, uma ideia de automação. Seja qual for seu setor — imobiliário, varejo, RH, logística, saúde, jurídico — projetamos e implantamos ferramentas IA adequadas ao seu contexto.</span><span data-ar>لديك مشروع، حاجة عمل، فكرة أتمتة. أياً كان قطاعك — عقارات، تجارة، موارد بشرية، لوجستيات، صحة، قانوني — نصمم وننشر أدوات ذكاء اصطناعي تناسب سياقك بالضبط.</span></p>
+      <div class="hero-cta">
+        <a href="/contact.html" class="btn-em"><span data-fr>Diagnostic gratuit (2h) →</span><span data-en>Free diagnostic (2h) →</span><span data-es>Diagnóstico gratuito (2h) →</span><span data-pt>Diagnóstico gratuito (2h) →</span><span data-ar>تشخيص مجاني (2 ساعة) →</span></a>
+        <a href="#prestations" class="btn-out"><span data-fr>Nos prestations</span><span data-en>Our services</span><span data-es>Nuestros servicios</span><span data-pt>Nossos serviços</span><span data-ar>خدماتنا</span></a>
+      </div>
+    </div>
+    <div class="stats-box reveal">
+      <div class="stats-box-title"><span data-fr>Ce que vous pouvez attendre</span><span data-en>What you can expect</span><span data-es>Lo que puede esperar</span><span data-pt>O que você pode esperar</span><span data-ar>ما يمكنك توقعه</span></div>
+      <div class="stat-row">
+        <div class="stat-item">
+          <div class="stat-num">60%</div>
+          <div class="stat-text"><strong><span data-fr>Gain de temps moyen</span><span data-en>Average time saved</span><span data-es>Ahorro de tiempo medio</span><span data-pt>Economia média de tempo</span><span data-ar>متوسط توفير الوقت</span></strong><span data-fr>Sur les tâches répétitives identifiées lors de l'audit initial.</span><span data-en>On repetitive tasks identified during the initial audit.</span><span data-es>En tareas repetitivas identificadas en la auditoría inicial.</span><span data-pt>Em tarefas repetitivas identificadas na auditoria inicial.</span><span data-ar>في المهام المتكررة المحددة خلال التدقيق الأولي.</span></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">J+14</div>
+          <div class="stat-text"><strong><span data-fr>Premier outil en production</span><span data-en>First tool in production</span><span data-es>Primera herramienta en producción</span><span data-pt>Primeira ferramenta em produção</span><span data-ar>أول أداة في الإنتاج</span></strong><span data-fr>De l'idée au déploiement, sans transformer votre SI existant.</span><span data-en>From idea to deployment, without disrupting your existing systems.</span><span data-es>De la idea al despliegue, sin transformar sus sistemas existentes.</span><span data-pt>Da ideia à implantação, sem alterar seus sistemas existentes.</span><span data-ar>من الفكرة إلى النشر، دون تغيير أنظمتك الحالية.</span></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-text"><strong><span data-fr>Adapté à votre contexte</span><span data-en>Tailored to your context</span><span data-es>Adaptado a su contexto</span><span data-pt>Adaptado ao seu contexto</span><span data-ar>مصمم لسياقك</span></strong><span data-fr>Pas de solution générique — chaque outil est pensé pour vos données et vos équipes.</span><span data-en>No generic solutions — every tool is designed for your data and your teams.</span><span data-es>Sin soluciones genéricas — cada herramienta está diseñada para sus datos y equipos.</span><span data-pt>Sem soluções genéricas — cada ferramenta é projetada para seus dados e equipes.</span><span data-ar>لا حلول عامة — كل أداة مصممة لبياناتك وفرقك.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- PROBLÈME -->
+<section>
+  <div class="container">
+    <div class="sec-label"><span data-fr>Le constat</span><span data-en>The problem</span><span data-es>El diagnóstico</span><span data-pt>O diagnóstico</span><span data-ar>المشكلة</span></div>
+    <h2><span data-fr>L'IA est puissante.</span><span data-en>AI is powerful.</span><span data-es>La IA es poderosa.</span><span data-pt>A IA é poderosa.</span><span data-ar>الذكاء الاصطناعي قوي.</span><br><span data-fr>Mais <em>mal déployée</em>,</span><span data-en>But <em>poorly deployed,</em></span><span data-es>Pero <em>mal desplegada,</em></span><span data-pt>Mas <em>mal implementada,</em></span><span data-ar>لكن <em>بنشر سيء،</em></span><br><span data-fr>elle ne sert à rien.</span><span data-en>it's useless.</span><span data-es>no sirve de nada.</span><span data-pt>não serve para nada.</span><span data-ar>تصبح بلا فائدة.</span></h2>
+    <p class="sec-sub"><span data-fr>La plupart des projets IA échouent non pas par manque de technologie, mais par manque d'ancrage métier. On déploie des outils génériques là où il faut des solutions adaptées.</span><span data-en>Most AI projects fail not because of technology, but because of poor business alignment. Generic tools are deployed where tailored solutions are needed.</span><span data-es>La mayoría de proyectos IA fracasan no por falta de tecnología, sino por falta de alineamiento empresarial.</span><span data-pt>A maioria dos projetos de IA falham não por falta de tecnologia, mas por falta de alinhamento empresarial.</span><span data-ar>تفشل معظم مشاريع الذكاء الاصطناعي ليس بسبب التكنولوجيا، بل بسبب ضعف التوافق مع الأعمال.</span></p>
+    <div class="problem-grid reveal">
+      <div class="prob-card">
+        <span class="prob-icon">🎯</span>
+        <div class="prob-title"><span data-fr>Cas d'usage mal définis</span><span data-en>Poorly defined use cases</span><span data-es>Casos de uso mal definidos</span><span data-pt>Casos de uso mal definidos</span><span data-ar>حالات استخدام محددة بشكل سيء</span></div>
+        <div class="prob-desc"><span data-fr>On commence par "faire de l'IA" sans identifier les tâches à fort ROI. Résultat : des outils que personne n'utilise.</span><span data-en>Starting with "doing AI" without identifying high-ROI tasks. Result: tools nobody uses.</span><span data-es>Se empieza por "hacer IA" sin identificar tareas de alto ROI. Resultado: herramientas que nadie usa.</span><span data-pt>Começar por "fazer IA" sem identificar tarefas de alto ROI. Resultado: ferramentas que ninguém usa.</span><span data-ar>البدء بـ"تطبيق الذكاء الاصطناعي" دون تحديد المهام ذات العائد العالي. النتيجة: أدوات لا يستخدمها أحد.</span></div>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">🔧</span>
+        <div class="prob-title"><span data-fr>Outils trop génériques</span><span data-en>Tools too generic</span><span data-es>Herramientas demasiado genéricas</span><span data-pt>Ferramentas genéricas demais</span><span data-ar>أدوات عامة جداً</span></div>
+        <div class="prob-desc"><span data-fr>ChatGPT, Copilot, Gemini : puissants, mais pas calibrés pour vos données, vos process, votre vocabulaire métier.</span><span data-en>ChatGPT, Copilot, Gemini: powerful, but not calibrated for your data, processes, or industry jargon.</span><span data-es>ChatGPT, Copilot, Gemini: potentes, pero no calibrados para sus datos ni vocabulario sectorial.</span><span data-pt>ChatGPT, Copilot, Gemini: poderosos, mas não calibrados para seus dados nem vocabulário do setor.</span><span data-ar>ChatGPT، Copilot، Gemini: قوية لكن غير مُعايرة لبياناتك وعملياتك ومصطلحات قطاعك.</span></div>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">👥</span>
+        <div class="prob-title"><span data-fr>Adoption en échec</span><span data-en>Failed adoption</span><span data-es>Adopción fallida</span><span data-pt>Adoção fracassada</span><span data-ar>فشل التبني</span></div>
+        <div class="prob-desc"><span data-fr>Sans formation adaptée et sans accompagnement au changement, même les meilleurs outils restent inutilisés.</span><span data-en>Without proper training and change management, even the best tools remain unused.</span><span data-es>Sin formación adecuada ni gestión del cambio, incluso las mejores herramientas quedan sin uso.</span><span data-pt>Sem treinamento adequado e gestão de mudança, até as melhores ferramentas ficam sem uso.</span><span data-ar>بدون تدريب مناسب وإدارة تغيير، حتى أفضل الأدوات تبقى غير مستخدمة.</span></div>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">📉</span>
+        <div class="prob-title"><span data-fr>ROI difficile à mesurer</span><span data-en>Hard-to-measure ROI</span><span data-es>ROI difícil de medir</span><span data-pt>ROI difícil de medir</span><span data-ar>عائد استثمار صعب القياس</span></div>
+        <div class="prob-desc"><span data-fr>On investit sans avoir défini les indicateurs de succès. Six mois plus tard, impossible de justifier l'investissement.</span><span data-en>Investing without defining success metrics. Six months later, impossible to justify the spend.</span><span data-es>Se invierte sin definir indicadores de éxito. Seis meses después, imposible justificar la inversión.</span><span data-pt>Investir sem definir indicadores de sucesso. Seis meses depois, impossível justificar o investimento.</span><span data-ar>الاستثمار دون تحديد مقاييس النجاح. بعد ستة أشهر، يستحيل تبرير الإنفاق.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESTATIONS -->
+<section id="prestations" style="background:var(--surface);">
+  <div class="container">
+    <div class="sec-label"><span data-fr>Nos prestations</span><span data-en>Our services</span><span data-es>Nuestros servicios</span><span data-pt>Nossos serviços</span><span data-ar>خدماتنا</span></div>
+    <h2><span data-fr>Trois modes</span><span data-en>Three modes</span><span data-es>Tres modos</span><span data-pt>Três modos</span><span data-ar>ثلاثة أنماط</span><br><span data-fr>d'<em>intervention.</em></span><span data-en>of <em>engagement.</em></span><span data-es>de <em>intervención.</em></span><span data-pt>de <em>intervenção.</em></span><span data-ar>للتدخل<em>.</em></span></h2>
+    <p class="sec-sub"><span data-fr>Du diagnostic express au déploiement complet — nous intervenons au niveau qui correspond à votre maturité et à vos ressources.</span><span data-en>From quick diagnostics to full deployment — we engage at the level that matches your maturity and resources.</span><span data-es>Del diagnóstico rápido al despliegue completo — intervenimos al nivel que corresponde a su madurez y recursos.</span><span data-pt>Do diagnóstico rápido à implantação completa — atuamos no nível adequado à sua maturidade e recursos.</span><span data-ar>من التشخيص السريع إلى النشر الكامل — نتدخل بالمستوى المناسب لنضجك ومواردك.</span></p>
+    <div class="services-grid reveal">
+
+      <div class="svc-card">
+        <div class="svc-num">01 — <span data-fr>DIAGNOSTIC</span><span data-en>DIAGNOSTIC</span><span data-es>DIAGNÓSTICO</span><span data-pt>DIAGNÓSTICO</span><span data-ar>التشخيص</span></div>
+        <span class="svc-icon">🔬</span>
+        <div class="svc-title"><span data-fr>Audit & Stratégie IA</span><span data-en>AI Audit & Strategy</span><span data-es>Auditoría y Estrategia IA</span><span data-pt>Auditoria e Estratégia IA</span><span data-ar>تدقيق واستراتيجية IA</span></div>
+        <p class="svc-desc"><span data-fr>Une immersion dans votre organisation pour cartographier les opportunités IA, prioriser les cas d'usage et définir une roadmap actionnable.</span><span data-en>An immersion in your organization to map AI opportunities, prioritize use cases, and define an actionable roadmap.</span><span data-es>Una inmersión en su organización para mapear oportunidades IA, priorizar casos de uso y definir una hoja de ruta accionable.</span><span data-pt>Uma imersão em sua organização para mapear oportunidades de IA, priorizar casos de uso e definir um roadmap acionável.</span><span data-ar>غوص في مؤسستك لرسم فرص الذكاء الاصطناعي، وتحديد أولويات حالات الاستخدام، ووضع خارطة طريق قابلة للتنفيذ.</span></p>
+        <ul class="svc-list">
+          <li><span data-fr>Atelier de 2h avec vos équipes métier</span><span data-en>2h workshop with your business teams</span><span data-es>Taller de 2h con sus equipos</span><span data-pt>Workshop de 2h com suas equipes</span><span data-ar>ورشة عمل لمدة ساعتين مع فرقك</span></li>
+          <li><span data-fr>Cartographie des process automatisables</span><span data-en>Mapping of automatable processes</span><span data-es>Mapa de procesos automatizables</span><span data-pt>Mapeamento de processos automatizáveis</span><span data-ar>رسم خريطة العمليات القابلة للأتمتة</span></li>
+          <li><span data-fr>Identification des quick wins (ROI rapide)</span><span data-en>Quick wins identification (fast ROI)</span><span data-es>Identificación de quick wins (ROI rápido)</span><span data-pt>Identificação de quick wins (ROI rápido)</span><span data-ar>تحديد المكاسب السريعة (عائد سريع)</span></li>
+          <li><span data-fr>Roadmap IA priorisée avec estimations</span><span data-en>Prioritized AI roadmap with estimates</span><span data-es>Hoja de ruta IA priorizada con estimaciones</span><span data-pt>Roadmap IA priorizado com estimativas</span><span data-ar>خارطة طريق IA مرتبة حسب الأولوية مع تقديرات</span></li>
+          <li><span data-fr>Recommandation d'outils et d'architectures</span><span data-en>Tool and architecture recommendations</span><span data-es>Recomendaciones de herramientas y arquitectura</span><span data-pt>Recomendações de ferramentas e arquitetura</span><span data-ar>توصيات الأدوات والهندسة المعمارية</span></li>
+        </ul>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-num">02 — <span data-fr>BUILD</span><span data-en>BUILD</span><span data-es>BUILD</span><span data-pt>BUILD</span><span data-ar>BUILD</span></div>
+        <span class="svc-icon">⚙️</span>
+        <div class="svc-title"><span data-fr>Développement sur mesure</span><span data-en>Custom development</span><span data-es>Desarrollo a medida</span><span data-pt>Desenvolvimento personalizado</span><span data-ar>تطوير مخصص</span></div>
+        <p class="svc-desc"><span data-fr>Nous concevons et déployons des outils IA calibrés pour vos données et vos équipes — interfaces web, agents IA, automatisations, intégrations.</span><span data-en>We design and deploy AI tools calibrated for your data and teams — web interfaces, AI agents, automations, integrations.</span><span data-es>Diseñamos e implementamos herramientas IA calibradas para sus datos y equipos — interfaces web, agentes IA, automatizaciones, integraciones.</span><span data-pt>Projetamos e implantamos ferramentas IA calibradas para seus dados e equipes — interfaces web, agentes IA, automações, integrações.</span><span data-ar>نصمم وننشر أدوات ذكاء اصطناعي مُعايرة لبياناتك وفرقك — واجهات ويب، وكلاء IA، أتمتة، تكامل.</span></p>
+        <ul class="svc-list">
+          <li><span data-fr>Outils IA métier (interface web ou API)</span><span data-en>Business AI tools (web interface or API)</span><span data-es>Herramientas IA empresariales (web o API)</span><span data-pt>Ferramentas IA empresariais (web ou API)</span><span data-ar>أدوات IA للأعمال (واجهة ويب أو API)</span></li>
+          <li><span data-fr>Agents IA sur vos données propriétaires</span><span data-en>AI agents on your proprietary data</span><span data-es>Agentes IA sobre sus datos propietarios</span><span data-pt>Agentes IA em seus dados proprietários</span><span data-ar>وكلاء IA على بياناتك الخاصة</span></li>
+          <li><span data-fr>Automatisations (n8n, Make, Zapier, custom)</span><span data-en>Automations (n8n, Make, Zapier, custom)</span><span data-es>Automatizaciones (n8n, Make, Zapier, custom)</span><span data-pt>Automações (n8n, Make, Zapier, custom)</span><span data-ar>أتمتة (n8n، Make، Zapier، مخصصة)</span></li>
+          <li><span data-fr>Intégrations à vos logiciels existants</span><span data-en>Integrations with your existing software</span><span data-es>Integraciones con su software existente</span><span data-pt>Integrações com seus softwares existentes</span><span data-ar>تكامل مع برامجك الحالية</span></li>
+          <li><span data-fr>Documentation et tests utilisateurs inclus</span><span data-en>Documentation and user testing included</span><span data-es>Documentación y pruebas de usuario incluidas</span><span data-pt>Documentação e testes de usuário incluídos</span><span data-ar>التوثيق واختبار المستخدم مشمولان</span></li>
+        </ul>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-num">03 — <span data-fr>TRAIN</span><span data-en>TRAIN</span><span data-es>TRAIN</span><span data-pt>TRAIN</span><span data-ar>TRAIN</span></div>
+        <span class="svc-icon">🎓</span>
+        <div class="svc-title"><span data-fr>Formation & Accompagnement</span><span data-en>Training & Support</span><span data-es>Formación y Acompañamiento</span><span data-pt>Treinamento e Acompanhamento</span><span data-ar>تدريب ودعم</span></div>
+        <p class="svc-desc"><span data-fr>L'IA n'est utile que si vos équipes savent l'utiliser. Nous formons vos collaborateurs et construisons une culture IA durable dans votre organisation.</span><span data-en>AI is only useful if your teams know how to use it. We train your team and build a lasting AI culture in your organization.</span><span data-es>La IA solo es útil si sus equipos saben usarla. Formamos a sus colaboradores y construimos una cultura IA duradera.</span><span data-pt>A IA só é útil se suas equipes souberem usá-la. Treinamos seus colaboradores e construímos uma cultura de IA duradoura.</span><span data-ar>الذكاء الاصطناعي مفيد فقط إذا عرفت فرقك كيفية استخدامه. ندرب فريقك ونبني ثقافة IA مستدامة في مؤسستك.</span></p>
+        <ul class="svc-list">
+          <li><span data-fr>Ateliers de formation sur mesure (½ journée à 2 jours)</span><span data-en>Custom training workshops (½ day to 2 days)</span><span data-es>Talleres de formación a medida (½ día a 2 días)</span><span data-pt>Workshops de treinamento personalizados (½ dia a 2 dias)</span><span data-ar>ورش تدريب مخصصة (نصف يوم إلى يومين)</span></li>
+          <li><span data-fr>Création de prompts métier pour vos équipes</span><span data-en>Business prompt creation for your teams</span><span data-es>Creación de prompts empresariales para sus equipos</span><span data-pt>Criação de prompts empresariais para suas equipes</span><span data-ar>إنشاء prompts أعمال لفرقك</span></li>
+          <li><span data-fr>Guide d'utilisation et bibliothèque de cas d'usage</span><span data-en>User guide and use case library</span><span data-es>Guía de uso y biblioteca de casos de uso</span><span data-pt>Guia de uso e biblioteca de casos de uso</span><span data-ar>دليل المستخدم ومكتبة حالات الاستخدام</span></li>
+          <li><span data-fr>Accompagnement au changement</span><span data-en>Change management support</span><span data-es>Acompañamiento al cambio</span><span data-pt>Acompanhamento de mudança</span><span data-ar>دعم إدارة التغيير</span></li>
+          <li><span data-fr>Suivi mensuel et optimisation continue</span><span data-en>Monthly follow-up and continuous optimization</span><span data-es>Seguimiento mensual y optimización continua</span><span data-pt>Acompanhamento mensal e otimização contínua</span><span data-ar>متابعة شهرية وتحسين مستمر</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section>
+  <div class="container">
+    <div class="sec-label"><span data-fr>Notre méthode</span><span data-en>Our method</span><span data-es>Nuestro método</span><span data-pt>Nosso método</span><span data-ar>منهجنا</span></div>
+    <h2><span data-fr>Du diagnostic au</span><span data-en>From diagnostic to</span><span data-es>Del diagnóstico al</span><span data-pt>Do diagnóstico à</span><span data-ar>من التشخيص إلى</span><br><span data-fr>déploiement</span><span data-en>deployment</span><span data-es>despliegue</span><span data-pt>implantação</span><span data-ar>النشر</span><br><span data-fr>en 3 étapes.</span><span data-en>in 3 steps.</span><span data-es>en 3 pasos.</span><span data-pt>em 3 etapas.</span><span data-ar>في 3 خطوات.</span></h2>
+    <p class="sec-sub"><span data-fr>Pas de mois de conseil sans livrable. On identifie vite, on déploie vite, on mesure et on itère.</span><span data-en>No months of consulting without deliverables. We identify fast, deploy fast, measure, and iterate.</span><span data-es>Sin meses de consultoría sin entregables. Identificamos rápido, desplegamos rápido, medimos e iteramos.</span><span data-pt>Sem meses de consultoria sem entregas. Identificamos rápido, implantamos rápido, medimos e iteramos.</span><span data-ar>لا شهور استشارة بدون مخرجات. نحدد بسرعة، ننشر بسرعة، نقيس ونكرر.</span></p>
+    <div class="process-grid reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-label"><span data-fr>Semaine 1</span><span data-en>Week 1</span><span data-es>Semana 1</span><span data-pt>Semana 1</span><span data-ar>الأسبوع 1</span></div>
+        <div class="step-title"><span data-fr>Diagnostic</span><span data-en>Diagnostic</span><span data-es>Diagnóstico</span><span data-pt>Diagnóstico</span><span data-ar>التشخيص</span></div>
+        <p class="step-desc"><span data-fr>2h de travail avec vous et vos équipes pour cartographier les process, identifier les données disponibles et prioriser les cas d'usage à fort ROI.</span><span data-en>2h working with you and your teams to map processes, identify available data, and prioritize high-ROI use cases.</span><span data-es>2h de trabajo con usted y sus equipos para mapear procesos, identificar datos disponibles y priorizar casos de uso de alto ROI.</span><span data-pt>2h de trabalho com você e suas equipes para mapear processos, identificar dados disponíveis e priorizar casos de uso de alto ROI.</span><span data-ar>ساعتان من العمل معك ومع فرقك لرسم العمليات وتحديد البيانات المتاحة وترتيب حالات الاستخدام ذات العائد العالي.</span></p>
+        <div class="step-detail"><span data-fr>→ Livrable : Roadmap IA priorisée</span><span data-en>→ Deliverable: Prioritized AI roadmap</span><span data-es>→ Entregable: Hoja de ruta IA priorizada</span><span data-pt>→ Entregável: Roadmap IA priorizado</span><span data-ar>→ المخرج: خارطة طريق IA مرتبة حسب الأولوية</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-label"><span data-fr>Semaines 2–6</span><span data-en>Weeks 2–6</span><span data-es>Semanas 2–6</span><span data-pt>Semanas 2–6</span><span data-ar>الأسابيع 2-6</span></div>
+        <div class="step-title"><span data-fr>Déploiement</span><span data-en>Deployment</span><span data-es>Despliegue</span><span data-pt>Implantação</span><span data-ar>النشر</span></div>
+        <p class="step-desc"><span data-fr>Développement et mise en production des outils identifiés. Formation de vos équipes. Premier outil opérationnel en moins de 2 semaines.</span><span data-en>Development and production deployment of identified tools. Team training. First operational tool in under 2 weeks.</span><span data-es>Desarrollo y puesta en producción de las herramientas identificadas. Formación de equipos. Primera herramienta operativa en menos de 2 semanas.</span><span data-pt>Desenvolvimento e implantação em produção das ferramentas identificadas. Treinamento de equipes. Primeira ferramenta operacional em menos de 2 semanas.</span><span data-ar>تطوير ونشر الأدوات المحددة في الإنتاج. تدريب الفرق. أول أداة تشغيلية في أقل من أسبوعين.</span></p>
+        <div class="step-detail"><span data-fr>→ Livrable : Outils IA en production + documentation</span><span data-en>→ Deliverable: AI tools in production + documentation</span><span data-es>→ Entregable: Herramientas IA en producción + documentación</span><span data-pt>→ Entregável: Ferramentas IA em produção + documentação</span><span data-ar>→ المخرج: أدوات IA في الإنتاج + التوثيق</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-label"><span data-fr>Ongoing</span><span data-en>Ongoing</span><span data-es>Continuo</span><span data-pt>Contínuo</span><span data-ar>مستمر</span></div>
+        <div class="step-title"><span data-fr>Optimisation</span><span data-en>Optimization</span><span data-es>Optimización</span><span data-pt>Otimização</span><span data-ar>التحسين</span></div>
+        <p class="step-desc"><span data-fr>Suivi des métriques d'impact, ajustements des modèles, nouvelles fonctionnalités au fil des besoins. Vos outils s'améliorent avec votre activité.</span><span data-en>Impact metrics tracking, model adjustments, new features as needs evolve. Your tools improve as your business grows.</span><span data-es>Seguimiento de métricas de impacto, ajustes de modelos, nuevas funcionalidades según las necesidades. Sus herramientas mejoran con su actividad.</span><span data-pt>Acompanhamento de métricas de impacto, ajustes de modelos, novas funcionalidades conforme necessidades. Suas ferramentas melhoram com seu negócio.</span><span data-ar>تتبع مقاييس التأثير، تعديلات النماذج، ميزات جديدة حسب الحاجة. أدواتك تتحسن مع نمو عملك.</span></p>
+        <div class="step-detail"><span data-fr>→ Livrable : Rapport mensuel d'impact</span><span data-en>→ Deliverable: Monthly impact report</span><span data-es>→ Entregable: Informe mensual de impacto</span><span data-pt>→ Entregável: Relatório mensal de impacto</span><span data-ar>→ المخرج: تقرير تأثير شهري</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTEURS -->
+<section style="background:var(--surface);">
+  <div class="container">
+    <div class="sec-label"><span data-fr>Pour qui</span><span data-en>Who we serve</span><span data-es>Para quién</span><span data-pt>Para quem</span><span data-ar>لمن نخدم</span></div>
+    <h2><span data-fr>Tous secteurs,</span><span data-en>All industries,</span><span data-es>Todos los sectores,</span><span data-pt>Todos os setores,</span><span data-ar>جميع القطاعات،</span><br><span data-fr>toutes <em>tailles.</em></span><span data-en>all <em>sizes.</em></span><span data-es>todos los <em>tamaños.</em></span><span data-pt>todos os <em>tamanhos.</em></span><span data-ar>جميع <em>الأحجام.</em></span></h2>
+    <p class="sec-sub"><span data-fr>Dirigeants de PME, responsables métier, fondateurs en croissance — notre accompagnement s'adapte à votre contexte et à votre budget.</span><span data-en>SMB leaders, business managers, growing founders — our support adapts to your context and budget.</span><span data-es>Líderes de PYME, responsables de negocio, fundadores en crecimiento — nuestro acompañamiento se adapta a su contexto y presupuesto.</span><span data-pt>Líderes de PMEs, gerentes de negócios, fundadores em crescimento — nosso suporte se adapta ao seu contexto e orçamento.</span><span data-ar>قادة الشركات الصغيرة والمتوسطة، مديرو الأعمال، المؤسسون الناشئون — دعمنا يتكيف مع سياقك وميزانيتك.</span></p>
+    <div class="sectors-grid reveal">
+      <div class="sector-card">
+        <span class="sector-icon">🏠</span>
+        <div class="sector-title"><span data-fr>Immobilier</span><span data-en>Real Estate</span><span data-es>Inmobiliaria</span><span data-pt>Imobiliário</span><span data-ar>عقارات</span></div>
+        <div class="sector-desc"><span data-fr>Agents, promoteurs, syndics, property managers — automatisation des tâches admin et commerciales.</span><span data-en>Agents, developers, property managers — automating admin and commercial tasks.</span><span data-es>Agentes, promotores, administradores — automatización de tareas administrativas y comerciales.</span><span data-pt>Agentes, promotores, administradores — automação de tarefas administrativas e comerciais.</span><span data-ar>وكلاء، مطورون، مديرو عقارات — أتمتة المهام الإدارية والتجارية.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🛒</span>
+        <div class="sector-title"><span data-fr>Commerce & E-commerce</span><span data-en>Retail & E-commerce</span><span data-es>Comercio y E-commerce</span><span data-pt>Comércio e E-commerce</span><span data-ar>تجارة وتجارة إلكترونية</span></div>
+        <div class="sector-desc"><span data-fr>Fiches produits, SAV, emails marketing, gestion des retours — IA intégrée à vos outils ecom.</span><span data-en>Product listings, customer service, marketing emails, returns management — AI integrated with your ecom tools.</span><span data-es>Fichas de producto, SAV, emails marketing, gestión de devoluciones — IA integrada en sus herramientas ecom.</span><span data-pt>Fichas de produto, SAC, emails marketing, gestão de devoluções — IA integrada às suas ferramentas ecom.</span><span data-ar>قوائم المنتجات، خدمة العملاء، البريد التسويقي، إدارة المرتجعات — IA مدمج مع أدوات التجارة الإلكترونية.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">⚖️</span>
+        <div class="sector-title"><span data-fr>Juridique</span><span data-en>Legal</span><span data-es>Legal</span><span data-pt>Jurídico</span><span data-ar>قانوني</span></div>
+        <div class="sector-desc"><span data-fr>Cabinets d'avocats, notaires, juristes d'entreprise — rédaction, résumés, recherche assistée.</span><span data-en>Law firms, notaries, in-house counsel — drafting, summaries, assisted research.</span><span data-es>Bufetes de abogados, notarios, juristas de empresa — redacción, resúmenes, investigación asistida.</span><span data-pt>Escritórios de advocacia, notários, juristas corporativos — redação, resumos, pesquisa assistida.</span><span data-ar>مكاتب محاماة، كتاب عدل، مستشارون قانونيون — صياغة، ملخصات، بحث مساعد.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">💰</span>
+        <div class="sector-title"><span data-fr>Finance & Comptabilité</span><span data-en>Finance & Accounting</span><span data-es>Finanzas y Contabilidad</span><span data-pt>Finanças e Contabilidade</span><span data-ar>مالية ومحاسبة</span></div>
+        <div class="sector-desc"><span data-fr>CGP, DAF, experts-comptables — rapports financiers automatisés, analyses de KPIs, synthèses d'investissement, prévisions budgétaires et due diligence IA.</span><span data-en>Advisors, CFOs, accountants — automated financial reports, KPI analysis, investment summaries, budget forecasts, and AI due diligence.</span><span data-es>Asesores, directores financieros, contadores — informes financieros automatizados, análisis de KPIs.</span><span data-pt>Assessores, CFOs, contadores — relatórios financeiros automatizados, análise de KPIs.</span><span data-ar>مستشارون، مدراء ماليون، محاسبون — تقارير مالية آلية، تحليل مؤشرات الأداء.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🏥</span>
+        <div class="sector-title"><span data-fr>Santé & Médical</span><span data-en>Health & Medical</span><span data-es>Salud y Médico</span><span data-pt>Saúde e Médico</span><span data-ar>صحة وطب</span></div>
+        <div class="sector-desc"><span data-fr>Cliniques, cabinets, laboratoires — aide à la documentation, triage, reporting administratif.</span><span data-en>Clinics, practices, labs — documentation assistance, triage, administrative reporting.</span><span data-es>Clínicas, consultorios, laboratorios — ayuda con documentación, triage, informes administrativos.</span><span data-pt>Clínicas, consultórios, laboratórios — assistência documental, triagem, relatórios administrativos.</span><span data-ar>عيادات، مكاتب، مختبرات — مساعدة التوثيق، الفرز، التقارير الإدارية.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">📦</span>
+        <div class="sector-title"><span data-fr>Logistique & Industrie</span><span data-en>Logistics & Industry</span><span data-es>Logística e Industria</span><span data-pt>Logística e Indústria</span><span data-ar>لوجستيات وصناعة</span></div>
+        <div class="sector-desc"><span data-fr>Suivi de flux, prévision de stocks, maintenance prédictive, reporting opérationnel automatisé.</span><span data-en>Flow tracking, stock forecasting, predictive maintenance, automated operational reporting.</span><span data-es>Seguimiento de flujos, previsión de stocks, mantenimiento predictivo, informes operacionales automatizados.</span><span data-pt>Rastreamento de fluxo, previsão de estoque, manutenção preditiva, relatórios operacionais automatizados.</span><span data-ar>تتبع التدفق، توقع المخزون، الصيانة التنبؤية، التقارير التشغيلية الآلية.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">👥</span>
+        <div class="sector-title"><span data-fr>RH & Recrutement</span><span data-en>HR & Recruitment</span><span data-es>RRHH y Reclutamiento</span><span data-pt>RH e Recrutamento</span><span data-ar>موارد بشرية وتوظيف</span></div>
+        <div class="sector-desc"><span data-fr>Scoring de candidatures, rédaction d'offres, onboarding automatisé, support RH IA.</span><span data-en>Application scoring, job post writing, automated onboarding, AI HR support.</span><span data-es>Puntuación de candidaturas, redacción de ofertas, onboarding automatizado, soporte IA RRHH.</span><span data-pt>Scoring de candidaturas, redação de vagas, onboarding automatizado, suporte IA RH.</span><span data-ar>تقييم الطلبات، كتابة العروض، التهيئة الآلية، دعم الموارد البشرية بالذكاء الاصطناعي.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🎓</span>
+        <div class="sector-title"><span data-fr>Formation & Éducation</span><span data-en>Training & Education</span><span data-es>Formación y Educación</span><span data-pt>Treinamento e Educação</span><span data-ar>تدريب وتعليم</span></div>
+        <div class="sector-desc"><span data-fr>Création de contenus pédagogiques, support apprenant, correction automatisée, reporting LMS.</span><span data-en>Learning content creation, learner support, automated grading, LMS reporting.</span><span data-es>Creación de contenidos pedagógicos, soporte al alumno, corrección automatizada, informes LMS.</span><span data-pt>Criação de conteúdo pedagógico, suporte ao aluno, correção automatizada, relatórios LMS.</span><span data-ar>إنشاء محتوى تعليمي، دعم المتعلمين، التصحيح الآلي، تقارير LMS.</span></div>
+      </div>
+      <div class="sector-card">
+        <span class="sector-icon">🎯</span>
+        <div class="sector-title"><span data-fr>Votre secteur</span><span data-en>Your industry</span><span data-es>Su sector</span><span data-pt>Seu setor</span><span data-ar>قطاعك</span></div>
+        <div class="sector-desc"><span data-fr>Votre métier n'est pas listé ? Contactez-nous — chaque projet est unique et nous adorons les défis inédits.</span><span data-en>Your industry not listed? Contact us — every project is unique and we love new challenges.</span><span data-es>¿Su sector no aparece? Contáctenos — cada proyecto es único y nos encantan los nuevos desafíos.</span><span data-pt>Seu setor não está listado? Entre em contato — cada projeto é único e adoramos novos desafios.</span><span data-ar>قطاعك غير مدرج؟ تواصل معنا — كل مشروع فريد ونحن نحب التحديات الجديدة.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="trust-item"><span>✓</span> <span data-fr>Diagnostic 100% gratuit et sans engagement</span><span data-en>100% free diagnostic with no commitment</span><span data-es>Diagnóstico 100% gratuito y sin compromiso</span><span data-pt>Diagnóstico 100% gratuito e sem compromisso</span><span data-ar>تشخيص مجاني 100% بدون التزام</span></div>
+    <div class="trust-item"><span>✓</span> <span data-fr>Premier livrable en moins de 2 semaines</span><span data-en>First deliverable in under 2 weeks</span><span data-es>Primer entregable en menos de 2 semanas</span><span data-pt>Primeira entrega em menos de 2 semanas</span><span data-ar>أول مخرج في أقل من أسبوعين</span></div>
+    <div class="trust-item"><span>✓</span> <span data-fr>Adapté à vos outils et données existants</span><span data-en>Adapted to your existing tools and data</span><span data-es>Adaptado a sus herramientas y datos existentes</span><span data-pt>Adaptado às suas ferramentas e dados existentes</span><span data-ar>متكيف مع أدواتك وبياناتك الحالية</span></div>
+    <div class="trust-item"><span>✓</span> <span data-fr>Formation des équipes incluse</span><span data-en>Team training included</span><span data-es>Formación de equipos incluida</span><span data-pt>Treinamento de equipes incluído</span><span data-ar>تدريب الفرق مشمول</span></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section>
+  <div class="container">
+    <div class="cta-block reveal">
+      <div class="sec-label" style="justify-content:center;"><span data-fr>Passez à l'action</span><span data-en>Take action</span><span data-es>Pase a la acción</span><span data-pt>Passe à ação</span><span data-ar>ابدأ الآن</span></div>
+      <h2><span data-fr>Commencez par un</span><span data-en>Start with a</span><span data-es>Comience con un</span><span data-pt>Comece com um</span><span data-ar>ابدأ بتشخيص</span><br><span data-fr>diagnostic <em>gratuit.</em></span><span data-en>free <em>diagnostic.</em></span><span data-es>diagnóstico <em>gratuito.</em></span><span data-pt>diagnóstico <em>gratuito.</em></span><span data-ar><em>مجاني.</em></span></h2>
+      <p class="sec-sub" style="text-align:center;margin:0 auto 40px;"><span data-fr>2 heures avec vos équipes pour cartographier vos opportunités IA et définir une roadmap priorisée — sans engagement, sans frais, sans jargon.</span><span data-en>2 hours with your teams to map your AI opportunities and define a prioritized roadmap — no commitment, no fees, no jargon.</span><span data-es>2 horas con sus equipos para mapear sus oportunidades IA y definir una hoja de ruta priorizada — sin compromiso, sin costes, sin jerga.</span><span data-pt>2 horas com suas equipes para mapear oportunidades de IA e definir um roadmap priorizado — sem compromisso, sem custos, sem jargão.</span><span data-ar>ساعتان مع فرقك لرسم فرص الذكاء الاصطناعي ووضع خارطة طريق مرتبة — بدون التزام، بدون رسوم، بدون مصطلحات معقدة.</span></p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <a href="/contact.html" class="btn-em"><span data-fr>Réserver mon diagnostic gratuit →</span><span data-en>Book my free diagnostic →</span><span data-es>Reservar mi diagnóstico gratuito →</span><span data-pt>Reservar meu diagnóstico gratuito →</span><span data-ar>احجز تشخيصي المجاني →</span></a>
+        <a href="mailto:contact@theprompt.studio" class="btn-out"><span data-fr>Envoyer un email</span><span data-en>Send an email</span><span data-es>Enviar un email</span><span data-pt>Enviar um email</span><span data-ar>أرسل بريداً إلكترونياً</span></a>
+      </div>
+      <p style="margin-top:24px;font-size:12px;color:var(--muted);"><span data-fr>Réponse sous 24h · France, Belgique, Suisse · Remote ou présentiel</span><span data-en>Response within 24h · Worldwide · Remote or on-site</span><span data-es>Respuesta en 24h · Todo el mundo · Remoto o presencial</span><span data-pt>Resposta em 24h · Worldwide · Remoto ou presencial</span><span data-ar>رد خلال 24 ساعة · عالمياً · عن بُعد أو حضورياً</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:var(--surface);border-top:1px solid #2e2a24;padding:48px 40px 32px;position:relative;z-index:1;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;margin-bottom:12px;">The Prompt<em style="color:#c9a84c;font-style:italic;">Studio</em></div>
+        <p style="font-size:12px;color:#8a8070;line-height:1.7;max-width:240px;"><span data-fr>SaaS IA et conseil sur mesure pour professionnels. Immo · Finance · Conseil.</span><span data-en>AI SaaS and custom consulting for professionals. Real Estate · Finance · Consulting.</span><span data-es>SaaS IA y consultoría personalizada para profesionales.</span><span data-pt>SaaS IA e consultoria personalizada para profissionais.</span><span data-ar>SaaS IA واستشارة مخصصة للمحترفين.</span></p>
+        <a href="mailto:contact@theprompt.studio" style="font-size:12px;color:#8a8070;text-decoration:none;display:block;margin-top:12px;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#8a8070'">contact@theprompt.studio</a>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;"><span data-fr>Outils & Services</span><span data-en>Tools & Services</span><span data-es>Herramientas y Servicios</span><span data-pt>Ferramentas e Serviços</span><span data-ar>الأدوات والخدمات</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="/tarifs.html?v=immo" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'"><span data-fr>Outils Immobilier</span><span data-en>Real Estate Tools</span><span data-es>Herramientas Inmobiliarias</span><span data-pt>Ferramentas Imobiliárias</span><span data-ar>أدوات العقارات</span></a>
+          <a href="/tarifs.html?v=finance" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'"><span data-fr>Outils Finance</span><span data-en>Finance Tools</span><span data-es>Herramientas de Finanzas</span><span data-pt>Ferramentas de Finanças</span><span data-ar>أدوات التمويل</span></a>
+          <a href="/finance.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'"><span data-fr>Finance IA (service)</span><span data-en>Finance AI (service)</span><span data-es>Finanzas IA (servicio)</span><span data-pt>Finanças IA (serviço)</span><span data-ar>التمويل IA (خدمة)</span></a>
+          <a href="/custom-consulting.html" style="font-size:13px;color:#a78bfa;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#a78bfa'"><span data-fr>Conseil IA sur mesure</span><span data-en>Custom AI Consulting</span><span data-es>Consultoría IA a medida</span><span data-pt>Consultoria IA personalizada</span><span data-ar>استشارة IA مخصصة</span></a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;"><span data-fr>Légal</span><span data-en>Legal</span><span data-es>Información legal</span><span data-pt>Informações legais</span><span data-ar>معلومات قانونية</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="/contact.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Contact</a>
+          <a href="/mentions-legales.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'"><span data-fr>Mentions légales</span><span data-en>Legal notice</span><span data-es>Aviso legal</span><span data-pt>Aviso legal</span><span data-ar>إشعار قانوني</span></a>
+          <a href="/cgv.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'"><span data-fr>CGV</span><span data-en>Terms of service</span><span data-es>Condiciones</span><span data-pt>Termos</span><span data-ar>شروط الخدمة</span></a>
+          <a href="/politique-confidentialite.html" style="font-size:13px;color:#8a8070;text-decoration:none;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'"><span data-fr>Politique de confidentialité</span><span data-en>Privacy policy</span><span data-es>Política de privacidad</span><span data-pt>Política de privacidade</span><span data-ar>سياسة الخصوصية</span></a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #2e2a24;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <p style="font-size:11px;color:#5a5040;"><span data-fr>© 2026 The Prompt Studio — theprompt.studio — Tous droits réservés</span><span data-en>© 2026 The Prompt Studio — theprompt.studio — All rights reserved</span><span data-es>© 2026 The Prompt Studio — theprompt.studio — Todos los derechos reservados</span><span data-pt>© 2026 The Prompt Studio — theprompt.studio — Todos os direitos reservados</span><span data-ar>© 2026 The Prompt Studio — theprompt.studio — جميع الحقوق محفوظة</span></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+<!-- COOKIE BANNER -->
+<div id="ps-cookie" role="dialog" aria-label="Gestion des cookies">
+  <p><span data-fr>Nous utilisons des cookies techniques nécessaires au fonctionnement du site.</span><span data-en>We use technical cookies necessary for the site to function.</span><span data-es>Usamos cookies técnicas necesarias para el funcionamiento del sitio.</span><span data-pt>Usamos cookies técnicos necessários para o funcionamento do site.</span><span data-ar>نستخدم ملفات تعريف ارتباط تقنية ضرورية لعمل الموقع.</span> <a href="/politique-confidentialite.html"><span data-fr>Politique de confidentialité</span><span data-en>Privacy policy</span><span data-es>Política de privacidad</span><span data-pt>Política de privacidade</span><span data-ar>سياسة الخصوصية</span></a></p>
+  <div class="ps-cookie-btns">
+    <button class="ps-cookie-accept" onclick="psCookieAccept()"><span data-fr>Accepter</span><span data-en>Accept</span><span data-es>Aceptar</span><span data-pt>Aceitar</span><span data-ar>قبول</span></button>
+    <button class="ps-cookie-refuse" onclick="psCookieRefuse()"><span data-fr>Continuer sans accepter</span><span data-en>Continue without accepting</span><span data-es>Continuar sin aceptar</span><span data-pt>Continuar sem aceitar</span><span data-ar>المتابعة بدون قبول</span></button>
+  </div>
+</div>
+<script>
+(function(){
+  if(!localStorage.getItem('ps_cookie_consent')){
+    setTimeout(function(){ var b=document.getElementById('ps-cookie'); if(b) b.classList.add('show'); },800);
+  }
+})();
+function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
+function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
+function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
+</script>
+<script src="/js/ps-auth.js?v=1.0"></script>
+<script src="/js/ps-analytics.js?v=1.0"></script>
+<script src="/js/ps-chat-widget.js?v=1.0"></script>
+
+</body>
+</html>
