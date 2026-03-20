@@ -584,7 +584,7 @@ function renderPlans() {
     const features = PS_I18N.THList('plans.' + p.tier + '.features');
     const locked   = PS_I18N.THList('plans.' + p.tier + '.locked');
     const yearlyLabel = yearly
-      ? TH('tarifs.save_yearly', { s: saving })
+      ? TH('tarifs.save_yearly', { a: annuel, s: saving })
       : TH('tarifs.yearly_equiv', { a: annuel });
     return `<div class="plan-card ${p.popular?'popular':''}">
       ${p.popular?`<div class="pop-tag" style="background:${m.color}">${TH('common.most_popular')}</div>`:''}
@@ -608,18 +608,26 @@ function renderPlans() {
 
 function renderTools() {
   const m = VMETA[activeV];
-  const tiers = {starter:'🚀 Starter',pro:'⚡ Pro',gold:'👑 Gold'};
+  const TIER_LABELS = {starter:'🚀 Starter', pro:'⚡ Pro+', gold:'👑 Gold+'};
+  const TIER_ORDER  = ['starter','pro','gold'];
   const vTools = TOOLS[activeV] || [];
   const count = vTools.length || 10;
   document.getElementById('tools-title').innerHTML = `🔧 ${count} <span id="tools-vname" style="color:${m.color}">${m.label}</span> ${TH('dashboard.tools')}`;
-  document.getElementById('tools-grid').innerHTML = vTools.map(t =>
-    `<div class="tool-mini">
+  /* Sort tools by tier: starter first, then pro, then gold */
+  const sorted = [...vTools].sort((a, b) => {
+    const ta = TIER_ORDER.indexOf(a.tier || a.min_tier || 'starter');
+    const tb = TIER_ORDER.indexOf(b.tier || b.min_tier || 'starter');
+    return ta - tb;
+  });
+  document.getElementById('tools-grid').innerHTML = sorted.map(t => {
+    const tier = t.tier || t.min_tier || 'starter';
+    return `<div class="tool-mini">
       <div class="tm-icon">${t.icon || m.icon}</div>
       <div class="tm-name">${t.name}</div>
       <div class="tm-desc">${t.desc || t.description || ''}</div>
-      <span class="tm-tier ${t.tier || t.min_tier || 'starter'}">${tiers[t.tier || t.min_tier] || '🚀 Starter'}</span>
-    </div>`
-  ).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">${TH('dashboard.loading_tools')}</p>`;
+      <span class="tm-tier ${tier}">${TIER_LABELS[tier] || '🚀 Starter'}</span>
+    </div>`;
+  }).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">${TH('dashboard.loading_tools')}</p>`;
 }
 
 function toggleBilling() {

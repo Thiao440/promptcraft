@@ -161,7 +161,7 @@ const PS_I18N = (() => {
                           es: '7 días de prueba gratis · cancela cuando quieras',
                           pt: '7 dias de teste grátis · cancele a qualquer momento',
                           ar: '7 أيام تجربة مجانية · إلغاء في أي وقت' },
-      save_yearly:      { fr: '€/an — économie {s}€',                           en: '€/yr — save {s}€',                                es: '€/año — ahorro {s}€',                             pt: '€/ano — economia {s}€',                           ar: '€/سنة — وفر {s}€' },
+      save_yearly:      { fr: '{a}€/an — économie {s}€',                        en: '{a}€/yr — save {s}€',                             es: '{a}€/año — ahorro {s}€',                          pt: '{a}€/ano — economia {s}€',                        ar: '{a}€/سنة — وفر {s}€' },
       yearly_equiv:     { fr: 'soit {a}€/an en annuel',                         en: '{a}€/yr if billed annually',                      es: '{a}€/año en anual',                               pt: '{a}€/ano se anual',                               ar: '{a}€/سنة إذا سنوي' },
     },
 
