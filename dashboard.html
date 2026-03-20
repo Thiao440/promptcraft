@@ -315,7 +315,7 @@
     <div class="sb-email" id="sb-email"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
       <button class="logout-btn" id="nav-logout" onclick="PS.logout()">↩ Log out</button>
-      <a href="/tarifs.html" style="font-size:.7rem;color:var(--muted);text-decoration:none;opacity:.6;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'" id="nav-add-vertical">+ Vertical</a>
+      <a href="/pricing.html" style="font-size:.7rem;color:var(--muted);text-decoration:none;opacity:.6;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'" id="nav-add-vertical">+ Vertical</a>
     </div>
   </div>
 </aside>
@@ -498,7 +498,7 @@ function lockedCard(t, color, v) {
       <div class="tc-desc">${t.desc}</div>
       <div class="tc-upgrade">
         <span>${reason}</span>
-        <a href="/tarifs.html?v=${v}" class="tc-upgrade-link" style="color:${color}">Upgrade →</a>
+        <a href="/pricing.html?v=${v}" class="tc-upgrade-link" style="color:${color}">Upgrade →</a>
       </div>
     </div>`;
 }
@@ -623,7 +623,7 @@ function renderNoSub() {
       <div class="big">🚀</div>
       <h2>${TH('dashboard.choose_vertical')}</h2>
       <p>${TH('dashboard.choose_vertical_desc')}</p>
-      <a href="/tarifs.html" class="btn-cta">${TH('common.view_plans')} →</a>
+      <a href="/pricing.html" class="btn-cta">${TH('common.view_plans')} →</a>
     </div>`;
 }
 
@@ -719,7 +719,7 @@ async function renderProjectsView() {
         <div class="big">🔒</div>
         <h2>${TH('dashboard.crm_title')}</h2>
         <p>${TH('dashboard.crm_locked')}</p>
-        <a href="/tarifs.html" class="btn-cta">${TH('dashboard.upgrade_gold')} →</a>
+        <a href="/pricing.html" class="btn-cta">${TH('dashboard.upgrade_gold')} →</a>
       </div>`;
     return;
   }

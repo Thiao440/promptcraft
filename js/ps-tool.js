@@ -429,7 +429,7 @@ const PSTool = (() => {
 
       const access = PS.canUseTool(_cfg.toolSlug, _cfg.toolMinTier, _cfg.toolVertical);
       if (!access.allowed) {
-        if (access.reason === 'no_subscription') return window.location.href = '/tarifs.html';
+        if (access.reason === 'no_subscription') return window.location.href = '/pricing.html';
         if (access.reason === 'upgrade_required') return showToast(`Upgrade requis (${access.required}).`, 'error');
         return showToast('Accès non autorisé.', 'error');
       }

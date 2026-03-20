@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title data-fr>Offres & Tarifs – The Prompt Studio</title><title data-en>Plans & Pricing – The Prompt Studio</title><title data-es>Ofertas y Precios – The Prompt Studio</title><title data-pt>Planos e Preços – The Prompt Studio</title><title data-ar>الخطط والأسعار – The Prompt Studio</title>
   <meta name="description" content="Choose your vertical and plan. Instant access to AI tools built for your industry."/>
-  <link rel="canonical" href="https://theprompt.studio/tarifs.html"/>
+  <link rel="canonical" href="https://theprompt.studio/pricing.html"/>
   <!-- Open Graph -->
   <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://theprompt.studio/tarifs.html"/>
+  <meta property="og:url" content="https://theprompt.studio/pricing.html"/>
   <meta property="og:title" content="Plans & Pricing – The Prompt Studio"/>
   <meta property="og:description" content="Choose your vertical and plan. Instant access to AI tools built for your industry."/>
   <meta property="og:image" content="https://theprompt.studio/assets/images/store-banner.png"/>
@@ -220,7 +220,7 @@
       </div>
     </div>
     <a href="/login.html" class="ps-nav-a" id="nav-account-link"><span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span></a>
-    <a href="/tarifs.html" class="ps-nav-cta"><span data-fr>Voir les offres</span><span data-en>View plans</span><span data-es>Ver ofertas</span><span data-pt>Ver ofertas</span><span data-ar>عرض الخطط</span></a>
+    <a href="/pricing.html" class="ps-nav-cta"><span data-fr>Voir les offres</span><span data-en>View plans</span><span data-es>Ver ofertas</span><span data-pt>Ver ofertas</span><span data-ar>عرض الخطط</span></a>
   </div>
 </nav>
 
@@ -444,7 +444,7 @@ function buildNavDropdown() {
   const dd = document.getElementById('nav-verticals-dd');
   if (!dd) return;
   dd.innerHTML = Object.entries(VMETA).map(([key, m]) =>
-    `<a href="/tarifs.html?v=${key}" class="ps-dd-row"><span>${m.icon} ${getVLabel(key)}</span></a>`
+    `<a href="/pricing.html?v=${key}" class="ps-dd-row"><span>${m.icon} ${getVLabel(key)}</span></a>`
   ).join('');
 }
 

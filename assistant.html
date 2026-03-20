@@ -144,16 +144,16 @@ body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;hei
     <div class="ps-nav-item">
       <button class="ps-nav-btn">Outils IA ▾</button>
       <div class="ps-dd">
-        <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span></a>
-        <a href="/tarifs.html?v=commerce" class="ps-dd-row"><span>🛒 E-Commerce & Retail</span></a>
-        <a href="/tarifs.html?v=legal" class="ps-dd-row"><span>⚖️ Juridique</span></a>
-        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>💰 Finance & Comptabilité</span></a>
-        <a href="/tarifs.html?v=marketing" class="ps-dd-row"><span>📣 Marketing & Com.</span></a>
-        <a href="/tarifs.html?v=rh" class="ps-dd-row"><span>👥 Ressources Humaines</span></a>
-        <a href="/tarifs.html?v=sante" class="ps-dd-row"><span>🏥 Santé & Bien-être</span></a>
-        <a href="/tarifs.html?v=education" class="ps-dd-row"><span>🎓 Éducation & Formation</span></a>
-        <a href="/tarifs.html?v=restauration" class="ps-dd-row"><span>🍽️ Restauration</span></a>
-        <a href="/tarifs.html?v=freelance" class="ps-dd-row"><span>💼 Freelances & Consultants</span></a>
+        <a href="/pricing.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span></a>
+        <a href="/pricing.html?v=commerce" class="ps-dd-row"><span>🛒 E-Commerce & Retail</span></a>
+        <a href="/pricing.html?v=legal" class="ps-dd-row"><span>⚖️ Juridique</span></a>
+        <a href="/pricing.html?v=finance" class="ps-dd-row"><span>💰 Finance & Comptabilité</span></a>
+        <a href="/pricing.html?v=marketing" class="ps-dd-row"><span>📣 Marketing & Com.</span></a>
+        <a href="/pricing.html?v=rh" class="ps-dd-row"><span>👥 Ressources Humaines</span></a>
+        <a href="/pricing.html?v=sante" class="ps-dd-row"><span>🏥 Santé & Bien-être</span></a>
+        <a href="/pricing.html?v=education" class="ps-dd-row"><span>🎓 Éducation & Formation</span></a>
+        <a href="/pricing.html?v=restauration" class="ps-dd-row"><span>🍽️ Restauration</span></a>
+        <a href="/pricing.html?v=freelance" class="ps-dd-row"><span>💼 Freelances & Consultants</span></a>
       </div>
     </div>
     <a href="/custom-consulting.html" class="ps-nav-a"><span data-fr>Conseil sur mesure</span><span data-en>Custom consulting</span><span data-es>Consultoría a medida</span><span data-pt>Consultoria personalizada</span><span data-ar>استشارة مخصصة</span></a>
@@ -171,7 +171,7 @@ body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;hei
       </div>
     </div>
     <a href="/login.html" class="ps-nav-a" id="nav-account-link">Mon compte</a>
-    <a href="/tarifs.html" class="ps-nav-cta">Voir les offres</a>
+    <a href="/pricing.html" class="ps-nav-cta">Voir les offres</a>
   </div>
 </nav>
 
@@ -323,7 +323,7 @@ function showNoSub() {
       <div style="font-size:40px;">✦</div>
       <h2>Aucun accès actif</h2>
       <p>L'Assistant IA est disponible avec un abonnement actif à l'une de nos verticales.</p>
-      <a href="/tarifs.html" class="state-cta">Voir les offres →</a>
+      <a href="/pricing.html" class="state-cta">Voir les offres →</a>
     </div>`;
   document.getElementById('init-spinner')?.remove();
 }
@@ -428,10 +428,10 @@ async function send() {
 
 function handleApiError(err) {
   const map = {
-    no_subscription:  '❌ Abonnement requis pour cette verticale. <a href="/tarifs.html" style="color:var(--gold)">Voir les offres →</a>',
-    expired:          '⚠️ Votre abonnement a expiré. <a href="/tarifs.html" style="color:var(--gold)">Le renouveler →</a>',
+    no_subscription:  '❌ Abonnement requis pour cette verticale. <a href="/pricing.html" style="color:var(--gold)">Voir les offres →</a>',
+    expired:          '⚠️ Votre abonnement a expiré. <a href="/pricing.html" style="color:var(--gold)">Le renouveler →</a>',
     quota_exceeded:   `📊 Quota mensuel atteint (${err.used || ''}/${err.limit || ''} messages). Revient le 1er du mois.`,
-    upgrade_required: `⬆️ Upgrade requis (${err.required || ''}). <a href="/tarifs.html" style="color:var(--gold)">Changer d'offre →</a>`,
+    upgrade_required: `⬆️ Upgrade requis (${err.required || ''}). <a href="/pricing.html" style="color:var(--gold)">Changer d'offre →</a>`,
   };
   const msg = map[err.reason] || `❌ ${err.message || 'Une erreur est survenue.'}`;
   appendBotMessage(msg);

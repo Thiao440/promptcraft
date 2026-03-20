@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/assets/images/favicon-192.png">
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="ps-title">Mentions légales — The Prompt Studio</title>
+<meta name="description" id="ps-desc" content="Mentions légales de The Prompt Studio — éditeur, hébergeur, propriété intellectuelle.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://theprompt.studio/legal-notice.html">
+<meta property="og:title" content="Mentions légales — The Prompt Studio">
+<meta property="og:url" content="https://theprompt.studio/legal-notice.html">
+<meta property="og:image" content="https://theprompt.studio/assets/images/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script defer src="/js/ps-lang.js?v=1.1"></script>
+<script defer src="/js/ps-i18n.js?v=1.0"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2e2a24;--gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+/* ===== UNIFIED DROPDOWN NAV ===== */
+.ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);backdrop-filter:blur(18px);border-bottom:1px solid #2e2a24;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:58px;}
+.ps-nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
+.ps-nav-logo em{color:#c9a84c;font-style:italic;}
+.ps-nav-center{display:flex;align-items:center;gap:0;}
+.ps-nav-item{position:relative;}
+.ps-nav-btn{background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;letter-spacing:0.04em;padding:0 14px;height:58px;display:flex;align-items:center;gap:5px;transition:color 0.2s;}
+.ps-nav-btn:hover{color:#f0ead8;}
+.ps-nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;letter-spacing:0.04em;padding:0 14px;height:58px;text-decoration:none;display:flex;align-items:center;transition:color 0.2s;}
+.ps-nav-a:hover,.ps-nav-a.ps-active{color:#c9a84c;}
+.ps-dd{position:absolute;top:100%;left:-8px;background:#1a1814;border:1px solid #2e2a24;min-width:248px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);}
+.ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-dd-row{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;text-decoration:none;color:#f0ead8;font-family:'Outfit',sans-serif;font-size:13px;border-bottom:1px solid #2e2a24;transition:background 0.15s;}
+.ps-dd-row:last-child{border-bottom:none;}
+.ps-dd-row:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-dd-row.ps-soon{color:#4a4540;cursor:default;pointer-events:none;}
+.ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(0,137,123,0.18);border:1px solid rgba(0,137,123,0.4);color:#00897b;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-service{font-size:8px;padding:2px 7px;background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4fc3f7;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-soon{font-size:8px;padding:2px 7px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);color:#5a5040;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-nav-right{display:flex;align-items:center;gap:10px;}
+.ps-lang-sel{position:relative;}
+.ps-lang-cur{background:none;border:1px solid #2e2a24;color:#8a8070;padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.08em;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
+.ps-lang-cur:hover{border-color:#c9a84c;color:#c9a84c;}
+.ps-lang-menu{position:absolute;top:calc(100% + 4px);right:0;background:#1a1814;border:1px solid #2e2a24;min-width:150px;opacity:0;pointer-events:none;transform:translateY(-4px);transition:all 0.15s;z-index:200;}
+.ps-lang-sel:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-lang-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:13px;font-family:'Outfit',sans-serif;color:#8a8070;transition:all 0.15s;white-space:nowrap;}
+.ps-lang-opt:hover,.ps-lang-opt.active{background:rgba(201,168,76,0.06);color:#f0ead8;}
+.ps-nav-cta{background:#c9a84c;color:#000;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;padding:9px 18px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s;white-space:nowrap;}
+.ps-nav-cta:hover{background:#e8c97a;}
+@media(max-width:768px){.ps-nav-center{display:none;}.ps-nav{padding:0 20px;}}
+
+
+/* ===== COOKIE BANNER RGPD ===== */
+#ps-cookie{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1814;border-top:1px solid #2e2a24;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 -8px 32px rgba(0,0,0,0.4);transform:translateY(100%);transition:transform 0.4s ease;flex-wrap:wrap;}
+#ps-cookie.show{transform:translateY(0);}
+#ps-cookie p{font-size:12px;color:#8a8070;line-height:1.6;max-width:680px;flex:1;}
+#ps-cookie a{color:#c9a84c;text-decoration:underline;}
+.ps-cookie-btns{display:flex;gap:10px;flex-shrink:0;}
+.ps-cookie-accept{background:#c9a84c;color:#000;border:none;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;}
+.ps-cookie-accept:hover{background:#e8c97a;}
+.ps-cookie-refuse{background:none;border:1px solid #2e2a24;color:#8a8070;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;}
+.ps-cookie-refuse:hover{border-color:#8a8070;color:#f0ead8;}
+@media(max-width:600px){#ps-cookie{padding:16px 20px;flex-direction:column;}.ps-cookie-btns{width:100%;}}
+
+/* Legal content */
+.legal-wrap{max-width:760px;margin:0 auto;padding:120px 24px 80px;}
+.legal-eyebrow{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.legal-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,56px);font-weight:300;line-height:1;margin-bottom:8px;}
+.legal-title em{color:var(--gold);font-style:italic;}
+.legal-date{font-size:11px;color:var(--muted);margin-bottom:56px;letter-spacing:0.08em;}
+.legal-section{margin-bottom:44px;}
+.legal-h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--cream);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.legal-h3{font-size:14px;font-weight:600;color:var(--cream);margin:18px 0 8px;letter-spacing:0.04em;}
+.legal-wrap p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:12px;}
+.legal-wrap ul{font-size:14px;color:var(--muted);line-height:1.8;padding-left:20px;margin-bottom:12px;}
+.legal-wrap ul li{margin-bottom:6px;}
+.legal-wrap a{color:var(--gold);text-decoration:underline;}
+.legal-highlight{background:var(--card);border-left:3px solid var(--gold);padding:16px 20px;margin:20px 0;font-size:13px;color:var(--muted);}
+/* Show/hide lang */
+.fr-c,.en-c,.es-c,.pt-c,.ar-c{display:none;}
+body:not(.en):not(.es):not(.pt):not(.ar) .fr-c{display:block;}
+body.en .en-c{display:block;}
+body.es .es-c{display:block;}
+body.pt .pt-c{display:block;}
+body.ar .ar-c{display:block;}
+body.ar .legal-wrap{direction:rtl;text-align:right;}
+@media(max-width:600px){.legal-wrap{padding:100px 20px 60px;}}
+</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Mentions Légales","url":"https://theprompt.studio/legal-notice.html","publisher":{"@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio"}}
+</script>
+</head>
+<body>
+<nav class="ps-nav">
+  <a href="index.html" class="ps-nav-logo" aria-label="The Prompt Studio — Accueil">The Prompt<em>Studio</em></a>
+  <div class="ps-nav-center" role="navigation" aria-label="Navigation principale">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn" aria-haspopup="true" aria-expanded="false">Produits ▾</button>
+      <div class="ps-dd" role="menu">
+        <a href="/pricing.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span></a>
+        <a href="/pricing.html?v=commerce" class="ps-dd-row"><span>🛒 E-Commerce & Retail</span></a>
+        <a href="/pricing.html?v=legal" class="ps-dd-row"><span>⚖️ Juridique</span></a>
+        <a href="/pricing.html?v=finance" class="ps-dd-row"><span>💰 Finance & Comptabilité</span></a>
+        <a href="/pricing.html?v=marketing" class="ps-dd-row"><span>📣 Marketing & Com.</span></a>
+        <a href="/pricing.html?v=rh" class="ps-dd-row"><span>👥 Ressources Humaines</span></a>
+        <a href="/pricing.html?v=sante" class="ps-dd-row"><span>🏥 Santé & Bien-être</span></a>
+        <a href="/pricing.html?v=education" class="ps-dd-row"><span>🎓 Éducation & Formation</span></a>
+        <a href="/pricing.html?v=restauration" class="ps-dd-row"><span>🍽️ Restauration</span></a>
+        <a href="/pricing.html?v=freelance" class="ps-dd-row"><span>💼 Freelances & Consultants</span></a>
+      </div>
+    </div>
+    <a href="/pricing.html" class="ps-nav-a">Tarifs</a>
+    <a href="contact.html" class="ps-nav-a">Contact</a>
+  </div>
+  <div class="ps-nav-right">
+    <div class="ps-lang-sel">
+      <button class="ps-lang-cur" id="ps-lang-btn">🇫🇷 FR ▾</button>
+      <div class="ps-lang-menu">
+        <div class="ps-lang-opt active" onclick="psSetLang('fr')"><span>🇫🇷</span> Français</div>
+        <div class="ps-lang-opt" onclick="psSetLang('en')"><span>🇬🇧</span> English</div>
+        <div class="ps-lang-opt" onclick="psSetLang('es')"><span>🇪🇸</span> Español</div>
+        <div class="ps-lang-opt" onclick="psSetLang('pt')"><span>🇧🇷</span> Português</div>
+        <div class="ps-lang-opt" onclick="psSetLang('ar')"><span>🇸🇦</span> العربية</div>
+      </div>
+    </div>
+    <a href="/pricing.html" class="ps-nav-cta">Voir les offres</a>
+  </div>
+</nav>
+
+<!-- COOKIE BANNER RGPD -->
+<div id="ps-cookie" role="dialog" aria-label="Gestion des cookies" aria-live="polite">
+  <p>Nous utilisons des cookies techniques nécessaires au fonctionnement du site (Google Fonts, analyse de trafic anonymisée). En cliquant sur "Accepter", vous consentez à leur utilisation. <a href="privacy-policy.html">Politique de confidentialité</a> · <a href="legal-notice.html">Mentions légales</a></p>
+  <div class="ps-cookie-btns">
+    <button class="ps-cookie-accept" onclick="psCookieAccept()">Accepter</button>
+    <button class="ps-cookie-refuse" onclick="psCookieRefuse()">Continuer sans accepter</button>
+  </div>
+</div>
+<script>
+(function(){
+  if(!localStorage.getItem('ps_cookie_consent')){
+    setTimeout(function(){ var b=document.getElementById('ps-cookie'); if(b) b.classList.add('show'); },800);
+  }
+})();
+function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
+function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
+function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
+</script>
+
+<main class="legal-wrap">
+  <div class="fr-c">
+    <div class="legal-eyebrow">Informations légales</div>
+<h1 class="legal-title">Mentions <em>légales</em></h1>
+<p class="legal-date">Dernière mise à jour : mars 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Éditeur du site</h2>
+  <p>Le site <strong>theprompt.studio</strong> est édité par :</p>
+  <div class="legal-highlight">
+    <strong>The Prompt Studio</strong><br>
+    Entrepreneur individuel<br>
+    Mathieu Thiao-Layel<br>
+    Email : <a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a><br>
+    SIRET : <em>[À compléter lors de l'immatriculation]</em><br>
+    N° TVA intracommunautaire : <em>[À compléter]</em>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Hébergeur</h2>
+  <p>Le site est hébergé par :</p>
+  <div class="legal-highlight">
+    <strong>Netlify, Inc.</strong><br>
+    44 Montgomery Street, Suite 300<br>
+    San Francisco, CA 94104, États-Unis<br>
+    Téléphone : +1 (844) 899-7312<br>
+    <a href="https://www.netlify.com" target="_blank" rel="noopener">netlify.com</a>
+  </div>
+  <p>Sous-traitants techniques :</p>
+  <div class="legal-highlight">
+    <strong>Supabase, Inc.</strong> — Base de données, authentification et stockage<br>
+    970 Toa Payoh North, #07-04, Singapore 318992<br>
+    <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a><br><br>
+    <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.) — Paiement et facturation (Merchant of Record)<br>
+    2093 Philadelphia Pike #1137, Claymont, DE 19703, États-Unis<br>
+    <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener">lemonsqueezy.com</a><br><br>
+    <strong>Anthropic, PBC</strong> — Traitement IA (API Claude)<br>
+    548 Market St, PMB 90375, San Francisco, CA 94104, États-Unis<br>
+    <a href="https://www.anthropic.com" target="_blank" rel="noopener">anthropic.com</a>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Activité</h2>
+  <p>The Prompt Studio est une plateforme SaaS (Software as a Service) qui commercialise des outils d'intelligence artificielle spécialisés par verticale métier, à destination de professionnels. Verticales proposées : Immobilier, E-Commerce & Retail, Juridique, Finance & Comptabilité, Marketing & Communication, Ressources Humaines, Santé & Bien-être, Éducation & Formation, Restauration, Freelances & Consultants. La plateforme propose également des prestations de conseil en intelligence artificielle sur-mesure.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Propriété intellectuelle</h2>
+  <p>L'ensemble du contenu de ce site (textes, images, prompts, workflows, code) est protégé par le droit d'auteur et constitue la propriété intellectuelle exclusive de The Prompt Studio, sauf mention contraire.</p>
+  <p>Toute reproduction, distribution ou utilisation commerciale sans autorisation écrite préalable est strictement interdite.</p>
+  <p>Les produits numériques vendus (packs de prompts) sont soumis à une licence d'utilisation personnelle et non-transférable. Toute revente ou redistribution est interdite.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Responsabilité</h2>
+  <p>Les prompts et contenus fournis sont des outils d'aide à la rédaction et à la productivité. Ils ne constituent pas des conseils professionnels (juridiques, financiers ou autres). The Prompt Studio ne peut être tenu responsable de l'utilisation qui en est faite.</p>
+  <p>Pour les prompts destinés aux professionnels du droit, chaque contenu généré doit être relu, adapté et validé par un professionnel qualifié avant toute utilisation dans un contexte réel.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Liens hypertextes</h2>
+  <p>Ce site peut contenir des liens vers des sites externes. The Prompt Studio n'est pas responsable du contenu de ces sites tiers et n'en assume aucune responsabilité.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Droit applicable</h2>
+  <p>Les présentes mentions légales sont soumises au droit français. En cas de litige, les tribunaux français seront compétents.</p>
+</div>
+  </div>
+  <div class="en-c">
+    <div class="legal-eyebrow">Legal information</div>
+<h1 class="legal-title">Legal <em>Notice</em></h1>
+<p class="legal-date">Last updated: March 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Website Publisher</h2>
+  <p>The website <strong>theprompt.studio</strong> is published by:</p>
+  <div class="legal-highlight">
+    <strong>The Prompt Studio</strong><br>
+    Individual entrepreneur (France)<br>
+    Mathieu Thiao-Layel<br>
+    Email: <a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a><br>
+    SIRET: <em>[To be completed upon registration]</em>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Hosting Provider</h2>
+  <div class="legal-highlight">
+    <strong>Netlify, Inc.</strong><br>
+    44 Montgomery Street, Suite 300<br>
+    San Francisco, CA 94104, USA<br>
+    Phone: +1 (844) 899-7312<br>
+    <a href="https://www.netlify.com" target="_blank" rel="noopener">netlify.com</a>
+  </div>
+  <p>Technical sub-processors:</p>
+  <div class="legal-highlight">
+    <strong>Supabase, Inc.</strong> — Database, authentication and storage<br>
+    970 Toa Payoh North, #07-04, Singapore 318992<br>
+    <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a><br><br>
+    <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.) — Payment and billing (Merchant of Record)<br>
+    2093 Philadelphia Pike #1137, Claymont, DE 19703, USA<br>
+    <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener">lemonsqueezy.com</a><br><br>
+    <strong>Anthropic, PBC</strong> — AI processing (Claude API)<br>
+    548 Market St, PMB 90375, San Francisco, CA 94104, USA<br>
+    <a href="https://www.anthropic.com" target="_blank" rel="noopener">anthropic.com</a>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Intellectual Property</h2>
+  <p>All content on this site (texts, images, prompts, workflows, code) is protected by copyright and is the exclusive intellectual property of The Prompt Studio.</p>
+  <p>Digital products sold (prompt packs) are subject to a personal, non-transferable use license. Resale or redistribution is prohibited.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Disclaimer</h2>
+  <p>Prompts and content provided are productivity assistance tools. They do not constitute professional advice (legal, financial or otherwise). The Prompt Studio cannot be held liable for how they are used.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Governing Law</h2>
+  <p>These legal notices are governed by French law. In case of dispute, French courts shall have jurisdiction.</p>
+</div>
+  </div>
+  <div class="es-c">
+    <div class="legal-eyebrow">Información legal</div>
+<h1 class="legal-title">Aviso <em>legal</em></h1>
+<p class="legal-date">Última actualización: marzo 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Editor del sitio</h2>
+  <p>El sitio web <strong>theprompt.studio</strong> es editado por:</p>
+  <div class="legal-highlight">
+    <strong>The Prompt Studio</strong><br>
+    Autónomo<br>
+    Mathieu Thiao-Layel<br>
+    Correo electrónico: <a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a><br>
+    SIRET: <em>[Por completar en el registro]</em><br>
+    N° IVA intracomunitario: <em>[Por completar]</em>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Proveedor de alojamiento</h2>
+  <p>El sitio está alojado por:</p>
+  <div class="legal-highlight">
+    <strong>Netlify, Inc.</strong><br>
+    44 Montgomery Street, Suite 300<br>
+    San Francisco, CA 94104, Estados Unidos<br>
+    Teléfono: +1 (844) 899-7312<br>
+    <a href="https://www.netlify.com" target="_blank" rel="noopener">netlify.com</a>
+  </div>
+  <p>Subcontratistas técnicos:</p>
+  <div class="legal-highlight">
+    <strong>Supabase, Inc.</strong> — Base de datos, autenticación y almacenamiento<br>
+    970 Toa Payoh North, #07-04, Singapore 318992<br>
+    <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a><br><br>
+    <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.) — Pagos y facturación (Comerciante de Registro)<br>
+    2093 Philadelphia Pike #1137, Claymont, DE 19703, Estados Unidos<br>
+    <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener">lemonsqueezy.com</a><br><br>
+    <strong>Anthropic, PBC</strong> — Procesamiento de IA (API Claude)<br>
+    548 Market St, PMB 90375, San Francisco, CA 94104, Estados Unidos<br>
+    <a href="https://www.anthropic.com" target="_blank" rel="noopener">anthropic.com</a>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Actividad</h2>
+  <p>The Prompt Studio es una plataforma SaaS (Software como Servicio) que comercializa herramientas de inteligencia artificial especializadas por vertical de negocio, dirigidas a profesionales. Verticales ofrecidas: Inmobiliario, E-Commerce y Retail, Jurídico, Finanzas y Contabilidad, Marketing y Comunicación, Recursos Humanos, Salud y Bienestar, Educación y Formación, Restauración, Autónomos y Consultores. La plataforma también ofrece servicios de consultoría de inteligencia artificial personalizados.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Propiedad intelectual</h2>
+  <p>Todo el contenido de este sitio (textos, imágenes, prompts, flujos de trabajo, código) está protegido por derechos de autor y constituye la propiedad intelectual exclusiva de The Prompt Studio, salvo indicación contraria.</p>
+  <p>Toda reproducción, distribución o uso comercial sin autorización escrita previa está estrictamente prohibida.</p>
+  <p>Los productos digitales vendidos (packs de prompts) están sujetos a una licencia de uso personal e intransferible. Toda reventa o redistribución está prohibida.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Responsabilidad</h2>
+  <p>Los prompts y contenidos proporcionados son herramientas de ayuda a la redacción y productividad. No constituyen asesoramiento profesional (jurídico, financiero u otro). The Prompt Studio no puede ser responsable del uso que se haga de ellos.</p>
+  <p>Para los prompts destinados a profesionales del derecho, cada contenido generado debe ser revisado, adaptado y validado por un profesional cualificado antes de cualquier uso en un contexto real.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Enlaces hipertextuales</h2>
+  <p>Este sitio puede contener enlaces a sitios externos. The Prompt Studio no es responsable del contenido de estos sitios terceros y no asume responsabilidad alguna por los mismos.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Ley aplicable</h2>
+  <p>Este aviso legal está sujeto a la ley francesa. En caso de litigio, los tribunales franceses serán competentes.</p>
+</div>
+  </div>
+  <div class="pt-c">
+    <div class="legal-eyebrow">Informação legal</div>
+<h1 class="legal-title">Avisos <em>legais</em></h1>
+<p class="legal-date">Última atualização: março 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Editor do site</h2>
+  <p>O site <strong>theprompt.studio</strong> é editado por:</p>
+  <div class="legal-highlight">
+    <strong>The Prompt Studio</strong><br>
+    Empreendedor individual<br>
+    Mathieu Thiao-Layel<br>
+    E-mail: <a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a><br>
+    SIRET: <em>[A completar no registro]</em><br>
+    Nº VAT intracomunitária: <em>[A completar]</em>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Provedor de hospedagem</h2>
+  <p>O site é hospedado por:</p>
+  <div class="legal-highlight">
+    <strong>Netlify, Inc.</strong><br>
+    44 Montgomery Street, Suite 300<br>
+    San Francisco, CA 94104, Estados Unidos<br>
+    Telefone: +1 (844) 899-7312<br>
+    <a href="https://www.netlify.com" target="_blank" rel="noopener">netlify.com</a>
+  </div>
+  <p>Subcontratados técnicos:</p>
+  <div class="legal-highlight">
+    <strong>Supabase, Inc.</strong> — Banco de dados, autenticação e armazenamento<br>
+    970 Toa Payoh North, #07-04, Singapore 318992<br>
+    <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a><br><br>
+    <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.) — Pagamentos e faturamento (Merchant of Record)<br>
+    2093 Philadelphia Pike #1137, Claymont, DE 19703, Estados Unidos<br>
+    <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener">lemonsqueezy.com</a><br><br>
+    <strong>Anthropic, PBC</strong> — Processamento de IA (API Claude)<br>
+    548 Market St, PMB 90375, San Francisco, CA 94104, Estados Unidos<br>
+    <a href="https://www.anthropic.com" target="_blank" rel="noopener">anthropic.com</a>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Atividade</h2>
+  <p>The Prompt Studio é uma plataforma SaaS (Software como Serviço) que comercializa ferramentas de inteligência artificial especializadas por vertical de negócio, destinadas a profissionais. Verticais oferecidas: Imobiliário, E-Commerce e Varejo, Jurídico, Finanças e Contabilidade, Marketing e Comunicação, Recursos Humanos, Saúde e Bem-estar, Educação e Treinamento, Restauração, Freelancers e Consultores. A plataforma também oferece serviços de consultoria de inteligência artificial personalizados.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Propriedade intelectual</h2>
+  <p>Todo o conteúdo deste site (textos, imagens, prompts, fluxos de trabalho, código) é protegido por direitos autorais e constitui a propriedade intelectual exclusiva da The Prompt Studio, salvo indicação contrária.</p>
+  <p>Toda reprodução, distribuição ou uso comercial sem autorização escrita prévia é estritamente proibida.</p>
+  <p>Os produtos digitais vendidos (packs de prompts) estão sujeitos a uma licença de uso pessoal e intransferível. Toda revenda ou redistribuição é proibida.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Isenção de responsabilidade</h2>
+  <p>Os prompts e conteúdos fornecidos são ferramentas de auxílio à redação e produtividade. Eles não constituem aconselhamento profissional (jurídico, financeiro ou outro). The Prompt Studio não pode ser responsabilizada pelo uso que se faça deles.</p>
+  <p>Para prompts destinados a profissionais do direito, cada conteúdo gerado deve ser revisado, adaptado e validado por um profissional qualificado antes de qualquer uso em um contexto real.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Hiperlinks</h2>
+  <p>Este site pode conter links para sites externos. The Prompt Studio não é responsável pelo conteúdo desses sites terceiros e não assume nenhuma responsabilidade por eles.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Lei aplicável</h2>
+  <p>Estes avisos legais estão sujeitos à lei francesa. Em caso de litígio, os tribunais franceses serão competentes.</p>
+</div>
+  </div>
+  <div class="ar-c">
+    <div class="legal-eyebrow">المعلومات القانونية</div>
+<h1 class="legal-title">الإشعار <em>القانوني</em></h1>
+<p class="legal-date">آخر تحديث: مارس 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. ناشر الموقع</h2>
+  <p>يتم نشر موقع الويب <strong>theprompt.studio</strong> من قبل:</p>
+  <div class="legal-highlight">
+    <strong>The Prompt Studio</strong><br>
+    رائد أعمال فردي<br>
+    Mathieu Thiao-Layel<br>
+    البريد الإلكتروني: <a href="mailto:contact@theprompt.studio">contact@theprompt.studio</a><br>
+    SIRET: <em>[سيتم إكماله عند التسجيل]</em><br>
+    رقم ضريبة القيمة المضافة داخل المجموعة: <em>[سيتم إكماله]</em>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. مزود خدمة الاستضافة</h2>
+  <p>يتم استضافة الموقع من قبل:</p>
+  <div class="legal-highlight">
+    <strong>Netlify, Inc.</strong><br>
+    44 Montgomery Street, Suite 300<br>
+    San Francisco, CA 94104, الولايات المتحدة<br>
+    الهاتف: +1 (844) 899-7312<br>
+    <a href="https://www.netlify.com" target="_blank" rel="noopener">netlify.com</a>
+  </div>
+  <p>معالجات فرعية تقنية:</p>
+  <div class="legal-highlight">
+    <strong>Supabase, Inc.</strong> — قاعدة البيانات والمصادقة والتخزين<br>
+    970 Toa Payoh North, #07-04, Singapore 318992<br>
+    <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a><br><br>
+    <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.) — الدفع والفواتير (تاجر السجل)<br>
+    2093 Philadelphia Pike #1137, Claymont, DE 19703, الولايات المتحدة<br>
+    <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener">lemonsqueezy.com</a><br><br>
+    <strong>Anthropic, PBC</strong> — معالجة الذكاء الاصطناعي (Claude API)<br>
+    548 Market St, PMB 90375, San Francisco, CA 94104, الولايات المتحدة<br>
+    <a href="https://www.anthropic.com" target="_blank" rel="noopener">anthropic.com</a>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. النشاط</h2>
+  <p>The Prompt Studio هي منصة SaaS (برنامج كخدمة) تسوق أدوات الذكاء الاصطناعي المتخصصة حسب العمودية للمتخصصين. العموديات المقدمة: العقارات، التجارة الإلكترونية والتجزئة، القانون، المالية والمحاسبة، التسويق والاتصالات، الموارد البشرية، الصحة والعافية، التعليم والتدريب، الطعام والشراب، العاملين بحسابهم الخاص والاستشاريين. توفر المنصة أيضا خدمات استشارة الذكاء الاصطناعي المخصصة.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. الملكية الفكرية</h2>
+  <p>جميع محتويات هذا الموقع (نصوص وصور وعروض توضيحية وسير عمل وأكواد) محمية بموجب حقوق النشر وتمثل الملكية الفكرية الحصرية لـ The Prompt Studio، إلا إذا ذكر خلاف ذلك.</p>
+  <p>أي استنساخ أو توزيع أو استخدام تجاري دون تفويض كتابي مسبق ممنوع تماما.</p>
+  <p>المنتجات الرقمية المباعة (مجموعات المحفزات) تخضع لترخيص استخدام شخصي وغير قابل للنقل. أي إعادة بيع أو إعادة توزيع ممنوعة.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. إخلاء المسؤولية</h2>
+  <p>المحفزات والمحتويات المقدمة هي أدوات لمساعدة الكتابة والإنتاجية. لا تشكل استشارة مهنية (قانونية أو مالية أو غيرها). The Prompt Studio لا تستطيع تحمل مسؤولية الاستخدام الذي يتم فيه.</p>
+  <p>بالنسبة للمحفزات الموجهة لمتخصصي القانون، يجب مراجعة وتعديل والتحقق من كل محتوى مُنتَج من قبل متخصص مؤهل قبل أي استخدام في سياق حقيقي.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. الارتباطات التشعبية</h2>
+  <p>قد يحتوي هذا الموقع على روابط لمواقع خارجية. The Prompt Studio غير مسؤولة عن محتوى هذه المواقع الخارجية ولا تتحمل أي مسؤولية عنها.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. القانون الواجب التطبيق</h2>
+  <p>هذا الإشعار القانوني يخضع للقانون الفرنسي. في حالة النزاع، تكون المحاكم الفرنسية هي الجهة المختصة.</p>
+</div>
+  </div>
+</main>
+<footer style="background:var(--surface, #111009);border-top:1px solid #2e2a24;padding:48px 40px 32px;position:relative;z-index:1;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;margin-bottom:12px;">The Prompt<em style="color:var(--gold, #c9a84c);font-style:italic;">Studio</em></div>
+        <p style="font-size:12px;color:#8a8070;line-height:1.7;max-width:240px;">Toolkits IA premium pour professionnels. Immo · Commerce · Legal · Finance.</p>
+        <a href="mailto:contact@theprompt.studio" style="font-size:12px;color:#8a8070;text-decoration:none;display:block;margin-top:12px;transition:color 0.2s;" onmouseover="this.style.color='var(--gold, #c9a84c)'" onmouseout="this.style.color='#8a8070'">contact@theprompt.studio</a>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Produits</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="promptcraft-immo.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Immo Pro</a>
+          <a href="promptcraft-commerce.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Commerce Pro</a>
+          <a href="promptcraft-legal.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Legal Pro</a>
+          <a href="custom-consulting.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Finance IA</a>
+          <a href="/pricing.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Tarifs</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Informations légales</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="contact.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Contact</a>
+          <a href="legal-notice.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Mentions légales</a>
+          <a href="terms.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">CGV</a>
+          <a href="privacy-policy.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Politique de confidentialité</a>
+          <a href="https://theprompt-studio.lemonsqueezy.com" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'" target="_blank" rel="noopener">Boutique Lemon Squeezy ↗</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #2e2a24;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <p style="font-size:11px;color:#5a5040;">© 2026 The Prompt Studio — theprompt.studio — Tous droits réservés</p>
+      <p style="font-size:11px;color:#5a5040;">Paiements sécurisés via <a href="https://lemonsqueezy.com" target="_blank" rel="noopener" style="color:#5a5040;text-decoration:underline;">Lemon Squeezy</a> · TVA gérée dans 130+ pays</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function psSetLang(lang){
+  document.body.className = lang !== 'fr' ? lang : '';
+  var btn = document.getElementById('ps-lang-btn');
+  var flags = {fr:'🇫🇷 FR',en:'🇬🇧 EN',es:'🇪🇸 ES',pt:'🇧🇷 PT',ar:'🇸🇦 AR'};
+  if(btn) btn.innerHTML = (flags[lang]||flags.fr) + ' ▾';
+  document.querySelectorAll('.ps-lang-opt').forEach(function(o){
+    o.classList.toggle('active', o.getAttribute('onclick') === "psSetLang('"+lang+"')");
+  });
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  localStorage.setItem('ps_lang', lang);
+  var titles = {
+    fr:'Mentions légales — The Prompt Studio',
+    en:'Legal Notice — The Prompt Studio',
+    es:'Aviso legal — The Prompt Studio',
+    pt:'Avisos legais — The Prompt Studio',
+    ar:'الإشعار القانوني — The Prompt Studio'
+  };
+  var descs = {
+    fr:'Mentions légales de The Prompt Studio — éditeur, hébergeur, propriété intellectuelle.',
+    en:'Legal notice for The Prompt Studio — publisher, hosting, intellectual property.',
+    es:'Aviso legal de The Prompt Studio — editor, alojamiento, propiedad intelectual.',
+    pt:'Avisos legais do The Prompt Studio — editor, hospedagem, propriedade intelectual.',
+    ar:'الإشعار القانوني لـ The Prompt Studio — الناشر، الاستضافة، الملكية الفكرية.'
+  };
+  document.getElementById('ps-title').textContent = titles[lang] || titles.fr;
+  document.getElementById('ps-desc').content = descs[lang] || descs.fr;
+}
+(function(){ var l = localStorage.getItem('ps_lang'); if(l && l!=='fr') psSetLang(l); })();
+</script>
+</body>
+</html>

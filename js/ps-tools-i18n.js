@@ -1,7 +1,7 @@
 /**
  * ps-tools-i18n.js — Multilingual tool name/description fallback
  *
- * Used by dashboard.html and tarifs.html when displaying tools in non-French languages.
+ * Used by dashboard.html and pricing.html when displaying tools in non-French languages.
  * The DB stores French labels only; this file provides translations for EN, ES, PT, AR.
  *
  * Structure: TOOLS_I18N[vertical] = [ { name: {fr,en,es,pt,ar}, desc: {fr,en,es,pt,ar}, icon, tier } ]

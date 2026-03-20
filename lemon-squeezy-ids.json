@@ -1,5 +1,5 @@
 {
-  "_doc": "Lemon Squeezy product & variant IDs — source of truth for tarifs.html PRODUCTS object",
+  "_doc": "Lemon Squeezy product & variant IDs — source of truth for pricing.html PRODUCTS object",
   "_checkout_base": "https://theprompt-studio.lemonsqueezy.com/checkout/buy",
   "_url_format": "{checkout_base}/{variant_uuid}?checkout[custom][vertical]={key}&checkout[custom][tier]={tier}&checkout[custom][period]={period}",
   "_updated": "2026-03-20",

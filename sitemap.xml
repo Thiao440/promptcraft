@@ -4,7 +4,7 @@
 
   <url>
     <loc>https://theprompt.studio/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://theprompt.studio/"/>
@@ -17,70 +17,35 @@
 
   <url>
     <loc>https://theprompt.studio/promptcraft-immo.html</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://theprompt.studio/promptcraft-commerce.html</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://theprompt.studio/promptcraft-legal.html</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://theprompt.studio/finance.html</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://theprompt.studio/contact.html</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <url>
-    <loc>https://theprompt.studio/mentions-legales.html</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
-  </url>
-
-  <url>
-    <loc>https://theprompt.studio/cgv.html</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
-  </url>
-
-  <url>
-    <loc>https://theprompt.studio/politique-confidentialite.html</loc>
-    <lastmod>2026-03-15</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
-  </url>
-
-  <url>
-    <loc>https://theprompt.studio/tarifs.html</loc>
     <lastmod>2026-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://theprompt.studio/tarifs.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theprompt.studio/tarifs.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://theprompt.studio/tarifs.html"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://theprompt.studio/tarifs.html"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://theprompt.studio/tarifs.html"/>
+  </url>
+
+  <url>
+    <loc>https://theprompt.studio/pricing.html</loc>
+    <lastmod>2026-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://theprompt.studio/pricing.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://theprompt.studio/pricing.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://theprompt.studio/pricing.html"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://theprompt.studio/pricing.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://theprompt.studio/pricing.html"/>
   </url>
 
   <url>
@@ -91,10 +56,31 @@
   </url>
 
   <url>
-    <loc>https://theprompt.studio/conseil-sur-mesure.html</loc>
+    <loc>https://theprompt.studio/contact.html</loc>
     <lastmod>2026-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://theprompt.studio/legal-notice.html</loc>
+    <lastmod>2026-03-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <url>
+    <loc>https://theprompt.studio/terms.html</loc>
+    <lastmod>2026-03-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <url>
+    <loc>https://theprompt.studio/privacy-policy.html</loc>
+    <lastmod>2026-03-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
   </url>
 
 </urlset>

@@ -41,5 +41,9 @@ sql/
 # Email templates (Supabase-managed, not served publicly)
 email-templates/
 
-# Generated strategy/audit docs at root level
-Guide_Automatisation_Make.docx
+# Internal docs — guides, checklists, strategy docs (not for deploy)
+*.docx
+*.xlsx
+*.xls
+PRODUCTION-CHECKLIST.md
+.~lock.*

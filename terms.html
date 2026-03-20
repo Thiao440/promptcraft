@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/assets/images/favicon-192.png">
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="ps-title">Conditions Générales de Vente — The Prompt Studio</title>
+<meta name="description" id="ps-desc" content="CGV The Prompt Studio — Conditions de vente pour les produits numériques (toolkits IA, abonnement Pro).">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://theprompt.studio/terms.html">
+<meta property="og:title" content="Conditions Générales de Vente — The Prompt Studio">
+<meta property="og:url" content="https://theprompt.studio/terms.html">
+<meta property="og:image" content="https://theprompt.studio/assets/images/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script defer src="/js/ps-lang.js?v=1.1"></script>
+<script defer src="/js/ps-i18n.js?v=1.0"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0c0b09;--surface:#111009;--card:#1a1814;--border:#2e2a24;--gold:#c9a84c;--cream:#f0ead8;--muted:#8a8070;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+/* ===== UNIFIED DROPDOWN NAV ===== */
+.ps-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(12,11,9,0.96);backdrop-filter:blur(18px);border-bottom:1px solid #2e2a24;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:58px;}
+.ps-nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;text-decoration:none;letter-spacing:0.02em;white-space:nowrap;}
+.ps-nav-logo em{color:#c9a84c;font-style:italic;}
+.ps-nav-center{display:flex;align-items:center;gap:0;}
+.ps-nav-item{position:relative;}
+.ps-nav-btn{background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;letter-spacing:0.04em;padding:0 14px;height:58px;display:flex;align-items:center;gap:5px;transition:color 0.2s;}
+.ps-nav-btn:hover{color:#f0ead8;}
+.ps-nav-a{font-family:'Outfit',sans-serif;font-size:13px;color:#8a8070;letter-spacing:0.04em;padding:0 14px;height:58px;text-decoration:none;display:flex;align-items:center;transition:color 0.2s;}
+.ps-nav-a:hover,.ps-nav-a.ps-active{color:#c9a84c;}
+.ps-dd{position:absolute;top:100%;left:-8px;background:#1a1814;border:1px solid #2e2a24;min-width:248px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:all 0.18s;box-shadow:0 20px 56px rgba(0,0,0,0.55);}
+.ps-nav-item:hover .ps-dd{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-dd-row{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;text-decoration:none;color:#f0ead8;font-family:'Outfit',sans-serif;font-size:13px;border-bottom:1px solid #2e2a24;transition:background 0.15s;}
+.ps-dd-row:last-child{border-bottom:none;}
+.ps-dd-row:hover{background:rgba(201,168,76,0.07);color:#c9a84c;}
+.ps-dd-row.ps-soon{color:#4a4540;cursor:default;pointer-events:none;}
+.ps-badge-live{font-size:8px;padding:2px 7px;background:rgba(0,137,123,0.18);border:1px solid rgba(0,137,123,0.4);color:#00897b;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-service{font-size:8px;padding:2px 7px;background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4fc3f7;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-badge-soon{font-size:8px;padding:2px 7px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);color:#5a5040;letter-spacing:0.1em;text-transform:uppercase;}
+.ps-nav-right{display:flex;align-items:center;gap:10px;}
+.ps-lang-sel{position:relative;}
+.ps-lang-cur{background:none;border:1px solid #2e2a24;color:#8a8070;padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:0.08em;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
+.ps-lang-cur:hover{border-color:#c9a84c;color:#c9a84c;}
+.ps-lang-menu{position:absolute;top:calc(100% + 4px);right:0;background:#1a1814;border:1px solid #2e2a24;min-width:150px;opacity:0;pointer-events:none;transform:translateY(-4px);transition:all 0.15s;z-index:200;}
+.ps-lang-sel:hover .ps-lang-menu{opacity:1;pointer-events:auto;transform:translateY(0);}
+.ps-lang-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:13px;font-family:'Outfit',sans-serif;color:#8a8070;transition:all 0.15s;white-space:nowrap;}
+.ps-lang-opt:hover,.ps-lang-opt.active{background:rgba(201,168,76,0.06);color:#f0ead8;}
+.ps-nav-cta{background:#c9a84c;color:#000;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;padding:9px 18px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s;white-space:nowrap;}
+.ps-nav-cta:hover{background:#e8c97a;}
+@media(max-width:768px){.ps-nav-center{display:none;}.ps-nav{padding:0 20px;}}
+
+
+/* ===== COOKIE BANNER RGPD ===== */
+#ps-cookie{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1814;border-top:1px solid #2e2a24;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 -8px 32px rgba(0,0,0,0.4);transform:translateY(100%);transition:transform 0.4s ease;flex-wrap:wrap;}
+#ps-cookie.show{transform:translateY(0);}
+#ps-cookie p{font-size:12px;color:#8a8070;line-height:1.6;max-width:680px;flex:1;}
+#ps-cookie a{color:#c9a84c;text-decoration:underline;}
+.ps-cookie-btns{display:flex;gap:10px;flex-shrink:0;}
+.ps-cookie-accept{background:#c9a84c;color:#000;border:none;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;}
+.ps-cookie-accept:hover{background:#e8c97a;}
+.ps-cookie-refuse{background:none;border:1px solid #2e2a24;color:#8a8070;padding:9px 20px;font-family:'Outfit',sans-serif;font-size:12px;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;}
+.ps-cookie-refuse:hover{border-color:#8a8070;color:#f0ead8;}
+@media(max-width:600px){#ps-cookie{padding:16px 20px;flex-direction:column;}.ps-cookie-btns{width:100%;}}
+
+/* Legal content */
+.legal-wrap{max-width:760px;margin:0 auto;padding:120px 24px 80px;}
+.legal-eyebrow{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.legal-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,56px);font-weight:300;line-height:1;margin-bottom:8px;}
+.legal-title em{color:var(--gold);font-style:italic;}
+.legal-date{font-size:11px;color:var(--muted);margin-bottom:56px;letter-spacing:0.08em;}
+.legal-section{margin-bottom:44px;}
+.legal-h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--cream);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.legal-h3{font-size:14px;font-weight:600;color:var(--cream);margin:18px 0 8px;letter-spacing:0.04em;}
+.legal-wrap p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:12px;}
+.legal-wrap ul{font-size:14px;color:var(--muted);line-height:1.8;padding-left:20px;margin-bottom:12px;}
+.legal-wrap ul li{margin-bottom:6px;}
+.legal-wrap a{color:var(--gold);text-decoration:underline;}
+.legal-highlight{background:var(--card);border-left:3px solid var(--gold);padding:16px 20px;margin:20px 0;font-size:13px;color:var(--muted);}
+/* Show/hide lang */
+.fr-c,.en-c,.es-c,.pt-c,.ar-c{display:none;}
+body:not(.en):not(.es):not(.pt):not(.ar) .fr-c{display:block;}
+body.en .en-c{display:block;}
+body.es .es-c{display:block;}
+body.pt .pt-c{display:block;}
+body.ar .ar-c{display:block;}
+body.ar .legal-wrap{direction:rtl;text-align:right;}
+@media(max-width:600px){.legal-wrap{padding:100px 20px 60px;}}
+</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Conditions Générales de Vente","url":"https://theprompt.studio/terms.html","publisher":{"@type":"Organization","name":"The Prompt Studio","url":"https://theprompt.studio"}}
+</script>
+</head>
+<body>
+<nav class="ps-nav">
+  <a href="index.html" class="ps-nav-logo" aria-label="The Prompt Studio — Accueil">The Prompt<em>Studio</em></a>
+  <div class="ps-nav-center" role="navigation" aria-label="Navigation principale">
+    <div class="ps-nav-item">
+      <button class="ps-nav-btn" aria-haspopup="true" aria-expanded="false">Produits ▾</button>
+      <div class="ps-dd" role="menu">
+        <a href="/pricing.html?v=immo" class="ps-dd-row"><span>🏠 Immobilier</span></a>
+        <a href="/pricing.html?v=commerce" class="ps-dd-row"><span>🛒 E-Commerce & Retail</span></a>
+        <a href="/pricing.html?v=legal" class="ps-dd-row"><span>⚖️ Juridique</span></a>
+        <a href="/pricing.html?v=finance" class="ps-dd-row"><span>💰 Finance & Comptabilité</span></a>
+        <a href="/pricing.html?v=marketing" class="ps-dd-row"><span>📣 Marketing & Com.</span></a>
+        <a href="/pricing.html?v=rh" class="ps-dd-row"><span>👥 Ressources Humaines</span></a>
+        <a href="/pricing.html?v=sante" class="ps-dd-row"><span>🏥 Santé & Bien-être</span></a>
+        <a href="/pricing.html?v=education" class="ps-dd-row"><span>🎓 Éducation & Formation</span></a>
+        <a href="/pricing.html?v=restauration" class="ps-dd-row"><span>🍽️ Restauration</span></a>
+        <a href="/pricing.html?v=freelance" class="ps-dd-row"><span>💼 Freelances & Consultants</span></a>
+      </div>
+    </div>
+    <a href="/pricing.html" class="ps-nav-a">Tarifs</a>
+    <a href="contact.html" class="ps-nav-a">Contact</a>
+  </div>
+  <div class="ps-nav-right">
+    <div class="ps-lang-sel">
+      <button class="ps-lang-cur" id="ps-lang-btn">🇫🇷 FR ▾</button>
+      <div class="ps-lang-menu">
+        <div class="ps-lang-opt active" onclick="psSetLang('fr')"><span>🇫🇷</span> Français</div>
+        <div class="ps-lang-opt" onclick="psSetLang('en')"><span>🇬🇧</span> English</div>
+        <div class="ps-lang-opt" onclick="psSetLang('es')"><span>🇪🇸</span> Español</div>
+        <div class="ps-lang-opt" onclick="psSetLang('pt')"><span>🇧🇷</span> Português</div>
+        <div class="ps-lang-opt" onclick="psSetLang('ar')"><span>🇸🇦</span> العربية</div>
+      </div>
+    </div>
+    <a href="/pricing.html" class="ps-nav-cta">Voir les offres</a>
+  </div>
+</nav>
+
+<!-- COOKIE BANNER RGPD -->
+<div id="ps-cookie" role="dialog" aria-label="Gestion des cookies" aria-live="polite">
+  <p>Nous utilisons des cookies techniques nécessaires au fonctionnement du site (Google Fonts, analyse de trafic anonymisée). En cliquant sur "Accepter", vous consentez à leur utilisation. <a href="privacy-policy.html">Politique de confidentialité</a> · <a href="legal-notice.html">Mentions légales</a></p>
+  <div class="ps-cookie-btns">
+    <button class="ps-cookie-accept" onclick="psCookieAccept()">Accepter</button>
+    <button class="ps-cookie-refuse" onclick="psCookieRefuse()">Continuer sans accepter</button>
+  </div>
+</div>
+<script>
+(function(){
+  if(!localStorage.getItem('ps_cookie_consent')){
+    setTimeout(function(){ var b=document.getElementById('ps-cookie'); if(b) b.classList.add('show'); },800);
+  }
+})();
+function psCookieAccept(){ localStorage.setItem('ps_cookie_consent','accepted'); hideCookieBanner(); }
+function psCookieRefuse(){ localStorage.setItem('ps_cookie_consent','refused'); hideCookieBanner(); }
+function hideCookieBanner(){ var b=document.getElementById('ps-cookie'); if(b){b.classList.remove('show');setTimeout(function(){b.style.display='none';},400);} }
+</script>
+
+<main class="legal-wrap">
+  <div class="fr-c">
+    <div class="legal-eyebrow">E-commerce · Vente en ligne</div>
+<h1 class="legal-title">Conditions Générales <em>de Vente</em></h1>
+<p class="legal-date">Dernière mise à jour : mars 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Objet et champ d'application</h2>
+  <p>Les présentes Conditions Générales de Vente (CGV) régissent toutes les ventes de produits numériques effectuées sur le site theprompt.studio et via la boutique <a href="https://theprompt-studio.lemonsqueezy.com" target="_blank" rel="noopener">theprompt-studio.lemonsqueezy.com</a>.</p>
+  <p>En procédant à un achat, le client accepte sans réserve les présentes CGV.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Produits et services</h2>
+  <p>Les produits commercialisés sont des <strong>biens numériques immatériels</strong> :</p>
+  <ul>
+    <li>Abonnements par verticale métier — accès aux outils IA spécialisés. Verticales disponibles : Immobilier, E-Commerce & Retail, Juridique, Finance & Comptabilité, Marketing & Communication, Ressources Humaines, Santé & Bien-être, Éducation & Formation, Restauration, Freelances & Consultants</li>
+    <li>4 niveaux d'abonnement par verticale : <strong>Starter</strong> (19 €/mois), <strong>Pro</strong> (49 €/mois), <strong>Gold</strong> (99 €/mois), <strong>Team</strong> (199 €/mois) — tarifs en formule mensuelle, détails sur <a href="/pricing.html" style="color:#c9a84c;">theprompt.studio/tarifs</a></li>
+    <li>Formule annuelle disponible avec une réduction de 17 % sur le tarif mensuel (équivalent de 2 mois offerts)</li>
+    <li>Prestations de conseil IA sur-mesure (tarif sur devis) — détails sur <a href="/custom-consulting.html" style="color:#c9a84c;">theprompt.studio/custom-consulting</a></li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Prix</h2>
+  <p>Les prix sont indiqués en euros, toutes taxes comprises (TTC). La TVA applicable dépend du pays de résidence de l'acheteur et est gérée automatiquement par notre prestataire de paiement Lemon Squeezy (Merchant of Record), conformément aux réglementations locales.</p>
+  <p>The Prompt Studio se réserve le droit de modifier ses prix à tout moment, sans préavis, pour les nouvelles commandes.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Paiement</h2>
+  <p>Les paiements sont traités de manière sécurisée par <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.), Merchant of Record, qui agit en tant que revendeur autorisé. Lemon Squeezy gère la collecte, le remboursement, la TVA et la conformité réglementaire dans plus de 130 pays.</p>
+  <p>Moyens de paiement acceptés : carte bancaire (Visa, Mastercard, American Express), et autres moyens disponibles selon votre région.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Livraison des produits numériques</h2>
+  <p>Les produits numériques sont livrés <strong>immédiatement après confirmation du paiement</strong> via un lien de téléchargement ou un accès à l'espace membre. Aucun délai de livraison physique ne s'applique.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Droit de rétractation</h2>
+  <div class="legal-highlight">
+    <strong>⚠ Dérogation au droit de rétractation pour contenus numériques</strong><br>
+    Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation de 14 jours <strong>ne s'applique pas</strong> aux contenus numériques fournis sur un support immatériel dont l'exécution a commencé après accord exprès préalable du consommateur et renoncement exprès à son droit de rétractation.
+  </div>
+  <p>En procédant au paiement, le client consent expressément à l'accès immédiat au contenu numérique et reconnaît renoncer à son droit de rétractation.</p>
+  <p>Pour toute réclamation ou insatisfaction, contactez-nous à <a href="mailto:support@theprompt.studio">support@theprompt.studio</a> — nous traiterons votre demande avec bienveillance.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Abonnements et engagement</h2>
+  <h3 class="legal-h3">7.1 Abonnement mensuel</h3>
+  <p>L'abonnement mensuel (Starter, Pro, Gold ou Team) est reconductible tacitement chaque mois. Il peut être résilié à tout moment depuis le portail client Lemon Squeezy, sans frais ni pénalité. La résiliation prend effet à la fin de la période mensuelle en cours. L'accès aux outils est maintenu jusqu'à la fin de la période payée.</p>
+  <h3 class="legal-h3">7.2 Abonnement annuel</h3>
+  <p>L'abonnement annuel est facturé en une seule fois pour une durée de 12 mois. Il bénéficie d'une réduction de 17 % par rapport au tarif mensuel (équivalent de 2 mois offerts). L'engagement est ferme pour la durée de 12 mois à compter de la date de souscription.</p>
+  <div class="legal-highlight">
+    <strong>Engagement annuel :</strong> En souscrivant à la formule annuelle, le client s'engage pour une durée de 12 mois. Aucun remboursement au prorata ne sera effectué en cas de résiliation anticipée. L'abonnement annuel est renouvelé tacitement à la date anniversaire, sauf résiliation au moins 48 heures avant la date de renouvellement via le portail client Lemon Squeezy.
+  </div>
+  <h3 class="legal-h3">7.3 Changement de formule</h3>
+  <p>Le passage d'un abonnement mensuel à annuel (ou inversement) ou le changement de niveau (Starter, Pro, Gold, Team) peut être effectué à tout moment depuis le portail client. Le changement prend effet selon les conditions de Lemon Squeezy (prorata ou fin de période en cours).</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">8. Propriété intellectuelle et licence d'utilisation</h2>
+  <p>L'achat d'un toolkit confère une <strong>licence personnelle, non-exclusive et non-transférable</strong> d'utilisation du contenu. Il est strictement interdit de revendre, redistribuer, partager ou publier les produits achetés, en tout ou partie.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">9. Service client</h2>
+  <p>Pour toute question relative à une commande : <a href="mailto:support@theprompt.studio">support@theprompt.studio</a></p>
+  <p>Délai de réponse : 24 à 48h ouvrées.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">10. Droit applicable — Règlement des litiges</h2>
+  <p>Les présentes CGV sont soumises au droit français. En cas de litige non résolu à l'amiable, le consommateur peut recourir à la médiation via la plateforme européenne de règlement en ligne des litiges : <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></p>
+</div>
+  </div>
+  <div class="en-c">
+    <div class="legal-eyebrow">E-commerce · Terms of Sale</div>
+<h1 class="legal-title">Terms and Conditions <em>of Sale</em></h1>
+<p class="legal-date">Last updated: March 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Scope</h2>
+  <p>These Terms and Conditions of Sale govern all sales of digital products on theprompt.studio and via the store <a href="https://theprompt-studio.lemonsqueezy.com" target="_blank" rel="noopener">theprompt-studio.lemonsqueezy.com</a>. By making a purchase, the customer unconditionally accepts these terms.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Products</h2>
+  <ul>
+    <li>Industry-specific subscriptions — access to specialized AI tools. Available verticals: Real Estate, E-Commerce & Retail, Legal, Finance & Accounting, Marketing & Communications, Human Resources, Health & Wellness, Education & Training, Food & Hospitality, Freelancers & Consultants</li>
+    <li>4 tiers per vertical: <strong>Starter</strong> (€19/mo), <strong>Pro</strong> (€49/mo), <strong>Gold</strong> (€99/mo), <strong>Team</strong> (€199/mo) — monthly pricing, details at <a href="/pricing.html" style="color:#c9a84c;">theprompt.studio/tarifs</a></li>
+    <li>Annual plans available with 17% discount (equivalent of 2 months free)</li>
+    <li>Custom AI consulting — pricing on request — details at <a href="/custom-consulting.html" style="color:#c9a84c;">theprompt.studio/custom-consulting</a></li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Prices & Tax</h2>
+  <p>Prices are in euros, tax-inclusive. VAT is automatically managed by our payment processor Lemon Squeezy (Merchant of Record) in compliance with local regulations in 130+ countries.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Payment</h2>
+  <p>Payments are securely processed by <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.), who acts as Merchant of Record, handling all payment processing, tax collection and regulatory compliance.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Digital Delivery</h2>
+  <p>Digital products are delivered <strong>immediately after payment confirmation</strong> via download link or member access. No physical shipping applies.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Right of Withdrawal</h2>
+  <div class="legal-highlight">
+    <strong>⚠ Waiver of withdrawal right for digital content</strong><br>
+    In accordance with applicable consumer law, the 14-day right of withdrawal does <strong>not apply</strong> to digital content that has begun to be provided with the consumer's prior express consent and acknowledgment of waiving their right of withdrawal.
+  </div>
+  <p>By completing payment, the customer expressly consents to immediate access to the digital content and acknowledges waiving their right of withdrawal.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Subscriptions & Commitment</h2>
+  <h3 class="legal-h3">7.1 Monthly subscription</h3>
+  <p>Monthly subscriptions (Starter, Pro, Gold or Team) automatically renew each month. They can be cancelled at any time via the Lemon Squeezy customer portal, without fees or penalties. Cancellation takes effect at the end of the current billing period. Access to tools is maintained until the end of the paid period.</p>
+  <h3 class="legal-h3">7.2 Annual subscription</h3>
+  <p>Annual subscriptions are billed once for a 12-month period, with a 17% discount compared to the monthly rate (equivalent of 2 months free). The commitment is binding for the full 12-month period from the date of purchase.</p>
+  <div class="legal-highlight">
+    <strong>Annual commitment:</strong> By subscribing to an annual plan, the customer commits for 12 months. No pro-rata refund will be issued for early cancellation. Annual subscriptions auto-renew on the anniversary date unless cancelled at least 48 hours before the renewal date via the Lemon Squeezy customer portal.
+  </div>
+  <h3 class="legal-h3">7.3 Plan changes</h3>
+  <p>Switching between monthly and annual billing, or between tiers (Starter, Pro, Gold, Team), can be done at any time via the customer portal. Changes take effect according to Lemon Squeezy's terms (prorated or end of current period).</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">8. Intellectual Property</h2>
+  <p>Purchase grants a <strong>personal, non-exclusive, non-transferable</strong> license to use the content. Resale, redistribution or sharing is strictly prohibited.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">9. Contact</h2>
+  <p><a href="mailto:support@theprompt.studio">support@theprompt.studio</a> — Response within 24-48 business hours.</p>
+</div>
+  </div>
+  <div class="es-c">
+    <div class="legal-eyebrow">E-commerce · Condiciones de venta</div>
+<h1 class="legal-title">Condiciones Generales <em>de Venta</em></h1>
+<p class="legal-date">Última actualización: marzo 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Objeto y ámbito de aplicación</h2>
+  <p>Las presentes Condiciones Generales de Venta (CGV) regulan todas las ventas de productos digitales realizadas en el sitio theprompt.studio y a través de la tienda <a href="https://theprompt-studio.lemonsqueezy.com" target="_blank" rel="noopener">theprompt-studio.lemonsqueezy.com</a>.</p>
+  <p>Al realizar una compra, el cliente acepta sin restricciones las presentes CGV.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Productos y servicios</h2>
+  <p>Los productos comercializados son <strong>bienes digitales inmateriales</strong> :</p>
+  <ul>
+    <li>Suscripciones por vertical profesional — acceso a herramientas IA especializadas. Verticales disponibles: Inmuebles, E-Commerce & Retail, Jurídico, Finanzas & Contabilidad, Marketing & Comunicación, Recursos Humanos, Salud & Bienestar, Educación & Formación, Restauración, Freelancers & Consultores</li>
+    <li>4 niveles de suscripción por vertical: <strong>Starter</strong> (19 €/mes), <strong>Pro</strong> (49 €/mes), <strong>Gold</strong> (99 €/mes), <strong>Team</strong> (199 €/mes) — precios en formato mensual, detalles en <a href="/pricing.html" style="color:#c9a84c;">theprompt.studio/tarifs</a></li>
+    <li>Fórmula anual disponible con un descuento del 17% sobre la tarifa mensual (equivalente a 2 meses gratis)</li>
+    <li>Servicios de consultoría IA personalizada (tarifa bajo solicitud) — detalles en <a href="/custom-consulting.html" style="color:#c9a84c;">theprompt.studio/custom-consulting</a></li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Precios</h2>
+  <p>Los precios se indican en euros, impuestos incluidos (IVA). El IVA aplicable depende del país de residencia del comprador y se gestiona automáticamente por nuestro proveedor de pago Lemon Squeezy (Merchant of Record), de conformidad con las regulaciones locales.</p>
+  <p>The Prompt Studio se reserva el derecho de modificar sus precios en cualquier momento, sin previo aviso, para nuevos pedidos.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Pago</h2>
+  <p>Los pagos se procesan de manera segura a través de <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.), Merchant of Record, que actúa como revendedor autorizado. Lemon Squeezy gestiona la recopilación de pagos, reembolsos, IVA y cumplimiento normativo en más de 130 países.</p>
+  <p>Métodos de pago aceptados: tarjeta de crédito (Visa, Mastercard, American Express) y otros métodos disponibles según su región.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Entrega de productos digitales</h2>
+  <p>Los productos digitales se entregan <strong>inmediatamente después de la confirmación del pago</strong> mediante un enlace de descarga o acceso al área de usuario. No se aplica ningún plazo de entrega física.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Derecho de desistimiento</h2>
+  <div class="legal-highlight">
+    <strong>⚠ Excepción del derecho de desistimiento para contenidos digitales</strong><br>
+    De conformidad con la legislación de protección del consumidor aplicable, el derecho de desistimiento de 14 días <strong>no se aplica</strong> a los contenidos digitales suministrados en un soporte inmaterial cuya ejecución ha comenzado tras consentimiento previo expreso del consumidor y renuncia expresa a su derecho de desistimiento.
+  </div>
+  <p>Al procesar el pago, el cliente consiente expresamente el acceso inmediato al contenido digital y reconoce renunciar a su derecho de desistimiento.</p>
+  <p>Para cualquier reclamación o insatisfacción, contáctenos en <a href="mailto:support@theprompt.studio">support@theprompt.studio</a> — trataremos su solicitud con atención.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Suscripciones y compromiso</h2>
+  <h3 class="legal-h3">7.1 Suscripción mensual</h3>
+  <p>La suscripción mensual (Starter, Pro, Gold o Team) se renueva automáticamente cada mes. Puede cancelarse en cualquier momento desde el portal del cliente Lemon Squeezy, sin gastos ni penalización. La cancelación se hace efectiva al final del período mensual en curso. El acceso a las herramientas se mantiene hasta el final del período pagado.</p>
+  <h3 class="legal-h3">7.2 Suscripción anual</h3>
+  <p>La suscripción anual se factura en una sola vez por un período de 12 meses. Disfruta de un descuento del 17% respecto a la tarifa mensual (equivalente a 2 meses gratis). El compromiso es firme durante los 12 meses a partir de la fecha de suscripción.</p>
+  <div class="legal-highlight">
+    <strong>Compromiso anual:</strong> Al suscribirse a la fórmula anual, el cliente se compromete por 12 meses. No se realizarán reembolsos prorrateados en caso de cancelación anticipada. La suscripción anual se renueva automáticamente en la fecha de aniversario, a menos que se cancele al menos 48 horas antes de la fecha de renovación a través del portal del cliente Lemon Squeezy.
+  </div>
+  <h3 class="legal-h3">7.3 Cambio de fórmula</h3>
+  <p>El cambio de una suscripción mensual a anual (o inversamente) o el cambio de nivel (Starter, Pro, Gold, Team) puede realizarse en cualquier momento desde el portal del cliente. El cambio se hace efectivo según las condiciones de Lemon Squeezy (prorrateo o fin del período en curso).</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">8. Propiedad intelectual y licencia de uso</h2>
+  <p>La compra de un toolkit confiere una <strong>licencia personal, no exclusiva e intransferible</strong> de uso del contenido. Está estrictamente prohibido revender, redistribuir, compartir o publicar los productos comprados, en su totalidad o en parte.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">9. Servicio de atención al cliente</h2>
+  <p>Para cualquier pregunta relacionada con un pedido: <a href="mailto:support@theprompt.studio">support@theprompt.studio</a></p>
+  <p>Tiempo de respuesta: 24 a 48 horas hábiles.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">10. Ley aplicable — Resolución de litigios</h2>
+  <p>Las presentes CGV se rigen por la ley francesa. En caso de litigio no resuelto amistosamente, el consumidor puede recurrir a mediación a través de la plataforma europea de resolución de litigios en línea: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></p>
+</div>
+  </div>
+  <div class="pt-c">
+    <div class="legal-eyebrow">E-commerce · Condições de venda</div>
+<h1 class="legal-title">Condições Gerais <em>de Venda</em></h1>
+<p class="legal-date">Última atualização: março 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. Objeto e âmbito de aplicação</h2>
+  <p>As presentes Condições Gerais de Venda (CGV) regem todas as vendas de produtos digitais realizadas no site theprompt.studio e através da loja <a href="https://theprompt-studio.lemonsqueezy.com" target="_blank" rel="noopener">theprompt-studio.lemonsqueezy.com</a>.</p>
+  <p>Ao realizar uma compra, o cliente aceita sem restrições as presentes CGV.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. Produtos e serviços</h2>
+  <p>Os produtos comercializados são <strong>bens digitais imateriais</strong> :</p>
+  <ul>
+    <li>Assinaturas por vertical profissional — acesso a ferramentas de IA especializadas. Verticais disponíveis: Imóveis, E-Commerce & Retail, Jurídico, Finanças & Contabilidade, Marketing & Comunicação, Recursos Humanos, Saúde & Bem-estar, Educação & Treinamento, Restauração, Freelancers & Consultores</li>
+    <li>4 níveis de assinatura por vertical: <strong>Starter</strong> (€19/mês), <strong>Pro</strong> (€49/mês), <strong>Gold</strong> (€99/mês), <strong>Team</strong> (€199/mês) — preços em formato mensal, detalhes em <a href="/pricing.html" style="color:#c9a84c;">theprompt.studio/tarifs</a></li>
+    <li>Plano anual disponível com desconto de 17% sobre a tarifa mensal (equivalente a 2 meses grátis)</li>
+    <li>Serviços de consultoria de IA personalizada (preço sob solicitação) — detalhes em <a href="/custom-consulting.html" style="color:#c9a84c;">theprompt.studio/custom-consulting</a></li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. Preços</h2>
+  <p>Os preços estão indicados em euros, impostos inclusos (IVA). O IVA aplicável depende do país de residência do comprador e é gerenciado automaticamente pelo nosso provedor de pagamento Lemon Squeezy (Merchant of Record), de acordo com as regulamentações locais.</p>
+  <p>The Prompt Studio se reserva o direito de modificar seus preços a qualquer momento, sem aviso prévio, para novos pedidos.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. Pagamento</h2>
+  <p>Os pagamentos são processados de forma segura pela <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.), Merchant of Record, que atua como revendedor autorizado. A Lemon Squeezy gerencia a coleta de pagamentos, reembolsos, IVA e conformidade regulatória em mais de 130 países.</p>
+  <p>Métodos de pagamento aceitos: cartão de crédito (Visa, Mastercard, American Express) e outros métodos disponíveis conforme sua região.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. Entrega de produtos digitais</h2>
+  <p>Os produtos digitais são entregues <strong>imediatamente após a confirmação do pagamento</strong> por meio de um link de download ou acesso à área do cliente. Nenhum prazo de entrega física se aplica.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. Direito de arrependimento</h2>
+  <div class="legal-highlight">
+    <strong>⚠ Exceção do direito de arrependimento para conteúdo digital</strong><br>
+    De acordo com a legislação aplicável de proteção do consumidor, o direito de arrependimento de 14 dias <strong>não se aplica</strong> a conteúdo digital fornecido em suporte imaterial cuja execução foi iniciada após consentimento prévio expresso do consumidor e renúncia expressa ao seu direito de arrependimento.
+  </div>
+  <p>Ao processar o pagamento, o cliente consente expressamente ao acesso imediato ao conteúdo digital e reconhece renunciar ao seu direito de arrependimento.</p>
+  <p>Para qualquer reclamação ou insatisfação, entre em contato conosco em <a href="mailto:support@theprompt.studio">support@theprompt.studio</a> — trataremos sua solicitação com atenção.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. Assinaturas e compromisso</h2>
+  <h3 class="legal-h3">7.1 Assinatura mensal</h3>
+  <p>A assinatura mensal (Starter, Pro, Gold ou Team) é renovada automaticamente a cada mês. Pode ser cancelada a qualquer momento através do portal do cliente Lemon Squeezy, sem custos ou penalidades. O cancelamento entra em vigor no final do período mensal em curso. O acesso às ferramentas é mantido até o final do período pago.</p>
+  <h3 class="legal-h3">7.2 Assinatura anual</h3>
+  <p>A assinatura anual é faturada uma única vez por um período de 12 meses. Desfruta de desconto de 17% em relação à tarifa mensal (equivalente a 2 meses grátis). O compromisso é firme pelos 12 meses a partir da data da assinatura.</p>
+  <div class="legal-highlight">
+    <strong>Compromisso anual:</strong> Ao se inscrever no plano anual, o cliente se compromete por 12 meses. Nenhum reembolso proporcional será feito em caso de cancelamento antecipado. A assinatura anual é renovada automaticamente na data de aniversário, a menos que seja cancelada pelo menos 48 horas antes da data de renovação através do portal do cliente Lemon Squeezy.
+  </div>
+  <h3 class="legal-h3">7.3 Mudança de plano</h3>
+  <p>A mudança de uma assinatura mensal para anual (ou vice-versa) ou a mudança de nível (Starter, Pro, Gold, Team) pode ser feita a qualquer momento através do portal do cliente. A mudança entra em vigor de acordo com as condições da Lemon Squeezy (proporcional ou no final do período em curso).</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">8. Propriedade intelectual e licença de uso</h2>
+  <p>A compra de um toolkit confere uma <strong>licença pessoal, não exclusiva e intransferível</strong> de uso do conteúdo. É estritamente proibido revender, redistribuir, compartilhar ou publicar os produtos comprados, no todo ou em parte.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">9. Serviço de atendimento ao cliente</h2>
+  <p>Para qualquer pergunta relacionada a um pedido: <a href="mailto:support@theprompt.studio">support@theprompt.studio</a></p>
+  <p>Tempo de resposta: 24 a 48 horas úteis.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">10. Lei aplicável — Resolução de disputas</h2>
+  <p>As presentes CGV são regidas pela lei francesa. Em caso de disputa não resolvida amigavelmente, o consumidor pode recorrer à mediação através da plataforma europeia de resolução de disputas on-line: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></p>
+</div>
+  </div>
+  <div class="ar-c">
+    <div class="legal-eyebrow">التجارة الإلكترونية · شروط البيع</div>
+<h1 class="legal-title">الشروط والأحكام <em>العامة للبيع</em></h1>
+<p class="legal-date">آخر تحديث: مارس 2026</p>
+
+<div class="legal-section">
+  <h2 class="legal-h2">1. الموضوع والنطاق</h2>
+  <p>تحكم شروط البيع العامة الحالية جميع بيعات المنتجات الرقمية التي تتم على موقع theprompt.studio وعبر المتجر <a href="https://theprompt-studio.lemonsqueezy.com" target="_blank" rel="noopener">theprompt-studio.lemonsqueezy.com</a>.</p>
+  <p>بإجراء عملية شراء، يقبل العميل دون تحفظ الشروط والأحكام الحالية.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">2. المنتجات والخدمات</h2>
+  <p>المنتجات المعروضة للبيع هي <strong>سلع رقمية غير ملموسة</strong> :</p>
+  <ul>
+    <li>اشتراكات حسب القطاع الاحترافي — الوصول إلى أدوات الذكاء الاصطناعي المتخصصة. القطاعات المتاحة: العقارات، التجارة الإلكترونية والتجزئة، القانون والشؤون القانونية، المالية والمحاسبة، التسويق والاتصالات، الموارد البشرية، الصحة والعافية، التعليم والتدريب، الضيافة والمطاعم، العاملين بالعمل الحر والاستشاريين</li>
+    <li>4 مستويات من الاشتراكات لكل قطاع: <strong>Starter</strong> (19 يورو/شهر)، <strong>Pro</strong> (49 يورو/شهر)، <strong>Gold</strong> (99 يورو/شهر)، <strong>Team</strong> (199 يورو/شهر) — الأسعار بصيغة شهرية، التفاصيل على <a href="/pricing.html" style="color:#c9a84c;">theprompt.studio/tarifs</a></li>
+    <li>خطة سنوية متوفرة بخصم 17% من السعر الشهري (ما يعادل شهرين مجانيين)</li>
+    <li>خدمات استشارات الذكاء الاصطناعي المخصصة (السعر حسب الطلب) — التفاصيل على <a href="/custom-consulting.html" style="color:#c9a84c;">theprompt.studio/custom-consulting</a></li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">3. الأسعار</h2>
+  <p>يتم عرض الأسعار بالعملة الأوروبية باليورو، شاملة لجميع الضرائب (ضريبة القيمة المضافة). تعتمد ضريبة القيمة المضافة المطبقة على دولة إقامة المشتري وتدار تلقائيًا من قبل معالج الدفع الخاص بنا Lemon Squeezy (Merchant of Record)، وفقًا للوائح المحلية.</p>
+  <p>تحتفظ The Prompt Studio بالحق في تعديل أسعارها في أي وقت، بدون إشعار مسبق، للطلبات الجديدة.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">4. الدفع</h2>
+  <p>تتم معالجة المدفوعات بشكل آمن من قبل <strong>Lemon Squeezy</strong> (A2X Commerce, Inc.)، التي تعمل كـ Merchant of Record وتصرف مقرر معتمد. تدير Lemon Squeezy جمع المدفوعات والاسترجاعات وضريبة القيمة المضافة والامتثال التنظيمي في أكثر من 130 دولة.</p>
+  <p>طرق الدفع المقبولة: بطاقات الائتمان (Visa و Mastercard و American Express) وطرق أخرى متاحة حسب منطقتك.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">5. تسليم المنتجات الرقمية</h2>
+  <p>يتم تسليم المنتجات الرقمية <strong>فورًا بعد تأكيد الدفع</strong> من خلال رابط تحميل أو الوصول إلى منطقة العميل. لا ينطبق أي موعد تسليم فعلي.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">6. حق الانسحاب</h2>
+  <div class="legal-highlight">
+    <strong>⚠ استثناء من حق الانسحاب للمحتوى الرقمي</strong><br>
+    وفقًا للتشريعات المعمول بها لحماية المستهلك، فإن حق الانسحاب لمدة 14 يومًا <strong>لا ينطبق</strong> على المحتوى الرقمي المقدم على وسيط غير ملموس والذي بدأ تنفيذه بعد موافقة صريحة مسبقة من المستهلك وتنازله الصريح عن حق الانسحاب.
+  </div>
+  <p>بمعالجة الدفع، يوافق العميل صراحة على الوصول الفوري إلى المحتوى الرقمي ويعترف بالتنازل عن حق الانسحاب.</p>
+  <p>لأي شكوى أو عدم رضا، يرجى الاتصال بنا على <a href="mailto:support@theprompt.studio">support@theprompt.studio</a> — سنتعامل مع طلبك باهتمام.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">7. الاشتراكات والالتزام</h2>
+  <h3 class="legal-h3">7.1 الاشتراك الشهري</h3>
+  <p>يتم تجديد الاشتراك الشهري (Starter أو Pro أو Gold أو Team) تلقائيًا كل شهر. يمكن إلغاؤه في أي وقت من خلال بوابة العميل Lemon Squeezy، بدون رسوم أو عقوبات. يسري الإلغاء في نهاية فترة الفترة الشهرية الحالية. يتم الحفاظ على الوصول إلى الأدوات حتى نهاية الفترة المدفوعة.</p>
+  <h3 class="legal-h3">7.2 الاشتراك السنوي</h3>
+  <p>يتم فواتورة الاشتراك السنوي مرة واحدة لمدة 12 شهرًا. يتمتع بخصم 17% مقارنة بالسعر الشهري (ما يعادل شهرين مجانيين). الالتزام ملزم طوال مدة 12 شهرًا من تاريخ الاشتراك.</p>
+  <div class="legal-highlight">
+    <strong>الالتزام السنوي:</strong> بالاشتراك في الخطة السنوية، يلتزم العميل لمدة 12 شهرًا. لن يتم استرجاع أي مبلغ برو راتا في حالة الإلغاء المبكر. يتم تجديد الاشتراك السنوي تلقائيًا في تاريخ الذكرى السنوية، إلا إذا تم إلغاؤه قبل 48 ساعة على الأقل من تاريخ التجديد من خلال بوابة العميل Lemon Squeezy.
+  </div>
+  <h3 class="legal-h3">7.3 تغيير الخطة</h3>
+  <p>يمكن إجراء التبديل من اشتراك شهري إلى سنوي (أو العكس) أو تغيير المستوى (Starter أو Pro أو Gold أو Team) في أي وقت من خلال بوابة العميل. يسري التغيير وفقًا لشروط Lemon Squeezy (برو راتا أو نهاية الفترة الحالية).</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">8. الملكية الفكرية وترخيص الاستخدام</h2>
+  <p>يمنح شراء toolkit <strong>ترخيص شخصي وغير حصري وغير قابل للنقل</strong> لاستخدام المحتوى. من المحظور تمامًا إعادة بيع أو إعادة توزيع أو مشاركة أو نشر المنتجات المشتراة، كليًا أو جزئيًا.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">9. خدمة العملاء</h2>
+  <p>لأي سؤال يتعلق بالطلب: <a href="mailto:support@theprompt.studio">support@theprompt.studio</a></p>
+  <p>وقت الرد: 24 إلى 48 ساعة عمل.</p>
+</div>
+
+<div class="legal-section">
+  <h2 class="legal-h2">10. القانون المعمول به — تسوية النزاعات</h2>
+  <p>تخضع الشروط والأحكام الحالية للقانون الفرنسي. في حالة عدم تسوية النزاع بشكل ودي، يمكن للمستهلك اللجوء إلى الوساطة عبر منصة الاتحاد الأوروبي لتسوية النزاعات على الإنترنت: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></p>
+</div>
+  </div>
+</main>
+<footer style="background:var(--surface, #111009);border-top:1px solid #2e2a24;padding:48px 40px 32px;position:relative;z-index:1;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#f0ead8;margin-bottom:12px;">The Prompt<em style="color:var(--gold, #c9a84c);font-style:italic;">Studio</em></div>
+        <p style="font-size:12px;color:#8a8070;line-height:1.7;max-width:240px;">Toolkits IA premium pour professionnels. Immo · Commerce · Legal · Finance.</p>
+        <a href="mailto:contact@theprompt.studio" style="font-size:12px;color:#8a8070;text-decoration:none;display:block;margin-top:12px;transition:color 0.2s;" onmouseover="this.style.color='var(--gold, #c9a84c)'" onmouseout="this.style.color='#8a8070'">contact@theprompt.studio</a>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Produits</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="promptcraft-immo.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Immo Pro</a>
+          <a href="promptcraft-commerce.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Commerce Pro</a>
+          <a href="promptcraft-legal.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Legal Pro</a>
+          <a href="custom-consulting.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Finance IA</a>
+          <a href="/pricing.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Tarifs</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#5a5040;margin-bottom:16px;">Informations légales</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="contact.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Contact</a>
+          <a href="legal-notice.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Mentions légales</a>
+          <a href="terms.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">CGV</a>
+          <a href="privacy-policy.html" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'">Politique de confidentialité</a>
+          <a href="https://theprompt-studio.lemonsqueezy.com" style="font-size:13px;color:#8a8070;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#f0ead8'" onmouseout="this.style.color='#8a8070'" target="_blank" rel="noopener">Boutique Lemon Squeezy ↗</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #2e2a24;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <p style="font-size:11px;color:#5a5040;">© 2026 The Prompt Studio — theprompt.studio — Tous droits réservés</p>
+      <p style="font-size:11px;color:#5a5040;">Paiements sécurisés via <a href="https://lemonsqueezy.com" target="_blank" rel="noopener" style="color:#5a5040;text-decoration:underline;">Lemon Squeezy</a> · TVA gérée dans 130+ pays</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function psSetLang(lang){
+  document.body.className = lang !== 'fr' ? lang : '';
+  var btn = document.getElementById('ps-lang-btn');
+  var flags = {fr:'🇫🇷 FR',en:'🇬🇧 EN',es:'🇪🇸 ES',pt:'🇧🇷 PT',ar:'🇸🇦 AR'};
+  if(btn) btn.innerHTML = (flags[lang]||flags.fr) + ' ▾';
+  document.querySelectorAll('.ps-lang-opt').forEach(function(o){
+    o.classList.toggle('active', o.getAttribute('onclick') === "psSetLang('"+lang+"')");
+  });
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  localStorage.setItem('ps_lang', lang);
+  // Update title/desc
+  var titles = {
+    fr:'Conditions Générales de Vente — The Prompt Studio',
+    en:'Terms and Conditions — The Prompt Studio',
+    es:'Condiciones Generales de Venta — The Prompt Studio',
+    pt:'Condições Gerais de Venda — The Prompt Studio',
+    ar:'الشروط والأحكام العامة للبيع — The Prompt Studio'
+  };
+  var descs = {
+    fr:'CGV The Prompt Studio — Conditions de vente pour les produits numériques (toolkits IA, abonnement Pro).',
+    en:'Terms and conditions for The Prompt Studio digital products (AI toolkits, Pro subscription).',
+    es:'CGV The Prompt Studio — Condiciones de venta para productos digitales (herramientas IA, suscripción Pro).',
+    pt:'CGV The Prompt Studio — Condições de venda para produtos digitais (ferramentas IA, assinatura Pro).',
+    ar:'الشروط والأحكام العامة للبيع لمنتجات The Prompt Studio الرقمية (أدوات الذكاء الاصطناعي، اشتراك Pro).'
+  };
+  document.getElementById('ps-title').textContent = titles[lang] || titles.fr;
+  document.getElementById('ps-desc').content = descs[lang] || descs.fr;
+}
+(function(){ var l = localStorage.getItem('ps_lang'); if(l && l!=='fr') psSetLang(l); })();
+</script>
+</body>
+</html>

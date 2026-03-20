@@ -41,6 +41,22 @@
   to = "/merci.html"
   status = 200
 
+# Pretty URLs for renamed pages
+[[redirects]]
+  from = "/pricing"
+  to = "/pricing.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy-policy.html"
+  status = 200
+
 # Security headers
 [[headers]]
   for = "/*"

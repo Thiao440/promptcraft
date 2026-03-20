@@ -41,7 +41,7 @@
       title: 'Passez à Pro — sans publicité',
       text: 'Débloquez les chatbots IA, l\'export PDF et 150 générations/mois.',
       cta: 'Upgrade →',
-      href: '/tarifs.html',
+      href: '/pricing.html',
       color: '#a78bfa',
     },
     {
@@ -49,7 +49,7 @@
       title: 'Essayez Gold — CRM intégré',
       text: 'Gérez vos projets, accédez aux 10 outils, générations illimitées.',
       cta: 'Découvrir Gold →',
-      href: '/tarifs.html',
+      href: '/pricing.html',
       color: '#c9a84c',
     },
     {
@@ -57,7 +57,7 @@
       title: '0 pub, 100% productivité',
       text: 'Les offres Pro et Gold suppriment toute publicité.',
       cta: 'Voir les offres →',
-      href: '/tarifs.html',
+      href: '/pricing.html',
       color: '#6c63ff',
     },
     {
@@ -65,7 +65,7 @@
       title: '💡 Vous utilisez souvent cet outil ?',
       text: 'Avec Pro, accédez à 7 outils avancés et au chatbot IA spécialiste.',
       cta: 'Passer à Pro →',
-      href: '/tarifs.html',
+      href: '/pricing.html',
       color: '#ec4899',
     },
   ];

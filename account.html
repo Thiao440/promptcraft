@@ -108,7 +108,7 @@
   <nav class="sb-nav">
     <a href="/dashboard.html" class="nav-item"><span class="ico">🧰</span> <span data-fr>Mon espace</span><span data-en>My workspace</span><span data-es>Mi espacio</span><span data-pt>Meu espaço</span><span data-ar>مساحتي</span></a>
     <a href="/account.html"   class="nav-item active"><span class="ico">👤</span> <span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span></a>
-    <a href="/tarifs.html"    class="nav-item"><span class="ico">➕</span> <span data-fr>Ajouter une verticale</span><span data-en>Add a vertical</span><span data-es>Añadir un sector</span><span data-pt>Adicionar um setor</span><span data-ar>إضافة قطاع</span></a>
+    <a href="/pricing.html"    class="nav-item"><span class="ico">➕</span> <span data-fr>Ajouter une verticale</span><span data-en>Add a vertical</span><span data-es>Añadir un sector</span><span data-pt>Adicionar um setor</span><span data-ar>إضافة قطاع</span></a>
   </nav>
   <div class="sb-footer">
     <div class="sb-email" id="sb-email"></div>
@@ -227,7 +227,7 @@ function renderSubs() {
   const dateLoc = lang === 'fr' ? 'fr-FR' : lang === 'es' ? 'es-ES' : lang === 'pt' ? 'pt-BR' : lang === 'ar' ? 'ar-SA' : 'en-GB';
   if (!subs.length) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:.875rem;">
-      ${_t('no_sub')} <a href="/tarifs.html" style="color:var(--accent)">${_t('view_plans')}</a></div>`;
+      ${_t('no_sub')} <a href="/pricing.html" style="color:var(--accent)">${_t('view_plans')}</a></div>`;
   } else {
     const statusLabels = {active:_t('status_active'),cancelled:_t('status_cancelled'),expired:_t('status_expired'),past_due:_t('status_past_due')};
     grid.innerHTML = subs.map(s => {
@@ -251,11 +251,11 @@ function renderSubs() {
           <div class="sub-meta-row"><span class="l">${_t('quota')}</span><span class="v">${max===Infinity?_t('unlimited'):max+' '+_t('gen_month')}</span></div>
           <div class="sub-vcard-actions">
             <a href="/dashboard.html?v=${s.vertical}" class="btn btn-solid" style="background:${m.color}">${_t('go')}</a>
-            ${s.tier!=='gold'&&s.tier!=='team'?`<a href="/tarifs.html?v=${s.vertical}" class="btn btn-outline" style="border-color:${m.color};color:${m.color}">Upgrade</a>`:''}
+            ${s.tier!=='gold'&&s.tier!=='team'?`<a href="/pricing.html?v=${s.vertical}" class="btn btn-outline" style="border-color:${m.color};color:${m.color}">Upgrade</a>`:''}
           </div>
         </div>`;
     }).join('') + `
-      <a href="/tarifs.html" class="add-vcard">
+      <a href="/pricing.html" class="add-vcard">
         <span class="plus">+</span>
         <strong style="font-size:.9rem"><span data-fr>Ajouter une verticale</span><span data-en>Add a vertical</span><span data-es>Añadir un sector</span><span data-pt>Adicionar um setor</span><span data-ar>إضافة قطاع</span></strong>
         <p><span data-fr>Accédez à un nouveau secteur</span><span data-en>Access a new sector</span><span data-es>Acceda a un nuevo sector</span><span data-pt>Acesse um novo setor</span><span data-ar>الوصول إلى قطاع جديد</span></p>
@@ -296,7 +296,7 @@ function renderAddVerticals() {
   }
   el.innerHTML = missing.map(v => {
     const m = VMETA[v] || {};
-    return `<a href="/tarifs.html?v=${v}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text);transition:border-color .18s;font-size:.875rem;" onmouseover="this.style.borderColor='${m.color}'" onmouseout="this.style.borderColor='var(--border)'">
+    return `<a href="/pricing.html?v=${v}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text);transition:border-color .18s;font-size:.875rem;" onmouseover="this.style.borderColor='${m.color}'" onmouseout="this.style.borderColor='var(--border)'">
       <span style="font-size:1.3rem">${m.icon}</span>
       <span><strong>${(typeof T === 'function') ? T('verticals.' + v) : (m.label || v)}</strong></span>
       <span style="margin-left:auto;font-size:.75rem;color:var(--muted)">${_t('view_plans')}</span>
