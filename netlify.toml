@@ -73,6 +73,22 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Block access to internal directories
+[[redirects]]
+  from = "/_archive/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/sql/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/email-templates/*"
+  to = "/404.html"
+  status = 404
+
 # SPA fallback for 404
 [[redirects]]
   from = "/*"

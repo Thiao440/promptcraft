@@ -1,22 +1,23 @@
 User-agent: *
 Allow: /
-Disallow: /
 
-# Allow main content pages
-Allow: /index.html
-Allow: /promptcraft-immo.html
-Allow: /promptcraft-commerce.html
-Allow: /promptcraft-legal.html
-Allow: /finance.html
-Allow: /contact.html
+# Block internal/app pages from indexing
+Disallow: /dashboard.html
+Disallow: /account.html
+Disallow: /project.html
+Disallow: /admin.html
+Disallow: /login.html
+Disallow: /complete-profile.html
+Disallow: /tool.html
 
-# Legal pages — allow indexing
-Allow: /mentions-legales.html
-Allow: /cgv.html
-Allow: /politique-confidentialite.html
-
-# Block PDFs from indexing (optional)
+# Block PDFs from indexing
 Disallow: /*.pdf$
+
+# Block archive/internal dirs
+Disallow: /_archive/
+Disallow: /sql/
+Disallow: /email-templates/
+Disallow: /node_modules/
 
 # Sitemap
 Sitemap: https://theprompt.studio/sitemap.xml
