@@ -194,7 +194,7 @@ const ToolCatalog = (() => {
     const tools = {};
     Object.entries(TOOLS_I18N).forEach(([vertical, list]) => {
       tools[vertical] = list.map(t => ({
-        slug:     '', // no slug from fallback
+        slug:     t.slug || '',
         icon:     t.icon || '🔧',
         name:     (typeof t.name === 'object') ? (t.name[lang] || t.name.en || t.name.fr) : t.name,
         desc:     (typeof t.desc === 'object') ? (t.desc[lang] || t.desc.en || t.desc.fr) : t.desc,

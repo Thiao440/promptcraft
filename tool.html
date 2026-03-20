@@ -17,6 +17,7 @@
   <script src="/js/ps-ads.js?v=1.0"></script>
   <script src="/js/ps-lang.js?v=1.1"></script>
   <script src="/js/ps-i18n.js?v=1.0"></script>
+  <script src="/js/ps-tools-i18n.js?v=1.0"></script>
 </head>
 <body>
 
@@ -287,18 +288,45 @@ function _buildGenericSchema(tool) {
   if (!ok) return;
 
   // ── 3. Fetch tool config from Supabase ────────────────────────────────────
-  const { data: tool, error } = await PS.supabase
-    .from('tools')
-    .select('slug, name, label, description, icon, vertical, min_tier, input_schema, is_featured, is_new, generate_label, loading_text, empty_state_icon, empty_state_title, empty_state_text, form_panel_title')
-    .eq('slug', slug)
-    .eq('is_active', true)
-    .single();
+  let tool, toolError;
+  try {
+    const res = await PS.supabase
+      .from('tools')
+      .select('slug, name, label, description, icon, vertical, min_tier, input_schema, is_featured, is_new, generate_label, loading_text, empty_state_icon, empty_state_title, empty_state_text, form_panel_title')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single();
+    tool = res.data;
+    toolError = res.error;
+  } catch (e) {
+    toolError = e;
+  }
 
-  if (error || !tool) {
-    document.getElementById('tool-title').textContent = 'Outil introuvable';
-    document.getElementById('tool-description').textContent = `Aucun outil actif avec le slug "${slug}".`;
-    document.getElementById('form-fields').innerHTML = '';
-    return;
+  if (toolError || !tool) {
+    // ── Fallback: look up tool in TOOLS_I18N by slug ──
+    if (typeof TOOLS_I18N !== 'undefined') {
+      const lang = (typeof PS_I18N !== 'undefined') ? PS_I18N.lang() : 'fr';
+      for (const [vertical, list] of Object.entries(TOOLS_I18N)) {
+        const match = list.find(t => t.slug === slug);
+        if (match) {
+          const tName = (typeof match.name === 'object') ? (match.name[lang] || match.name.en || match.name.fr) : match.name;
+          const tDesc = (typeof match.desc === 'object') ? (match.desc[lang] || match.desc.en || match.desc.fr) : match.desc;
+          tool = {
+            slug, name: tName, label: tName, description: tDesc,
+            icon: match.icon || '🔧', vertical,
+            min_tier: match.tier || 'starter',
+            input_schema: null, is_featured: false, is_new: false,
+          };
+          break;
+        }
+      }
+    }
+    if (!tool) {
+      document.getElementById('tool-title').textContent = 'Outil introuvable';
+      document.getElementById('tool-description').textContent = `Aucun outil actif avec le slug "${slug}".`;
+      document.getElementById('form-fields').innerHTML = '';
+      return;
+    }
   }
 
   // If no input_schema, generate a sensible generic form based on the tool's info
