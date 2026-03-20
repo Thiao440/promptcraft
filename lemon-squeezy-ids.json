@@ -20,6 +20,17 @@
           "gold":    { "uuid": "2934f79f-fe49-4bba-ab22-d7328db1f5ac", "id": 1408969 },
           "team":    { "uuid": "856ecc02-4ce4-47ca-af0a-7f8fa90d7a81", "id": 1425676 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Real Estate workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Real Estate on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "commerce": {
@@ -37,6 +48,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your E-Commerce workspace",
+        "message": "Thank you for subscribing to the AI Toolkit E-Commerce on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "legal": {
@@ -54,6 +76,17 @@
           "gold":    { "uuid": "", "id": 1408997 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Legal workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Legal on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "finance": {
@@ -71,6 +104,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Finance workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Finance on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "marketing": {
@@ -88,6 +132,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Marketing workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Marketing on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "rh": {
@@ -105,6 +160,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Human Resources workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Human Resources on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "sante": {
@@ -122,6 +188,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Health workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Health on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "education": {
@@ -139,6 +216,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Education workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Education on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "restauration": {
@@ -156,6 +244,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Food & Hospitality workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Food & Hospitality on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     },
     "freelance": {
@@ -173,6 +272,17 @@
           "gold":    { "uuid": "", "id": 0 },
           "team":    { "uuid": "", "id": 0 }
         }
+      },
+      "confirmation_modal": {
+        "title": "Welcome to your Freelance workspace",
+        "message": "Thank you for subscribing to the AI Toolkit Freelance on The Prompt Studio. Your 7-day free trial is now active. Sign in at https://theprompt.studio to access your tools.",
+        "button_text": "View Order",
+        "button_link": "theprompt.studio/dashboard.html?welcome=1"
+      },
+      "email_receipt": {
+        "thank_you_note": "",
+        "button_text": "View Order",
+        "button_link": "app.lemonsqueezy.com/my-orders"
       }
     }
   }

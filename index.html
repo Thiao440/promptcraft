@@ -262,22 +262,22 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
   <a href="/" class="ps-nav-logo">The Prompt <em>Studio</em></a>
   <div class="ps-nav-center">
     <div class="ps-nav-item">
-      <button class="ps-nav-btn">Outils IA ▾</button>
+      <button class="ps-nav-btn"><span data-fr>Outils IA</span><span data-en>AI Tools</span><span data-es>Herramientas IA</span><span data-pt>Ferramentas IA</span><span data-ar>أدوات الذكاء</span> ▾</button>
       <div class="ps-dd">
         <a href="/tarifs.html?v=immo" class="ps-dd-row"><span>🏠 <span data-fr>Immobilier</span><span data-en>Real Estate</span><span data-es>Inmobiliaria</span><span data-pt>Imobiliário</span><span data-ar>عقارات</span></span></a>
-        <a href="/tarifs.html?v=commerce" class="ps-dd-row"><span>🛒 E-Commerce</span></a>
+        <a href="/tarifs.html?v=commerce" class="ps-dd-row"><span>🛒 <span data-fr>E-Commerce</span><span data-en>E-Commerce</span><span data-es>E-Commerce</span><span data-pt>E-Commerce</span><span data-ar>تجارة إلكترونية</span></span></a>
         <a href="/tarifs.html?v=legal" class="ps-dd-row"><span>⚖️ <span data-fr>Juridique</span><span data-en>Legal</span><span data-es>Legal</span><span data-pt>Jurídico</span><span data-ar>قانوني</span></span></a>
-        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>💰 Finance</span></a>
-        <a href="/tarifs.html?v=marketing" class="ps-dd-row"><span>📣 Marketing</span></a>
+        <a href="/tarifs.html?v=finance" class="ps-dd-row"><span>💰 <span data-fr>Finance</span><span data-en>Finance</span><span data-es>Finanzas</span><span data-pt>Finanças</span><span data-ar>مالية</span></span></a>
+        <a href="/tarifs.html?v=marketing" class="ps-dd-row"><span>📣 <span data-fr>Marketing</span><span data-en>Marketing</span><span data-es>Marketing</span><span data-pt>Marketing</span><span data-ar>تسويق</span></span></a>
         <a href="/tarifs.html?v=rh" class="ps-dd-row"><span>👥 <span data-fr>RH</span><span data-en>HR</span><span data-es>RRHH</span><span data-pt>RH</span><span data-ar>موارد بشرية</span></span></a>
         <a href="/tarifs.html?v=sante" class="ps-dd-row"><span>🏥 <span data-fr>Santé</span><span data-en>Health</span><span data-es>Salud</span><span data-pt>Saúde</span><span data-ar>صحة</span></span></a>
         <a href="/tarifs.html?v=education" class="ps-dd-row"><span>🎓 <span data-fr>Formation</span><span data-en>Education</span><span data-es>Formación</span><span data-pt>Educação</span><span data-ar>تعليم</span></span></a>
         <a href="/tarifs.html?v=restauration" class="ps-dd-row"><span>🍽️ <span data-fr>Restauration</span><span data-en>Food & Hospitality</span><span data-es>Restauración</span><span data-pt>Restauração</span><span data-ar>مطاعم</span></span></a>
-        <a href="/tarifs.html?v=freelance" class="ps-dd-row"><span>💼 Freelances</span></a>
+        <a href="/tarifs.html?v=freelance" class="ps-dd-row"><span>💼 <span data-fr>Freelances</span><span data-en>Freelancers</span><span data-es>Freelancers</span><span data-pt>Freelancers</span><span data-ar>مستقلون</span></span></a>
       </div>
     </div>
     <a href="/custom-consulting.html" class="ps-nav-a"><span data-fr>Conseil sur mesure</span><span data-en>Custom consulting</span><span data-es>Consultoría a medida</span><span data-pt>Consultoria personalizada</span><span data-ar>استشارة مخصصة</span></a>
-    <a href="/contact.html" class="ps-nav-a">Contact</a>
+    <a href="/contact.html" class="ps-nav-a"><span data-fr>Contact</span><span data-en>Contact</span><span data-es>Contacto</span><span data-pt>Contato</span><span data-ar>اتصل بنا</span></a>
   </div>
   <div class="ps-nav-right">
     <div class="ps-lang-drop">
@@ -290,8 +290,8 @@ html[dir="rtl"] .hero-btns{justify-content:flex-end;}
         <button class="ps-lang-opt" onclick="setLang('ar')" aria-current="false">🇸🇦 العربية</button>
       </div>
     </div>
-    <a href="/login.html" class="ps-nav-a" id="nav-account-link" onclick="checkSession(event)">Mon compte</a>
-    <a href="/tarifs.html" class="ps-nav-cta">Voir les offres</a>
+    <a href="/login.html" class="ps-nav-a" id="nav-account-link" onclick="checkSession(event)"><span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span></a>
+    <a href="/tarifs.html" class="ps-nav-cta"><span data-fr>Voir les offres</span><span data-en>View plans</span><span data-es>Ver ofertas</span><span data-pt>Ver planos</span><span data-ar>عرض الخطط</span></a>
   </div>
 </nav>
 
@@ -724,7 +724,9 @@ function declineCookies() {
       var link = document.getElementById('nav-account-link');
       if (!link) return;
       if (r.data && r.data.session) {
-        link.textContent = 'Mon espace';
+        var _ml = { fr:'Mon espace', en:'My workspace', es:'Mi espacio', pt:'Meu espaço', ar:'مساحتي' };
+        var _lg = document.documentElement.getAttribute('data-lang') || 'en';
+        link.innerHTML = '<span data-fr>' + _ml.fr + '</span><span data-en>' + _ml.en + '</span><span data-es>' + _ml.es + '</span><span data-pt>' + _ml.pt + '</span><span data-ar>' + _ml.ar + '</span>';
         link.href = '/dashboard';
         link.removeAttribute('onclick');
       } else {

@@ -180,10 +180,29 @@ const ToolCatalog = (() => {
   }
 
   /**
-   * Fallback: return null so dashboard keeps using ALL_TOOLS
+   * Fallback: use TOOLS_I18N from ps-tools-i18n.js (shared multilingual tool data).
+   * Normalises the multilingual objects into flat strings for the current language,
+   * so the dashboard card builders can use t.name / t.desc as plain strings.
    */
   function _fallback() {
-    _cache = { tools: null, source: 'fallback' };
+    if (typeof TOOLS_I18N === 'undefined') {
+      _cache = { tools: null, source: 'fallback' };
+      return _cache;
+    }
+    // Convert TOOLS_I18N multilingual objects into flat-string tool objects
+    const lang = (typeof PS_I18N !== 'undefined') ? PS_I18N.lang() : 'fr';
+    const tools = {};
+    Object.entries(TOOLS_I18N).forEach(([vertical, list]) => {
+      tools[vertical] = list.map(t => ({
+        slug:     '', // no slug from fallback
+        icon:     t.icon || '🔧',
+        name:     (typeof t.name === 'object') ? (t.name[lang] || t.name.en || t.name.fr) : t.name,
+        desc:     (typeof t.desc === 'object') ? (t.desc[lang] || t.desc.en || t.desc.fr) : t.desc,
+        tier:     t.tier || 'starter',
+        featured: false,
+      }));
+    });
+    _cache = { tools, source: 'fallback' };
     return _cache;
   }
 
@@ -202,6 +221,46 @@ const ToolCatalog = (() => {
     }
   }
 
-  return { load, toolUrl, isDynamic, clearCache };
+  /**
+   * Resolve tool names/descriptions for the given language.
+   *
+   * Handles two data shapes:
+   *   1. DB tools  → name/desc are plain French strings → lookup in TOOLS_I18N_INDEX
+   *   2. Fallback  → name/desc are multilingual objects {fr,en,es,pt,ar} → pick lang directly
+   */
+  function resolveLanguage(tools, lang) {
+    if (!tools) return tools;
+    const l = lang || 'fr';
+
+    const resolved = {};
+    Object.entries(tools).forEach(([vertical, list]) => {
+      resolved[vertical] = list.map(t => {
+        // Case 2: multilingual object (from TOOLS_I18N fallback or raw)
+        if (typeof t.name === 'object') {
+          return {
+            ...t,
+            name: t.name[l] || t.name.en || t.name.fr,
+            desc: (typeof t.desc === 'object') ? (t.desc[l] || t.desc.en || t.desc.fr) : t.desc,
+          };
+        }
+        // Case 1: plain string (from DB) — look up translation
+        if (l === 'fr') return t; // already French
+        if (typeof TOOLS_I18N_INDEX !== 'undefined') {
+          const match = TOOLS_I18N_INDEX[t.name];
+          if (match) {
+            return {
+              ...t,
+              name: match.name[l] || match.name.en || t.name,
+              desc: match.desc[l] || match.desc.en || t.desc,
+            };
+          }
+        }
+        return t; // no translation found, keep as-is
+      });
+    });
+    return resolved;
+  }
+
+  return { load, toolUrl, isDynamic, clearCache, resolveLanguage };
 
 })();

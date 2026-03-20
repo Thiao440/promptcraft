@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/js/ps-auth.js?v=1.0"></script>
   <script src="/js/ps-analytics.js?v=1.0"></script>
+  <script src="/js/ps-tools-i18n.js?v=1.0"></script>
   <script src="/js/tool-catalog.js?v=1.0"></script>
   <script src="/js/ps-projects.js?v=1.0"></script>
   <script src="/js/ps-feedback.js?v=1.0"></script>
@@ -350,6 +351,27 @@ const QUOTA_MAX   = { starter:50, pro:150, gold:Infinity, team:Infinity };
 
 // Tools loaded from DB via ToolCatalog (replaces old hardcoded ALL_TOOLS)
 let ALL_TOOLS = {};
+let _RAW_TOOLS = {}; // TOOLS_I18N multilingual objects (for language resolution)
+let _CATALOG_TOOLS = null; // DB/cache tools with slug + featured (for merging)
+
+/** Resolve tools for current language from TOOLS_I18N and merge DB metadata */
+function resolveAllTools(lang) {
+  if (!Object.keys(_RAW_TOOLS).length) return;
+  ALL_TOOLS = ToolCatalog.resolveLanguage(_RAW_TOOLS, lang);
+  // Merge slug + featured from DB/cache catalog
+  if (_CATALOG_TOOLS) {
+    Object.entries(_CATALOG_TOOLS).forEach(([v, list]) => {
+      if (!ALL_TOOLS[v]) return;
+      list.forEach(dbT => {
+        const match = ALL_TOOLS[v].find(t => t.icon === dbT.icon && t.tier === dbT.tier);
+        if (match) {
+          match.slug     = dbT.slug || match.slug || '';
+          match.featured = dbT.featured || false;
+        }
+      });
+    });
+  }
+}
 
 let activeV      = null;
 let usageCount   = 0;
@@ -876,6 +898,8 @@ function updateUIText() {
   document.getElementById('nav-add-vertical').textContent = '+ ' + T('nav.vertical');
   document.title = T('dashboard.page_title');
   renderAnnounceBar();
+  // Re-resolve tool translations for new language (with slug merge)
+  resolveAllTools(PS_I18N.lang());
   // Re-render sidebar with translated vertical names
   renderSidebar();
   // Re-render current view if loaded
@@ -927,9 +951,16 @@ async function init() {
     return;
   }
 
-  // Load tools
+  // Load tools — always use TOOLS_I18N as the translation source (multilingual objects),
+  // then merge DB-specific data (slug, featured) from catalog on top.
   const catalog = await ToolCatalog.load();
-  if (catalog.tools) ALL_TOOLS = catalog.tools;
+  _CATALOG_TOOLS = catalog.tools || null;
+  if (typeof TOOLS_I18N !== 'undefined') {
+    _RAW_TOOLS = TOOLS_I18N; // always multilingual objects
+  } else if (catalog.tools) {
+    _RAW_TOOLS = catalog.tools;
+  }
+  resolveAllTools(PS_I18N.lang());
 
   renderSidebar();
   updateProjectBadge();
