@@ -31,3 +31,15 @@ dist/
 # Temporary files
 ~$*
 *.tmp
+
+# Internal docs & archives — not for production
+_archive/
+
+# SQL migration files — run manually, don't deploy
+sql/
+
+# Email templates (Supabase-managed, not served publicly)
+email-templates/
+
+# Generated strategy/audit docs at root level
+Guide_Automatisation_Make.docx
