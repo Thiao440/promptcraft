@@ -37,16 +37,16 @@
       "label": "E-Commerce & Retail",
       "variants": {
         "monthly": {
-          "starter": { "uuid": "", "id": 0 },
-          "pro":     { "uuid": "", "id": 0 },
-          "gold":    { "uuid": "", "id": 0 },
-          "team":    { "uuid": "", "id": 0 }
+          "starter": { "uuid": "dd3d8bfc-b267-4986-bb3a-d22bc21d416b", "id": 1425802 },
+          "pro":     { "uuid": "0905015c-65ab-426c-92c2-44bce4620c00", "id": 1425804 },
+          "gold":    { "uuid": "2d0fc981-9503-4460-a757-4498f3d0da2d", "id": 1425806 },
+          "team":    { "uuid": "c5e89f35-882c-4497-93bf-0101e30c4555", "id": 1425808 }
         },
         "yearly": {
-          "starter": { "uuid": "", "id": 0 },
-          "pro":     { "uuid": "", "id": 0 },
-          "gold":    { "uuid": "", "id": 0 },
-          "team":    { "uuid": "", "id": 0 }
+          "starter": { "uuid": "adf8a220-1f88-4f8c-b65e-1b0749f7838b", "id": 1425803 },
+          "pro":     { "uuid": "20b6b721-3f80-42a5-b072-630afb5a23a5", "id": 1425805 },
+          "gold":    { "uuid": "fb750570-481e-4e7e-9b82-d634cc14b140", "id": 1425807 },
+          "team":    { "uuid": "e3842354-56f8-4877-b592-9f62f876eaae", "id": 1425809 }
         }
       },
       "confirmation_modal": {
