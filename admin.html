@@ -837,7 +837,7 @@
   <!-- Access Denied Screen -->
   <div id="access-denied">
     <h1>Accès refusé</h1>
-    <p>Vous n'avez pas les permissions d'administrateur.</p>
+    <p><span data-fr>Vous n'avez pas les permissions d'administrateur.</span><span data-en>You don't have admin permissions.</span><span data-es>No tiene permisos de administrador.</span><span data-pt>Você não tem permissões de administrador.</span><span data-ar>ليس لديك صلاحيات المسؤول.</span></p>
   </div>
 
   <!-- Sidebar -->
@@ -859,17 +859,17 @@
 
       <button class="nav-item" data-section="users">
         <span class="ico">👥</span>
-        <span>Utilisateurs</span>
+        <span data-fr>Utilisateurs</span><span data-en>Users</span><span data-es>Usuarios</span><span data-pt>Usuários</span><span data-ar>المستخدمون</span>
       </button>
 
       <button class="nav-item" data-section="subscriptions">
         <span class="ico">💳</span>
-        <span>Abonnements</span>
+        <span data-fr>Abonnements</span><span data-en>Subscriptions</span><span data-es>Suscripciones</span><span data-pt>Assinaturas</span><span data-ar>الاشتراكات</span>
       </button>
 
       <button class="nav-item" data-section="tools">
         <span class="ico">🛠</span>
-        <span>Catalogue Outils</span>
+        <span data-fr>Catalogue Outils</span><span data-en>Tool Catalog</span><span data-es>Catálogo de Herramientas</span><span data-pt>Catálogo de Ferramentas</span><span data-ar>كتالوج الأدوات</span>
       </button>
 
       <button class="nav-item" data-section="analytics">
@@ -894,12 +894,12 @@
 
       <button class="nav-item" data-section="costs">
         <span class="ico">💰</span>
-        <span>Coûts & Usage</span>
+        <span data-fr>Coûts & Usage</span><span data-en>Costs & Usage</span><span data-es>Costes y Uso</span><span data-pt>Custos e Uso</span><span data-ar>التكاليف والاستخدام</span>
       </button>
 
       <button class="nav-item" data-section="settings">
         <span class="ico">⚙</span>
-        <span>Paramètres</span>
+        <span data-fr>Paramètres</span><span data-en>Settings</span><span data-es>Configuración</span><span data-pt>Configurações</span><span data-ar>الإعدادات</span>
       </button>
     </div>
 
@@ -907,7 +907,7 @@
       <div class="sb-email" id="admin-email">–</div>
       <button class="logout-btn" id="logout-btn">
         <span>🚪</span>
-        <span>Déconnexion</span>
+        <span data-fr>Déconnexion</span><span data-en>Log out</span><span data-es>Cerrar sesión</span><span data-pt>Sair</span><span data-ar>تسجيل الخروج</span>
       </button>
     </div>
   </div>
@@ -2107,7 +2107,7 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
                       <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.4;">${t.description || '–'}</div>
                       <div class="tool-card-meta">
                         ${tierBadge(t.min_tier || 'bronze')}
-                        ${badges.map(b => `<span class="tool-badge ${b}">${b === 'new' ? 'Nouveau' : b === 'featured' ? 'À la une' : 'Inactif'}</span>`).join('')}
+                        ${badges.filter(b => b !== 'new').map(b => `<span class="tool-badge ${b}">${b === 'featured' ? '⭐ Featured' : 'Inactive'}</span>`).join('')}
                         ${t.input_schema ? '<span class="tool-badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.2)">Schema ✓</span>' : ''}
                       </div>
                       <div class="tool-card-stats">

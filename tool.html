@@ -27,18 +27,18 @@
   </div>
   <nav class="sidebar-nav">
     <a href="/dashboard.html" class="nav-item active">
-      <span class="icon">🧰</span> Mes outils
+      <span class="icon">🧰</span> <span data-fr>Mes outils</span><span data-en>My tools</span><span data-es>Mis herramientas</span><span data-pt>Minhas ferramentas</span><span data-ar>أدواتي</span>
     </a>
     <a href="/account.html" class="nav-item">
-      <span class="icon">👤</span> Mon compte
+      <span class="icon">👤</span> <span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span>
     </a>
     <a href="/tarifs.html" class="nav-item">
-      <span class="icon">💎</span> Offres & Tarifs
+      <span class="icon">💎</span> <span data-fr>Offres & Tarifs</span><span data-en>Plans & Pricing</span><span data-es>Ofertas y Precios</span><span data-pt>Planos e Preços</span><span data-ar>الخطط والأسعار</span>
     </a>
   </nav>
   <div class="sidebar-footer">
     <div class="user-email" id="user-email"></div>
-    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+    <button class="logout-btn" onclick="PS.logout()">↩ <span data-fr>Déconnexion</span><span data-en>Log out</span><span data-es>Cerrar sesión</span><span data-pt>Sair</span><span data-ar>تسجيل الخروج</span></button>
   </div>
 </aside>
 
@@ -328,13 +328,12 @@ function _buildGenericSchema(tool) {
   const badges     = document.getElementById('tool-badges');
   badges.innerHTML = `
     <span class="badge badge-tier${tool.min_tier === 'pro' ? ' pro' : tool.min_tier === 'gold' ? ' gold' : ''}">${tierLabels[tool.min_tier] || tool.min_tier}</span>
-    <span class="badge badge-vertical">${vertical.icon} ${vertical.label}</span>
-    ${tool.is_new ? '<span class="badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);">Nouveau</span>' : ''}
+    <span class="badge badge-vertical">${vertical.icon} ${(typeof T === 'function' && tool.vertical) ? T('verticals.' + tool.vertical) || vertical.label : vertical.label}</span>
   `;
 
   // Form panel title
   document.getElementById('form-panel-title').textContent =
-    tool.form_panel_title || `✍️ Paramètres`;
+    tool.form_panel_title || '✍️ ' + (typeof T === 'function' ? T('common.settings') || 'Settings' : 'Settings');
 
   // Empty state customization
   if (tool.empty_state_icon)  document.getElementById('empty-icon').textContent  = tool.empty_state_icon;

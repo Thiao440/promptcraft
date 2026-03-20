@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mon compte – The Prompt Studio</title>
+  <title data-fr>Mon compte – The Prompt Studio</title><title data-en>My account – The Prompt Studio</title><title data-es>Mi cuenta – The Prompt Studio</title><title data-pt>Minha conta – The Prompt Studio</title><title data-ar>حسابي – The Prompt Studio</title>
   <meta name="robots" content="noindex"/>
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -102,41 +102,41 @@
 <aside class="sidebar">
   <div class="sb-logo"><a href="/index.html">The <span>Prompt</span> Studio</a></div>
   <nav class="sb-nav">
-    <a href="/dashboard.html" class="nav-item"><span class="ico">🧰</span> Mon espace</a>
-    <a href="/account.html"   class="nav-item active"><span class="ico">👤</span> Mon compte</a>
-    <a href="/tarifs.html"    class="nav-item"><span class="ico">➕</span> Ajouter une verticale</a>
+    <a href="/dashboard.html" class="nav-item"><span class="ico">🧰</span> <span data-fr>Mon espace</span><span data-en>My workspace</span><span data-es>Mi espacio</span><span data-pt>Meu espaço</span><span data-ar>مساحتي</span></a>
+    <a href="/account.html"   class="nav-item active"><span class="ico">👤</span> <span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span></a>
+    <a href="/tarifs.html"    class="nav-item"><span class="ico">➕</span> <span data-fr>Ajouter une verticale</span><span data-en>Add a vertical</span><span data-es>Añadir un sector</span><span data-pt>Adicionar um setor</span><span data-ar>إضافة قطاع</span></a>
   </nav>
   <div class="sb-footer">
     <div class="sb-email" id="sb-email"></div>
-    <button class="logout-btn" onclick="PS.logout()">↩ Déconnexion</button>
+    <button class="logout-btn" onclick="PS.logout()">↩ <span data-fr>Déconnexion</span><span data-en>Log out</span><span data-es>Cerrar sesión</span><span data-pt>Sair</span><span data-ar>تسجيل الخروج</span></button>
   </div>
 </aside>
 
 <main class="main">
   <div class="page-header">
-    <h1>Mon compte</h1>
-    <p>Gérez vos abonnements par verticale, votre profil et vos préférences.</p>
+    <h1><span data-fr>Mon compte</span><span data-en>My account</span><span data-es>Mi cuenta</span><span data-pt>Minha conta</span><span data-ar>حسابي</span></h1>
+    <p><span data-fr>Gérez vos abonnements par verticale, votre profil et vos préférences.</span><span data-en>Manage your vertical subscriptions, profile and preferences.</span><span data-es>Gestione sus suscripciones, perfil y preferencias.</span><span data-pt>Gerencie suas assinaturas, perfil e preferências.</span><span data-ar>إدارة اشتراكاتك وملفك الشخصي وتفضيلاتك.</span></p>
   </div>
 
   <!-- Subscriptions -->
-  <div class="section-title">💳 Mes abonnements</div>
+  <div class="section-title">💳 <span data-fr>Mes abonnements</span><span data-en>My subscriptions</span><span data-es>Mis suscripciones</span><span data-pt>Minhas assinaturas</span><span data-ar>اشتراكاتي</span></div>
   <div class="subs-grid" id="subs-grid">
     <div style="height:140px;background:var(--surface);border:1px solid var(--border);border-radius:12px;" class="skel"></div>
   </div>
 
   <!-- Usage summary -->
   <div class="card">
-    <div class="section-title" style="margin-bottom:12px;">📊 Utilisation ce mois</div>
+    <div class="section-title" style="margin-bottom:12px;">📊 <span data-fr>Utilisation ce mois</span><span data-en>Usage this month</span><span data-es>Uso este mes</span><span data-pt>Uso este mês</span><span data-ar>الاستخدام هذا الشهر</span></div>
     <div id="usage-section"><div style="color:var(--muted);font-size:.875rem;">Chargement…</div></div>
   </div>
 
   <!-- Profile + Preferences -->
   <div class="grid-2">
     <div class="card">
-      <div class="section-title" style="margin-bottom:16px;">👤 Mon profil</div>
+      <div class="section-title" style="margin-bottom:16px;">👤 <span data-fr>Mon profil</span><span data-en>My profile</span><span data-es>Mi perfil</span><span data-pt>Meu perfil</span><span data-ar>ملفي الشخصي</span></div>
       <form id="profile-form">
         <div class="form-group">
-          <label>Prénom & Nom</label>
+          <label><span data-fr>Prénom & Nom</span><span data-en>First & Last name</span><span data-es>Nombre y Apellido</span><span data-pt>Nome e Sobrenome</span><span data-ar>الاسم الكامل</span></label>
           <input type="text" id="full-name" placeholder="Marie Dupont"/>
         </div>
         <div class="form-group">
@@ -144,7 +144,7 @@
           <input type="email" id="email-input" disabled style="opacity:.6;cursor:not-allowed"/>
         </div>
         <div class="form-group">
-          <label>Langue préférée</label>
+          <label><span data-fr>Langue préférée</span><span data-en>Preferred language</span><span data-es>Idioma preferido</span><span data-pt>Idioma preferido</span><span data-ar>اللغة المفضلة</span></label>
           <select id="pref-lang">
             <option value="fr">🇫🇷 Français</option>
             <option value="en">🇬🇧 English</option>
@@ -153,23 +153,23 @@
             <option value="ar">🇸🇦 العربية</option>
           </select>
         </div>
-        <button type="submit" class="btn-primary" id="save-btn">Enregistrer</button>
+        <button type="submit" class="btn-primary" id="save-btn"><span data-fr>Enregistrer</span><span data-en>Save</span><span data-es>Guardar</span><span data-pt>Salvar</span><span data-ar>حفظ</span></button>
       </form>
     </div>
 
     <div class="card">
-      <div class="section-title" style="margin-bottom:12px;">💡 Ajouter une verticale</div>
+      <div class="section-title" style="margin-bottom:12px;">💡 <span data-fr>Ajouter une verticale</span><span data-en>Add a vertical</span><span data-es>Añadir un sector</span><span data-pt>Adicionar um setor</span><span data-ar>إضافة قطاع</span></div>
       <p style="font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:16px;">
-        Vous pouvez vous abonner à plusieurs verticales indépendamment. Chaque abonnement est géré séparément.
+        <span data-fr>Vous pouvez vous abonner à plusieurs verticales indépendamment. Chaque abonnement est géré séparément.</span><span data-en>You can subscribe to multiple verticals independently. Each subscription is managed separately.</span><span data-es>Puede suscribirse a varias verticales de forma independiente.</span><span data-pt>Você pode assinar várias verticais de forma independente.</span><span data-ar>يمكنك الاشتراك في عدة قطاعات بشكل مستقل.</span>
       </p>
       <div style="display:flex;flex-direction:column;gap:10px;" id="add-vertical-list"></div>
     </div>
   </div>
 
   <div class="danger-zone">
-    <div class="section-title" style="margin-bottom:10px;color:var(--danger);">⚠️ Zone de danger</div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">La résiliation est effectuée directement depuis le portail Lemon Squeezy. Votre accès reste actif jusqu'à la fin de la période payée.</p>
-    <a href="https://app.lemonsqueezy.com/my-orders" target="_blank" class="btn btn-danger">Gérer mes abonnements →</a>
+    <div class="section-title" style="margin-bottom:10px;color:var(--danger);">⚠️ <span data-fr>Zone de danger</span><span data-en>Danger zone</span><span data-es>Zona de peligro</span><span data-pt>Zona de perigo</span><span data-ar>منطقة الخطر</span></div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;"><span data-fr>La résiliation est effectuée directement depuis le portail Lemon Squeezy. Votre accès reste actif jusqu'à la fin de la période payée.</span><span data-en>Cancellation is done directly from the Lemon Squeezy portal. Your access remains active until the end of the paid period.</span><span data-es>La cancelación se realiza directamente desde el portal Lemon Squeezy. Su acceso permanece activo hasta el final del período pagado.</span><span data-pt>O cancelamento é feito diretamente no portal Lemon Squeezy. Seu acesso permanece ativo até o final do período pago.</span><span data-ar>يتم الإلغاء مباشرة من بوابة Lemon Squeezy. يبقى وصولك نشطاً حتى نهاية الفترة المدفوعة.</span></p>
+    <a href="https://app.lemonsqueezy.com/my-orders" target="_blank" class="btn btn-danger"><span data-fr>Gérer mes abonnements →</span><span data-en>Manage my subscriptions →</span><span data-es>Gestionar mis suscripciones →</span><span data-pt>Gerenciar minhas assinaturas →</span><span data-ar>إدارة اشتراكاتي ←</span></a>
   </div>
 </main>
 
@@ -193,41 +193,68 @@ function toast(msg, type='success') {
   setTimeout(()=>t.classList.remove('show'), 3400);
 }
 
+// ── i18n helpers for JS-rendered content ──
+const _L = {
+  no_sub:         { fr:'Aucun abonnement actif.', en:'No active subscription.', es:'Sin suscripción activa.', pt:'Nenhuma assinatura ativa.', ar:'لا يوجد اشتراك نشط.' },
+  view_plans:     { fr:'Voir les offres →', en:'View plans →', es:'Ver ofertas →', pt:'Ver ofertas →', ar:'عرض الخطط ←' },
+  status:         { fr:'Statut', en:'Status', es:'Estado', pt:'Status', ar:'الحالة' },
+  renewal:        { fr:'Renouvellement', en:'Renewal', es:'Renovación', pt:'Renovação', ar:'التجديد' },
+  quota:          { fr:'Quota', en:'Quota', es:'Cuota', pt:'Cota', ar:'الحصة' },
+  unlimited:      { fr:'Illimité', en:'Unlimited', es:'Ilimitado', pt:'Ilimitado', ar:'غير محدود' },
+  gen_month:      { fr:'gen/mois', en:'gen/mo', es:'gen/mes', pt:'gen/mês', ar:'توليد/شهر' },
+  go:             { fr:'Accéder →', en:'Access →', es:'Acceder →', pt:'Acessar →', ar:'الوصول ←' },
+  status_active:  { fr:'✅ Actif', en:'✅ Active', es:'✅ Activo', pt:'✅ Ativo', ar:'✅ نشط' },
+  status_cancelled:{fr:'❌ Résilié', en:'❌ Cancelled', es:'❌ Cancelado', pt:'❌ Cancelado', ar:'❌ ملغى' },
+  status_expired: { fr:'⏹ Expiré', en:'⏹ Expired', es:'⏹ Expirado', pt:'⏹ Expirado', ar:'⏹ منتهي' },
+  status_past_due:{ fr:'⚠ Retard', en:'⚠ Past due', es:'⚠ Vencido', pt:'⚠ Vencido', ar:'⚠ متأخر' },
+  counters_reset: { fr:'Compteurs remis à zéro le 1er de chaque mois. Chaque verticale a son propre quota.', en:'Counters reset on the 1st of each month. Each vertical has its own quota.', es:'Contadores reiniciados el 1 de cada mes. Cada vertical tiene su propia cuota.', pt:'Contadores zerados no 1º de cada mês. Cada vertical tem sua própria cota.', ar:'تُعاد العدادات إلى الصفر في الأول من كل شهر. كل قطاع له حصته الخاصة.' },
+  all_subscribed: { fr:'✅ Vous êtes abonné à toutes les verticales !', en:'✅ You are subscribed to all verticals!', es:'✅ ¡Suscrito a todas las verticales!', pt:'✅ Inscrito em todas as verticais!', ar:'✅ أنت مشترك في جميع القطاعات!' },
+  saving:         { fr:'Enregistrement…', en:'Saving…', es:'Guardando…', pt:'Salvando…', ar:'جارٍ الحفظ…' },
+  save:           { fr:'Enregistrer', en:'Save', es:'Guardar', pt:'Salvar', ar:'حفظ' },
+  save_error:     { fr:'Erreur lors de la sauvegarde.', en:'Error saving.', es:'Error al guardar.', pt:'Erro ao salvar.', ar:'خطأ في الحفظ.' },
+  save_ok:        { fr:'Profil mis à jour !', en:'Profile updated!', es:'¡Perfil actualizado!', pt:'Perfil atualizado!', ar:'تم تحديث الملف الشخصي!' },
+};
+function _t(key) { const lang = (typeof PS_I18N !== 'undefined') ? PS_I18N.lang() : 'fr'; return (_L[key] && (_L[key][lang] || _L[key].en || _L[key].fr)) || key; }
+
 function renderSubs() {
   const grid = document.getElementById('subs-grid');
   const subs = PS.subs;
+  const lang = (typeof PS_I18N !== 'undefined') ? PS_I18N.lang() : 'fr';
+  const dateLoc = lang === 'fr' ? 'fr-FR' : lang === 'es' ? 'es-ES' : lang === 'pt' ? 'pt-BR' : lang === 'ar' ? 'ar-SA' : 'en-GB';
   if (!subs.length) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:.875rem;">
-      Aucun abonnement actif. <a href="/tarifs.html" style="color:var(--accent)">Voir les offres →</a></div>`;
+      ${_t('no_sub')} <a href="/tarifs.html" style="color:var(--accent)">${_t('view_plans')}</a></div>`;
   } else {
+    const statusLabels = {active:_t('status_active'),cancelled:_t('status_cancelled'),expired:_t('status_expired'),past_due:_t('status_past_due')};
     grid.innerHTML = subs.map(s => {
       const m   = VMETA[s.vertical] || {};
       const max = QUOTA_MAX[s.tier] ?? 50;
-      const end = s.current_period_end ? new Date(s.current_period_end).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '—';
-      const statusLabel = {active:'✅ Actif',cancelled:'❌ Résilié',expired:'⏹ Expiré',past_due:'⚠ Retard'}[s.status] || s.status;
+      const end = s.current_period_end ? new Date(s.current_period_end).toLocaleDateString(dateLoc,{day:'numeric',month:'long',year:'numeric'}) : '—';
+      const statusLabel = statusLabels[s.status] || s.status;
       const statusClass = s.status==='active'?'status-active':s.status==='cancelled'?'status-cancelled':'status-expired';
+      const vLabel = (typeof T === 'function') ? T('verticals.' + s.vertical) : (m.label || s.vertical);
       return `
         <div class="sub-vcard" style="background:${m.bg};border-color:${m.border};">
           <div class="sub-vcard-header">
             <span class="sub-vcard-icon">${m.icon||'📁'}</span>
             <div>
-              <div class="sub-vcard-title" style="color:${m.color}">${m.label||s.vertical}</div>
+              <div class="sub-vcard-title" style="color:${m.color}">${vLabel}</div>
               <div class="sub-vcard-tier" style="color:${m.color};opacity:.8">${TIER_LABELS[s.tier]||s.tier}</div>
             </div>
           </div>
-          <div class="sub-meta-row"><span class="l">Statut</span><span class="v ${statusClass}">${statusLabel}</span></div>
-          <div class="sub-meta-row"><span class="l">Renouvellement</span><span class="v">${end}</span></div>
-          <div class="sub-meta-row"><span class="l">Quota</span><span class="v">${max===Infinity?'Illimité':max+' gen/mois'}</span></div>
+          <div class="sub-meta-row"><span class="l">${_t('status')}</span><span class="v ${statusClass}">${statusLabel}</span></div>
+          <div class="sub-meta-row"><span class="l">${_t('renewal')}</span><span class="v">${end}</span></div>
+          <div class="sub-meta-row"><span class="l">${_t('quota')}</span><span class="v">${max===Infinity?_t('unlimited'):max+' '+_t('gen_month')}</span></div>
           <div class="sub-vcard-actions">
-            <a href="/dashboard.html?v=${s.vertical}" class="btn btn-solid" style="background:${m.color}">Accéder →</a>
+            <a href="/dashboard.html?v=${s.vertical}" class="btn btn-solid" style="background:${m.color}">${_t('go')}</a>
             ${s.tier!=='gold'&&s.tier!=='team'?`<a href="/tarifs.html?v=${s.vertical}" class="btn btn-outline" style="border-color:${m.color};color:${m.color}">Upgrade</a>`:''}
           </div>
         </div>`;
     }).join('') + `
       <a href="/tarifs.html" class="add-vcard">
         <span class="plus">+</span>
-        <strong style="font-size:.9rem">Ajouter une verticale</strong>
-        <p>Accédez à un nouveau secteur</p>
+        <strong style="font-size:.9rem"><span data-fr>Ajouter une verticale</span><span data-en>Add a vertical</span><span data-es>Añadir un sector</span><span data-pt>Adicionar um setor</span><span data-ar>إضافة قطاع</span></strong>
+        <p><span data-fr>Accédez à un nouveau secteur</span><span data-en>Access a new sector</span><span data-es>Acceda a un nuevo sector</span><span data-pt>Acesse um novo setor</span><span data-ar>الوصول إلى قطاع جديد</span></p>
       </a>`;
   }
 }
@@ -235,7 +262,7 @@ function renderSubs() {
 async function renderUsage() {
   const subs = PS.subs;
   const el   = document.getElementById('usage-section');
-  if (!subs.length) { el.innerHTML = '<p style="color:var(--muted);font-size:.85rem;">Aucun abonnement actif.</p>'; return; }
+  if (!subs.length) { el.innerHTML = `<p style="color:var(--muted);font-size:.85rem;">${_t('no_sub')}</p>`; return; }
 
   // Per-vertical usage bars
   const bars = await Promise.all(subs.map(async (s) => {
@@ -245,14 +272,14 @@ async function renderUsage() {
     const m     = VMETA[s.vertical] || {};
     return `<div class="usage-bar-wrap" style="margin-bottom:10px;">
       <div class="usage-label">
-        <span>${m.icon || ''} ${m.label || s.vertical} <span style="font-size:.72rem;color:var(--muted)">${TIER_LABELS[s.tier] || s.tier}</span></span>
+        <span>${m.icon || ''} ${(typeof T === 'function') ? T('verticals.' + s.vertical) : (m.label || s.vertical)} <span style="font-size:.72rem;color:var(--muted)">${TIER_LABELS[s.tier] || s.tier}</span></span>
         <span><strong>${count}</strong> / ${max === Infinity ? '∞' : max}</span>
       </div>
       <div class="ubar"><div class="ubar-fill" style="width:${pct}%;background:${m.color || 'var(--accent)'}"></div></div>
     </div>`;
   }));
 
-  el.innerHTML = bars.join('') + '<p style="font-size:.78rem;color:var(--muted);margin-top:6px;">Compteurs remis à zéro le 1er de chaque mois. Chaque verticale a son propre quota.</p>';
+  el.innerHTML = bars.join('') + `<p style="font-size:.78rem;color:var(--muted);margin-top:6px;">${_t('counters_reset')}</p>`;
 }
 
 function renderAddVerticals() {
@@ -260,15 +287,15 @@ function renderAddVerticals() {
   const missing    = ALL_VERTICALS.filter(v => !subscribed.includes(v));
   const el         = document.getElementById('add-vertical-list');
   if (!missing.length) {
-    el.innerHTML = '<p style="color:var(--success);font-size:.85rem;">✅ Vous êtes abonné à toutes les verticales !</p>';
+    el.innerHTML = `<p style="color:var(--success);font-size:.85rem;">${_t('all_subscribed')}</p>`;
     return;
   }
   el.innerHTML = missing.map(v => {
     const m = VMETA[v] || {};
     return `<a href="/tarifs.html?v=${v}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text);transition:border-color .18s;font-size:.875rem;" onmouseover="this.style.borderColor='${m.color}'" onmouseout="this.style.borderColor='var(--border)'">
       <span style="font-size:1.3rem">${m.icon}</span>
-      <span><strong>${m.label}</strong></span>
-      <span style="margin-left:auto;font-size:.75rem;color:var(--muted)">Voir les offres →</span>
+      <span><strong>${(typeof T === 'function') ? T('verticals.' + v) : (m.label || v)}</strong></span>
+      <span style="margin-left:auto;font-size:.75rem;color:var(--muted)">${_t('view_plans')}</span>
     </a>`;
   }).join('');
 }
@@ -276,15 +303,22 @@ function renderAddVerticals() {
 document.getElementById('profile-form').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = document.getElementById('save-btn');
-  btn.disabled = true; btn.textContent = 'Enregistrement…';
+  btn.disabled = true; btn.textContent = _t('saving');
   const { error } = await PS.supabase.from('profiles').upsert({
     id: PS.session.user.id,
     full_name: document.getElementById('full-name').value.trim(),
     preferred_lang: document.getElementById('pref-lang').value,
     updated_at: new Date().toISOString(),
   });
-  btn.disabled = false; btn.textContent = 'Enregistrer';
-  error ? toast('Erreur lors de la sauvegarde.','error') : toast('Profil mis à jour !');
+  btn.disabled = false; btn.textContent = _t('save');
+  if (!error) {
+    // Apply language change immediately
+    const newLang = document.getElementById('pref-lang').value;
+    if (typeof setLang === 'function') setLang(newLang);
+    toast(_t('save_ok'));
+  } else {
+    toast(_t('save_error'), 'error');
+  }
 });
 
 async function init() {
@@ -297,11 +331,24 @@ async function init() {
   if (profile) {
     document.getElementById('full-name').value  = profile.full_name || '';
     document.getElementById('pref-lang').value  = profile.preferred_lang || 'fr';
+    // Apply user's preferred language
+    if (profile.preferred_lang && typeof setLang === 'function') {
+      setLang(profile.preferred_lang);
+    }
   }
 
   renderSubs();
   await renderUsage();
   renderAddVerticals();
+
+  // Re-render on language change
+  if (typeof PS_I18N !== 'undefined') {
+    PS_I18N.onChange(() => {
+      renderSubs();
+      renderUsage();
+      renderAddVerticals();
+    });
+  }
 }
 init();
 </script>

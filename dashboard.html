@@ -147,7 +147,6 @@
       border-radius: 4px; line-height: 1.4; pointer-events: none;
     }
     .tc-badge.featured { background: rgba(201,168,76,.14); color: #c9a84c; border: 1px solid rgba(201,168,76,.28); }
-    .tc-badge.new-tool { background: rgba(34,197,94,.12);  color: #22c55e; border: 1px solid rgba(34,197,94,.28); }
     /* Push icon down when badge is present so they don't overlap */
     .tool-card.has-badge .tc-icon { margin-top: 18px; }
 
@@ -370,10 +369,11 @@ function renderSidebar() {
   if (!subs.length) { el.innerHTML = ''; return; }
   el.innerHTML = subs.map(s => {
     const m = VMETA[s.vertical] || {};
+    const vLabel = T('verticals.' + s.vertical) || m.label || s.vertical;
     return `<button class="nav-item" data-v="${s.vertical}" onclick="switchVertical('${s.vertical}')"
               style="--vc:${m.color||'#6c63ff'}">
       <span class="ico">${m.icon||'📁'}</span>
-      <span>${m.label||s.vertical}</span>
+      <span>${vLabel}</span>
       <span style="margin-left:auto;font-size:.68rem;opacity:.6">${TIER_LABELS[s.tier]?.replace(/[^a-zA-Z]/g,'')||s.tier}</span>
     </button>`;
   }).join('');
@@ -395,13 +395,14 @@ async function switchVertical(v) {
     else          { b.style.background = ''; b.style.color = ''; }
   });
 
-  document.getElementById('topbar-title').textContent = `${m.icon || ''} ${m.label || v}`;
+  const vLabel = T('verticals.' + v) || m.label || v;
+  document.getElementById('topbar-title').textContent = `${m.icon || ''} ${vLabel}`;
   // Show trial badge if on_trial
   const isOnTrial = sub?.status === 'on_trial';
   const trialEnd  = sub?.trial_ends_at ? new Date(sub.trial_ends_at) : null;
   const trialDays = trialEnd ? Math.max(0, Math.ceil((trialEnd - Date.now()) / 86400000)) : 0;
   const trialTag  = isOnTrial ? ` · <span style="color:#22c55e;font-weight:600">${TH('dashboard.free_trial_days', { d: trialDays })}</span>` : '';
-  document.getElementById('topbar-sub').innerHTML = sub ? `${TIER_LABELS[sub.tier]} · ${m.label} ${TH('dashboard.tools_access')}${trialTag}` : '';
+  document.getElementById('topbar-sub').innerHTML = sub ? `${TIER_LABELS[sub.tier]} · ${vLabel} ${TH('dashboard.tools_access')}${trialTag}` : '';
 
   /* ── Dynamic theming: sidebar logo, topbar border ── */
   const logoSpan = document.querySelector('.sb-logo span');
@@ -429,7 +430,7 @@ async function updateQuota(v, sub) {
   const color = VMETA[v]?.color || '#6c63ff';
   const pill  = document.getElementById('quota-pill');
   pill.style.display = 'flex';
-  document.getElementById('quota-text').textContent = max === Infinity ? `${count} générés` : `${count} / ${max}`;
+  document.getElementById('quota-text').textContent = max === Infinity ? `${count} ${T('dashboard.generated')}` : `${count} / ${max}`;
   const fill = document.getElementById('quota-fill');
   fill.style.width      = pct + '%';
   fill.style.background = pct > 80 ? '#ef4444' : color;
@@ -437,10 +438,9 @@ async function updateQuota(v, sub) {
 
 // ── Build accessible tool card HTML ───────────────────────────────────────
 function accessibleCard(t, color, v) {
-  const hasBadge = t.featured || t.isNew;
+  const hasBadge = t.featured;
   const badge    = t.featured
-    ? '<span class="tc-badge featured">⭐ Populaire</span>'
-    : t.isNew ? '<span class="tc-badge new-tool">Nouveau</span>' : '';
+    ? `<span class="tc-badge featured">⭐ ${T('dashboard.popular')}</span>` : '';
   return `
     <div class="tool-card accessible${hasBadge?' has-badge':''}"
          style="border-color:transparent"
@@ -451,19 +451,18 @@ function accessibleCard(t, color, v) {
       <span class="tc-icon">${t.icon}</span>
       <div class="tc-name">${t.name}</div>
       <div class="tc-desc">${t.desc}</div>
-      <a href="${ToolCatalog.toolUrl(t.slug)}" class="tc-action" style="color:${color}">Utiliser →</a>
+      <a href="${ToolCatalog.toolUrl(t.slug)}" class="tc-action" style="color:${color}">${T('dashboard.use_tool')} →</a>
     </div>`;
 }
 
 // ── Build locked tool card HTML ────────────────────────────────────────────
 function lockedCard(t, color, v) {
-  const hasBadge  = t.featured || t.isNew;
+  const hasBadge  = t.featured;
   const badge     = t.featured
-    ? '<span class="tc-badge featured">⭐ Populaire</span>'
-    : t.isNew ? '<span class="tc-badge new-tool">Nouveau</span>' : '';
+    ? `<span class="tc-badge featured">⭐ ${T('dashboard.popular')}</span>` : '';
   const reason = t._access?.reason === 'upgrade_required'
-    ? `Disponible en ${TIER_LABELS[t._access.required]}`
-    : 'Abonnement requis';
+    ? `${T('dashboard.available_in')} ${TIER_LABELS[t._access.required]}`
+    : T('dashboard.sub_required');
   return `
     <div class="tool-card locked${hasBadge?' has-badge':''}">
       <span class="lock-overlay">🔒</span>
@@ -509,7 +508,7 @@ function renderTools(v, sub, filter = 'all') {
       <div class="v-banner-left">
         <span class="v-banner-icon">${m.icon||'📁'}</span>
         <div>
-          <div class="v-banner-title">${m.label||v}</div>
+          <div class="v-banner-title">${T('verticals.' + v) || m.label || v}</div>
           <div class="v-banner-sub">${sub ? TIER_LABELS[sub.tier] + ' · ' + (max===Infinity?TH('common.unlimited'):max+' '+TH('dashboard.gen_per_month')) : TH('dashboard.no_sub')}</div>
         </div>
       </div>
@@ -654,7 +653,7 @@ function maybeShowWelcome() {
     <div class="welcome-card">
       <button class="wc-close" onclick="this.closest('.welcome-overlay').remove()" aria-label="Close">&times;</button>
       <div class="wc-icon">${m?.icon || '🎉'}</div>
-      <h2>${TH('dashboard.welcome_to')} ${m?.label || 'The Prompt Studio'}!</h2>
+      <h2>${TH('dashboard.welcome_to')} ${v ? (T('verticals.' + v) || m?.label || v) : 'The Prompt Studio'}!</h2>
       ${trialNote}
       <p>${subtitle}</p>
       <button class="wc-cta" onclick="this.closest('.welcome-overlay').remove()">${TH('dashboard.welcome_cta')} &rarr;</button>
@@ -723,7 +722,7 @@ async function renderProjectsView() {
   const subVerticals = PS.subs.map(s => s.vertical);
   const vOpts = subVerticals.map(v => {
     const m = VMETA[v] || {};
-    return `<option value="${v}" ${v === _projFilterVertical ? 'selected' : ''}>${m.icon || ''} ${m.label || v}</option>`;
+    return `<option value="${v}" ${v === _projFilterVertical ? 'selected' : ''}>${m.icon || ''} ${T('verticals.' + v) || m.label || v}</option>`;
   }).join('');
 
   let html = `
@@ -755,7 +754,9 @@ async function renderProjectsView() {
   projects.forEach(p => {
     const m    = VMETA[p.vertical] || {};
     const sm   = PSProjects.STATUS_META[p.status] || {};
-    const date = new Date(p.updated_at).toLocaleDateString('en-US', { day:'numeric', month:'short' });
+    const _lang = PS_I18N.lang();
+    const _loc = _lang==='fr'?'fr-FR':_lang==='es'?'es-ES':_lang==='pt'?'pt-BR':_lang==='ar'?'ar-SA':'en-GB';
+    const date = new Date(p.updated_at).toLocaleDateString(_loc, { day:'numeric', month:'short' });
 
     // Extract key data preview
     const dataEntries = Object.entries(p.data || {}).filter(([,v]) => v).slice(0, 3);
@@ -770,9 +771,9 @@ async function renderProjectsView() {
         </div>
         <div class="proj-card-meta">${preview || '<em style="opacity:.5">' + TH('dashboard.no_info') + '</em>'}</div>
         <div class="proj-card-tags">
-          <span class="proj-card-tag" style="background:${m.bg || 'rgba(108,99,255,.1)'};color:${m.color || 'var(--accent2)'}">${m.label || p.vertical}</span>
+          <span class="proj-card-tag" style="background:${m.bg || 'rgba(108,99,255,.1)'};color:${m.color || 'var(--accent2)'}">${T('verticals.' + p.vertical) || m.label || p.vertical}</span>
         </div>
-        <div class="proj-card-date">Updated ${date}</div>
+        <div class="proj-card-date">${T('dashboard.updated')} ${date}</div>
       </a>`;
   });
 
@@ -793,7 +794,7 @@ function showCreateProjectModal() {
   const subVerticals = PS.subs.map(s => s.vertical);
   const vOpts = subVerticals.map(v => {
     const m = VMETA[v] || {};
-    return `<option value="${v}">${m.icon || ''} ${m.label || v}</option>`;
+    return `<option value="${v}">${m.icon || ''} ${T('verticals.' + v) || m.label || v}</option>`;
   }).join('');
 
   const overlay = document.createElement('div');
@@ -869,11 +870,21 @@ function updateUIText() {
   document.getElementById('nav-navigation').textContent = T('nav.navigation');
   document.getElementById('nav-proj-label').textContent = T('nav.my_projects');
   document.getElementById('nav-account').textContent = T('nav.my_account');
-  document.getElementById('nav-feedback-label').textContent = 'Feedback';
+  document.getElementById('nav-feedback-label').textContent = T('nav.feedback');
   document.getElementById('nav-report-bug').textContent = T('nav.report_bug');
   document.getElementById('nav-logout').textContent = '↩ ' + T('nav.log_out');
   document.getElementById('nav-add-vertical').textContent = '+ ' + T('nav.vertical');
+  document.title = T('dashboard.page_title');
   renderAnnounceBar();
+  // Re-render sidebar with translated vertical names
+  renderSidebar();
+  // Re-render current view if loaded
+  const view = new URLSearchParams(location.search).get('view');
+  if (view === 'projects' && PS.hasAnySubscription()) {
+    renderProjectsView();
+  } else if (activeV) {
+    switchVertical(activeV);
+  }
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────
@@ -882,6 +893,18 @@ async function init() {
   if (!ok) return;
 
   document.getElementById('sb-email').textContent = PS.session.user.email;
+
+  // ── Sync user's preferred language from DB ──
+  try {
+    const { data: profile } = await PS.supabase
+      .from('profiles')
+      .select('preferred_lang')
+      .eq('id', PS.session.user.id)
+      .single();
+    if (profile?.preferred_lang && typeof setLang === 'function') {
+      setLang(profile.preferred_lang);
+    }
+  } catch (e) { /* ignore — use localStorage fallback */ }
 
   // Set up language change handler
   PS_I18N.onChange(updateUIText);

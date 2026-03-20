@@ -40,6 +40,7 @@ const PS_I18N = (() => {
       most_popular:   { fr: 'Le plus populaire',  en: 'Most popular',      es: 'El más popular',     pt: 'O mais popular',     ar: 'الأكثر شعبية' },
       ad_free:        { fr: 'Sans publicité',     en: 'Ad-free',           es: 'Sin anuncios',       pt: 'Sem anúncios',       ar: 'بدون إعلانات' },
       with_ads:       { fr: 'Avec publicités',    en: 'Includes ads',      es: 'Con anuncios',       pt: 'Com anúncios',       ar: 'مع إعلانات' },
+      settings:       { fr: 'Paramètres',          en: 'Settings',          es: 'Configuración',      pt: 'Configurações',      ar: 'الإعدادات' },
     },
 
     /* ── Navigation / sidebar ───────────────────────────────────────────── */
@@ -53,6 +54,12 @@ const PS_I18N = (() => {
       navigation:     { fr: 'Navigation',          en: 'Navigation',        es: 'Navegación',         pt: 'Navegação',          ar: 'التنقل' },
       feedback:       { fr: 'Feedback',            en: 'Feedback',          es: 'Comentarios',        pt: 'Feedback',           ar: 'ملاحظات' },
       vertical:       { fr: 'Verticale',           en: 'Vertical',          es: 'Vertical',           pt: 'Vertical',           ar: 'قطاع' },
+      my_tools:       { fr: 'Mes outils',          en: 'My tools',          es: 'Mis herramientas',   pt: 'Minhas ferramentas', ar: 'أدواتي' },
+      plans_pricing:  { fr: 'Offres & Tarifs',     en: 'Plans & Pricing',   es: 'Ofertas y Precios',  pt: 'Planos e Preços',    ar: 'الخطط والأسعار' },
+      add_vertical:   { fr: 'Ajouter une verticale', en: 'Add a vertical',  es: 'Añadir un sector',   pt: 'Adicionar um setor', ar: 'إضافة قطاع' },
+      my_subs:        { fr: 'Mes abonnements',     en: 'My subscriptions',  es: 'Mis suscripciones',  pt: 'Minhas assinaturas', ar: 'اشتراكاتي' },
+      usage_month:    { fr: 'Utilisation ce mois',  en: 'Usage this month',  es: 'Uso este mes',       pt: 'Uso este mês',       ar: 'الاستخدام هذا الشهر' },
+      manage_account: { fr: 'Gérez vos abonnements par verticale, votre profil et vos préférences.', en: 'Manage your vertical subscriptions, profile and preferences.', es: 'Gestione sus suscripciones, perfil y preferencias.', pt: 'Gerencie suas assinaturas, perfil e preferências.', ar: 'إدارة اشتراكاتك وملفك الشخصي وتفضيلاتك.' },
     },
 
     /* ── Dashboard ──────────────────────────────────────────────────────── */
@@ -145,6 +152,13 @@ const PS_I18N = (() => {
       welcome_trial_badge:{ fr: 'Essai gratuit · {d} jours restants',            en: 'Free trial · {d} days remaining',                 es: 'Prueba gratis · {d} días',                        pt: 'Teste grátis · {d} dias',                         ar: 'تجربة مجانية · {d} أيام' },
       welcome_cta:        { fr: 'C\'est parti',     en: 'Get started',       es: 'Empezar',            pt: 'Começar',            ar: 'ابدأ الآن' },
       loading_tools:      { fr: 'Outils en cours de chargement…',                en: 'Loading tools…',                                  es: 'Cargando herramientas…',                          pt: 'Carregando ferramentas…',                         ar: 'جار تحميل الأدوات…' },
+      // Tool cards
+      use_tool:           { fr: 'Utiliser',             en: 'Use',               es: 'Usar',               pt: 'Usar',               ar: 'استخدام' },
+      popular:            { fr: 'Populaire',            en: 'Popular',           es: 'Popular',            pt: 'Popular',            ar: 'شائع' },
+      available_in:       { fr: 'Disponible en',        en: 'Available in',      es: 'Disponible en',      pt: 'Disponível em',      ar: 'متاح في' },
+      sub_required:       { fr: 'Abonnement requis',    en: 'Subscription required', es: 'Suscripción requerida', pt: 'Assinatura necessária', ar: 'يتطلب اشتراك' },
+      generated:          { fr: 'générés',              en: 'generated',         es: 'generados',          pt: 'gerados',            ar: 'مولّدة' },
+      updated:            { fr: 'Mis à jour',           en: 'Updated',           es: 'Actualizado',        pt: 'Atualizado',         ar: 'تم التحديث' },
     },
 
     /* ── Tarifs / Pricing ───────────────────────────────────────────────── */

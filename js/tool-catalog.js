@@ -10,12 +10,10 @@
  *   // catalog.source  → 'db' | 'fallback'
  *
  * Each tool object matches the shape expected by dashboard rendering:
- *   { slug, icon, name, desc, tier, featured, isNew }
+ *   { slug, icon, name, desc, tier, featured }
  *
  * Badge logic (computed dynamically):
- *   - "Nouveau"   → created_at ≤ 30 days ago
  *   - "Populaire" → top 20% by usage_count within its vertical (min 1 use)
- *   - "Nouveau" takes priority if both apply
  *
  * Tool links:
  *   ToolCatalog.toolUrl(slug)  → '/t/immo-annonce' (dynamic) or '/tools/immo-annonce.html' (static)
@@ -115,10 +113,6 @@ const ToolCatalog = (() => {
       }
 
       // ── Compute dynamic badges ──
-      // "Nouveau" = created within the last 30 days
-      const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000;
-      const now = Date.now();
-
       // "Populaire" = top 20% by usage_count per vertical
       const usageByVertical = {};
       data.forEach(row => {
@@ -142,8 +136,6 @@ const ToolCatalog = (() => {
           _dynamicSlugs.add(row.slug);
         }
 
-        const createdAt = row.created_at ? new Date(row.created_at).getTime() : 0;
-        const isNew     = (now - createdAt) <= ONE_MONTH_MS;
         const usage     = row.usage_count || 0;
         const threshold = popularThresholds[row.vertical] || 1;
         const featured  = usage >= threshold && usage > 0;
@@ -154,8 +146,7 @@ const ToolCatalog = (() => {
           name:     row.label || row.slug,
           desc:     row.description || '',
           tier:     row.min_tier || 'starter',
-          featured: isNew ? false : featured, // "Nouveau" takes priority over "Populaire"
-          isNew,
+          featured,
         });
       });
 
