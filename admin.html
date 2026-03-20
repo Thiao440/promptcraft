@@ -901,6 +901,16 @@
         <span data-fr>Coûts & Usage</span><span data-en>Costs & Usage</span><span data-es>Costes y Uso</span><span data-pt>Custos e Uso</span><span data-ar>التكاليف والاستخدام</span>
       </button>
 
+      <button class="nav-item" data-section="bugs">
+        <span class="ico">🐛</span>
+        <span data-fr>Bug Reports</span><span data-en>Bug Reports</span><span data-es>Bug Reports</span><span data-pt>Bug Reports</span><span data-ar>تقارير الأخطاء</span>
+      </button>
+
+      <button class="nav-item" data-section="suggestions">
+        <span class="ico">💡</span>
+        <span data-fr>Suggestions</span><span data-en>Suggestions</span><span data-es>Sugerencias</span><span data-pt>Sugestões</span><span data-ar>اقتراحات</span>
+      </button>
+
       <button class="nav-item" data-section="settings">
         <span class="ico">⚙</span>
         <span data-fr>Paramètres</span><span data-en>Settings</span><span data-es>Configuración</span><span data-pt>Configurações</span><span data-ar>الإعدادات</span>
@@ -979,6 +989,14 @@
             <div class="kpi">
               <div class="kpi-num" id="kpi-top-tool">–</div>
               <div class="kpi-label">Outil le plus utilisé</div>
+            </div>
+            <div class="kpi" style="cursor:pointer;" onclick="showSection('bugs')">
+              <div class="kpi-num" style="color:var(--danger)" id="kpi-open-bugs">–</div>
+              <div class="kpi-label">🐛 Bugs ouverts</div>
+            </div>
+            <div class="kpi" style="cursor:pointer;" onclick="showSection('suggestions')">
+              <div class="kpi-num" style="color:var(--gold)" id="kpi-open-sugs">–</div>
+              <div class="kpi-label">💡 Suggestions</div>
             </div>
           </div>
         </div>
@@ -1510,6 +1528,143 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
         <div class="last-refresh" id="last-refresh-costs">Jamais actualisé</div>
       </div>
 
+      <!-- 🐛 Bug Reports -->
+      <div class="section" id="section-bugs">
+        <div class="card">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+            <span>🐛 Bug Reports</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <select id="bug-filter-status" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="">Tous statuts</option>
+                <option value="new" selected>🆕 Nouveau</option>
+                <option value="in_progress">🔧 En cours</option>
+                <option value="resolved">✅ Résolu</option>
+                <option value="wontfix">🚫 Won't fix</option>
+              </select>
+              <select id="bug-filter-severity" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="">Toutes sévérités</option>
+                <option value="critical">🔴 Critique</option>
+                <option value="high">🟠 Élevé</option>
+                <option value="medium">🟡 Moyen</option>
+                <option value="low">🟢 Faible</option>
+              </select>
+              <select id="bug-filter-category" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="">Toutes catégories</option>
+                <option value="bug">🐛 Bug</option>
+                <option value="generation">🤖 Génération</option>
+                <option value="display">🖥 Affichage</option>
+                <option value="performance">⚡ Performance</option>
+                <option value="other">💬 Autre</option>
+              </select>
+              <select id="bug-filter-vertical" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="">Toutes verticales</option>
+                <option value="immo">🏠 Immo</option>
+                <option value="commerce">🛒 Commerce</option>
+                <option value="legal">⚖ Legal</option>
+                <option value="finance">💹 Finance</option>
+                <option value="marketing">📢 Marketing</option>
+                <option value="rh">👥 RH</option>
+                <option value="sante">🏥 Santé</option>
+                <option value="education">🎓 Éducation</option>
+                <option value="restauration">🍽 Restauration</option>
+                <option value="freelance">💼 Freelance</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- KPI row -->
+          <div class="card-row" id="bug-kpis" style="margin-bottom:16px;">
+            <div class="kpi"><div class="kpi-num" id="bug-kpi-total">–</div><div class="kpi-label">Total</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--danger)" id="bug-kpi-critical">–</div><div class="kpi-label">🔴 Critique</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--warning)" id="bug-kpi-high">–</div><div class="kpi-label">🟠 Élevé</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--accent)" id="bug-kpi-new">–</div><div class="kpi-label">🆕 Nouveau</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--success)" id="bug-kpi-resolved">–</div><div class="kpi-label">✅ Résolu</div></div>
+          </div>
+
+          <!-- Bug list -->
+          <div id="bug-list" style="display:flex;flex-direction:column;gap:8px;font-size:0.85rem;">
+            <div style="color:var(--muted);">Chargement…</div>
+          </div>
+        </div>
+
+        <!-- Bug detail modal (hidden) -->
+        <div id="bug-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;max-width:700px;width:90%;max-height:85vh;overflow-y:auto;padding:24px;position:relative;">
+            <button onclick="closeBugDetail()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;">✕</button>
+            <div id="bug-detail-content"></div>
+          </div>
+        </div>
+
+        <div class="last-refresh" id="last-refresh-bugs">Jamais actualisé</div>
+      </div>
+
+      <!-- 💡 Tool Suggestions -->
+      <div class="section" id="section-suggestions">
+        <div class="card">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+            <span>💡 Suggestions d'outils</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <select id="sug-filter-status" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="">Tous statuts</option>
+                <option value="new" selected>🆕 Nouveau</option>
+                <option value="in_progress">🔧 En cours</option>
+                <option value="planned">📋 Planifié</option>
+                <option value="shipped">🚀 Livré</option>
+                <option value="wontship">🚫 Won't ship</option>
+              </select>
+              <select id="sug-filter-priority" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="">Toutes priorités</option>
+                <option value="critical">🔴 Critique</option>
+                <option value="important">🟠 Important</option>
+                <option value="nice_to_have">🟢 Nice to have</option>
+              </select>
+              <select id="sug-filter-vertical" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="">Toutes verticales</option>
+                <option value="immo">🏠 Immo</option>
+                <option value="commerce">🛒 Commerce</option>
+                <option value="legal">⚖ Legal</option>
+                <option value="finance">💹 Finance</option>
+                <option value="marketing">📢 Marketing</option>
+                <option value="rh">👥 RH</option>
+                <option value="sante">🏥 Santé</option>
+                <option value="education">🎓 Éducation</option>
+                <option value="restauration">🍽 Restauration</option>
+                <option value="freelance">💼 Freelance</option>
+              </select>
+              <select id="sug-sort" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.8rem;">
+                <option value="votes">🔥 Par votes</option>
+                <option value="recent">🕐 Récent</option>
+                <option value="priority">⚡ Par priorité</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- KPI row -->
+          <div class="card-row" id="sug-kpis" style="margin-bottom:16px;">
+            <div class="kpi"><div class="kpi-num" id="sug-kpi-total">–</div><div class="kpi-label">Total</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--accent)" id="sug-kpi-new">–</div><div class="kpi-label">🆕 Nouveau</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--warning)" id="sug-kpi-progress">–</div><div class="kpi-label">🔧 En cours</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--success)" id="sug-kpi-shipped">–</div><div class="kpi-label">🚀 Livré</div></div>
+            <div class="kpi"><div class="kpi-num" style="color:var(--gold)" id="sug-kpi-topvotes">–</div><div class="kpi-label">🔥 Top votes</div></div>
+          </div>
+
+          <!-- Suggestions list -->
+          <div id="sug-list" style="display:flex;flex-direction:column;gap:8px;font-size:0.85rem;">
+            <div style="color:var(--muted);">Chargement…</div>
+          </div>
+        </div>
+
+        <!-- Suggestion detail modal (hidden) -->
+        <div id="sug-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;max-width:700px;width:90%;max-height:85vh;overflow-y:auto;padding:24px;position:relative;">
+            <button onclick="closeSugDetail()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;">✕</button>
+            <div id="sug-detail-content"></div>
+          </div>
+        </div>
+
+        <div class="last-refresh" id="last-refresh-suggestions">Jamais actualisé</div>
+      </div>
+
       <!-- ⚙ Paramètres -->
       <div class="section" id="section-settings">
         <div class="card">
@@ -1759,6 +1914,12 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
         });
         const topTool = Object.entries(toolCounts).sort((a, b) => b[1] - a[1])[0];
         document.getElementById('kpi-top-tool').textContent = topTool ? topTool[0] : '–';
+
+        // KPI: Open bugs & suggestions
+        const { count: openBugs } = await sb.from('bug_reports').select('id', { count: 'exact', head: true }).in('status', ['new', 'in_progress']);
+        document.getElementById('kpi-open-bugs').textContent = openBugs || 0;
+        const { count: openSugs } = await sb.from('tool_suggestions').select('id', { count: 'exact', head: true }).in('status', ['new', 'in_progress']);
+        document.getElementById('kpi-open-sugs').textContent = openSugs || 0;
 
         // Recent signups
         const recentSignups = allUsers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
@@ -2553,6 +2714,262 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
       }
     }
 
+    // ── Load Data: Bug Reports ──
+    let _allBugs = [];
+
+    const SEV_ICONS = { critical:'🔴', high:'🟠', medium:'🟡', low:'🟢' };
+    const SEV_ORDER = { critical:0, high:1, medium:2, low:3 };
+    const STATUS_ICONS = { new:'🆕', in_progress:'🔧', resolved:'✅', wontfix:'🚫' };
+    const CAT_ICONS = { bug:'🐛', generation:'🤖', display:'🖥', performance:'⚡', other:'💬' };
+
+    async function loadBugs() {
+      const sb = PS.supabase;
+      const { data, error } = await sb.from('bug_reports').select('*').order('created_at', { ascending: false });
+      _allBugs = data || [];
+      renderBugs();
+      // KPIs
+      document.getElementById('bug-kpi-total').textContent = _allBugs.length;
+      document.getElementById('bug-kpi-critical').textContent = _allBugs.filter(b => b.severity === 'critical').length;
+      document.getElementById('bug-kpi-high').textContent = _allBugs.filter(b => b.severity === 'high').length;
+      document.getElementById('bug-kpi-new').textContent = _allBugs.filter(b => b.status === 'new').length;
+      document.getElementById('bug-kpi-resolved').textContent = _allBugs.filter(b => b.status === 'resolved').length;
+      document.getElementById('last-refresh-bugs').textContent = 'Mis à jour : ' + new Date().toLocaleTimeString();
+    }
+
+    function renderBugs() {
+      const status = document.getElementById('bug-filter-status').value;
+      const severity = document.getElementById('bug-filter-severity').value;
+      const category = document.getElementById('bug-filter-category').value;
+      const vertical = document.getElementById('bug-filter-vertical').value;
+
+      let filtered = _allBugs;
+      if (status) filtered = filtered.filter(b => b.status === status);
+      if (severity) filtered = filtered.filter(b => b.severity === severity);
+      if (category) filtered = filtered.filter(b => b.category === category);
+      if (vertical) filtered = filtered.filter(b => b.vertical === vertical);
+
+      // Sort: critical first, then by date
+      filtered.sort((a, b) => (SEV_ORDER[a.severity] ?? 9) - (SEV_ORDER[b.severity] ?? 9) || new Date(b.created_at) - new Date(a.created_at));
+
+      const el = document.getElementById('bug-list');
+      if (!filtered.length) {
+        el.innerHTML = '<div style="color:var(--muted);padding:20px 0;text-align:center;">Aucun bug report trouvé</div>';
+        return;
+      }
+
+      el.innerHTML = filtered.map(b => `
+        <div onclick="openBugDetail('${b.id}')" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+          <span style="font-size:1.2rem;">${SEV_ICONS[b.severity] || '⚪'}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.title}</div>
+            <div style="color:var(--muted);font-size:0.75rem;margin-top:2px;">
+              ${CAT_ICONS[b.category] || ''} ${b.category || '–'} · ${b.tool_slug || 'Général'} · ${b.vertical || '–'} · ${formatDate(b.created_at)}
+            </div>
+          </div>
+          <span style="font-size:0.75rem;padding:2px 8px;border-radius:20px;background:${b.status==='new'?'var(--accent)':b.status==='resolved'?'var(--success)':b.status==='in_progress'?'var(--warning)':'var(--muted)'};color:#fff;">${STATUS_ICONS[b.status] || ''} ${b.status}</span>
+        </div>
+      `).join('');
+    }
+
+    function openBugDetail(id) {
+      const b = _allBugs.find(x => x.id === id);
+      if (!b) return;
+      const el = document.getElementById('bug-detail-content');
+      el.innerHTML = `
+        <h3 style="margin-bottom:16px;">${SEV_ICONS[b.severity] || ''} ${b.title}</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;font-size:0.85rem;">
+          <div><span style="color:var(--muted);">Statut:</span> ${STATUS_ICONS[b.status] || ''} ${b.status}</div>
+          <div><span style="color:var(--muted);">Sévérité:</span> ${SEV_ICONS[b.severity] || ''} ${b.severity}</div>
+          <div><span style="color:var(--muted);">Catégorie:</span> ${CAT_ICONS[b.category] || ''} ${b.category}</div>
+          <div><span style="color:var(--muted);">Vertical:</span> ${b.vertical || '–'}</div>
+          <div><span style="color:var(--muted);">Outil:</span> ${b.tool_slug || '–'}</div>
+          <div><span style="color:var(--muted);">Date:</span> ${formatDate(b.created_at)}</div>
+          <div><span style="color:var(--muted);">User ID:</span> <code style="font-size:0.7rem;">${b.user_id?.slice(0,8) || '–'}…</code></div>
+          <div><span style="color:var(--muted);">Page:</span> <code style="font-size:0.7rem;">${b.page_url || '–'}</code></div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="font-weight:600;margin-bottom:4px;">Description</div>
+          <div style="background:var(--surface2);padding:10px;border-radius:6px;white-space:pre-wrap;">${b.description || '–'}</div>
+        </div>
+        ${b.steps ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Étapes de reproduction</div><div style="background:var(--surface2);padding:10px;border-radius:6px;white-space:pre-wrap;">${b.steps}</div></div>` : ''}
+        ${b.expected ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Comportement attendu</div><div style="background:var(--surface2);padding:10px;border-radius:6px;">${b.expected}</div></div>` : ''}
+        ${b.actual ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Comportement actuel</div><div style="background:var(--surface2);padding:10px;border-radius:6px;">${b.actual}</div></div>` : ''}
+        ${b.browser_info ? `<details style="margin-bottom:12px;"><summary style="cursor:pointer;color:var(--muted);font-size:0.8rem;">🖥 Browser Info</summary><pre style="background:var(--surface2);padding:10px;border-radius:6px;font-size:0.7rem;overflow-x:auto;margin-top:6px;">${JSON.stringify(b.browser_info, null, 2)}</pre></details>` : ''}
+        ${b.console_logs && b.console_logs.length ? `<details style="margin-bottom:12px;"><summary style="cursor:pointer;color:var(--muted);font-size:0.8rem;">📋 Console Logs (${b.console_logs.length})</summary><pre style="background:var(--surface2);padding:10px;border-radius:6px;font-size:0.7rem;overflow-x:auto;margin-top:6px;">${JSON.stringify(b.console_logs, null, 2)}</pre></details>` : ''}
+        <hr style="border-color:var(--border);margin:16px 0;">
+        <div style="font-weight:600;margin-bottom:8px;">Actions admin</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <select id="bug-status-select" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:0.85rem;">
+            <option value="new" ${b.status==='new'?'selected':''}>🆕 Nouveau</option>
+            <option value="in_progress" ${b.status==='in_progress'?'selected':''}>🔧 En cours</option>
+            <option value="resolved" ${b.status==='resolved'?'selected':''}>✅ Résolu</option>
+            <option value="wontfix" ${b.status==='wontfix'?'selected':''}>🚫 Won't fix</option>
+          </select>
+          <select id="bug-severity-select" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:0.85rem;">
+            <option value="low" ${b.severity==='low'?'selected':''}>🟢 Faible</option>
+            <option value="medium" ${b.severity==='medium'?'selected':''}>🟡 Moyen</option>
+            <option value="high" ${b.severity==='high'?'selected':''}>🟠 Élevé</option>
+            <option value="critical" ${b.severity==='critical'?'selected':''}>🔴 Critique</option>
+          </select>
+        </div>
+        <textarea id="bug-admin-notes" rows="3" placeholder="Notes admin…" style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.85rem;resize:vertical;margin-bottom:12px;">${b.admin_notes || ''}</textarea>
+        <button onclick="saveBugUpdate('${b.id}')" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:8px 20px;cursor:pointer;font-size:0.85rem;">💾 Sauvegarder</button>
+      `;
+      const modal = document.getElementById('bug-detail-modal');
+      modal.style.display = 'flex';
+    }
+
+    function closeBugDetail() { document.getElementById('bug-detail-modal').style.display = 'none'; }
+
+    async function saveBugUpdate(id) {
+      const status = document.getElementById('bug-status-select').value;
+      const severity = document.getElementById('bug-severity-select').value;
+      const admin_notes = document.getElementById('bug-admin-notes').value;
+      const updates = { status, severity, admin_notes, updated_at: new Date().toISOString() };
+      if (status === 'resolved') updates.resolved_at = new Date().toISOString();
+      const { error } = await PS.supabase.from('bug_reports').update(updates).eq('id', id);
+      if (error) { showToast('Erreur: ' + error.message); return; }
+      showToast('Bug mis à jour ✅');
+      closeBugDetail();
+      await loadBugs();
+    }
+
+    // Bug filter listeners
+    ['bug-filter-status','bug-filter-severity','bug-filter-category','bug-filter-vertical'].forEach(id => {
+      document.getElementById(id).addEventListener('change', renderBugs);
+    });
+
+    // ── Load Data: Tool Suggestions ──
+    let _allSugs = [];
+
+    const PRIO_ICONS = { critical:'🔴', important:'🟠', nice_to_have:'🟢' };
+    const PRIO_ORDER = { critical:0, important:1, nice_to_have:2 };
+    const SUG_STATUS_ICONS = { new:'🆕', in_progress:'🔧', planned:'📋', shipped:'🚀', wontship:'🚫' };
+
+    async function loadSuggestions() {
+      const sb = PS.supabase;
+      const { data, error } = await sb.from('tool_suggestions').select('*').order('vote_count', { ascending: false });
+      _allSugs = data || [];
+      renderSuggestions();
+      // KPIs
+      document.getElementById('sug-kpi-total').textContent = _allSugs.length;
+      document.getElementById('sug-kpi-new').textContent = _allSugs.filter(s => s.status === 'new').length;
+      document.getElementById('sug-kpi-progress').textContent = _allSugs.filter(s => s.status === 'in_progress').length;
+      document.getElementById('sug-kpi-shipped').textContent = _allSugs.filter(s => s.status === 'shipped').length;
+      document.getElementById('sug-kpi-topvotes').textContent = _allSugs.length ? Math.max(..._allSugs.map(s => s.vote_count)) : 0;
+      document.getElementById('last-refresh-suggestions').textContent = 'Mis à jour : ' + new Date().toLocaleTimeString();
+    }
+
+    function renderSuggestions() {
+      const status = document.getElementById('sug-filter-status').value;
+      const priority = document.getElementById('sug-filter-priority').value;
+      const vertical = document.getElementById('sug-filter-vertical').value;
+      const sort = document.getElementById('sug-sort').value;
+
+      let filtered = _allSugs;
+      if (status) filtered = filtered.filter(s => s.status === status);
+      if (priority) filtered = filtered.filter(s => s.priority === priority);
+      if (vertical) filtered = filtered.filter(s => s.vertical === vertical);
+
+      // Sort
+      if (sort === 'votes') filtered.sort((a, b) => b.vote_count - a.vote_count);
+      else if (sort === 'recent') filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      else if (sort === 'priority') filtered.sort((a, b) => (PRIO_ORDER[a.priority] ?? 9) - (PRIO_ORDER[b.priority] ?? 9));
+
+      const el = document.getElementById('sug-list');
+      if (!filtered.length) {
+        el.innerHTML = '<div style="color:var(--muted);padding:20px 0;text-align:center;">Aucune suggestion trouvée</div>';
+        return;
+      }
+
+      el.innerHTML = filtered.map(s => `
+        <div onclick="openSugDetail('${s.id}')" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:50px;">
+            <span style="font-size:1.1rem;font-weight:700;color:var(--gold);">${s.vote_count}</span>
+            <span style="font-size:0.65rem;color:var(--muted);">votes</span>
+          </div>
+          <span style="font-size:1.2rem;">${PRIO_ICONS[s.priority] || '⚪'}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.tool_name}</div>
+            <div style="color:var(--muted);font-size:0.75rem;margin-top:2px;">
+              ${s.vertical || '–'} · ${s.frequency || '–'} · ${formatDate(s.created_at)}
+            </div>
+          </div>
+          <span style="font-size:0.75rem;padding:2px 8px;border-radius:20px;background:${s.status==='new'?'var(--accent)':s.status==='shipped'?'var(--success)':s.status==='in_progress'?'var(--warning)':s.status==='planned'?'var(--starter)':'var(--muted)'};color:#fff;">${SUG_STATUS_ICONS[s.status] || ''} ${s.status}</span>
+        </div>
+      `).join('');
+    }
+
+    function openSugDetail(id) {
+      const s = _allSugs.find(x => x.id === id);
+      if (!s) return;
+      const el = document.getElementById('sug-detail-content');
+      el.innerHTML = `
+        <h3 style="margin-bottom:16px;">${PRIO_ICONS[s.priority] || ''} ${s.tool_name} <span style="font-size:0.85rem;color:var(--gold);">(${s.vote_count} votes)</span></h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;font-size:0.85rem;">
+          <div><span style="color:var(--muted);">Statut:</span> ${SUG_STATUS_ICONS[s.status] || ''} ${s.status}</div>
+          <div><span style="color:var(--muted);">Priorité:</span> ${PRIO_ICONS[s.priority] || ''} ${s.priority}</div>
+          <div><span style="color:var(--muted);">Vertical:</span> ${s.vertical || '–'}</div>
+          <div><span style="color:var(--muted);">Fréquence:</span> ${s.frequency || '–'}</div>
+          <div><span style="color:var(--muted);">Tier user:</span> ${s.user_tier || '–'}</div>
+          <div><span style="color:var(--muted);">Job user:</span> ${s.user_job || '–'}</div>
+          <div><span style="color:var(--muted);">Date:</span> ${formatDate(s.created_at)}</div>
+          <div><span style="color:var(--muted);">User ID:</span> <code style="font-size:0.7rem;">${s.user_id?.slice(0,8) || '–'}…</code></div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="font-weight:600;margin-bottom:4px;">Description</div>
+          <div style="background:var(--surface2);padding:10px;border-radius:6px;white-space:pre-wrap;">${s.description || '–'}</div>
+        </div>
+        ${s.use_case ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Cas d'usage</div><div style="background:var(--surface2);padding:10px;border-radius:6px;white-space:pre-wrap;">${s.use_case}</div></div>` : ''}
+        ${s.pain_points ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Points de douleur</div><div style="background:var(--surface2);padding:10px;border-radius:6px;">${s.pain_points}</div></div>` : ''}
+        ${s.current_solution ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Solution actuelle</div><div style="background:var(--surface2);padding:10px;border-radius:6px;">${s.current_solution}</div></div>` : ''}
+        ${s.example_input ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Exemple input</div><div style="background:var(--surface2);padding:10px;border-radius:6px;">${s.example_input}</div></div>` : ''}
+        ${s.example_output ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Exemple output</div><div style="background:var(--surface2);padding:10px;border-radius:6px;">${s.example_output}</div></div>` : ''}
+        ${s.competitors ? `<div style="margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">Concurrents / outils similaires</div><div style="background:var(--surface2);padding:10px;border-radius:6px;">${s.competitors}</div></div>` : ''}
+        <hr style="border-color:var(--border);margin:16px 0;">
+        <div style="font-weight:600;margin-bottom:8px;">Actions admin</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <select id="sug-status-select" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:0.85rem;">
+            <option value="new" ${s.status==='new'?'selected':''}>🆕 Nouveau</option>
+            <option value="in_progress" ${s.status==='in_progress'?'selected':''}>🔧 En cours</option>
+            <option value="planned" ${s.status==='planned'?'selected':''}>📋 Planifié</option>
+            <option value="shipped" ${s.status==='shipped'?'selected':''}>🚀 Livré</option>
+            <option value="wontship" ${s.status==='wontship'?'selected':''}>🚫 Won't ship</option>
+          </select>
+          <select id="sug-prio-select" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:0.85rem;">
+            <option value="nice_to_have" ${s.priority==='nice_to_have'?'selected':''}>🟢 Nice to have</option>
+            <option value="important" ${s.priority==='important'?'selected':''}>🟠 Important</option>
+            <option value="critical" ${s.priority==='critical'?'selected':''}>🔴 Critique</option>
+          </select>
+        </div>
+        <textarea id="sug-admin-notes" rows="3" placeholder="Notes admin…" style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.85rem;resize:vertical;margin-bottom:8px;">${s.admin_notes || ''}</textarea>
+        <input id="sug-shipped-slug" type="text" placeholder="Slug de l'outil livré (si shipped)" value="${s.shipped_slug || ''}" style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.85rem;margin-bottom:12px;">
+        <button onclick="saveSugUpdate('${s.id}')" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:8px 20px;cursor:pointer;font-size:0.85rem;">💾 Sauvegarder</button>
+      `;
+      const modal = document.getElementById('sug-detail-modal');
+      modal.style.display = 'flex';
+    }
+
+    function closeSugDetail() { document.getElementById('sug-detail-modal').style.display = 'none'; }
+
+    async function saveSugUpdate(id) {
+      const status = document.getElementById('sug-status-select').value;
+      const priority = document.getElementById('sug-prio-select').value;
+      const admin_notes = document.getElementById('sug-admin-notes').value;
+      const shipped_slug = document.getElementById('sug-shipped-slug').value;
+      const updates = { status, priority, admin_notes, shipped_slug, updated_at: new Date().toISOString() };
+      const { error } = await PS.supabase.from('tool_suggestions').update(updates).eq('id', id);
+      if (error) { showToast('Erreur: ' + error.message); return; }
+      showToast('Suggestion mise à jour ✅');
+      closeSugDetail();
+      await loadSuggestions();
+    }
+
+    // Suggestion filter listeners
+    ['sug-filter-status','sug-filter-priority','sug-filter-vertical','sug-sort'].forEach(id => {
+      document.getElementById(id).addEventListener('change', renderSuggestions);
+    });
+
     // ── Load Data: Settings ──
     async function loadSettings() {
       const sb = PS.supabase;
@@ -2633,6 +3050,8 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
           case 'retention': await loadRetention(); break;
           case 'acquisition': await loadAcquisition(); break;
           case 'costs': await loadCosts(); break;
+          case 'bugs': await loadBugs(); break;
+          case 'suggestions': await loadSuggestions(); break;
           case 'settings': await loadSettings(); break;
         }
       } catch (e) {
