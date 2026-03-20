@@ -371,6 +371,37 @@ const PRODUCTS = {
   },
 };
 
+/*
+ * TOOL_TIER_MAP — per-tool tier overrides (applies to DB-loaded tools)
+ * Key format:  "vertical:slug"  →  "starter" | "pro" | "gold"
+ * Edit this map to change any individual tool's tier instantly.
+ * Example:  'finance:synthese-rapport': 'gold'
+ */
+const TOOL_TIER_MAP = {
+  /* ── immo ── */
+  /* ── commerce ── */
+  /* ── legal ── */
+  /* ── finance ── */
+  /* ── marketing ── */
+  /* ── rh ── */
+  /* ── sante ── */
+  /* ── education ── */
+  /* ── restauration ── */
+  /* ── freelance ── */
+};
+
+/**
+ * Default tier by position when min_tier is absent and no override exists.
+ * Distribution: ~30 % Starter, ~40 % Pro, ~30 % Gold
+ */
+function defaultTierByIndex(i, total) {
+  const sEnd = Math.ceil(total * 0.3);
+  const pEnd = sEnd + Math.ceil(total * 0.4);
+  if (i < sEnd) return 'starter';
+  if (i < pEnd) return 'pro';
+  return 'gold';
+}
+
 /* Tools — loaded from DB via ToolCatalog, with static fallback for visitors */
 const TOOLS_FALLBACK = {
   immo: [
@@ -660,9 +691,10 @@ async function checkAuth() {
     const catalog = await ToolCatalog.load();
     if (catalog.tools && Object.keys(catalog.tools).length) {
       Object.entries(catalog.tools).forEach(([v, arr]) => {
-        TOOLS[v] = arr.map(t => ({
+        TOOLS[v] = arr.map((t, i) => ({
           slug: t.slug, icon: t.icon, name: t.name || t.label,
-          desc: t.description || t.desc || '', tier: t.min_tier || 'starter'
+          desc: t.description || t.desc || '',
+          tier: t.min_tier || TOOL_TIER_MAP[v + ':' + t.slug] || defaultTierByIndex(i, arr.length)
         }));
       });
     }
