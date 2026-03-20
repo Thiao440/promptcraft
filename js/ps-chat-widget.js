@@ -1,12 +1,13 @@
 /**
- * ps-chat-widget.js — Floating AI chat widget (v3)
+ * ps-chat-widget.js — Floating AI chat widget (v4 — multilingual + locale-aware)
  *
  * Features:
  *   - FREE mode (Studio AI): no credits, short answers, available to all
  *   - EXPERT mode (vertical bot): 1 credit/msg, detailed answers, requires subscription
  *   - Auto-opens on dashboard first visit
  *   - When closed: shows mini-bar with bot logo + input teaser
- *   - Personalized greeting ("Bonjour Mathieu")
+ *   - Personalized greeting in user's language
+ *   - Country/locale-aware context sent to API for jurisdiction-specific answers
  *   - Generic robot logo for free/unsubscribed users
  */
 (function () {
@@ -16,21 +17,132 @@
   var MAX_TURNS = 24;
   var BOT_LOGO_URL = '/assets/images/bot-avatar.svg';
 
-  var BOT_META = {
-    free:         { name: 'Studio AI',     emoji: '✦', color: '#6c63ff', desc: 'Gratuit' },
-    immo:         { name: 'ImmoBot',       emoji: '🏠', color: '#f59e0b', desc: 'Expert Immobilier' },
-    commerce:     { name: 'CommerceBot',   emoji: '🛒', color: '#3b82f6', desc: 'Expert E-Commerce' },
-    legal:        { name: 'JuriBot',       emoji: '⚖️', color: '#8b5cf6', desc: 'Expert Juridique' },
-    finance:      { name: 'FinBot',        emoji: '💰', color: '#10b981', desc: 'Expert Finance' },
-    marketing:    { name: 'MarketBot',     emoji: '📣', color: '#ec4899', desc: 'Expert Marketing' },
-    rh:           { name: 'RHBot',         emoji: '👥', color: '#f97316', desc: 'Expert RH' },
-    sante:        { name: 'SantéBot',      emoji: '🏥', color: '#06b6d4', desc: 'Expert Santé' },
-    education:    { name: 'EduBot',        emoji: '🎓', color: '#6366f1', desc: 'Expert Éducation' },
-    restauration: { name: 'RestoBot',      emoji: '🍽️', color: '#ef4444', desc: 'Expert Restauration' },
-    freelance:    { name: 'FreelanceBot',  emoji: '💼', color: '#84cc16', desc: 'Expert Freelance' },
+  /* ── i18n for chat widget UI ─────────────────────────────────────────────── */
+  var CHAT_I18N = {
+    minibar_teaser:    { fr: 'Posez une question…',         en: 'Ask a question…',              es: 'Haga una pregunta…',           pt: 'Faça uma pergunta…',           ar: 'اطرح سؤالاً…' },
+    free_assistant:    { fr: 'Assistant gratuit',            en: 'Free assistant',               es: 'Asistente gratuito',           pt: 'Assistente gratuito',          ar: 'مساعد مجاني' },
+    expert_suffix:     { fr: ' · 1 crédit/msg',             en: ' · 1 credit/msg',              es: ' · 1 crédito/msg',             pt: ' · 1 crédito/msg',             ar: ' · 1 رصيد/رسالة' },
+    new_chat:          { fr: 'Nouvelle conversation',       en: 'New conversation',             es: 'Nueva conversación',           pt: 'Nova conversa',                ar: 'محادثة جديدة' },
+    minimize:          { fr: 'Réduire',                     en: 'Minimize',                     es: 'Minimizar',                    pt: 'Minimizar',                    ar: 'تصغير' },
+    placeholder:       { fr: 'Votre question…',             en: 'Your question…',               es: 'Su pregunta…',                 pt: 'Sua pergunta…',                ar: 'سؤالك…' },
+    greeting:          { fr: 'Bonjour',                     en: 'Hello',                        es: 'Hola',                         pt: 'Olá',                          ar: 'مرحباً' },
+    i_am:              { fr: 'Je suis',                     en: 'I\'m',                         es: 'Soy',                          pt: 'Eu sou',                       ar: 'أنا' },
+    how_help:          { fr: ', votre assistant IA. Comment puis-je vous aider ?', en: ', your AI assistant. How can I help you?', es: ', su asistente de IA. ¿Cómo puedo ayudarle?', pt: ', seu assistente de IA. Como posso ajudá-lo?', ar: '، مساعدك بالذكاء الاصطناعي. كيف يمكنني مساعدتك؟' },
+    free_note:         { fr: 'Réponses courtes et gratuites. Pour des réponses détaillées, passez sur un assistant expert.', en: 'Short free answers. For detailed answers, switch to an expert assistant.', es: 'Respuestas cortas y gratuitas. Para respuestas detalladas, use un asistente experto.', pt: 'Respostas curtas e gratuitas. Para respostas detalhadas, use um assistente especialista.', ar: 'إجابات قصيرة ومجانية. للإجابات المفصلة، انتقل إلى مساعد متخصص.' },
+    expert_note:       { fr: 'Réponses détaillées et spécialisées · 1 crédit par message', en: 'Detailed specialized answers · 1 credit per message', es: 'Respuestas detalladas y especializadas · 1 crédito por mensaje', pt: 'Respostas detalhadas e especializadas · 1 crédito por mensagem', ar: 'إجابات متخصصة ومفصلة · رصيد واحد لكل رسالة' },
+    free_badge:        { fr: 'Gratuit',                     en: 'Free',                         es: 'Gratis',                       pt: 'Grátis',                       ar: 'مجاني' },
+    unlimited:         { fr: 'Illimité',                    en: 'Unlimited',                    es: 'Ilimitado',                    pt: 'Ilimitado',                    ar: 'غير محدود' },
+    credits:           { fr: 'crédits',                     en: 'credits',                      es: 'créditos',                     pt: 'créditos',                     ar: 'أرصدة' },
+    used:              { fr: 'utilisés',                    en: 'used',                         es: 'usados',                       pt: 'usados',                       ar: 'مستخدمة' },
+    upgrade_lock:      { fr: 'est disponible à partir de',  en: 'is available starting from',   es: 'está disponible a partir de',  pt: 'está disponível a partir de',  ar: 'متاح ابتداءً من' },
+    view_plans:        { fr: 'Voir les offres',             en: 'View plans',                   es: 'Ver ofertas',                  pt: 'Ver ofertas',                  ar: 'عرض الخطط' },
+    generic_chatbot:   { fr: 'Le chatbot IA générique',     en: 'The generic AI chatbot',       es: 'El chatbot de IA genérico',    pt: 'O chatbot de IA genérico',     ar: 'روبوت المحادثة العام' },
+    specialist_chatbot:{ fr: 'Le chatbot spécialiste',      en: 'The specialist chatbot',       es: 'El chatbot especialista',      pt: 'O chatbot especialista',       ar: 'روبوت المحادثة المتخصص' },
+    error_generic:     { fr: 'Erreur',                      en: 'Error',                        es: 'Error',                        pt: 'Erro',                         ar: 'خطأ' },
+    error_invalid:     { fr: 'Réponse invalide',            en: 'Invalid response',             es: 'Respuesta inválida',           pt: 'Resposta inválida',            ar: 'استجابة غير صالحة' },
+    error_connection:  { fr: 'Erreur de connexion.',        en: 'Connection error.',            es: 'Error de conexión.',           pt: 'Erro de conexão.',             ar: 'خطأ في الاتصال.' },
+    error_quota:       { fr: '📊 Quota atteint. Repassez en mode gratuit ou attendez le 1er du mois.', en: '📊 Quota reached. Switch to free mode or wait until the 1st of the month.', es: '📊 Cuota alcanzada. Cambie al modo gratuito o espere al 1.° del mes.', pt: '📊 Cota atingida. Mude para o modo gratuito ou aguarde o 1.° do mês.', ar: '📊 تم بلوغ الحصة. انتقل للوضع المجاني أو انتظر أول الشهر.' },
+    error_rate:        { fr: '⏳ Trop de messages, patientez.', en: '⏳ Too many messages, please wait.', es: '⏳ Demasiados mensajes, espere.', pt: '⏳ Muitas mensagens, aguarde.', ar: '⏳ رسائل كثيرة، يرجى الانتظار.' },
+    error_no_sub:      { fr: '🔒 Abonnement requis. Utilisez Studio AI (gratuit) ou souscrivez.', en: '🔒 Subscription required. Use Studio AI (free) or subscribe.', es: '🔒 Suscripción requerida. Use Studio AI (gratis) o suscríbase.', pt: '🔒 Assinatura necessária. Use Studio AI (grátis) ou assine.', ar: '🔒 يتطلب اشتراكاً. استخدم Studio AI (مجاني) أو اشترك.' },
   };
 
+  /** Get current language from ps-lang.js / data-lang attribute */
+  function _lang() {
+    return document.documentElement.getAttribute('data-lang') || 'en';
+  }
+
+  /** Translate a chat i18n key */
+  function _t(key) {
+    var obj = CHAT_I18N[key];
+    if (!obj) return key;
+    var l = _lang();
+    return obj[l] || obj.en || obj.fr || key;
+  }
+
+  /* ── Bot descriptors (multilingual) ──────────────────────────────────────── */
+  var BOT_META = {
+    free:         { name: 'Studio AI',     emoji: '✦', color: '#6c63ff',
+                    desc: { fr: 'Gratuit', en: 'Free', es: 'Gratis', pt: 'Grátis', ar: 'مجاني' } },
+    immo:         { name: 'ImmoBot',       emoji: '🏠', color: '#f59e0b',
+                    desc: { fr: 'Expert Immobilier', en: 'Real Estate Expert', es: 'Experto Inmobiliario', pt: 'Especialista Imobiliário', ar: 'خبير عقاري' } },
+    commerce:     { name: 'CommerceBot',   emoji: '🛒', color: '#3b82f6',
+                    desc: { fr: 'Expert E-Commerce', en: 'E-Commerce Expert', es: 'Experto E-Commerce', pt: 'Especialista E-Commerce', ar: 'خبير التجارة الإلكترونية' } },
+    legal:        { name: 'JuriBot',       emoji: '⚖️', color: '#8b5cf6',
+                    desc: { fr: 'Expert Juridique', en: 'Legal Expert', es: 'Experto Jurídico', pt: 'Especialista Jurídico', ar: 'خبير قانوني' } },
+    finance:      { name: 'FinBot',        emoji: '💰', color: '#10b981',
+                    desc: { fr: 'Expert Finance', en: 'Finance Expert', es: 'Experto Finanzas', pt: 'Especialista Finanças', ar: 'خبير مالي' } },
+    marketing:    { name: 'MarketBot',     emoji: '📣', color: '#ec4899',
+                    desc: { fr: 'Expert Marketing', en: 'Marketing Expert', es: 'Experto Marketing', pt: 'Especialista Marketing', ar: 'خبير تسويق' } },
+    rh:           { name: 'RHBot',         emoji: '👥', color: '#f97316',
+                    desc: { fr: 'Expert RH', en: 'HR Expert', es: 'Experto RRHH', pt: 'Especialista RH', ar: 'خبير موارد بشرية' } },
+    sante:        { name: 'SantéBot',      emoji: '🏥', color: '#06b6d4',
+                    desc: { fr: 'Expert Santé', en: 'Health Expert', es: 'Experto Salud', pt: 'Especialista Saúde', ar: 'خبير صحي' } },
+    education:    { name: 'EduBot',        emoji: '🎓', color: '#6366f1',
+                    desc: { fr: 'Expert Éducation', en: 'Education Expert', es: 'Experto Educación', pt: 'Especialista Educação', ar: 'خبير تعليم' } },
+    restauration: { name: 'RestoBot',      emoji: '🍽️', color: '#ef4444',
+                    desc: { fr: 'Expert Restauration', en: 'Food & Hospitality Expert', es: 'Experto Restauración', pt: 'Especialista Restauração', ar: 'خبير مطاعم' } },
+    freelance:    { name: 'FreelanceBot',  emoji: '💼', color: '#84cc16',
+                    desc: { fr: 'Expert Freelance', en: 'Freelance Expert', es: 'Experto Freelance', pt: 'Especialista Freelance', ar: 'خبير مستقل' } },
+  };
+
+  function _botDesc(key) {
+    var bot = BOT_META[key] || BOT_META.free;
+    if (typeof bot.desc === 'object') return bot.desc[_lang()] || bot.desc.en || bot.desc.fr;
+    return bot.desc;
+  }
+
   var _open = false, _sending = false, _vertical = 'free', _messages = [], _userName = '';
+  var _userCountry = '', _userTimezone = '';
+
+  /* ── Detect user locale/country ──────────────────────────────────────────── */
+  function _detectLocale() {
+    // Timezone → rough country mapping
+    _userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    var tz = _userTimezone.toLowerCase();
+    // Map common timezone prefixes to countries
+    var tzCountryMap = {
+      'europe/paris': 'FR', 'europe/london': 'GB', 'europe/madrid': 'ES', 'europe/lisbon': 'PT',
+      'europe/berlin': 'DE', 'europe/rome': 'IT', 'europe/brussels': 'BE', 'europe/zurich': 'CH',
+      'europe/amsterdam': 'NL', 'europe/vienna': 'AT', 'europe/dublin': 'IE', 'europe/luxembourg': 'LU',
+      'europe/stockholm': 'SE', 'europe/oslo': 'NO', 'europe/copenhagen': 'DK', 'europe/helsinki': 'FI',
+      'europe/warsaw': 'PL', 'europe/prague': 'CZ', 'europe/bucharest': 'RO', 'europe/athens': 'GR',
+      'america/new_york': 'US', 'america/chicago': 'US', 'america/denver': 'US', 'america/los_angeles': 'US',
+      'america/toronto': 'CA', 'america/vancouver': 'CA', 'america/montreal': 'CA',
+      'america/mexico_city': 'MX', 'america/sao_paulo': 'BR', 'america/argentina/buenos_aires': 'AR',
+      'america/bogota': 'CO', 'america/lima': 'PE', 'america/santiago': 'CL',
+      'africa/casablanca': 'MA', 'africa/tunis': 'TN', 'africa/algiers': 'DZ', 'africa/cairo': 'EG',
+      'africa/lagos': 'NG', 'africa/johannesburg': 'ZA', 'africa/nairobi': 'KE',
+      'africa/dakar': 'SN', 'africa/abidjan': 'CI',
+      'asia/dubai': 'AE', 'asia/riyadh': 'SA', 'asia/doha': 'QA', 'asia/kuwait': 'KW',
+      'asia/beirut': 'LB', 'asia/tokyo': 'JP', 'asia/shanghai': 'CN', 'asia/singapore': 'SG',
+      'asia/kolkata': 'IN', 'asia/seoul': 'KR', 'asia/hong_kong': 'HK',
+      'australia/sydney': 'AU', 'pacific/auckland': 'NZ',
+    };
+    _userCountry = tzCountryMap[tz] || '';
+
+    // Fallback: try navigator.language region
+    if (!_userCountry && navigator.language) {
+      var parts = navigator.language.split('-');
+      if (parts.length >= 2) _userCountry = parts[1].toUpperCase();
+    }
+
+    // Also check profile country if available
+    if (PS.profile?.country) _userCountry = PS.profile.country;
+  }
+
+  /** Country code → human-readable label for the AI prompt */
+  var COUNTRY_LABELS = {
+    FR: 'France', GB: 'United Kingdom', US: 'United States', CA: 'Canada', DE: 'Germany',
+    ES: 'Spain', PT: 'Portugal', IT: 'Italy', BE: 'Belgium', CH: 'Switzerland', NL: 'Netherlands',
+    AT: 'Austria', IE: 'Ireland', LU: 'Luxembourg', SE: 'Sweden', NO: 'Norway', DK: 'Denmark',
+    FI: 'Finland', PL: 'Poland', CZ: 'Czech Republic', RO: 'Romania', GR: 'Greece',
+    MX: 'Mexico', BR: 'Brazil', AR: 'Argentina', CO: 'Colombia', PE: 'Peru', CL: 'Chile',
+    MA: 'Morocco', TN: 'Tunisia', DZ: 'Algeria', EG: 'Egypt', NG: 'Nigeria', ZA: 'South Africa',
+    KE: 'Kenya', SN: 'Senegal', CI: 'Ivory Coast',
+    AE: 'United Arab Emirates', SA: 'Saudi Arabia', QA: 'Qatar', KW: 'Kuwait', LB: 'Lebanon',
+    JP: 'Japan', CN: 'China', SG: 'Singapore', IN: 'India', KR: 'South Korea', HK: 'Hong Kong',
+    AU: 'Australia', NZ: 'New Zealand',
+  };
 
   // ── CSS ──────────────────────────────────────────────────────────────────────
   var css = `
@@ -128,7 +240,7 @@
     minibar.id = 'ps-w-minibar';
     minibar.innerHTML =
       '<img id="ps-w-minibar-logo" src="' + BOT_LOGO_URL + '" alt="AI Assistant">' +
-      '<div id="ps-w-minibar-text"><strong>Studio AI</strong> — Posez une question…</div>';
+      '<div id="ps-w-minibar-text"><strong>Studio AI</strong> — ' + _t('minibar_teaser') + '</div>';
     minibar.addEventListener('click', function() { openWidget(); });
 
     // Panel
@@ -138,18 +250,18 @@
       '<div id="ps-w-header">' +
         '<div id="ps-w-bot-info">' +
           '<div id="ps-w-avatar"><img src="' + BOT_LOGO_URL + '" alt=""></div>' +
-          '<div><div id="ps-w-name">Studio AI</div><div id="ps-w-sub">Assistant gratuit</div></div>' +
+          '<div><div id="ps-w-name">Studio AI</div><div id="ps-w-sub">' + _t('free_assistant') + '</div></div>' +
         '</div>' +
         '<div id="ps-w-header-btns">' +
-          '<button class="ps-w-hbtn" id="ps-w-new-btn" title="Nouvelle conversation">↺</button>' +
-          '<button class="ps-w-hbtn" id="ps-w-close-btn" title="Réduire">✕</button>' +
+          '<button class="ps-w-hbtn" id="ps-w-new-btn" title="' + _t('new_chat') + '">↺</button>' +
+          '<button class="ps-w-hbtn" id="ps-w-close-btn" title="' + _t('minimize') + '">✕</button>' +
         '</div>' +
       '</div>' +
       '<div id="ps-w-mode-tabs"></div>' +
       '<div id="ps-w-quota"><span id="ps-w-quota-text">—</span><div id="ps-w-quota-bar"><div id="ps-w-quota-fill" style="width:0%"></div></div></div>' +
       '<div id="ps-w-messages"></div>' +
       '<div id="ps-w-input-area">' +
-        '<textarea id="ps-w-input" placeholder="Votre question…" rows="1"></textarea>' +
+        '<textarea id="ps-w-input" placeholder="' + _t('placeholder') + '" rows="1"></textarea>' +
         '<button id="ps-w-send" disabled><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>' +
       '</div>';
 
@@ -191,7 +303,9 @@
     }
 
     document.getElementById('ps-w-name').textContent = bot.name;
-    document.getElementById('ps-w-sub').textContent = isFree ? 'Assistant gratuit' : bot.desc + ' · 1 crédit/msg';
+    document.getElementById('ps-w-sub').textContent = isFree
+      ? _t('free_assistant')
+      : _botDesc(_vertical) + _t('expert_suffix');
     updateQuotaBar();
   }
 
@@ -203,8 +317,9 @@
     var canGeneric    = PS.canAccessFeature ? PS.canAccessFeature('chatbot_generic').allowed : true;
     var canSpecialist = function(v) { return PS.canAccessFeature ? PS.canAccessFeature('chatbot_specialist', v).allowed : true; };
 
+    var freeBadge = canGeneric ? _t('free_badge') : '🔒 Pro';
     var tabs = '<button class="ps-w-mtab' + (canGeneric ? ' active' : '') + '" data-v="free" style="--tab-color:#6c63ff">'
-      + '✦ Studio AI <span class="ps-w-badge free">' + (canGeneric ? 'Gratuit' : '🔒 Pro') + '</span></button>';
+      + '✦ Studio AI <span class="ps-w-badge free">' + freeBadge + '</span></button>';
     verts.forEach(function(v) {
       var b = BOT_META[v] || { emoji: '?', name: v, color: '#6c63ff' };
       var locked = !canSpecialist(v);
@@ -225,11 +340,11 @@
 
         // Check gate when switching
         if (v === 'free' && !canGeneric) {
-          _showChatUpgrade('chatbot IA générique', 'Pro');
+          _showChatUpgrade(_t('generic_chatbot'), 'Pro');
           return;
         }
         if (v !== 'free' && !canSpecialist(v)) {
-          _showChatUpgrade('chatbot spécialiste', 'Pro');
+          _showChatUpgrade(_t('specialist_chatbot'), 'Pro');
           return;
         }
 
@@ -245,12 +360,12 @@
   }
 
   function _showChatUpgrade(featureName, requiredTier) {
-    var body = document.getElementById('ps-w-body');
+    var body = document.getElementById('ps-w-messages');
     if (!body) return;
     body.innerHTML = '<div style="text-align:center;padding:32px 16px;color:#7c8098;font-size:.85rem;">'
       + '<div style="font-size:2rem;margin-bottom:12px">🔒</div>'
-      + '<strong style="color:#e8eaf0">Le ' + featureName + ' est disponible à partir de ' + requiredTier + '</strong><br><br>'
-      + '<a href="/tarifs.html" style="background:#6c63ff;color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.82rem">Voir les offres →</a>'
+      + '<strong style="color:#e8eaf0">' + featureName + ' ' + _t('upgrade_lock') + ' ' + requiredTier + '</strong><br><br>'
+      + '<a href="/tarifs.html" style="background:#6c63ff;color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.82rem">' + _t('view_plans') + ' →</a>'
       + '</div>';
   }
 
@@ -261,11 +376,11 @@
     if (!sub) { el.classList.remove('show'); return; }
     var limit = { starter: 50, pro: 150, gold: Infinity, team: Infinity }[sub.tier] || 50;
     if (limit === Infinity) {
-      document.getElementById('ps-w-quota-text').textContent = (sub.tier === 'team' ? 'Team' : 'Gold') + ' · Illimité';
+      document.getElementById('ps-w-quota-text').textContent = (sub.tier === 'team' ? 'Team' : 'Gold') + ' · ' + _t('unlimited');
       document.getElementById('ps-w-quota-fill').style.width = '5%';
       document.getElementById('ps-w-quota-fill').style.background = '#22c55e';
     } else {
-      document.getElementById('ps-w-quota-text').textContent = '— / ' + limit + ' crédits';
+      document.getElementById('ps-w-quota-text').textContent = '— / ' + limit + ' ' + _t('credits');
       document.getElementById('ps-w-quota-fill').style.width = '0%';
       document.getElementById('ps-w-quota-fill').style.background = '#6c63ff';
     }
@@ -278,10 +393,10 @@
     var txt = document.getElementById('ps-w-quota-text');
     var fill = document.getElementById('ps-w-quota-fill');
     if (q.limit === 'unlimited') {
-      txt.textContent = q.used + ' utilisés · Illimité';
+      txt.textContent = q.used + ' ' + _t('used') + ' · ' + _t('unlimited');
       fill.style.width = '5%'; fill.style.background = '#22c55e';
     } else {
-      txt.textContent = q.used + ' / ' + q.limit + ' crédits';
+      txt.textContent = q.used + ' / ' + q.limit + ' ' + _t('credits');
       var pct = Math.min(100, Math.round((q.used / q.limit) * 100));
       fill.style.width = pct + '%';
       fill.style.background = pct > 80 ? '#ef4444' : '#6c63ff';
@@ -297,15 +412,16 @@
     var isFree = (_vertical === 'free');
     clearMessages();
 
-    var greeting = _userName ? ('Bonjour ' + esc(_userName) + ' 👋') : 'Bonjour 👋';
+    var greetWord = _t('greeting');
+    var greeting = _userName ? (greetWord + ' ' + esc(_userName) + ' 👋') : (greetWord + ' 👋');
     var extra = isFree
-      ? '<br><em style="font-size:11px;opacity:.7">Réponses courtes et gratuites. Pour des réponses détaillées, passez sur un assistant expert.</em>'
-      : '<br><em style="font-size:11px;opacity:.7">Réponses détaillées et spécialisées · 1 crédit par message</em>';
+      ? '<br><em style="font-size:11px;opacity:.7">' + _t('free_note') + '</em>'
+      : '<br><em style="font-size:11px;opacity:.7">' + _t('expert_note') + '</em>';
 
     appendRaw(
       '<div class="ps-w-welcome">' +
         '<strong>' + bot.emoji + ' ' + greeting + '</strong>' +
-        'Je suis ' + bot.name + ', votre assistant IA. Comment puis-je vous aider ?' +
+        _t('i_am') + ' ' + bot.name + _t('how_help') +
         extra +
       '</div>'
     );
@@ -364,7 +480,7 @@
       var featureName = _vertical === 'free' ? 'chatbot_generic' : 'chatbot_specialist';
       var access = PS.canAccessFeature(featureName, _vertical === 'free' ? undefined : _vertical);
       if (!access.allowed) {
-        _showChatUpgrade(featureName === 'chatbot_generic' ? 'chatbot IA générique' : 'chatbot spécialiste', 'Pro');
+        _showChatUpgrade(featureName === 'chatbot_generic' ? _t('generic_chatbot') : _t('specialist_chatbot'), 'Pro');
         return;
       }
     }
@@ -379,22 +495,40 @@
       var session = PS.session;
       if (!session) { removeTyping(); setSending(false); return; }
 
+      /*
+       * Build the locale context sent to the API.
+       * The API uses this to:
+       *   1. Reply in the user's language
+       *   2. Adapt answers to the user's jurisdiction (e.g. UK law vs French law)
+       *   3. Use relevant local regulations, standards, and terminology
+       */
+      var localeContext = {
+        lang: _lang(),
+        country: _userCountry || '',
+        countryLabel: COUNTRY_LABELS[_userCountry] || _userCountry || '',
+        timezone: _userTimezone || '',
+      };
+
       var res = await fetch(API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-        body: JSON.stringify({ vertical: _vertical, messages: _messages.slice(-MAX_TURNS) }),
+        body: JSON.stringify({
+          vertical: _vertical,
+          messages: _messages.slice(-MAX_TURNS),
+          locale: localeContext,
+        }),
       });
 
       var data;
-      try { data = await res.json(); } catch (e) { throw new Error('Réponse invalide'); }
+      try { data = await res.json(); } catch (e) { throw new Error(_t('error_invalid')); }
       removeTyping();
 
       if (!data.reply) {
         var err = data.error;
-        var msg = (err && typeof err === 'object') ? (err.message || 'Erreur') : (err || 'Erreur');
-        if (err?.code === 'QUOTA_EXCEEDED') msg = '📊 Quota atteint. Repassez en mode gratuit ou attendez le 1er du mois.';
-        if (err?.code === 'RATE_LIMITED') msg = '⏳ Trop de messages, patientez.';
-        if (err?.code === 'NO_SUBSCRIPTION') msg = '🔒 Abonnement requis. Utilisez Studio AI (gratuit) ou souscrivez.';
+        var msg = (err && typeof err === 'object') ? (err.message || _t('error_generic')) : (err || _t('error_generic'));
+        if (err?.code === 'QUOTA_EXCEEDED') msg = _t('error_quota');
+        if (err?.code === 'RATE_LIMITED') msg = _t('error_rate');
+        if (err?.code === 'NO_SUBSCRIPTION') msg = _t('error_no_sub');
         appendBot(msg);
         _messages.pop();
         return;
@@ -405,7 +539,7 @@
       if (data.quota) updateQuotaFromResponse(data);
     } catch (e) {
       removeTyping();
-      appendBot('⚠️ ' + (e.message || 'Erreur de connexion.'));
+      appendBot('⚠️ ' + (e.message || _t('error_connection')));
       _messages.pop();
     } finally {
       setSending(false);
@@ -444,6 +578,32 @@
     return s;
   }
 
+  // ── Refresh UI on language change ───────────────────────────────────────────
+  function refreshWidgetUI() {
+    // Update minibar text
+    var miniText = document.getElementById('ps-w-minibar-text');
+    if (miniText) miniText.innerHTML = '<strong>Studio AI</strong> — ' + _t('minibar_teaser');
+
+    // Update input placeholder
+    var input = document.getElementById('ps-w-input');
+    if (input) input.placeholder = _t('placeholder');
+
+    // Update button titles
+    var newBtn = document.getElementById('ps-w-new-btn');
+    if (newBtn) newBtn.title = _t('new_chat');
+    var closeBtn = document.getElementById('ps-w-close-btn');
+    if (closeBtn) closeBtn.title = _t('minimize');
+
+    // Update header
+    updateHeader();
+
+    // Re-render tabs with translated badges
+    renderTabs();
+
+    // Re-show welcome in new language
+    if (_messages.length === 0) showWelcome();
+  }
+
   // ── Init ────────────────────────────────────────────────────────────────────
   function initWidget() {
     if (!PS.session) return;
@@ -453,6 +613,9 @@
     // Get user first name for personalized greeting
     _userName = PS.profile?.first_name || PS.session.user.user_metadata?.first_name || '';
 
+    // Detect user locale/country for jurisdiction-aware answers
+    _detectLocale();
+
     _vertical = 'free';
     injectCSS();
     injectDOM();
@@ -460,6 +623,11 @@
     renderTabs();
     showWelcome();
     setupInput();
+
+    // Listen for language changes from ps-lang.js
+    if (typeof PS_I18N !== 'undefined' && PS_I18N.onChange) {
+      PS_I18N.onChange(refreshWidgetUI);
+    }
 
     // Auto-open on dashboard
     var isDashboard = window.location.pathname.includes('dashboard');
@@ -469,17 +637,11 @@
       openWidget();
     }
 
-    console.log('[ChatWidget] Ready — greeting:', _userName || 'anonymous');
+    console.log('[ChatWidget] Ready — lang:', _lang(), 'country:', _userCountry || 'unknown', 'user:', _userName || 'anonymous');
   }
 
   // Listen for ps:ready event from ps-auth.js (guaranteed profile is loaded)
   window.addEventListener('ps:ready', function(e) {
     if (e.detail?.session) initWidget();
   });
-
-  // Fallback: if ps:ready already fired before this script loaded
-  if (typeof PS !== 'undefined' && PS.ready && PS.session) {
-    initWidget();
-  }
-
 })();
