@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 300" width="1600" height="300">
+  <defs>
+    <linearGradient id="gold-line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0c0b09"/>
+      <stop offset="20%" stop-color="#c9a84c"/>
+      <stop offset="80%" stop-color="#c9a84c"/>
+      <stop offset="100%" stop-color="#0c0b09"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="300" fill="#0c0b09"/>
+
+  <!-- Top thin gold line -->
+  <rect x="0" y="0" width="1600" height="1" fill="url(#gold-line)"/>
+  <!-- Bottom thin gold line -->
+  <rect x="0" y="299" width="1600" height="1" fill="url(#gold-line)"/>
+
+  <!-- Corner accents -->
+  <line x1="40" y1="40" x2="100" y2="40" stroke="#2e2a24" stroke-width="1"/>
+  <line x1="40" y1="40" x2="40" y2="100" stroke="#2e2a24" stroke-width="1"/>
+  <line x1="1500" y1="40" x2="1560" y2="40" stroke="#2e2a24" stroke-width="1"/>
+  <line x1="1560" y1="40" x2="1560" y2="100" stroke="#2e2a24" stroke-width="1"/>
+  <line x1="40" y1="200" x2="40" y2="260" stroke="#2e2a24" stroke-width="1"/>
+  <line x1="40" y1="260" x2="100" y2="260" stroke="#2e2a24" stroke-width="1"/>
+  <line x1="1560" y1="200" x2="1560" y2="260" stroke="#2e2a24" stroke-width="1"/>
+  <line x1="1500" y1="260" x2="1560" y2="260" stroke="#2e2a24" stroke-width="1"/>
+
+  <!-- Separator lines -->
+  <line x1="380" y1="80" x2="655" y2="80" stroke="#2e2a24" stroke-width="0.5"/>
+  <line x1="745" y1="80" x2="1220" y2="80" stroke="#2e2a24" stroke-width="0.5"/>
+
+  <!-- PS monogram badge centered -->
+  <rect x="670" y="50" width="60" height="60" rx="4" fill="#0c0b09" stroke="#2e2a24" stroke-width="1.5"/>
+  <g transform="translate(676, 56)" fill="#c9a84c">
+    <path d="M4,0 L4,42 L10,42 L10,26 L18,26 C25,26 30,20 30,13 C30,5 25,0 18,0 Z M10,5 L17,5 C22,5 25,8 25,13 C25,18 22,21 17,21 L10,21 Z" transform="skewX(-5) scale(0.85)"/>
+    <path d="M32,1 C27,1 24,4 24,8 C24,13 27,15 32,17 C36,18 38,20 38,23 C38,27 36,29 32,29 C29,29 27,27 25,24 L22,28 C24,32 28,34 32,34 C38,34 42,30 42,26 C42,21 39,18 33,16 C29,15 28,13 28,11 C28,8 30,6 33,6 C35,6 37,7 39,9 L41,6 C39,3 36,1 32,1 Z" transform="skewX(-5) scale(0.85)"/>
+  </g>
+
+  <!-- Brand name -->
+  <text x="800" y="155" font-family="Georgia,'Times New Roman',serif" font-size="48" font-weight="300" fill="#f0ead8" text-anchor="middle" letter-spacing="3">The Prompt <tspan font-style="italic" font-weight="400" fill="#c9a84c">Studio</tspan></text>
+
+  <!-- Tagline -->
+  <text x="800" y="195" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#8a8070" text-anchor="middle" letter-spacing="4">AI-POWERED TOOLS FOR PROFESSIONALS</text>
+
+  <!-- Separator -->
+  <line x1="380" y1="220" x2="1220" y2="220" stroke="#2e2a24" stroke-width="0.5"/>
+
+  <!-- Verticals -->
+  <text x="800" y="250" font-family="Arial,Helvetica,sans-serif" font-size="11" fill="#5a5448" text-anchor="middle" letter-spacing="3">REAL ESTATE · E-COMMERCE · LEGAL · FINANCE · MARKETING · HR · HEALTHCARE · EDUCATION · RESTAURANT · FREELANCE</text>
+</svg>

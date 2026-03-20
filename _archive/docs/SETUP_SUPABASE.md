@@ -153,7 +153,7 @@ git push
 VISITEUR
   │
   ├─→ Clique "Acheter Immo Pro" sur la page produit
-  │   URL: shop.theprompt.studio/checkout/buy/dc72fcc3-...?checkout[custom][slug]=immo
+  │   URL: theprompt-studio.lemonsqueezy.com/checkout/buy/dc72fcc3-...?checkout[custom][slug]=immo
   │
   └─→ LEMON SQUEEZY (checkout sécurisé, gère TVA)
         │

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <rect width="160" height="160" rx="20" fill="#0c0b09"/>
+  <rect x="5" y="5" width="150" height="150" rx="16" fill="none" stroke="#2e2a24" stroke-width="2.5"/>
+  <!-- PS monogram -->
+  <g transform="translate(25, 36)" fill="#c9a84c">
+    <path d="M8,0 L8,88 L20,88 L20,54 L40,54 C58,54 68,42 68,27 C68,11 58,0 40,0 Z M20,12 L38,12 C50,12 56,18 56,27 C56,36 50,42 38,42 L20,42 Z" transform="skewX(-7)"/>
+    <path d="M82,2 C68,2 58,11 58,24 C58,38 66,44 80,48 C90,51 95,56 95,64 C95,75 88,81 78,81 C68,81 60,75 55,67 L44,78 C52,90 64,97 78,97 C96,97 108,85 108,70 C108,55 98,48 84,43 C74,40 70,35 70,28 C70,20 76,14 84,14 C92,14 97,18 102,26 L113,16 C106,5 96,2 82,2 Z" transform="skewX(-7)"/>
+  </g>
+  <!-- Tagline -->
+  <text x="80" y="145" font-family="Arial,Helvetica,sans-serif" font-size="9" fill="#8a8070" text-anchor="middle" letter-spacing="2">PROMPT STUDIO</text>
+</svg>
