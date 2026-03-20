@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en" data-lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -13,7 +13,8 @@
   <script src="/js/ps-projects.js?v=1.0"></script>
   <script src="/js/ps-feedback.js?v=1.0"></script>
   <script src="/js/ps-ads.js?v=1.0"></script>
-  <script src="/js/ps-lang.js?v=1.0"></script>
+  <script src="/js/ps-lang.js?v=1.1"></script>
+  <script src="/js/ps-i18n.js?v=1.0"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -292,34 +293,31 @@
 <aside class="sidebar">
   <div class="sb-logo"><a href="/index.html">The <span>Prompt</span> Studio</a></div>
   <nav class="sb-nav">
-    <div class="nav-section">My workspaces</div>
+    <div class="nav-section" id="nav-my-workspaces">My workspaces</div>
     <div id="sidebar-verticals">
-      <div class="nav-item" style="color:var(--muted);font-size:.82rem;padding-left:18px;">Loading…</div>
+      <div class="nav-item" style="color:var(--muted);font-size:.82rem;padding-left:18px;" id="sidebar-loading">Loading…</div>
     </div>
-    <div class="nav-section" style="margin-top:8px;">Navigation</div>
+    <div class="nav-section" style="margin-top:8px;" id="nav-navigation">Navigation</div>
     <a href="/dashboard.html?view=projects" class="nav-item" id="nav-projects">
-      <span class="ico">📁</span> My projects
+      <span class="ico">📁</span> <span id="nav-proj-label">My projects</span>
       <span id="proj-lock-badge" style="margin-left:auto;font-size:.6rem;color:var(--muted);display:none">🔒</span>
       <span id="proj-count-badge" style="margin-left:auto;font-size:.7rem;background:rgba(108,99,255,.15);color:var(--accent2);padding:1px 6px;border-radius:8px;display:none"></span>
     </a>
-    <a href="/account.html" class="nav-item"><span class="ico">👤</span> My account</a>
-    <div class="nav-section" style="margin-top:8px;">Feedback</div>
-    <a href="#" class="nav-item" onclick="event.preventDefault(); PSFeedback.showBugModal()"><span class="ico">🐛</span> Report a bug</a>
+    <a href="/account.html" class="nav-item"><span class="ico">👤</span> <span id="nav-account">My account</span></a>
+    <div class="nav-section" style="margin-top:8px;" id="nav-feedback-label">Feedback</div>
+    <a href="#" class="nav-item" onclick="event.preventDefault(); PSFeedback.showBugModal()"><span class="ico">🐛</span> <span id="nav-report-bug">Report a bug</span></a>
   </nav>
   <div class="sb-footer">
     <div class="sb-email" id="sb-email"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-      <button class="logout-btn" onclick="PS.logout()">↩ Log out</button>
-      <a href="/tarifs.html" style="font-size:.7rem;color:var(--muted);text-decoration:none;opacity:.6;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">+ Vertical</a>
+      <button class="logout-btn" id="nav-logout" onclick="PS.logout()">↩ Log out</button>
+      <a href="/tarifs.html" style="font-size:.7rem;color:var(--muted);text-decoration:none;opacity:.6;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'" id="nav-add-vertical">+ Vertical</a>
     </div>
   </div>
 </aside>
 
 <div class="main">
-  <div class="announce-bar" id="announce-bar">
-    📱 Coming soon — The Prompt Studio mobile app: your pro AI tools, anywhere, anytime.
-    <button class="announce-close" onclick="document.getElementById('announce-bar').style.display='none'; try{localStorage.setItem('ps_announce_dismissed','1')}catch(e){}" aria-label="Close">✕</button>
-  </div>
+  <div class="announce-bar" id="announce-bar"></div>
   <div class="topbar">
     <div class="topbar-left">
       <h1 id="topbar-title">My workspace</h1>
@@ -402,8 +400,8 @@ async function switchVertical(v) {
   const isOnTrial = sub?.status === 'on_trial';
   const trialEnd  = sub?.trial_ends_at ? new Date(sub.trial_ends_at) : null;
   const trialDays = trialEnd ? Math.max(0, Math.ceil((trialEnd - Date.now()) / 86400000)) : 0;
-  const trialTag  = isOnTrial ? ` · <span style="color:#22c55e;font-weight:600">Free trial (${trialDays}d left)</span>` : '';
-  document.getElementById('topbar-sub').innerHTML = sub ? `${TIER_LABELS[sub.tier]} · ${m.label} tools${trialTag}` : '';
+  const trialTag  = isOnTrial ? ` · <span style="color:#22c55e;font-weight:600">${TH('dashboard.free_trial_days', { d: trialDays })}</span>` : '';
+  document.getElementById('topbar-sub').innerHTML = sub ? `${TIER_LABELS[sub.tier]} · ${m.label} ${TH('dashboard.tools_access')}${trialTag}` : '';
 
   /* ── Dynamic theming: sidebar logo, topbar border ── */
   const logoSpan = document.querySelector('.sb-logo span');
@@ -512,25 +510,25 @@ function renderTools(v, sub, filter = 'all') {
         <span class="v-banner-icon">${m.icon||'📁'}</span>
         <div>
           <div class="v-banner-title">${m.label||v}</div>
-          <div class="v-banner-sub">${sub ? TIER_LABELS[sub.tier] + ' · ' + (max===Infinity?'Unlimited':max+' generations/month') : 'No active subscription'}</div>
+          <div class="v-banner-sub">${sub ? TIER_LABELS[sub.tier] + ' · ' + (max===Infinity?TH('common.unlimited'):max+' '+TH('dashboard.gen_per_month')) : TH('dashboard.no_sub')}</div>
         </div>
       </div>
       <div class="v-banner-right">
-        <div class="v-banner-quota">${max===Infinity ? usageCount+' used' : 'Quota: '+usageCount+' / '+max}</div>
+        <div class="v-banner-quota">${max===Infinity ? usageCount+' '+TH('dashboard.used') : 'Quota: '+usageCount+' / '+max}</div>
         <div class="v-banner-bar"><div class="v-banner-fill" style="width:${pct}%"></div></div>
       </div>
     </div>`;
 
   // Header: accessible count + filter buttons
   const filters = [
-    { key:'all',        label:`All (${tools.length})` },
-    { key:'accessible', label:`Available (${accessible.length})` },
-    { key:'locked',     label:`Locked (${locked.length})` },
+    { key:'all',        label:`${T('dashboard.filter_all')} (${tools.length})` },
+    { key:'accessible', label:`${T('dashboard.filter_available')} (${accessible.length})` },
+    { key:'locked',     label:`${T('dashboard.filter_locked')} (${locked.length})` },
   ];
   html += `<div class="tools-header">
     <h2>
       <span style="color:${color}">${accessible.length}</span>
-      <span style="color:var(--muted);font-weight:400"> / ${tools.length} available</span>
+      <span style="color:var(--muted);font-weight:400"> / ${tools.length} ${T('dashboard.available')}</span>
     </h2>
     <div class="filter-row">
       ${filters.map(f => `
@@ -545,9 +543,9 @@ function renderTools(v, sub, filter = 'all') {
     <div class="tool-card accessible suggest-tool-card" style="border-style:dashed;border-color:rgba(108,99,255,.3);cursor:pointer;background:rgba(108,99,255,.03)"
          onclick="PSFeedback.showSuggestModal({ vertical: '${v}' })">
       <div class="tc-icon" style="font-size:2rem">💡</div>
-      <div class="tc-name" style="color:var(--accent2)">Suggest a tool</div>
-      <div class="tc-desc">Missing a tool? Describe it and we'll build it if there's enough demand.</div>
-      <div class="tc-action" style="color:var(--accent2)">Submit an idea →</div>
+      <div class="tc-name" style="color:var(--accent2)">${TH('dashboard.suggest_tool')}</div>
+      <div class="tc-desc">${TH('dashboard.suggest_tool_desc')}</div>
+      <div class="tc-action" style="color:var(--accent2)">${TH('dashboard.suggest_idea')} →</div>
     </div>
   </div>`;
 
@@ -563,8 +561,8 @@ function renderTools(v, sub, filter = 'all') {
     const tc           = TIER_META[tier];
     const tierAccCount = group.filter(t => t._access.allowed).length;
     const countLabel   = filter === 'all'
-      ? `${tierAccCount} / ${group.length} available`
-      : `${group.length} tool${group.length > 1 ? 's' : ''}`;
+      ? `${tierAccCount} / ${group.length} ${T('dashboard.available')}`
+      : `${group.length} ${group.length > 1 ? T('dashboard.tools') : T('dashboard.tool')}`;
 
     html += `<div class="tier-section">
       <div class="tier-section-header">
@@ -583,8 +581,8 @@ function renderTools(v, sub, filter = 'all') {
   // Empty state for filter with no results
   if (!hasContent) {
     html += `<div style="text-align:center;padding:48px 20px;color:var(--muted);font-size:.9rem;">
-      No tools in this category.
-      <button onclick="setFilter('all')" style="margin-left:8px;background:none;border:none;color:${color};cursor:pointer;font-weight:600;font-size:.9rem;">View all →</button>
+      ${TH('dashboard.no_tools_cat')}
+      <button onclick="setFilter('all')" style="margin-left:8px;background:none;border:none;color:${color};cursor:pointer;font-weight:600;font-size:.9rem;">${TH('dashboard.view_all')} →</button>
     </div>`;
   }
 
@@ -593,14 +591,14 @@ function renderTools(v, sub, filter = 'all') {
 
 // ── No subscription state ──────────────────────────────────────────────────
 function renderNoSub() {
-  document.getElementById('topbar-title').textContent = 'My workspace';
-  document.getElementById('topbar-sub').textContent   = 'No active subscription';
+  document.getElementById('topbar-title').textContent = T('dashboard.title');
+  document.getElementById('topbar-sub').textContent   = T('dashboard.no_sub');
   document.getElementById('content').innerHTML = `
     <div class="empty-state">
       <div class="big">🚀</div>
-      <h2>Choose your vertical</h2>
-      <p>Select the industry that matches your work.<br>Your AI tools will be available immediately after subscribing.</p>
-      <a href="/tarifs.html" class="btn-cta">View plans →</a>
+      <h2>${TH('dashboard.choose_vertical')}</h2>
+      <p>${TH('dashboard.choose_vertical_desc')}</p>
+      <a href="/tarifs.html" class="btn-cta">${TH('common.view_plans')} →</a>
     </div>`;
 }
 
@@ -640,26 +638,26 @@ function maybeShowWelcome() {
 
   let subtitle = '';
   if (fromCheckout && isOnTrial) {
-    subtitle = `Your <strong>${tierLabel}</strong> plan is active with a <strong>7-day free trial</strong>. You won't be charged until the trial ends.`;
+    subtitle = TH('dashboard.welcome_trial', { tier: tierLabel });
   } else if (fromCheckout) {
-    subtitle = `Your <strong>${tierLabel}</strong> plan is now active. All your AI tools are ready to use.`;
+    subtitle = TH('dashboard.welcome_active', { tier: tierLabel });
   } else {
-    subtitle = `Your workspace is set up and ready. Explore your AI tools below.`;
+    subtitle = TH('dashboard.welcome_first');
   }
 
   let trialNote = '';
   if (isOnTrial) {
-    trialNote = `<div class="wc-tier" style="background:rgba(34,197,94,.12);color:#22c55e;">Free trial &middot; ${trialDays} days remaining</div><br>`;
+    trialNote = `<div class="wc-tier" style="background:rgba(34,197,94,.12);color:#22c55e;">${TH('dashboard.welcome_trial_badge', { d: trialDays })}</div><br>`;
   }
 
   overlay.innerHTML = `
     <div class="welcome-card">
       <button class="wc-close" onclick="this.closest('.welcome-overlay').remove()" aria-label="Close">&times;</button>
       <div class="wc-icon">${m?.icon || '🎉'}</div>
-      <h2>Welcome to ${m?.label || 'The Prompt Studio'}!</h2>
+      <h2>${TH('dashboard.welcome_to')} ${m?.label || 'The Prompt Studio'}!</h2>
       ${trialNote}
       <p>${subtitle}</p>
-      <button class="wc-cta" onclick="this.closest('.welcome-overlay').remove()">Get started &rarr;</button>
+      <button class="wc-cta" onclick="this.closest('.welcome-overlay').remove()">${TH('dashboard.welcome_cta')} &rarr;</button>
     </div>
   `;
 
@@ -688,16 +686,15 @@ async function renderProjectsView() {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const navProj = document.getElementById('nav-projects');
     if (navProj) navProj.classList.add('active');
-    document.getElementById('topbar-title').textContent = '📁 My projects';
+    document.getElementById('topbar-title').textContent = '📁 ' + T('dashboard.projects_title');
     document.getElementById('topbar-sub').textContent   = '';
       document.getElementById('quota-pill').style.display = 'none';
     document.getElementById('content').innerHTML = `
       <div class="empty-state">
         <div class="big">🔒</div>
-        <h2>CRM & Project Management</h2>
-        <p>The built-in CRM is available starting from the <strong style="color:#c9a84c">Gold</strong> plan.<br>
-        Create projects, centralize your files, and use AI tools in context.</p>
-        <a href="/tarifs.html" class="btn-cta">Upgrade to Gold →</a>
+        <h2>${TH('dashboard.crm_title')}</h2>
+        <p>${TH('dashboard.crm_locked')}</p>
+        <a href="/tarifs.html" class="btn-cta">${TH('dashboard.upgrade_gold')} →</a>
       </div>`;
     return;
   }
@@ -712,8 +709,8 @@ async function renderProjectsView() {
   if (navProj) navProj.classList.add('active');
 
   // Header
-  document.getElementById('topbar-title').textContent = '📁 My projects';
-  document.getElementById('topbar-sub').textContent   = 'Manage your files and use AI tools in context';
+  document.getElementById('topbar-title').textContent = '📁 ' + T('dashboard.projects_title');
+  document.getElementById('topbar-sub').textContent   = T('dashboard.projects_sub');
   document.getElementById('quota-pill').style.display = 'none';
 
   const projects = await PSProjects.list({
@@ -731,17 +728,17 @@ async function renderProjectsView() {
 
   let html = `
     <div class="proj-view-header">
-      <h2>📁 ${projects.length} project${projects.length > 1 ? 's' : ''}</h2>
+      <h2>📁 ${projects.length} ${projects.length > 1 ? T('dashboard.projects_title') : T('dashboard.projects_title')}</h2>
       <div class="proj-filters">
         <select onchange="filterProjects(this.value, '${_projFilterStatus}')">
-          <option value="">All verticals</option>
+          <option value="">${T('dashboard.all_verticals')}</option>
           ${vOpts}
         </select>
         <select onchange="filterProjects('${_projFilterVertical}', this.value)">
-          <option value="active"    ${_projFilterStatus==='active'?'selected':''}>🟢 Active</option>
-          <option value="completed" ${_projFilterStatus==='completed'?'selected':''}>🔵 Completed</option>
-          <option value="archived"  ${_projFilterStatus==='archived'?'selected':''}>⚪ Archived</option>
-          <option value=""           ${!_projFilterStatus?'selected':''}>All</option>
+          <option value="active"    ${_projFilterStatus==='active'?'selected':''}>${T('dashboard.active')}</option>
+          <option value="completed" ${_projFilterStatus==='completed'?'selected':''}>${T('dashboard.completed')}</option>
+          <option value="archived"  ${_projFilterStatus==='archived'?'selected':''}>${T('dashboard.archived')}</option>
+          <option value=""           ${!_projFilterStatus?'selected':''}>${T('dashboard.all')}</option>
         </select>
       </div>
     </div>
@@ -751,7 +748,7 @@ async function renderProjectsView() {
   html += `
     <div class="proj-card new-proj-card" onclick="showCreateProjectModal()">
       <div class="new-proj-plus">+</div>
-      <div class="new-proj-label">New project</div>
+      <div class="new-proj-label">${T('dashboard.new_project')}</div>
     </div>`;
 
   // Project cards
@@ -771,11 +768,11 @@ async function renderProjectsView() {
           <span class="proj-card-name">${PSProjects.escapeHtml(p.name)}</span>
           <span class="proj-card-status" style="background:${sm.color}22;color:${sm.color}">${sm.label || p.status}</span>
         </div>
-        <div class="proj-card-meta">${preview || '<em style="opacity:.5">No info provided</em>'}</div>
+        <div class="proj-card-meta">${preview || '<em style="opacity:.5">' + TH('dashboard.no_info') + '</em>'}</div>
         <div class="proj-card-tags">
           <span class="proj-card-tag" style="background:${m.bg || 'rgba(108,99,255,.1)'};color:${m.color || 'var(--accent2)'}">${m.label || p.vertical}</span>
         </div>
-        <div class="proj-card-date">Mis à jour le ${date}</div>
+        <div class="proj-card-date">Updated ${date}</div>
       </a>`;
   });
 
@@ -804,12 +801,12 @@ function showCreateProjectModal() {
   overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
   overlay.innerHTML = `
     <div class="modal">
-      <h3>📁 New project</h3>
-      <input type="text" class="modal-input" id="new-proj-name" placeholder="Project name (e.g. Apartment 3BR Paris 11th)" autofocus/>
+      <h3>📁 ${T('dashboard.new_project')}</h3>
+      <input type="text" class="modal-input" id="new-proj-name" placeholder="${T('dashboard.project_name_ph')}" autofocus/>
       <select class="modal-input" id="new-proj-vertical">${vOpts}</select>
       <div class="modal-btns">
-        <button class="modal-btn modal-btn-cancel" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-        <button class="modal-btn modal-btn-primary" onclick="createProject()">Create →</button>
+        <button class="modal-btn modal-btn-cancel" onclick="this.closest('.modal-overlay').remove()">${T('common.cancel')}</button>
+        <button class="modal-btn modal-btn-primary" onclick="createProject()">${T('common.create')} →</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -819,15 +816,15 @@ function showCreateProjectModal() {
 async function createProject() {
   const name     = document.getElementById('new-proj-name')?.value?.trim();
   const vertical = document.getElementById('new-proj-vertical')?.value;
-  if (!name) { alert('Please enter a project name.'); return; }
-  if (!vertical) { alert('Please select a vertical.'); return; }
+  if (!name) { alert(T('dashboard.err_project_name')); return; }
+  if (!vertical) { alert(T('dashboard.err_project_vert')); return; }
 
   const proj = await PSProjects.create({ vertical, name });
   document.querySelector('.modal-overlay')?.remove();
   if (proj) {
     location.href = `/project.html?id=${proj.id}`;
   } else {
-    alert('Error creating project.');
+    alert(T('dashboard.err_project_create'));
   }
 }
 
@@ -857,6 +854,28 @@ async function updateProjectBadge() {
   } catch (e) {}
 }
 
+// ── Render announcement bar ───────────────────────────────────────────────
+function renderAnnounceBar() {
+  const bar = document.getElementById('announce-bar');
+  if (!bar) return;
+  bar.innerHTML = `📱 ${TH('dashboard.announce')}
+    <button class="announce-close" onclick="document.getElementById('announce-bar').style.display='none'; try{localStorage.setItem('ps_announce_dismissed','1')}catch(e){}" aria-label="Close">✕</button>`;
+}
+
+// ── Update UI text when language changes ─────────────────────────────────────
+function updateUIText() {
+  document.getElementById('nav-my-workspaces').textContent = T('nav.my_workspaces');
+  document.getElementById('sidebar-loading').textContent = T('common.loading');
+  document.getElementById('nav-navigation').textContent = T('nav.navigation');
+  document.getElementById('nav-proj-label').textContent = T('nav.my_projects');
+  document.getElementById('nav-account').textContent = T('nav.my_account');
+  document.getElementById('nav-feedback-label').textContent = 'Feedback';
+  document.getElementById('nav-report-bug').textContent = T('nav.report_bug');
+  document.getElementById('nav-logout').textContent = '↩ ' + T('nav.log_out');
+  document.getElementById('nav-add-vertical').textContent = '+ ' + T('nav.vertical');
+  renderAnnounceBar();
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────
 async function init() {
   const ok = await PS.requireAuth('/dashboard.html');
@@ -864,11 +883,15 @@ async function init() {
 
   document.getElementById('sb-email').textContent = PS.session.user.email;
 
+  // Set up language change handler
+  PS_I18N.onChange(updateUIText);
+  updateUIText();
+
   // Profile completion banner
   if (!PS.isProfileComplete()) {
     const banner = document.createElement('div');
     banner.style.cssText = 'background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);border-radius:12px;padding:14px 20px;margin:0 0 20px;display:flex;align-items:center;justify-content:space-between;font-size:.875rem;';
-    banner.innerHTML = '<span>👋 Complete your profile for a better experience.</span><a href="/complete-profile.html?redirect=/dashboard.html" style="background:#6c63ff;color:#fff;padding:6px 16px;border-radius:7px;text-decoration:none;font-weight:600;font-size:.8rem;white-space:nowrap;margin-left:12px;">Complete →</a>';
+    banner.innerHTML = '<span>👋 ' + TH('dashboard.complete_profile') + '</span><a href="/complete-profile.html?redirect=/dashboard.html" style="background:#6c63ff;color:#fff;padding:6px 16px;border-radius:7px;text-decoration:none;font-weight:600;font-size:.8rem;white-space:nowrap;margin-left:12px;">' + T('dashboard.complete_btn') + ' →</a>';
     const main = document.querySelector('.content');
     if (main) main.prepend(banner);
   }

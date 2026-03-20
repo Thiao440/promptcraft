@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr" data-lang="fr" dir="ltr">
+<html lang="en" data-lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Offres & Tarifs – The Prompt Studio</title>
+  <title data-fr>Offres & Tarifs – The Prompt Studio</title><title data-en>Plans & Pricing – The Prompt Studio</title><title data-es>Ofertas y Precios – The Prompt Studio</title><title data-pt>Planos e Preços – The Prompt Studio</title><title data-ar>الخطط والأسعار – The Prompt Studio</title>
   <meta name="description" content="Choose your vertical and plan. Instant access to AI tools built for your industry."/>
   <link rel="icon" href="/assets/images/favicon.ico"/>
   <style>
@@ -176,7 +176,8 @@
       body { padding-top: 50px; }
     }
   </style>
-  <script src="/js/ps-lang.js?v=1.0"></script>
+  <script src="/js/ps-lang.js?v=1.1"></script>
+  <script src="/js/ps-i18n.js?v=1.0"></script>
 </head>
 <body>
 
@@ -253,7 +254,7 @@
 </div>
 
 <div class="tools-preview">
-  <h3 id="tools-title">🔧 Les 10 outils <span id="tools-vname" style="color:#f59e0b">Immobilier</span></h3>
+  <h3 id="tools-title">🔧 10 <span id="tools-vname" style="color:#f59e0b">Real Estate</span> tools</h3>
   <div class="tools-mini-grid" id="tools-grid"></div>
 </div>
 
@@ -292,18 +293,8 @@
 <script>
 /* ── Use PS.VERTICALS as single source of truth ── */
 const VMETA = PS.VERTICALS;
-const VDESCS = {
-  immo:         'Agents, developers, property managers',
-  commerce:     'E-commerce, retail, brands',
-  legal:        'Lawyers, legal advisors, notaries',
-  finance:      'Advisors, analysts, CFOs',
-  marketing:    'Agencies, CMOs, growth teams',
-  rh:           'HR directors, recruiters, managers',
-  sante:        'Practitioners, clinics, coaches',
-  education:    'Trainers, schools, EdTech',
-  restauration: 'Restaurants, caterers, franchises',
-  freelance:    'Freelancers, consultants, coaches',
-};
+/* VDESCS now pulled from ps-i18n.js */
+function getVDesc(key) { return TH('vdescs.' + key); }
 
 const BASE = 'https://shop.theprompt.studio/checkout/buy';
 
@@ -380,22 +371,137 @@ const PRODUCTS = {
   },
 };
 
-/* Tools loaded from DB via ToolCatalog, with static fallback */
+/* Tools — loaded from DB via ToolCatalog, with static fallback for visitors */
+const TOOLS_FALLBACK = {
+  immo: [
+    { icon:'🏠', name:'Property Listing Writer', desc:'Generate compelling property ads', tier:'starter' },
+    { icon:'📊', name:'Rental Yield Calculator', desc:'Estimate ROI on rental properties', tier:'starter' },
+    { icon:'📝', name:'Lease Agreement Drafter', desc:'Draft and review lease contracts', tier:'starter' },
+    { icon:'🔍', name:'Market Analysis Report', desc:'Analyze local real estate trends', tier:'pro' },
+    { icon:'💬', name:'Client Email Templates', desc:'Professional emails for prospects', tier:'pro' },
+    { icon:'📐', name:'Property Valuation Tool', desc:'Estimate property market value', tier:'pro' },
+    { icon:'🏗️', name:'Development Feasibility', desc:'Assess construction project viability', tier:'pro' },
+    { icon:'📋', name:'Due Diligence Checklist', desc:'Complete acquisition checklists', tier:'gold' },
+    { icon:'🤖', name:'AI Property Chatbot', desc:'Answer buyer questions 24/7', tier:'gold' },
+    { icon:'📈', name:'Portfolio Dashboard', desc:'Track your entire property portfolio', tier:'gold' },
+  ],
+  commerce: [
+    { icon:'📦', name:'Product Description Writer', desc:'SEO-optimized product copy', tier:'starter' },
+    { icon:'💰', name:'Pricing Strategy Analyzer', desc:'Optimize your pricing model', tier:'starter' },
+    { icon:'📧', name:'Email Campaign Builder', desc:'Create promotional email sequences', tier:'starter' },
+    { icon:'🔍', name:'Competitor Price Tracker', desc:'Monitor competitor pricing', tier:'pro' },
+    { icon:'📊', name:'Sales Forecast Generator', desc:'Predict sales trends with AI', tier:'pro' },
+    { icon:'🛒', name:'Cart Recovery Emails', desc:'Win back abandoned carts', tier:'pro' },
+    { icon:'📱', name:'Social Commerce Posts', desc:'Create shoppable social content', tier:'pro' },
+    { icon:'🏷️', name:'Inventory Optimizer', desc:'Smart stock management insights', tier:'gold' },
+    { icon:'🤖', name:'AI Shopping Assistant', desc:'Personalized product recommendations', tier:'gold' },
+    { icon:'📈', name:'Revenue Analytics', desc:'Deep-dive into sales performance', tier:'gold' },
+  ],
+  legal: [
+    { icon:'📄', name:'Contract Drafter', desc:'Generate legal contracts from templates', tier:'starter' },
+    { icon:'🔍', name:'Legal Research Assistant', desc:'Find relevant case law and statutes', tier:'starter' },
+    { icon:'📝', name:'Legal Letter Writer', desc:'Draft professional legal correspondence', tier:'starter' },
+    { icon:'⚖️', name:'Case Summary Generator', desc:'Summarize complex case files', tier:'pro' },
+    { icon:'📋', name:'Compliance Checker', desc:'Verify regulatory compliance', tier:'pro' },
+    { icon:'🔎', name:'Due Diligence Report', desc:'Comprehensive due diligence analysis', tier:'pro' },
+    { icon:'📑', name:'NDA Generator', desc:'Create tailored NDAs quickly', tier:'pro' },
+    { icon:'🏛️', name:'Legal Brief Writer', desc:'Draft persuasive legal briefs', tier:'gold' },
+    { icon:'🤖', name:'AI Legal Chatbot', desc:'Answer common legal questions', tier:'gold' },
+    { icon:'📊', name:'Case Management Dashboard', desc:'Track all your active cases', tier:'gold' },
+  ],
+  finance: [
+    { icon:'📊', name:'Financial Report Generator', desc:'Create professional financial reports', tier:'starter' },
+    { icon:'💹', name:'Budget Planner', desc:'Build and track budgets easily', tier:'starter' },
+    { icon:'🧾', name:'Invoice Generator', desc:'Create and send invoices', tier:'starter' },
+    { icon:'📈', name:'Cash Flow Forecast', desc:'Predict future cash flows', tier:'pro' },
+    { icon:'💰', name:'Tax Optimization Advisor', desc:'Identify tax-saving opportunities', tier:'pro' },
+    { icon:'📋', name:'Audit Preparation Tool', desc:'Prepare for financial audits', tier:'pro' },
+    { icon:'🔍', name:'Expense Analyzer', desc:'Categorize and optimize expenses', tier:'pro' },
+    { icon:'📉', name:'Risk Assessment Report', desc:'Evaluate financial risks', tier:'gold' },
+    { icon:'🤖', name:'AI Financial Advisor', desc:'Personalized financial guidance', tier:'gold' },
+    { icon:'📊', name:'Investment Portfolio Tracker', desc:'Monitor investment performance', tier:'gold' },
+  ],
+  marketing: [
+    { icon:'✍️', name:'Blog Post Writer', desc:'SEO-optimized blog content', tier:'starter' },
+    { icon:'📱', name:'Social Media Post Generator', desc:'Create engaging social posts', tier:'starter' },
+    { icon:'📧', name:'Email Newsletter Builder', desc:'Design email campaigns', tier:'starter' },
+    { icon:'🎯', name:'Ad Copy Generator', desc:'High-converting ad copy', tier:'pro' },
+    { icon:'📊', name:'Content Calendar Planner', desc:'Plan your content strategy', tier:'pro' },
+    { icon:'🔍', name:'SEO Keyword Analyzer', desc:'Find winning keywords', tier:'pro' },
+    { icon:'📋', name:'Brand Voice Guide', desc:'Define your brand tone', tier:'pro' },
+    { icon:'📈', name:'Campaign Performance Report', desc:'Analyze marketing ROI', tier:'gold' },
+    { icon:'🤖', name:'AI Marketing Chatbot', desc:'Answer prospect questions 24/7', tier:'gold' },
+    { icon:'🎨', name:'Creative Brief Generator', desc:'Brief creative teams effectively', tier:'gold' },
+  ],
+  rh: [
+    { icon:'📝', name:'Job Posting Writer', desc:'Write compelling job listings', tier:'starter' },
+    { icon:'📄', name:'CV Screening Assistant', desc:'Score and rank candidates', tier:'starter' },
+    { icon:'📋', name:'Interview Question Generator', desc:'Tailored interview questions', tier:'starter' },
+    { icon:'📊', name:'Salary Benchmarking Tool', desc:'Compare compensation data', tier:'pro' },
+    { icon:'📧', name:'HR Email Templates', desc:'Professional HR communications', tier:'pro' },
+    { icon:'🎯', name:'Onboarding Plan Builder', desc:'Create onboarding workflows', tier:'pro' },
+    { icon:'📑', name:'Policy Document Drafter', desc:'Draft HR policies and handbooks', tier:'pro' },
+    { icon:'📈', name:'Employee Survey Analyzer', desc:'Analyze engagement surveys', tier:'gold' },
+    { icon:'🤖', name:'AI HR Chatbot', desc:'Answer employee questions 24/7', tier:'gold' },
+    { icon:'📊', name:'Workforce Analytics', desc:'Track HR metrics and KPIs', tier:'gold' },
+  ],
+  sante: [
+    { icon:'📝', name:'Patient Report Writer', desc:'Generate clinical summaries', tier:'starter' },
+    { icon:'📋', name:'Treatment Plan Builder', desc:'Create structured care plans', tier:'starter' },
+    { icon:'📄', name:'Medical Letter Drafter', desc:'Professional medical correspondence', tier:'starter' },
+    { icon:'🔍', name:'Symptom Analysis Tool', desc:'AI-assisted symptom assessment', tier:'pro' },
+    { icon:'📊', name:'Health Metrics Tracker', desc:'Monitor patient health data', tier:'pro' },
+    { icon:'📧', name:'Patient Communication Templates', desc:'Clear patient messaging', tier:'pro' },
+    { icon:'📑', name:'Protocol Generator', desc:'Create medical protocols', tier:'pro' },
+    { icon:'📈', name:'Practice Analytics', desc:'Track practice performance', tier:'gold' },
+    { icon:'🤖', name:'AI Health Chatbot', desc:'Patient triage and FAQ assistant', tier:'gold' },
+    { icon:'📋', name:'Compliance Documentation', desc:'Healthcare compliance reports', tier:'gold' },
+  ],
+  education: [
+    { icon:'📝', name:'Lesson Plan Creator', desc:'Design engaging lesson plans', tier:'starter' },
+    { icon:'📋', name:'Quiz & Exam Generator', desc:'Create assessments quickly', tier:'starter' },
+    { icon:'📄', name:'Course Outline Builder', desc:'Structure course curricula', tier:'starter' },
+    { icon:'🎯', name:'Learning Objective Writer', desc:'Define clear learning goals', tier:'pro' },
+    { icon:'📊', name:'Student Progress Report', desc:'Track student performance', tier:'pro' },
+    { icon:'📧', name:'Parent Communication Templates', desc:'Professional school emails', tier:'pro' },
+    { icon:'📑', name:'Rubric Generator', desc:'Create grading rubrics', tier:'pro' },
+    { icon:'📈', name:'Curriculum Analytics', desc:'Analyze learning outcomes', tier:'gold' },
+    { icon:'🤖', name:'AI Tutoring Assistant', desc:'Personalized student support', tier:'gold' },
+    { icon:'📋', name:'Accreditation Documentation', desc:'Prepare accreditation reports', tier:'gold' },
+  ],
+  restauration: [
+    { icon:'📝', name:'Menu Description Writer', desc:'Mouth-watering menu copy', tier:'starter' },
+    { icon:'💰', name:'Food Cost Calculator', desc:'Optimize recipe profitability', tier:'starter' },
+    { icon:'📱', name:'Social Media Food Posts', desc:'Instagram-ready food content', tier:'starter' },
+    { icon:'📋', name:'HACCP Plan Generator', desc:'Create food safety plans', tier:'pro' },
+    { icon:'📊', name:'Sales Mix Analyzer', desc:'Optimize your menu mix', tier:'pro' },
+    { icon:'📧', name:'Customer Email Campaigns', desc:'Loyalty and promo emails', tier:'pro' },
+    { icon:'📑', name:'Supplier Negotiation Brief', desc:'Prepare for vendor talks', tier:'pro' },
+    { icon:'📈', name:'Restaurant Analytics', desc:'Track covers, revenue, waste', tier:'gold' },
+    { icon:'🤖', name:'AI Booking Assistant', desc:'Handle reservations 24/7', tier:'gold' },
+    { icon:'📋', name:'Franchise Operations Manual', desc:'Standardize operations', tier:'gold' },
+  ],
+  freelance: [
+    { icon:'📝', name:'Proposal Writer', desc:'Win more clients with pro proposals', tier:'starter' },
+    { icon:'🧾', name:'Invoice Generator', desc:'Create and track invoices', tier:'starter' },
+    { icon:'📧', name:'Cold Outreach Templates', desc:'Effective prospecting emails', tier:'starter' },
+    { icon:'📋', name:'Contract Template Builder', desc:'Professional service agreements', tier:'pro' },
+    { icon:'📊', name:'Revenue Tracker', desc:'Monitor income and expenses', tier:'pro' },
+    { icon:'🎯', name:'Client Brief Analyzer', desc:'Extract key requirements from briefs', tier:'pro' },
+    { icon:'📱', name:'LinkedIn Content Generator', desc:'Build your personal brand', tier:'pro' },
+    { icon:'📈', name:'Pricing Calculator', desc:'Optimize your rate card', tier:'gold' },
+    { icon:'🤖', name:'AI Client Chatbot', desc:'Pre-qualify leads automatically', tier:'gold' },
+    { icon:'📋', name:'Project Scope Document', desc:'Define project scope clearly', tier:'gold' },
+  ],
+};
 let TOOLS = {};
 
+/* PLANS_DEF is now i18n-driven — features/locked pulled from ps-i18n.js */
 const PLANS_DEF = [
-  { tier:'starter', label:'Starter', price:19, desc:"Discover AI-powered tools for your industry essentials.",
-    features:['3 essential tools','50 generations / month','7-day history','Export: copy','Email support','⚠️ Includes ads'],
-    locked:['Ad-free (Pro+)','Generic AI chatbot (Pro)','Industry-specialist AI chatbot (Pro)','Advanced tools (Pro)','CRM & Project management (Gold)','Premium tools (Gold)'] },
-  { tier:'pro', label:'Pro', price:49, popular:true, desc:"Advanced tools + AI chatbots, completely ad-free.",
-    features:['✨ Ad-free','7 tools (essential + advanced)','150 generations / month','💬 Generic AI chatbot','💬 Industry-specialist AI chatbot','30-day history','Export copy + PDF','Priority support'],
-    locked:['CRM & Project management (Gold)','Premium tools (Gold)','Custom tones','DOCX export'] },
-  { tier:'gold', label:'Gold', price:99, desc:"Full access: CRM, premium tools, unlimited.",
-    features:['✨ Ad-free','10 complete tools','Unlimited generations','📁 CRM & Project management','💬 AI chatbots (generic + specialist)','90-day history','All exports (PDF, DOCX…)','Custom tones','Priority support + chat','Early access to new tools'],
-    locked:[] },
-  { tier:'team', label:'Team', price:199, desc:"Collaborate as a team with integrations & automations.",
-    features:['✨ Ad-free','Up to 3 verticals','10 tools / vertical','Unlimited generations','📁 CRM & Project management','💬 AI chatbots','🔗 API integrations (CRM, email, business tools)','⚡ Automations & workflows','Shared workspace & analytics','Unlimited history','Dedicated support'],
-    locked:[] },
+  { tier:'starter', label:'Starter', price:19 },
+  { tier:'pro',     label:'Pro',     price:49, popular:true },
+  { tier:'gold',    label:'Gold',    price:99 },
+  { tier:'team',    label:'Team',    price:199 },
 ];
 
 let activeV = 'immo';
@@ -408,7 +514,7 @@ function buildVerticalTabs() {
     `<div class="vtab" data-v="${key}" onclick="selectV('${key}')">
       <span class="v-icon">${m.icon}</span>
       <span class="v-name">${m.label}</span>
-      <span class="v-desc">${VDESCS[key] || ''}</span>
+      <span class="v-desc">${getVDesc(key)}</span>
     </div>`
   ).join('');
 }
@@ -469,26 +575,32 @@ function renderPlans() {
   document.getElementById('plans-grid').innerHTML = PLANS_DEF.map(p => {
     const price   = yearly ? Math.round(p.price * .8) : p.price;
     const annuel  = Math.round(p.price * 12 * .8);
+    const saving  = p.price * 12 - annuel;
     const period  = yearly ? 'yearly' : 'monthly';
     const url     = buildCheckoutUrl(activeV, p.tier, period);
     const isReady = !!url;
     const tierIcon = {starter:'🚀',pro:'⚡',gold:'👑',team:'🏢'}[p.tier]||'';
-    const ctaLabel = {starter:'Free 7-day trial →',pro:'Free 7-day trial →',gold:'Free 7-day trial →',team:'Contact us →'}[p.tier]||'Get started →';
+    const ctaLabel = p.tier === 'team' ? TH('tarifs.contact_team') + ' →' : TH('tarifs.free_trial_7d') + ' →';
+    const features = PS_I18N.THList('plans.' + p.tier + '.features');
+    const locked   = PS_I18N.THList('plans.' + p.tier + '.locked');
+    const yearlyLabel = yearly
+      ? TH('tarifs.save_yearly', { s: saving })
+      : TH('tarifs.yearly_equiv', { a: annuel });
     return `<div class="plan-card ${p.popular?'popular':''}">
-      ${p.popular?`<div class="pop-tag" style="background:${m.color}">Most popular</div>`:''}
+      ${p.popular?`<div class="pop-tag" style="background:${m.color}">${TH('common.most_popular')}</div>`:''}
       <div class="plan-tier ${p.tier}">${tierIcon} ${p.label}</div>
-      <div class="plan-price">${price}<span class="per">€/mo</span></div>
-      <div class="plan-yearly ${yearly?'ok':''}">${yearly?`${annuel}€/yr — save ${p.price*12-annuel}€`:`${annuel}€/yr if billed annually`}</div>
-      <p class="plan-desc">${p.desc}</p>
-      <div style="font-size:.72rem;color:#22c55e;font-weight:600;margin-bottom:12px">7-day free trial · cancel anytime</div>
+      <div class="plan-price">${price}<span class="per">${TH('common.per_mo')}</span></div>
+      <div class="plan-yearly ${yearly?'ok':''}">${yearlyLabel}</div>
+      <p class="plan-desc">${TH('plans.' + p.tier + '.desc')}</p>
+      <div style="font-size:.72rem;color:#22c55e;font-weight:600;margin-bottom:12px">${TH('tarifs.trial_note')}</div>
       <ul class="plan-feats">
-        ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
-        ${p.locked.map(f=>`<li><span class="lk">✕</span><span class="lt">${f}</span></li>`).join('')}
+        ${features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
+        ${locked.map(f=>`<li><span class="lk">✕</span><span class="lt">${f}</span></li>`).join('')}
       </ul>
       <a href="${p.tier==='team'?'/contact.html?subject=Team':(url||'#coming-soon')}" class="plan-cta ${p.popular?'solid':'outline'} ${isReady||p.tier==='team'?'':'disabled'}"
          style="${p.popular?`background:${isReady?m.color:'#555'}`:`border-color:${isReady||p.tier==='team'?m.color:'#555'};color:${isReady||p.tier==='team'?m.color:'#888'}`}"
-         ${isReady||p.tier==='team'?'':`onclick="return false" title="Coming soon"`}>
-        ${isReady||p.tier==='team' ? ctaLabel : 'Coming soon'}
+         ${isReady||p.tier==='team'?'':`onclick="return false" title="${T('common.coming_soon')}"`}>
+        ${isReady||p.tier==='team' ? ctaLabel : TH('common.coming_soon')}
       </a>
     </div>`;
   }).join('');
@@ -499,7 +611,7 @@ function renderTools() {
   const tiers = {starter:'🚀 Starter',pro:'⚡ Pro',gold:'👑 Gold'};
   const vTools = TOOLS[activeV] || [];
   const count = vTools.length || 10;
-  document.getElementById('tools-title').innerHTML = `🔧 ${count} <span id="tools-vname" style="color:${m.color}">${m.label}</span> tools`;
+  document.getElementById('tools-title').innerHTML = `🔧 ${count} <span id="tools-vname" style="color:${m.color}">${m.label}</span> ${TH('dashboard.tools')}`;
   document.getElementById('tools-grid').innerHTML = vTools.map(t =>
     `<div class="tool-mini">
       <div class="tm-icon">${t.icon || m.icon}</div>
@@ -507,7 +619,7 @@ function renderTools() {
       <div class="tm-desc">${t.desc || t.description || ''}</div>
       <span class="tm-tier ${t.tier || t.min_tier || 'starter'}">${tiers[t.tier || t.min_tier] || '🚀 Starter'}</span>
     </div>`
-  ).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">Loading tools…</p>`;
+  ).join('') || `<p style="color:var(--muted);text-align:center;grid-column:1/-1">${TH('dashboard.loading_tools')}</p>`;
 }
 
 function toggleBilling() {
@@ -527,7 +639,7 @@ async function checkAuth() {
     await PS.init();
     if (PS.session) {
       const link = document.getElementById('nav-account-link');
-      if (link) { link.textContent = 'My workspace →'; link.href = '/dashboard.html'; }
+      if (link) { link.innerHTML = TH('nav.my_workspace') + ' →'; link.href = '/dashboard.html'; }
     }
   } catch(e) {}
 }
@@ -535,26 +647,31 @@ async function checkAuth() {
 /* ── Init ── */
 (async function() {
   buildVerticalTabs();
-  /* Load tools from DB */
+  /* Load tools from DB, fallback to static data */
   try {
     const catalog = await ToolCatalog.load();
-    if (catalog.source === 'db' && catalog.tools) {
-      /* Convert to the simplified format needed here */
+    if (catalog.tools && Object.keys(catalog.tools).length) {
       Object.entries(catalog.tools).forEach(([v, arr]) => {
         TOOLS[v] = arr.map(t => ({
-          slug: t.slug, icon: t.icon, name: t.name,
-          desc: t.description || t.desc || '', tier: t.min_tier || 'bronze'
+          slug: t.slug, icon: t.icon, name: t.name || t.label,
+          desc: t.description || t.desc || '', tier: t.min_tier || 'starter'
         }));
       });
     }
-  } catch(e) { console.warn('[tarifs] ToolCatalog load failed, tools section may be empty', e); }
+  } catch(e) { console.warn('[tarifs] ToolCatalog load failed, using static fallback', e); }
+  /* Use static fallback for any vertical without DB tools */
+  Object.keys(TOOLS_FALLBACK).forEach(v => { if (!TOOLS[v] || !TOOLS[v].length) TOOLS[v] = TOOLS_FALLBACK[v]; });
   /* Select vertical from URL or default */
   const urlV = new URLSearchParams(window.location.search).get('v');
   selectV(VMETA[urlV] ? urlV : 'immo');
   checkAuth();
-})();
 
-// Lang handled by ps-lang.js (loaded in <head>)
+  /* Re-render on language change */
+  PS_I18N.onChange(function() {
+    buildVerticalTabs();
+    selectV(activeV);
+  });
+})();
 </script>
 <script src="/js/ps-chat-widget.js?v=1.0"></script>
 </body>

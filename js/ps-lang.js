@@ -1,22 +1,25 @@
 /**
  * ps-lang.js — Shared language system for The Prompt Studio
  *
- * Include this script on EVERY page. It will:
- *   1. Inject the CSS rules to show/hide [data-XX] elements based on <html data-lang>
+ * Include this script on EVERY page (before ps-i18n.js). It will:
+ *   1. Inject CSS rules to show/hide [data-XX] elements based on <html data-lang>
  *   2. Restore the saved language from localStorage
  *   3. Expose a global setLang(lang) function for the nav switcher
+ *   4. Notify PS_I18N callbacks on language change (for JS-rendered content re-renders)
  *
- * Supported languages: fr, en, es, pt, ar
+ * Default language: EN (best for global SEO)
+ * Supported: fr, en, es, pt, ar
  * HTML pattern:  <span data-fr>Texte</span><span data-en>Text</span>
- * Active lang:   <html lang="fr" data-lang="fr">
+ * Active lang:   <html lang="en" data-lang="en">
  */
 (function () {
   'use strict';
 
+  var DEFAULT_LANG = 'en';
   var LANGS = ['fr', 'en', 'es', 'pt', 'ar'];
   var FLAGS = { fr: '🇫🇷', en: '🇬🇧', es: '🇪🇸', pt: '🇧🇷', ar: '🇸🇦' };
 
-  // ── 1. Inject CSS (idempotent — won't duplicate if already present) ────────
+  // ── 1. Inject CSS (idempotent) ───────────────────────────────────────────
   if (!document.getElementById('ps-lang-css')) {
     var css = '';
     // Hide all lang variants by default
@@ -37,9 +40,11 @@
     document.head.appendChild(style);
   }
 
-  // ── 2. setLang — global function ───────────────────────────────────────────
+  // ── 2. setLang — global function ─────────────────────────────────────────
   window.setLang = function setLang(lang) {
     if (LANGS.indexOf(lang) === -1) return;
+
+    var prev = document.documentElement.getAttribute('data-lang');
 
     // Update <html> attributes
     document.documentElement.setAttribute('data-lang', lang);
@@ -58,18 +63,24 @@
 
     // Persist to localStorage
     try { localStorage.setItem('ps_lang', lang); } catch (e) { }
+
+    // Notify PS_I18N callbacks (for re-rendering JS-generated content)
+    if (prev !== lang && typeof PS_I18N !== 'undefined' && PS_I18N._notifyChange) {
+      PS_I18N._notifyChange(lang);
+    }
   };
 
-  // ── 3. Restore saved language on load ──────────────────────────────────────
+  // ── 3. Restore saved language on load ────────────────────────────────────
   try {
     var saved = localStorage.getItem('ps_lang');
     if (saved && LANGS.indexOf(saved) !== -1) {
       window.setLang(saved);
     } else {
-      // Ensure default is set
+      // Set default language (EN for global SEO)
       var current = document.documentElement.getAttribute('data-lang');
       if (!current || LANGS.indexOf(current) === -1) {
-        document.documentElement.setAttribute('data-lang', 'fr');
+        document.documentElement.setAttribute('data-lang', DEFAULT_LANG);
+        document.documentElement.lang = DEFAULT_LANG;
       }
     }
   } catch (e) { }
