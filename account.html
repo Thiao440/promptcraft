@@ -494,10 +494,10 @@ async function submitChurnFeedback() {
 
   // Save to Supabase
   try {
-    const user = PS.user;
+    const user = PS.session?.user;
     const subs = PS.subs || [];
     await PS.supabase.from('churn_feedback').insert({
-      user_id: user?.id || null,
+      user_id: user?.id,
       email: user?.email || null,
       reason: selectedChurnReason,
       details: details || null,
