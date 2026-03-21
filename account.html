@@ -173,9 +173,51 @@
   <div class="danger-zone">
     <div class="section-title" style="margin-bottom:10px;color:var(--danger);">⚠️ <span data-fr>Zone de danger</span><span data-en>Danger zone</span><span data-es>Zona de peligro</span><span data-pt>Zona de perigo</span><span data-ar>منطقة الخطر</span></div>
     <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;"><span data-fr>La résiliation est effectuée directement depuis le portail Lemon Squeezy. Votre accès reste actif jusqu'à la fin de la période payée.</span><span data-en>Cancellation is done directly from the Lemon Squeezy portal. Your access remains active until the end of the paid period.</span><span data-es>La cancelación se realiza directamente desde el portal Lemon Squeezy. Su acceso permanece activo hasta el final del período pagado.</span><span data-pt>O cancelamento é feito diretamente no portal Lemon Squeezy. Seu acesso permanece ativo até o final do período pago.</span><span data-ar>يتم الإلغاء مباشرة من بوابة Lemon Squeezy. يبقى وصولك نشطاً حتى نهاية الفترة المدفوعة.</span></p>
-    <a href="https://app.lemonsqueezy.com/my-orders" target="_blank" class="btn btn-danger"><span data-fr>Gérer mes abonnements →</span><span data-en>Manage my subscriptions →</span><span data-es>Gestionar mis suscripciones →</span><span data-pt>Gerenciar minhas assinaturas →</span><span data-ar>إدارة اشتراكاتي ←</span></a>
+    <button onclick="openChurnModal()" class="btn btn-danger"><span data-fr>Gérer / Résilier mes abonnements →</span><span data-en>Manage / Cancel my subscriptions →</span><span data-es>Gestionar / Cancelar mis suscripciones →</span><span data-pt>Gerenciar / Cancelar minhas assinaturas →</span><span data-ar>إدارة / إلغاء اشتراكاتي ←</span></button>
   </div>
 </main>
+
+<!-- ═══ CHURN FEEDBACK MODAL ═══ -->
+<div id="churn-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;max-width:520px;width:calc(100% - 32px);max-height:90vh;overflow-y:auto;padding:28px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3 style="font-size:1.1rem;font-weight:700;">
+        <span data-fr>Avant de partir...</span><span data-en>Before you go...</span><span data-es>Antes de irte...</span><span data-pt>Antes de sair...</span><span data-ar>قبل أن تغادر...</span>
+      </h3>
+      <button onclick="closeChurnModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">&times;</button>
+    </div>
+    <p style="font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:18px;">
+      <span data-fr>Votre avis nous aide à améliorer nos outils et nos offres. Pourriez-vous nous dire pourquoi vous souhaitez résilier ?</span>
+      <span data-en>Your feedback helps us improve our tools and plans. Could you tell us why you'd like to cancel?</span>
+      <span data-es>Sus comentarios nos ayudan a mejorar nuestras herramientas y ofertas. ¿Podría decirnos por qué desea cancelar?</span>
+      <span data-pt>Seu feedback nos ajuda a melhorar nossas ferramentas e planos. Poderia nos dizer por que deseja cancelar?</span>
+      <span data-ar>ملاحظاتك تساعدنا في تحسين أدواتنا وعروضنا. هل يمكنك إخبارنا لماذا ترغب في الإلغاء؟</span>
+    </p>
+
+    <div id="churn-reasons" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:.82rem;color:var(--muted);display:block;margin-bottom:6px;">
+        <span data-fr>Détails (optionnel)</span><span data-en>Details (optional)</span><span data-es>Detalles (opcional)</span><span data-pt>Detalhes (opcional)</span><span data-ar>تفاصيل (اختياري)</span>
+      </label>
+      <textarea id="churn-details" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:.85rem;padding:10px;resize:vertical;" placeholder=""></textarea>
+    </div>
+
+    <div id="churn-error" style="display:none;color:var(--danger);font-size:.82rem;margin-bottom:12px;">
+      <span data-fr>Veuillez sélectionner une raison.</span><span data-en>Please select a reason.</span><span data-es>Por favor seleccione una razón.</span><span data-pt>Por favor selecione um motivo.</span><span data-ar>يرجى اختيار سبب.</span>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeChurnModal()" class="btn" style="background:var(--border);color:var(--text);">
+        <span data-fr>Annuler</span><span data-en>Cancel</span><span data-es>Cancelar</span><span data-pt>Cancelar</span><span data-ar>إلغاء</span>
+      </button>
+      <button onclick="submitChurnFeedback()" class="btn btn-danger" id="churn-submit-btn">
+        <span data-fr>Continuer vers la résiliation →</span><span data-en>Continue to cancellation →</span><span data-es>Continuar con la cancelación →</span><span data-pt>Continuar com o cancelamento →</span><span data-ar>متابعة الإلغاء ←</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -185,7 +227,7 @@
 </style>
 
 <script>
-const VMETA = PS.VERTICALS;
+let VMETA;
 const TIER_LABELS = { starter:'🚀 Starter', pro:'⚡ Pro', gold:'👑 Gold', team:'🏢 Team' };
 const QUOTA_MAX   = { starter:50, pro:150, gold:Infinity, team:Infinity };
 const ALL_VERTICALS = ['immo','commerce','legal','finance'];
@@ -328,6 +370,7 @@ document.getElementById('profile-form').addEventListener('submit', async e => {
 async function init() {
   const ok = await PS.requireAuth('/account.html');
   if (!ok) return;
+  VMETA = PS.VERTICALS;
   document.getElementById('sb-email').textContent    = PS.session.user.email;
   document.getElementById('email-input').value       = PS.session.user.email;
 
@@ -353,8 +396,122 @@ async function init() {
       renderAddVerticals();
     });
   }
+
+  // Auto-open churn modal if arriving via #cancel (from dashboard)
+  if (window.location.hash === '#cancel') {
+    setTimeout(() => openChurnModal(), 400);
+    history.replaceState(null, '', '/account.html');
+  }
 }
 init();
+
+// ═══ CHURN FEEDBACK ═══
+const CHURN_REASONS = {
+  fr: [
+    { id:'too_expensive',     label:'Trop cher pour la valeur apportée' },
+    { id:'missing_tools',     label:'Il manque des outils dont j\'ai besoin' },
+    { id:'poor_quality',      label:'La qualité des résultats IA ne me convient pas' },
+    { id:'found_alternative', label:'J\'ai trouvé une meilleure alternative' },
+    { id:'no_longer_needed',  label:'Je n\'en ai plus besoin (changement d\'activité)' },
+    { id:'too_complex',       label:'L\'interface est trop complexe' },
+    { id:'temporary',         label:'Pause temporaire, je reviendrai' },
+    { id:'other',             label:'Autre raison' },
+  ],
+  en: [
+    { id:'too_expensive',     label:'Too expensive for the value provided' },
+    { id:'missing_tools',     label:'Missing tools I need' },
+    { id:'poor_quality',      label:'AI output quality doesn\'t meet my needs' },
+    { id:'found_alternative', label:'Found a better alternative' },
+    { id:'no_longer_needed',  label:'No longer needed (business change)' },
+    { id:'too_complex',       label:'The interface is too complex' },
+    { id:'temporary',         label:'Temporary pause, I\'ll be back' },
+    { id:'other',             label:'Other reason' },
+  ],
+  es: [
+    { id:'too_expensive',     label:'Demasiado caro para el valor ofrecido' },
+    { id:'missing_tools',     label:'Faltan herramientas que necesito' },
+    { id:'poor_quality',      label:'La calidad de los resultados IA no me satisface' },
+    { id:'found_alternative', label:'Encontré una mejor alternativa' },
+    { id:'no_longer_needed',  label:'Ya no lo necesito (cambio de actividad)' },
+    { id:'too_complex',       label:'La interfaz es demasiado compleja' },
+    { id:'temporary',         label:'Pausa temporal, volveré' },
+    { id:'other',             label:'Otra razón' },
+  ],
+  pt: [
+    { id:'too_expensive',     label:'Muito caro pelo valor oferecido' },
+    { id:'missing_tools',     label:'Faltam ferramentas que preciso' },
+    { id:'poor_quality',      label:'A qualidade dos resultados IA não me atende' },
+    { id:'found_alternative', label:'Encontrei uma alternativa melhor' },
+    { id:'no_longer_needed',  label:'Não preciso mais (mudança de atividade)' },
+    { id:'too_complex',       label:'A interface é muito complexa' },
+    { id:'temporary',         label:'Pausa temporária, voltarei' },
+    { id:'other',             label:'Outro motivo' },
+  ],
+  ar: [
+    { id:'too_expensive',     label:'مكلف جداً مقابل القيمة المقدمة' },
+    { id:'missing_tools',     label:'أدوات مفقودة أحتاجها' },
+    { id:'poor_quality',      label:'جودة نتائج الذكاء الاصطناعي لا تناسبني' },
+    { id:'found_alternative', label:'وجدت بديلاً أفضل' },
+    { id:'no_longer_needed',  label:'لم أعد بحاجة إليها (تغيير في النشاط)' },
+    { id:'too_complex',       label:'الواجهة معقدة جداً' },
+    { id:'temporary',         label:'توقف مؤقت، سأعود' },
+    { id:'other',             label:'سبب آخر' },
+  ],
+};
+
+let selectedChurnReason = null;
+
+function openChurnModal() {
+  const lang = (typeof PS_I18N !== 'undefined') ? PS_I18N.lang() : 'fr';
+  const reasons = CHURN_REASONS[lang] || CHURN_REASONS.fr;
+  const container = document.getElementById('churn-reasons');
+  container.innerHTML = reasons.map(r => `
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;font-size:.85rem;"
+           onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=this.querySelector('input').checked?'var(--accent)':'var(--border)'"
+           onclick="selectedChurnReason='${r.id}';document.getElementById('churn-error').style.display='none';document.querySelectorAll('#churn-reasons label').forEach(l=>l.style.borderColor='var(--border)');this.style.borderColor='var(--accent)';">
+      <input type="radio" name="churn-reason" value="${r.id}" style="accent-color:var(--accent);">
+      <span>${r.label}</span>
+    </label>
+  `).join('');
+  const overlay = document.getElementById('churn-overlay');
+  overlay.style.display = 'flex';
+  selectedChurnReason = null;
+}
+
+function closeChurnModal() {
+  document.getElementById('churn-overlay').style.display = 'none';
+}
+
+async function submitChurnFeedback() {
+  if (!selectedChurnReason) {
+    document.getElementById('churn-error').style.display = 'block';
+    return;
+  }
+  const details = document.getElementById('churn-details').value.trim();
+  const btn = document.getElementById('churn-submit-btn');
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+
+  // Save to Supabase
+  try {
+    const user = PS.user;
+    const subs = PS.subs || [];
+    await PS.supabase.from('churn_feedback').insert({
+      user_id: user?.id || null,
+      email: user?.email || null,
+      reason: selectedChurnReason,
+      details: details || null,
+      verticals: subs.map(s => s.vertical),
+      tiers: subs.map(s => s.tier),
+    });
+  } catch(e) { console.warn('churn feedback save error', e); }
+
+  // Redirect to Lemon Squeezy portal
+  window.open('https://app.lemonsqueezy.com/my-orders', '_blank');
+  closeChurnModal();
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
 </script>
 </body>
 </html>

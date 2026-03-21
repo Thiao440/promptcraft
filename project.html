@@ -240,7 +240,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const VMETA = PS.VERTICALS;
+let VMETA;
 let _project = null;
 let _dirty   = false;
 
@@ -416,6 +416,7 @@ window.addEventListener('beforeunload', e => {
 (async function () {
   try {
     await PS.requireAuth();
+    VMETA = PS.VERTICALS;
     // Feature gate: CRM requires Gold+
     const crmAccess = PS.canAccessFeature('crm_projects');
     if (!crmAccess.allowed) {

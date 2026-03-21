@@ -298,6 +298,8 @@
 <script defer src="/js/ps-tools-i18n.js?v=1.0"></script>
 <script defer src="/js/tool-catalog.js?v=1.0"></script>
 <script>
+/* Wait for defer scripts (PS, T, TH) before running */
+document.addEventListener('DOMContentLoaded', function() {
 /* ── Use PS.VERTICALS as single source of truth ── */
 const VMETA = PS.VERTICALS;
 /* Translated vertical label (returns plain string for current lang) */
@@ -639,6 +641,7 @@ async function checkAuth() {
     selectV(activeV);
   });
 })();
+}); /* end DOMContentLoaded */
 </script>
 <script defer src="/js/ps-chat-widget.js?v=1.0"></script>
 <script defer src="/js/ps-launch-banner.js"></script>
