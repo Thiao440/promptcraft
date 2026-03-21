@@ -501,14 +501,116 @@ async function _initProjectSelector(tool, formEl) {
     try {
       const proj = projects.find(p => p.id === projId) || await PSProjects.get(projId);
       if (!proj) return;
-      const prefill = await PSProjects.getToolPrefill(proj, tool.slug);
-      Object.entries(prefill).forEach(([fieldName, value]) => {
+
+      // Helper: fill a form field by name
+      const _fill = (fieldName, value) => {
+        if (!value || !String(value).trim()) return;
         const input = formEl.querySelector(`[name="${fieldName}"]`);
-        if (input && !input.value) {  // Only fill empty fields
-          input.value = value;
-          input.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
+        if (!input) return;
+        input.value = String(value);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        input.dispatchEvent(new Event('input',  { bubbles: true }));
+      };
+
+      // 1) Mapping-based prefill (project_tool_mappings table)
+      const prefill = await PSProjects.getToolPrefill(proj, tool.slug);
+      Object.entries(prefill).forEach(([fieldName, value]) => _fill(fieldName, value));
+
+      // 2) Smart direct match: project.data keys → form field names
+      //    This works without any mapping table — if a project data key
+      //    matches a form field name exactly, fill it directly.
+      if (proj.data && typeof proj.data === 'object') {
+        // Collect all form field names
+        const formFieldNames = new Set();
+        formEl.querySelectorAll('[name]').forEach(el => formFieldNames.add(el.name));
+
+        Object.entries(proj.data).forEach(([key, value]) => {
+          // Exact match
+          if (formFieldNames.has(key)) {
+            _fill(key, value);
+            return;
+          }
+          // Fuzzy match: normalize underscores/hyphens, lowercase
+          const norm = k => k.toLowerCase().replace(/[-_ ]/g, '');
+          const normKey = norm(key);
+          for (const fn of formFieldNames) {
+            if (norm(fn) === normKey) {
+              _fill(fn, value);
+              break;
+            }
+          }
+        });
+
+        // 3) Semantic matching: common aliases between project data and tool form fields
+        const ALIASES = {
+          // project key → possible form field names
+          'nom_marque':       ['marque', 'brand', 'nom'],
+          'nom_etablissement':['restaurant', 'etablissement', 'nom'],
+          'nom_produit':      ['nom', 'produit', 'projet'],
+          'client':           ['entreprise', 'client', 'societe', 'destinataire'],
+          'contact':          ['destinataire', 'contact'],
+          'cible_principale': ['cible', 'audience', 'public_cible'],
+          'cible':            ['audience', 'public_cible'],
+          'proposition_valeur':['usp', 'proposition', 'valeur'],
+          'usp':              ['proposition_valeur', 'avantages', 'points_forts'],
+          'concept':          ['description', 'contexte'],
+          'specialites':      ['description', 'points_forts'],
+          'type_mission':     ['type_document', 'objet', 'sujet'],
+          'titre_formation':  ['sujet', 'projet', 'titre'],
+          'objectif_mission': ['objectif', 'objectifs'],
+          'type_affaire':     ['type_document', 'sujet'],
+          'poste':            ['poste', 'fonction'],
+          'stack_technique':  ['details', 'competences'],
+          'ton_marque':       ['ton', 'style'],
+          'localisation':     ['ville', 'localisation', 'lieu'],
+          'prix':             ['prix', 'budget', 'montant'],
+          'surface':          ['surface'],
+          'type_bien':        ['type_bien', 'type'],
+          'transaction':      ['transaction'],
+          'pieces':           ['pieces', 'nombre_pieces'],
+          'points_forts':     ['points_forts', 'avantages', 'atouts'],
+          'adresse':          ['adresse', 'localisation'],
+          'budget_campagne':  ['budget'],
+          'date_lancement':   ['date', 'date_lancement'],
+          'canaux_vente':     ['canaux', 'distribution'],
+          'concurrent_principal':['concurrents', 'concurrent'],
+          'ingredients_phare':['ingredients', 'composition'],
+          'problematiques':   ['contexte', 'problematique'],
+          'objectif':         ['objectif', 'objectifs'],
+          'duree_mission':    ['duree', 'periode'],
+          'duree':            ['duree', 'periode'],
+          'livrables':        ['livrables', 'details'],
+          'modules':          ['details', 'programme', 'contenu'],
+          'chef':             ['chef', 'responsable'],
+          'equipe':           ['equipe', 'effectif'],
+          'horaires':         ['horaires', 'disponibilite'],
+          'carte_type':       ['menu', 'carte', 'prix'],
+          'notes_juridiques': ['contexte', 'details'],
+          'strategie':        ['strategie', 'approche', 'contexte'],
+          'montant_litige':   ['montant', 'prix'],
+          'ca_annuel':        ['chiffre_affaires', 'ca', 'revenus'],
+          'resultat_net':     ['resultat', 'benefice'],
+          'regime_fiscal':    ['regime', 'fiscalite'],
+          'tjm':              ['tjm', 'tarif', 'prix'],
+        };
+
+        Object.entries(proj.data).forEach(([key, value]) => {
+          if (!value || !String(value).trim()) return;
+          const aliases = ALIASES[key];
+          if (!aliases) return;
+          for (const alias of aliases) {
+            if (formFieldNames.has(alias)) {
+              const existing = formEl.querySelector(`[name="${alias}"]`);
+              if (existing && !existing.value.trim()) {
+                _fill(alias, value);
+                break;
+              }
+            }
+          }
+        });
+      }
+
+      console.log('[tool] Project prefill applied:', proj.name);
     } catch (e) { console.warn('[tool] prefill error', e); }
   }
 
@@ -519,6 +621,14 @@ async function _initProjectSelector(tool, formEl) {
       _showCreateProjectFromTool();
       return;
     }
+    // Clear all form fields before applying new project data
+    formEl.querySelectorAll('[name]').forEach(input => {
+      if (input.tagName === 'SELECT') {
+        input.selectedIndex = 0;
+      } else {
+        input.value = '';
+      }
+    });
     applyProject(select.value);
   });
 
