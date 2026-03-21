@@ -308,7 +308,6 @@
       <span id="proj-count-badge" style="margin-left:auto;font-size:.7rem;background:rgba(108,99,255,.15);color:var(--accent2);padding:1px 6px;border-radius:8px;display:none"></span>
     </a>
     <a href="/account.html" class="nav-item"><span class="ico">👤</span> <span id="nav-account">My account</span></a>
-    <a href="/account.html#cancel" class="nav-item" id="nav-cancel-sub" style="display:none;color:var(--danger);"><span class="ico">✕</span> <span id="nav-cancel-label">Cancel subscription</span></a>
     <div class="nav-section" style="margin-top:8px;" id="nav-feedback-label">Feedback</div>
     <a href="#" class="nav-item" onclick="event.preventDefault(); PSFeedback.showBugModal()"><span class="ico">🐛</span> <span id="nav-report-bug">Report a bug</span></a>
   </nav>
@@ -897,14 +896,6 @@ function updateUIText() {
   document.getElementById('nav-navigation').textContent = T('nav.navigation');
   document.getElementById('nav-proj-label').textContent = T('nav.my_projects');
   document.getElementById('nav-account').textContent = T('nav.my_account');
-  // Show cancel link only if user has active subscriptions
-  const cancelLink = document.getElementById('nav-cancel-sub');
-  if (cancelLink) {
-    const hasActive = PS.hasAnySubscription();
-    cancelLink.style.display = hasActive ? '' : 'none';
-    const cancelLabels = {fr:'Résilier mon abonnement',en:'Cancel subscription',es:'Cancelar suscripción',pt:'Cancelar assinatura',ar:'إلغاء الاشتراك'};
-    document.getElementById('nav-cancel-label').textContent = cancelLabels[PS_I18N.lang()] || cancelLabels.en;
-  }
   document.getElementById('nav-feedback-label').textContent = T('nav.feedback');
   document.getElementById('nav-report-bug').textContent = T('nav.report_bug');
   document.getElementById('nav-logout').textContent = '↩ ' + T('nav.log_out');
