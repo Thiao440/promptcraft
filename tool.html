@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', async function initDynamicTool() {
       .select('slug, name, label, description, icon, vertical, min_tier, input_schema, is_featured, is_new, generate_label, loading_text, empty_state_icon, empty_state_title, empty_state_text, form_panel_title')
       .eq('slug', slug)
       .eq('is_active', true)
-      .single();
+      .maybeSingle();
     tool = res.data;
     toolError = res.error;
   } catch (e) {
