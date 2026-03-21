@@ -39,9 +39,23 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const ANTHROPIC_API_KEY    = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_API_URL    = 'https://api.anthropic.com/v1/messages';
 const CLAUDE_MODEL         = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
-const DEFAULT_MAX_TOKENS   = parseInt(process.env.DEFAULT_MAX_TOKENS, 10) || 800;
+const DEFAULT_MAX_TOKENS   = parseInt(process.env.DEFAULT_MAX_TOKENS, 10) || 1800;
 const TIER_QUOTA           = { starter: 50, pro: 150, gold: Infinity, team: Infinity };
 const TIER_ORDER           = { starter: 1, pro: 2, gold: 3, team: 4 };
+
+// Per-vertical token limits (some verticals need more space than others)
+const VERTICAL_MAX_TOKENS = {
+  legal:     2500,  // Legal documents need to be thorough
+  finance:   2200,  // Financial analyses need detail
+  rh:        2000,  // HR policies, contracts
+  education: 2000,  // Course plans, exercises
+  freelance: 1800,  // Proposals, reports
+  immo:      1500,  // Annonces, descriptions
+  commerce:  1500,  // Product descriptions, emails
+  marketing: 1800,  // Landing pages, strategies
+  sante:     1800,  // Medical reports, programs
+  restauration: 1200, // Menus, recipes
+};
 
 // ── Cost estimation (USD per million tokens) ─────────────────────────────────
 // Pricing as of 2025 for claude-haiku-4-5. Update when model changes.
@@ -168,11 +182,22 @@ function buildUserMessage(tool, inputs) {
     return filled + universalBlock;
   }
 
+  // Build structured user message with field labels from schema
+  const fieldLabels = {};
+  if (tool.input_schema?.fields) {
+    tool.input_schema.fields.forEach(f => { if (f.name && f.label) fieldLabels[f.name] = f.label; });
+  }
+
   const fields = Object.entries(coreInputs)
     .filter(([, v]) => v !== undefined && v !== null && String(v).trim() !== '')
-    .map(([k, v]) => `  <${k}>${String(v).trim()}</${k}>`)
+    .map(([k, v]) => {
+      const label = fieldLabels[k] || k;
+      return `  <${k} label="${label}">${String(v).trim()}</${k}>`;
+    })
     .join('\n');
-  return `<demande>\n${fields}\n</demande>${universalBlock}`;
+
+  const toolName = tool.name || tool.slug;
+  return `Génère le contenu pour l'outil "${toolName}" avec les paramètres suivants :\n\n<parametres>\n${fields}\n</parametres>${universalBlock}`;
 }
 
 // ── Helper: build user context block from profile + project ──────────────────
@@ -220,9 +245,19 @@ function buildUserContext(profile, project) {
     }
   }
 
-  return parts.length
-    ? `\n\n--- Contexte utilisateur (utilise ces informations pour personnaliser ta réponse) ---\n${parts.join('\n\n')}`
-    : '';
+  if (!parts.length) return '';
+
+  const instructions = [
+    '\n\n<contexte_utilisateur>',
+    'IMPORTANT : Utilise activement ces informations pour personnaliser le contenu généré.',
+    'Par exemple : le nom de l\'entreprise dans les en-têtes/signatures, la ville pour les références locales,',
+    'le poste pour adapter le registre, les données du projet pour pré-remplir les informations métier.',
+    'N\'invente PAS d\'informations — utilise uniquement ce qui est fourni.',
+    '',
+    ...parts,
+    '</contexte_utilisateur>',
+  ];
+  return instructions.join('\n');
 }
 
 // ── Helper: resolve system prompt ─────────────────────────────────────────────
@@ -232,34 +267,114 @@ function buildSystemPrompt(tool, userContext = '') {
 }
 
 function getDefaultSystemPrompt(tool) {
-  const verticalCtx = {
-    immo:         "de l'immobilier",
-    commerce:     'du commerce et e-commerce',
-    legal:        'du droit et du juridique',
-    finance:      "de la finance et de l'investissement",
-    marketing:    'du marketing et de la communication',
-    rh:           'des ressources humaines et du recrutement',
-    sante:        'de la santé et du bien-être',
-    education:    "de l'éducation et de la formation",
-    restauration: 'de la restauration et de l\'hôtellerie',
-    freelance:    'du consulting et du freelancing',
-  }[tool.vertical] || '';
+  const toolLabel = tool.name || tool.slug;
 
-  const base = `Tu es un assistant IA expert pour les professionnels ${verticalCtx}. \
-Tu rédiges des contenus professionnels, percutants et adaptés au marché français. \
-Réponds toujours en français sauf indication contraire. \
-Sois direct, structuré et actionnable. \
-Réponds uniquement avec le contenu demandé, sans introduction ni commentaire.`;
-
-  const extras = {
-    immo:     '\n\nMaîtrise : copywriting immobilier, mise en valeur des biens, vocabulaire professionnel du secteur.',
-    commerce: '\n\nMaîtrise : marketing digital, copywriting de conversion, SEO, meilleures pratiques e-commerce.',
-    legal:    '\n\nMaîtrise : rédaction juridique professionnelle. Ajoute systématiquement : "Ce contenu est fourni à titre indicatif. Consultez un professionnel du droit pour validation."',
-    finance:  '\n\nMaîtrise : analyses financières structurées. Ajoute systématiquement : "Ce contenu est informatif et ne constitue pas un conseil en investissement."',
-    sante:    '\n\nMaîtrise : communication santé professionnelle. Ajoute systématiquement : "Ce contenu est informatif et ne remplace pas un avis médical professionnel."',
+  // ── Vertical-specific expert profiles ──
+  const verticalProfiles = {
+    immo: {
+      domain: "de l'immobilier",
+      role: "Tu es un expert en rédaction immobilière avec 15 ans d'expérience. Tu maîtrises le copywriting d'annonces, les descriptions de biens de prestige, la prospection vendeur, et l'analyse de marché.",
+      expertise: "Vocabulaire immobilier professionnel (DPE, loi Carrez, mandat exclusif, compromis, etc.). Tu sais créer l'émotion et la projection chez l'acheteur/locataire tout en restant factuel sur les caractéristiques.",
+      quality: "Chaque annonce doit donner envie de visiter. Chaque email de prospection doit décrocher un rendez-vous. Utilise des verbes d'action, des détails sensoriels, et structure le contenu pour faciliter la lecture rapide.",
+    },
+    commerce: {
+      domain: 'du commerce et e-commerce',
+      role: "Tu es un expert en copywriting e-commerce et marketing de conversion. Tu maîtrises les fiches produit persuasives, le SEO on-page, les séquences email, et les stratégies de vente en ligne.",
+      expertise: "Psychologie d'achat, techniques AIDA, copywriting de conversion, SEO sémantique, structure de fiche produit optimisée (titre, bullet points, description, CTA). Tu connais les bonnes pratiques Amazon, Shopify, et marketplaces.",
+      quality: "Chaque fiche produit doit convertir. Utilise des bénéfices (pas juste des caractéristiques), crée de l'urgence quand pertinent, et optimise chaque mot pour le SEO sans sacrifier la lisibilité.",
+    },
+    legal: {
+      domain: 'du droit et du juridique',
+      role: "Tu es un rédacteur juridique senior. Tu maîtrises la rédaction de contrats, mises en demeure, conclusions, analyses juridiques, et documents de conformité.",
+      expertise: "Droit français (Code civil, Code du travail, Code de commerce, RGPD). Tu utilises le vocabulaire juridique précis, les formulations consacrées, et les références normatives appropriées.",
+      quality: "Chaque document doit être juridiquement rigoureux et exploitable en l'état par un professionnel du droit. Structure claire avec articles numérotés quand approprié. Précision des termes et exhaustivité des clauses.",
+      disclaimer: "\n\nIMPORTANT : Termine toujours par : \"⚖️ Ce document est généré à titre indicatif et doit être validé par un professionnel du droit avant utilisation.\"",
+    },
+    finance: {
+      domain: "de la finance et de la comptabilité",
+      role: "Tu es un expert-comptable et analyste financier. Tu maîtrises les bilans, comptes de résultat, prévisionnels, optimisation fiscale, reporting, et conseil de gestion.",
+      expertise: "Normes comptables françaises (PCG), fiscalité (IS, IR, TVA, CFE), ratios financiers (CAF, BFR, trésorerie nette, EBE, SIG). Tu sais vulgariser les chiffres pour les dirigeants non-financiers.",
+      quality: "Chaque analyse doit être chiffrée et actionnable. Présente les KPIs clés, les tendances, les points d'alerte, et les recommandations concrètes. Utilise des tableaux quand c'est plus clair.",
+      disclaimer: "\n\nIMPORTANT : Termine toujours par : \"📊 Ce contenu est informatif et ne constitue pas un conseil en investissement ou fiscal personnalisé.\"",
+    },
+    marketing: {
+      domain: 'du marketing et de la communication',
+      role: "Tu es un directeur marketing senior et expert en stratégie de contenu. Tu maîtrises le branding, le copywriting, les campagnes ads, le content marketing, les réseaux sociaux, et le growth hacking.",
+      expertise: "Frameworks marketing (AIDA, PAS, StoryBrand, AARRR), psychologie de la persuasion, copywriting émotionnel et data-driven, stratégies multi-canal, personas, et funnels de conversion.",
+      quality: "Chaque contenu doit avoir un hook percutant, un corps engageant, et un CTA clair. Adapte le style à la plateforme (LinkedIn ≠ Instagram ≠ email). Propose des variantes A/B quand pertinent.",
+    },
+    rh: {
+      domain: 'des ressources humaines et du recrutement',
+      role: "Tu es un DRH et expert en recrutement avec une forte culture RH française. Tu maîtrises la rédaction d'offres d'emploi, les process de recrutement, la gestion des talents, et le droit social.",
+      expertise: "Code du travail français, conventions collectives, marque employeur, techniques de sourcing, onboarding, entretiens annuels, GPEC. Tu connais les bonnes pratiques inclusives et non-discriminatoires.",
+      quality: "Chaque offre d'emploi doit attirer les bons candidats et refléter la culture de l'entreprise. Les documents RH doivent être conformes au droit du travail français. Utilise un langage inclusif.",
+    },
+    sante: {
+      domain: 'de la santé et du bien-être',
+      role: "Tu es un expert en communication santé et rédaction médicale. Tu maîtrises la communication patient, les contenus de vulgarisation, les programmes de soins, et la conformité déontologique.",
+      expertise: "Terminologie médicale, éducation thérapeutique, communication empathique, normes déontologiques des professions de santé, RGPD santé, et marketing des professionnels de santé.",
+      quality: "Chaque contenu doit être scientifiquement exact, rassurant, et compréhensible par le patient. Utilise un ton empathique et professionnel. Respecte la déontologie médicale.",
+      disclaimer: "\n\nIMPORTANT : Termine toujours par : \"🏥 Ce contenu est informatif et ne remplace pas un avis médical professionnel.\"",
+    },
+    education: {
+      domain: "de l'éducation et de la formation professionnelle",
+      role: "Tu es un ingénieur pédagogique senior et expert en conception de formations. Tu maîtrises la création de programmes, supports de formation, évaluations, et e-learning.",
+      expertise: "Taxonomie de Bloom, approche par compétences, pédagogie active, ingénierie de formation (ADDIE), Qualiopi, CPF, blended learning, gamification pédagogique.",
+      quality: "Chaque contenu pédagogique doit avoir des objectifs clairs, une progression logique, et des activités variées. Définis les compétences visées, les modalités d'évaluation, et les prérequis.",
+    },
+    restauration: {
+      domain: "de la restauration et de l'hôtellerie",
+      role: "Tu es un expert en communication pour la restauration et l'hôtellerie. Tu maîtrises la rédaction de menus, la gestion d'image, les réseaux sociaux food, et le marketing restauration.",
+      expertise: "Vocabulaire gastronomique, techniques culinaires, réglementations HACCP et allergènes (14 allergènes UE), tendances food, storytelling culinaire, et communication de crise (avis négatifs).",
+      quality: "Chaque description de plat doit être sensorielle et appétissante. Les contenus marketing doivent refléter l'identité du restaurant. Les documents réglementaires (allergènes, HACCP) doivent être conformes et exhaustifs.",
+    },
+    freelance: {
+      domain: 'du consulting et du freelancing',
+      role: "Tu es un consultant senior et expert en développement d'activité indépendante. Tu maîtrises la prospection, les propositions commerciales, le personal branding, et la gestion administrative freelance.",
+      expertise: "Statuts juridiques (AE, EURL, SASU), portage salarial, pricing, négociation, propositions commerciales, CGV, facturation, et stratégie de positionnement expert.",
+      quality: "Chaque proposition doit être convaincante et refléter l'expertise du freelance. Les documents administratifs (CGV, devis) doivent être juridiquement solides. Le personal branding doit être authentique et différenciant.",
+    },
   };
 
-  return base + (extras[tool.vertical] || '');
+  const vp = verticalProfiles[tool.vertical] || {
+    domain: '',
+    role: "Tu es un assistant IA expert en rédaction professionnelle.",
+    expertise: "Rédaction structurée, claire et actionnable.",
+    quality: "Chaque contenu doit être professionnel et directement utilisable.",
+  };
+
+  // ── Assemble the system prompt ──
+  const parts = [
+    // 1. Role identity
+    vp.role,
+
+    // 2. Current task
+    `\nTa tâche actuelle : "${toolLabel}".`,
+
+    // 3. Quality guidelines
+    `\n<guidelines_qualite>`,
+    `- ${vp.quality}`,
+    `- Utilise un vocabulaire professionnel et spécialisé du domaine ${vp.domain || 'concerné'}.`,
+    `- Sois direct : pas d'introduction ("Voici…", "Bien sûr…"), pas de méta-commentaire. Commence directement par le contenu demandé.`,
+    `- Structure le contenu avec des titres, sections, ou listes quand c'est pertinent pour la lisibilité.`,
+    `- Adapte le niveau de détail au type de contenu : concis pour un email, détaillé pour une analyse.`,
+    `- Si des données chiffrées sont disponibles dans le contexte, intègre-les naturellement dans le contenu.`,
+    `- Si un profil utilisateur ou un projet est fourni en contexte, utilise activement ces informations : nom de l'entreprise dans les en-têtes, ville dans les références géographiques, poste pour adapter le niveau de langage, etc.`,
+    `</guidelines_qualite>`,
+
+    // 4. Domain expertise
+    `\n<expertise_domaine>`,
+    vp.expertise,
+    `</expertise_domaine>`,
+
+    // 5. Language
+    `\nRéponds en français sauf si l'utilisateur demande une autre langue dans ses instructions.`,
+  ];
+
+  // 6. Disclaimer if needed (legal, finance, santé)
+  if (vp.disclaimer) parts.push(vp.disclaimer);
+
+  return parts.join('\n');
 }
 
 // ── Helper: call Claude API with retry on 429/529 ────────────────────────────
@@ -268,7 +383,15 @@ function callClaude(systemPrompt, userMessage, maxTokens, retries = 2) {
     const payload = JSON.stringify({
       model:      CLAUDE_MODEL,
       max_tokens: maxTokens,
-      system: systemPrompt,
+      // Use structured system format to enable prompt caching
+      // The system prompt (role + guidelines) is cacheable across calls to the same tool
+      system: [
+        {
+          type: 'text',
+          text: systemPrompt,
+          cache_control: { type: 'ephemeral' },
+        },
+      ],
       messages: [{ role: 'user', content: userMessage }],
     });
 
@@ -280,7 +403,7 @@ function callClaude(systemPrompt, userMessage, maxTokens, retries = 2) {
         'anthropic-version': '2023-06-01',
         'Content-Length':    Buffer.byteLength(payload),
       },
-      timeout: 15_000, // 15s timeout
+      timeout: 30_000, // 30s timeout (allows for longer, higher-quality outputs)
     };
 
     const req = https.request(ANTHROPIC_API_URL, options, (res) => {
@@ -482,7 +605,7 @@ exports.handler = async (event) => {
   // ── 9. Build prompt ────────────────────────────────────────────────────────
   const systemPrompt = buildSystemPrompt(tool, userContext);
   const userMessage  = buildUserMessage(tool, inputs);
-  const maxTokens    = tool.max_output_tokens || DEFAULT_MAX_TOKENS;
+  const maxTokens    = tool.max_output_tokens || VERTICAL_MAX_TOKENS[tool.vertical] || DEFAULT_MAX_TOKENS;
 
   // ── 10. Call Claude with retry ─────────────────────────────────────────────
   const startMs = Date.now();
