@@ -518,7 +518,10 @@ exports.handler = async (event) => {
     .eq('slug', toolSlug)
     .single();
 
-  if (toolError || !tool) return fail(404, 'TOOL_NOT_FOUND', 'Tool not found');
+  if (toolError || !tool) {
+    log('tool_not_found', { toolSlug, error: toolError?.message || 'no rows' });
+    return fail(404, 'TOOL_NOT_FOUND', `Tool not found: ${toolSlug}`);
+  }
   if (!tool.is_active)    return fail(403, 'TOOL_UNAVAILABLE', 'Tool is currently unavailable');
 
   // ── 5. Validate & sanitize inputs against schema ───────────────────────────
