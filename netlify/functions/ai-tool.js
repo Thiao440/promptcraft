@@ -683,7 +683,7 @@ exports.handler = async (event) => {
     }),
     incrementQuota(supabase, user.id, tool.vertical),
     // Increment tool-level usage counter for dynamic "Populaire" badges
-    supabase.rpc('increment_tool_usage', { tool_slug: toolSlug }).catch(() => {}),
+    supabase.rpc('increment_tool_usage', { tool_slug: toolSlug }).then(() => {}),
   ]);
 
   // ── 12. Return ──────────────────────────────────────────────────────────────
