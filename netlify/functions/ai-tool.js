@@ -13,9 +13,11 @@
  *   5. Check monthly quota (Bronze: 50, Silver: 150, Gold: unlimited)
  *   6. Validate + sanitize inputs against field constraints
  *   7. Build system prompt + structured user message
- *   8. Call Anthropic Claude API (with prompt caching on system turn + retry on 429/529)
- *   9. Log to tool_usage + atomically increment usage_quotas (structured logging)
- *  10. Return generated text
+ *   8. Load user profile + active project → inject context into system prompt
+ *   9. Build final prompt (system + context + user message)
+ *  10. Call Anthropic Claude API (with prompt caching on system turn + retry on 429/529)
+ *  11. Log to tool_usage + atomically increment usage_quotas (structured logging)
+ *  12. Return generated text
  *
  * Hardened for 1M users:
  *   - Per-user rate limiting via in-memory sliding window
@@ -127,22 +129,106 @@ function log(event, data = {}) {
 
 // ── Helper: structured XML user message ───────────────────────────────────────
 function buildUserMessage(tool, inputs) {
-  if (tool.prompt_template) {
-    return tool.prompt_template.replace(/\{\{(\w+)\}\}/g, (_, key) =>
-      inputs[key] !== undefined ? String(inputs[key]) : `[${key} non fourni]`
-    );
+  // Extract universal enrichment fields (handled separately in system prompt)
+  const langue        = inputs.langue || '';
+  const longueurSortie = inputs.longueur_sortie || '';
+  const infosComp     = inputs.infos_comp || '';
+
+  // Build instructions from universal fields
+  const universalInstructions = [];
+  if (langue && langue !== 'Français') {
+    universalInstructions.push(`IMPORTANT: Réponds entièrement en ${langue}.`);
   }
-  const fields = Object.entries(inputs)
+  if (longueurSortie) {
+    const lengthMap = {
+      'Court (concis)':      'Sois concis et va droit au but. Format court.',
+      'Moyen (standard)':    'Longueur standard, suffisamment détaillé.',
+      'Long (détaillé)':     'Sois très détaillé et complet. Format long.',
+    };
+    if (lengthMap[longueurSortie]) universalInstructions.push(lengthMap[longueurSortie]);
+  }
+  if (infosComp) {
+    universalInstructions.push(`Instructions supplémentaires de l'utilisateur: ${infosComp}`);
+  }
+
+  const universalBlock = universalInstructions.length
+    ? `\n<instructions_supplementaires>\n${universalInstructions.join('\n')}\n</instructions_supplementaires>`
+    : '';
+
+  // Remove universal fields from the main inputs to avoid duplication
+  const coreInputs = { ...inputs };
+  delete coreInputs.langue;
+  delete coreInputs.longueur_sortie;
+  delete coreInputs.infos_comp;
+
+  if (tool.prompt_template) {
+    const filled = tool.prompt_template.replace(/\{\{(\w+)\}\}/g, (_, key) =>
+      coreInputs[key] !== undefined ? String(coreInputs[key]) : `[${key} non fourni]`
+    );
+    return filled + universalBlock;
+  }
+
+  const fields = Object.entries(coreInputs)
     .filter(([, v]) => v !== undefined && v !== null && String(v).trim() !== '')
     .map(([k, v]) => `  <${k}>${String(v).trim()}</${k}>`)
     .join('\n');
-  return `<demande>\n${fields}\n</demande>`;
+  return `<demande>\n${fields}\n</demande>${universalBlock}`;
+}
+
+// ── Helper: build user context block from profile + project ──────────────────
+function buildUserContext(profile, project) {
+  const parts = [];
+
+  // ── User profile context ──
+  if (profile) {
+    const pLines = [];
+    if (profile.first_name || profile.last_name) {
+      pLines.push(`Nom: ${[profile.first_name, profile.last_name].filter(Boolean).join(' ')}`);
+    }
+    if (profile.job_title)     pLines.push(`Poste: ${profile.job_title}`);
+    if (profile.company_name)  pLines.push(`Entreprise: ${profile.company_name}`);
+    if (profile.billing_city)  pLines.push(`Ville: ${profile.billing_city}`);
+    if (profile.billing_postal_code) pLines.push(`Code postal: ${profile.billing_postal_code}`);
+    if (profile.phone)         pLines.push(`Téléphone: ${profile.phone}`);
+    if (profile.email)         pLines.push(`Email: ${profile.email}`);
+
+    if (pLines.length) {
+      parts.push(`<profil_utilisateur>\n${pLines.join('\n')}\n</profil_utilisateur>`);
+    }
+  }
+
+  // ── Active project context ──
+  if (project) {
+    const projLines = [];
+    if (project.name) projLines.push(`Nom du projet: ${project.name}`);
+    if (project.vertical) projLines.push(`Secteur: ${project.vertical}`);
+    if (project.notes) projLines.push(`Notes: ${project.notes}`);
+
+    // Flatten project.data JSONB into readable key-value pairs
+    if (project.data && typeof project.data === 'object') {
+      Object.entries(project.data).forEach(([key, value]) => {
+        if (value !== null && value !== undefined && String(value).trim()) {
+          // Convert snake_case key to readable label
+          const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          projLines.push(`${label}: ${String(value).trim()}`);
+        }
+      });
+    }
+
+    if (projLines.length) {
+      parts.push(`<projet_actif>\n${projLines.join('\n')}\n</projet_actif>`);
+    }
+  }
+
+  return parts.length
+    ? `\n\n--- Contexte utilisateur (utilise ces informations pour personnaliser ta réponse) ---\n${parts.join('\n\n')}`
+    : '';
 }
 
 // ── Helper: resolve system prompt ─────────────────────────────────────────────
-function buildSystemPrompt(tool) {
-  if (tool.system_prompt) return tool.system_prompt;
-  return getDefaultSystemPrompt(tool);
+function buildSystemPrompt(tool, userContext = '') {
+  const base = tool.system_prompt || getDefaultSystemPrompt(tool);
+  return base + userContext;
 }
 
 function getDefaultSystemPrompt(tool) {
@@ -364,12 +450,41 @@ exports.handler = async (event) => {
     }
   }
 
-  // ── 8. Build prompt ────────────────────────────────────────────────────────
-  const systemPrompt = buildSystemPrompt(tool);
+  // ── 8. Load user context (profile + project) ─────────────────────────────
+  let profile = null;
+  let project = null;
+
+  // Load profile (non-blocking — don't fail generation if profile fetch fails)
+  try {
+    const { data: profileRow } = await supabase
+      .from('profiles')
+      .select('first_name, last_name, job_title, company_name, phone, email, billing_city, billing_postal_code')
+      .eq('id', user.id)
+      .single();
+    profile = profileRow;
+  } catch (_) { /* best-effort */ }
+
+  // Load active project if provided
+  if (projectId && typeof projectId === 'string' && projectId.length > 10) {
+    try {
+      const { data: projRow } = await supabase
+        .from('projects')
+        .select('name, vertical, data, notes')
+        .eq('id', projectId)
+        .eq('user_id', user.id)
+        .single();
+      project = projRow;
+    } catch (_) { /* best-effort */ }
+  }
+
+  const userContext = buildUserContext(profile, project);
+
+  // ── 9. Build prompt ────────────────────────────────────────────────────────
+  const systemPrompt = buildSystemPrompt(tool, userContext);
   const userMessage  = buildUserMessage(tool, inputs);
   const maxTokens    = tool.max_output_tokens || DEFAULT_MAX_TOKENS;
 
-  // ── 9. Call Claude with retry ──────────────────────────────────────────────
+  // ── 10. Call Claude with retry ─────────────────────────────────────────────
   const startMs = Date.now();
   let claudeResponse;
   try {
@@ -409,7 +524,7 @@ exports.handler = async (event) => {
   const modelUsed     = CLAUDE_MODEL;
   const estCost       = estimateCost(modelUsed, inputTokens, outputTokens);
 
-  // ── 10. Log usage (structured) ──────────────────────────────────────────────
+  // ── 11. Log usage (structured) ──────────────────────────────────────────────
   log('generation_success', {
     userId: user.id, toolSlug, vertical: tool.vertical, tier: sub.tier,
     durationMs, tokensUsed, tokensSaved, cacheHit, maxTokens,
@@ -445,7 +560,7 @@ exports.handler = async (event) => {
     supabase.rpc('increment_tool_usage', { tool_slug: toolSlug }).catch(() => {}),
   ]);
 
-  // ── 11. Return ──────────────────────────────────────────────────────────────
+  // ── 12. Return ──────────────────────────────────────────────────────────────
   return ok({
     output:     outputText,
     tokensUsed,

@@ -338,6 +338,43 @@ document.addEventListener('DOMContentLoaded', async function initDynamicTool() {
     tool.input_schema = _buildGenericSchema(tool);
   }
 
+  // ── Enrich ALL tool schemas with universal fields ─────────────────────────
+  // These fields add context that dramatically improves prompt quality
+  // without requiring each tool to define them individually.
+  {
+    const fields = tool.input_schema.fields;
+    const existingNames = new Set(fields.map(f => f.name));
+
+    // Language selector (critical for a 5-language platform)
+    if (!existingNames.has('langue')) {
+      fields.push({
+        name: 'langue', label: 'Langue de sortie', type: 'select', required: false,
+        options: ['Français', 'English', 'Español', 'Português', 'العربية'],
+        default: 'Français',
+        layout: 'half',
+      });
+    }
+
+    // Output length preference
+    if (!existingNames.has('longueur') && !existingNames.has('longueur_sortie')) {
+      fields.push({
+        name: 'longueur_sortie', label: 'Longueur souhaitée', type: 'select', required: false,
+        options: ['Court (concis)', 'Moyen (standard)', 'Long (détaillé)'],
+        default: 'Moyen (standard)',
+        layout: 'half',
+      });
+    }
+
+    // Additional context (free textarea for anything the user wants to add)
+    if (!existingNames.has('infos_comp') && !existingNames.has('informations') && !existingNames.has('instructions')) {
+      fields.push({
+        name: 'infos_comp', label: 'Informations complémentaires', type: 'textarea', required: false,
+        placeholder: 'Contexte supplémentaire, contraintes, instructions spéciales…',
+        rows: 2, maxlength: 1000,
+      });
+    }
+  }
+
   // ── 4. Render tool header ─────────────────────────────────────────────────
   const toolLabel = tool.label || tool.name || slug;
   const vertical  = PS.VERTICALS[tool.vertical] || { label: tool.vertical, icon: '📁' };
