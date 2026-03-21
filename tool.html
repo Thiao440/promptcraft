@@ -275,7 +275,7 @@ function _buildGenericSchema(tool) {
   return { fields };
 }
 
-(async function initDynamicTool() {
+document.addEventListener('DOMContentLoaded', async function initDynamicTool() {
 
   // ── 1. Read slug ──────────────────────────────────────────────────────────
   const params = new URLSearchParams(window.location.search);
@@ -422,7 +422,7 @@ function _buildGenericSchema(tool) {
   document.getElementById('generate-btn').disabled = false;
   document.getElementById('btn-text').textContent = tool.generate_label || 'Générer';
 
-})();
+});
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PROJECT SELECTOR + POST-GENERATION PROMPT

@@ -403,7 +403,7 @@ async function init() {
     history.replaceState(null, '', '/account.html');
   }
 }
-init();
+document.addEventListener('DOMContentLoaded', init);
 
 // ═══ CHURN FEEDBACK ═══
 const CHURN_REASONS = {

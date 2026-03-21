@@ -3308,11 +3308,11 @@ VALUES ('slug', 'Name', 'Display Name', 'Description', 'emoji', 'vertical', 'sta
       setupCopyButtons();
     }
 
-    // Start
-    init().catch(e => {
+    // Start — wait for defer scripts before calling init
+    document.addEventListener('DOMContentLoaded', () => init().catch(e => {
       console.error('Init error:', e);
       showToast('Erreur d\'initialisation');
-    });
+    }));
   </script>
 </body>
 </html>

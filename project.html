@@ -413,7 +413,7 @@ window.addEventListener('beforeunload', e => {
 });
 
 // ── Init ─────────────────────────────────────────────────────────────────────
-(async function () {
+document.addEventListener('DOMContentLoaded', async function () {
   try {
     await PS.requireAuth();
     VMETA = PS.VERTICALS;
@@ -434,7 +434,7 @@ window.addEventListener('beforeunload', e => {
     console.error('[project] init error', e);
     location.href = '/login.html';
   }
-})();
+});
 </script>
 </body>
 </html>

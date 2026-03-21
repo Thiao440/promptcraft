@@ -237,7 +237,7 @@ let _verticals = [];
 let _subs      = {};
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-(async function init() {
+document.addEventListener('DOMContentLoaded', async function init() {
   const ok = await PS.requireAuth('/assistant.html');
   if (!ok) return;
 
@@ -256,7 +256,7 @@ let _subs      = {};
   showWelcome();
   setupInput();
   updateQuotaInfo();
-})();
+});
 
 // ── HEADER / TABS ─────────────────────────────────────────────────────────────
 function renderHeader() {
