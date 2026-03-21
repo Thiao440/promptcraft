@@ -172,8 +172,8 @@
 
   <div class="danger-zone">
     <div class="section-title" style="margin-bottom:10px;color:var(--danger);">⚠️ <span data-fr>Zone de danger</span><span data-en>Danger zone</span><span data-es>Zona de peligro</span><span data-pt>Zona de perigo</span><span data-ar>منطقة الخطر</span></div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;"><span data-fr>La résiliation est effectuée directement depuis le portail Lemon Squeezy. Votre accès reste actif jusqu'à la fin de la période payée.</span><span data-en>Cancellation is done directly from the Lemon Squeezy portal. Your access remains active until the end of the paid period.</span><span data-es>La cancelación se realiza directamente desde el portal Lemon Squeezy. Su acceso permanece activo hasta el final del período pagado.</span><span data-pt>O cancelamento é feito diretamente no portal Lemon Squeezy. Seu acesso permanece ativo até o final do período pago.</span><span data-ar>يتم الإلغاء مباشرة من بوابة Lemon Squeezy. يبقى وصولك نشطاً حتى نهاية الفترة المدفوعة.</span></p>
-    <button onclick="openChurnModal()" class="btn btn-danger"><span data-fr>Gérer / Résilier mes abonnements →</span><span data-en>Manage / Cancel my subscriptions →</span><span data-es>Gestionar / Cancelar mis suscripciones →</span><span data-pt>Gerenciar / Cancelar minhas assinaturas →</span><span data-ar>إدارة / إلغاء اشتراكاتي ←</span></button>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;"><span data-fr>Vous pouvez résilier à tout moment. Votre accès reste actif jusqu'à la fin de la période en cours.</span><span data-en>You can cancel anytime. Your access stays active until the end of your current billing period.</span><span data-es>Puede cancelar en cualquier momento. Su acceso permanece activo hasta el final del período actual.</span><span data-pt>Você pode cancelar a qualquer momento. Seu acesso permanece ativo até o final do período atual.</span><span data-ar>يمكنك الإلغاء في أي وقت. يبقى وصولك نشطاً حتى نهاية الفترة الحالية.</span></p>
+    <button onclick="openChurnModal()" class="btn btn-danger"><span data-fr>Résilier mon abonnement</span><span data-en>Cancel my subscription</span><span data-es>Cancelar mi suscripción</span><span data-pt>Cancelar minha assinatura</span><span data-ar>إلغاء اشتراكي</span></button>
   </div>
 </main>
 
@@ -182,16 +182,16 @@
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;max-width:520px;width:calc(100% - 32px);max-height:90vh;overflow-y:auto;padding:28px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <h3 style="font-size:1.1rem;font-weight:700;">
-        <span data-fr>Avant de partir...</span><span data-en>Before you go...</span><span data-es>Antes de irte...</span><span data-pt>Antes de sair...</span><span data-ar>قبل أن تغادر...</span>
+        <span data-fr>On serait tristes de vous voir partir 😢</span><span data-en>We'd be sad to see you go 😢</span><span data-es>Nos entristecería verte partir 😢</span><span data-pt>Ficaríamos tristes em ver você partir 😢</span><span data-ar>سنكون حزينين لرؤيتك تغادر 😢</span>
       </h3>
       <button onclick="closeChurnModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">&times;</button>
     </div>
     <p style="font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:18px;">
-      <span data-fr>Votre avis nous aide à améliorer nos outils et nos offres. Pourriez-vous nous dire pourquoi vous souhaitez résilier ?</span>
-      <span data-en>Your feedback helps us improve our tools and plans. Could you tell us why you'd like to cancel?</span>
-      <span data-es>Sus comentarios nos ayudan a mejorar nuestras herramientas y ofertas. ¿Podría decirnos por qué desea cancelar?</span>
-      <span data-pt>Seu feedback nos ajuda a melhorar nossas ferramentas e planos. Poderia nos dizer por que deseja cancelar?</span>
-      <span data-ar>ملاحظاتك تساعدنا في تحسين أدواتنا وعروضنا. هل يمكنك إخبارنا لماذا ترغب في الإلغاء؟</span>
+      <span data-fr>Dites-nous pourquoi l'outil ne vous convient pas — ça nous aide vraiment à nous améliorer.</span>
+      <span data-en>Tell us why the tool isn't right for you — it really helps us get better.</span>
+      <span data-es>Cuéntanos por qué la herramienta no te conviene — nos ayuda mucho a mejorar.</span>
+      <span data-pt>Conte-nos por que a ferramenta não é ideal para você — isso nos ajuda muito a melhorar.</span>
+      <span data-ar>أخبرنا لماذا لا تناسبك الأداة — هذا يساعدنا حقاً على التحسّن.</span>
     </p>
 
     <div id="churn-reasons" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
@@ -213,7 +213,7 @@
         <span data-fr>Annuler</span><span data-en>Cancel</span><span data-es>Cancelar</span><span data-pt>Cancelar</span><span data-ar>إلغاء</span>
       </button>
       <button onclick="submitChurnFeedback()" class="btn btn-danger" id="churn-submit-btn">
-        <span data-fr>Continuer vers la résiliation →</span><span data-en>Continue to cancellation →</span><span data-es>Continuar con la cancelación →</span><span data-pt>Continuar com o cancelamento →</span><span data-ar>متابعة الإلغاء ←</span>
+        <span data-fr>Confirmer et résilier</span><span data-en>Confirm and cancel</span><span data-es>Confirmar y cancelar</span><span data-pt>Confirmar e cancelar</span><span data-ar>تأكيد والإلغاء</span>
       </button>
     </div>
   </div>
@@ -506,7 +506,7 @@ async function submitChurnFeedback() {
     });
   } catch(e) { console.warn('churn feedback save error', e); }
 
-  // Redirect to Lemon Squeezy portal
+  // Redirect to subscription management portal
   window.open('https://app.lemonsqueezy.com/my-orders', '_blank');
   closeChurnModal();
   btn.disabled = false;
